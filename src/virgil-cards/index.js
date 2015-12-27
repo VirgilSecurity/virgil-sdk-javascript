@@ -13,7 +13,6 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		baseUrl: opts.cardsBaseUrl || 'https://keys.virgilsecurity.com/v2',
 
 		methods: {
-			getPublicKey: 'get /public-key/{public_key_id}',
 			createVirgilCard: 'post /virgil-card',
 			signVirgilCard: 'post /virgil-card/{virgil_card_id}/actions/sign',
 			unsignVirgilCard: 'post /virgil-card/{virgil_card_id}/actions/unsign',
@@ -25,15 +24,10 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		},
 
 		before: {
-			getPublicKey: getPublicKey,
 			createVirgilCard: createVirgilCard,
 			signVirgilCard: signVirgilCard,
 			unsignVirgilCard: unsignVirgilCard,
 			searchVirgilCard: searchVirgilCard
-		},
-
-		query: {
-			getPublicKey: []
 		},
 
 		body: {
@@ -95,16 +89,6 @@ function searchVirgilCard (params, requestBody, opts) {
 	assert(params.private_key, 'private_key param is required');
 
 	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
-	return [params, requestBody, opts];
-}
-
-function getPublicKey (params, requestBody, opts) {
-	assert(params.public_key_id, 'public_key_id param is required');
-
-	if (params.virgil_card_id && params.private_key) {
-		opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
-	}
-
 	return [params, requestBody, opts];
 }
 
