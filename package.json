@@ -1,0 +1,31 @@
+{
+  "name": "virgil-sdk",
+  "version": "1.0.0",
+  "description": "Virgil Security Services SDK",
+  "main": "index.js",
+  "scripts": {
+    "test": "node tests"
+  },
+  "author": "Virgil Security Inc. <support@virgilsecurity.com>",
+  "keywords": [
+    "security",
+    "elliptic",
+    "elliptic curve",
+    "virgil",
+    "virgilsecurity",
+    "encryption",
+    "crypto",
+    "pki"
+  ],
+  "license": "BSD",
+  "dependencies": {
+    "apiapi": "^1.4.0",
+    "lodash": "^3.10.1",
+    "node-uuid": "^1.4.3",
+    "virgil-crypto": "^0.2.6"
+  },
+  "devDependencies": {
+    "bluebird": "^2.10.0",
+    "tape": "^4.2.0"
+  }
+}
