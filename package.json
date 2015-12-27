@@ -19,9 +19,9 @@
   ],
   "license": "BSD",
   "dependencies": {
-    "apiapi": "^1.5.0",
+    "apiapi": "^1.5.1",
     "node-uuid": "^1.4.3",
-    "virgil-crypto": "^0.2.6"
+    "virgil-crypto": "^0.2.7"
   },
   "devDependencies": {
     "bluebird": "^2.10.0",
