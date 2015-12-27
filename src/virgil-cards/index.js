@@ -14,9 +14,10 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 		methods: {
 			create: 'post /virgil-card',
-			sign: 'post /virgil-card/{virgil_card_id}/actions/sign',
-			unsign: 'post /virgil-card/{virgil_card_id}/actions/unsign',
-			search: 'post /virgil-card/actions/search'
+			trust: 'post /virgil-card/{virgil_card_id}/actions/sign',
+			untrust: 'post /virgil-card/{virgil_card_id}/actions/unsign',
+			search: 'post /virgil-card/actions/search',
+			searchApp: 'post /virgil-card/actions/search/app'
 		},
 
 		headers: {
@@ -25,22 +26,23 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 		before: {
 			create: create,
-			sign: sign,
-			unsign: unsign,
-			search: search
+			trust: trust,
+			untrust: untrust
 		},
 
 		body: {
 			create: ['public_key_id', 'public_key', 'identity', 'data'],
-			sign: ['signed_virgil_card_id', 'signed_digest'],
+			trust: ['signed_virgil_card_id', 'signed_digest'],
 			unsign: ['signed_virgil_card_id'],
-			search: ['value', 'type', 'relations', 'include_unconfirmed']
+			search: ['value', 'type', 'relations', 'include_unconfirmed'],
+			searchApp: ['value']
 		},
 
 		required: {
-			sign: ['signed_virgil_card_id', 'signed_virgil_card_hash', 'private_key', 'virgil_card_id'],
-			unsign: ['signed_virgil_card_id', 'private_key', 'virgil_card_id'],
-			search: ['value', 'type', 'virgil_card_id', 'private_key']
+			trust: ['signed_virgil_card_id', 'signed_virgil_card_hash', 'private_key', 'virgil_card_id'],
+			untrust: ['signed_virgil_card_id', 'private_key', 'virgil_card_id'],
+			search: ['value', 'type'],
+			searchApp: ['value']
 		},
 
 		errorHandler: errorHandler,
@@ -52,18 +54,13 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	return apiClient;
 }
 
-function sign (params, requestBody, opts) {
+function trust (params, requestBody, opts) {
 	requestBody.signed_digest = signer.sign(params.signed_virgil_card_hash, params.private_key).toString('base64');
 	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
 	return [params, requestBody, opts];
 }
 
-function unsign (params, requestBody, opts) {
-	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
-	return [params, requestBody, opts];
-}
-
-function search (params, requestBody, opts) {
+function untrust (params, requestBody, opts) {
 	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
 	return [params, requestBody, opts];
 }
