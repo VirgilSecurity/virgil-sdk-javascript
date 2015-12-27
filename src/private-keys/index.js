@@ -3,6 +3,7 @@ var assert = require('assert');
 var ApiClient = require('apiapi');
 var uuid = require('node-uuid');
 var errors = require('./errors');
+var errorHandler = require('../error-handler')(errors);
 
 var PRIVATE_KEYS_SERVICE_APP_ID = 'user@virgilsecurity.com';
 var PRIVATE_KEYS_SERVICE_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\nMIGbMBQGByqGSM49AgEGCSskAwMCCAEBDQOBggAEnsoNapK9CZjl5p9b1eF85IyC\nG6RrDo1rsNY99CJlDw0B7018YcqZIJT6gGn2t4CgoS0gCm7SOTMr9xahfJ9m10kw\n69Fb6qOW1oFUYGFZOw0p5bzYv8zh3WJnbr/JhvPm49Rp73j4vYW9z3xx4yFuOh6D\n6etbkZ7GOxxA9SIsSl4=\n-----END PUBLIC KEY-----";
@@ -13,7 +14,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};
 
 	var apiClient = new ApiClient({
-		baseUrl: opts.privateKeysBaseUrl || 'https://keys.virgilsecurity.com/v2',
+		baseUrl: opts.privateKeysBaseUrl || 'https://private-keys.virgilsecurity.com/v3',
 
 		methods: {
 			stash: 'post /private-key',
@@ -105,19 +106,4 @@ function parseResponse (res) {
 
 		return body;
 	}
-}
-
-function errorHandler (res) {
-	if (res.data.code) {
-		throw createError(res.data.code);
-	}
-
-	throw new Error(res);
-}
-
-function createError (code) {
-	var err = new Error();
-	err.message = errors[code];
-	err.code = code;
-	return err;
 }

@@ -3,6 +3,7 @@ var assert = require('assert');
 var ApiClient = require('apiapi');
 var uuid = require('node-uuid');
 var errors = require('./errors');
+var errorHandler = require('../error-handler')(errors);
 
 var signer = new Virgil.Signer();
 
@@ -75,19 +76,4 @@ function parseResponse (res) {
 		}
 		return body;
 	}
-}
-
-function errorHandler (res) {
-	if (res.data.code) {
-		throw createError(res.data.code);
-	}
-
-	throw new Error(res);
-}
-
-function createError (code) {
-	var err = new Error();
-	err.message = errors[code];
-	err.code = code;
-	return err;
 }
