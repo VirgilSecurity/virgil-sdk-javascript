@@ -1,11 +1,7 @@
-var Virgil = require('virgil-crypto');
-var assert = require('assert');
 var ApiClient = require('apiapi');
 var uuid = require('node-uuid');
 var errors = require('./errors');
 var errorHandler = require('../error-handler')(errors);
-
-var signer = new Virgil.Signer();
 
 module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};
@@ -33,8 +29,11 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		parse: parseResponse
 	});
 
+	apiClient.crypto = opts.crypto;
+	apiClient.signer = new apiClient.crypto.Signer();
 	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
+
 	return apiClient;
 }
 
@@ -43,7 +42,7 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId) {
 	var requestText = requestUUID + JSON.stringify(requestBody);
 
 	var headers = {
-		'X-VIRGIL-REQUEST-SIGN': signer.sign(requestText, privateKey).toString('base64'),
+		'X-VIRGIL-REQUEST-SIGN': this.signer.sign(requestText, privateKey).toString('base64'),
 		'X-VIRGIL-REQUEST-UUID': requestUUID,
 	};
 
@@ -55,7 +54,7 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId) {
 }
 
 function getPublicKey (params, requestBody, opts) {
-	assert(params.public_key_id, 'public_key_id param is required');
+	this.assert(params.public_key_id, 'public_key_id param is required');
 
 	if (params.virgil_card_id && params.private_key) {
 		opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);

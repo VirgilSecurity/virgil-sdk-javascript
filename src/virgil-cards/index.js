@@ -4,8 +4,6 @@ var uuid = require('node-uuid');
 var errors = require('./errors');
 var errorHandler = require('../error-handler')(errors);
 
-var signer = new Virgil.Signer();
-
 module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};
 
@@ -49,13 +47,16 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		parse: parseResponse
 	});
 
+	apiClient.crypto = opts.crypto;
+	apiClient.signer = new apiClient.crypto.Signer();
 	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
+
 	return apiClient;
 }
 
 function trust (params, requestBody, opts) {
-	requestBody.signed_digest = signer.sign(params.signed_virgil_card_hash, params.private_key).toString('base64');
+	requestBody.signed_digest = this.signer.sign(params.signed_virgil_card_hash, params.private_key).toString('base64');
 	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
 	return [params, requestBody, opts];
 }
@@ -83,7 +84,7 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId) {
 	var requestText = requestUUID + JSON.stringify(requestBody);
 
 	var headers = {
-		'X-VIRGIL-REQUEST-SIGN': signer.sign(requestText, privateKey).toString('base64'),
+		'X-VIRGIL-REQUEST-SIGN': this.signer.sign(requestText, privateKey).toString('base64'),
 		'X-VIRGIL-REQUEST-UUID': requestUUID,
 	};
 
