@@ -38,6 +38,12 @@ module.exports = function createAPIClient (applicationToken, opts) {
 			destroy: ['virgil_card_id']
 		},
 
+		required: {
+			stash: ['private_key', 'virgil_card_id'],
+			get: ['identity', 'response_password', 'virgil_card_id'],
+			destroy: ['virgil_card_id']
+		},
+
 		errorHandler: errorHandler,
 		parse: parseResponse
 	});
@@ -45,6 +51,27 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
 	return apiClient;
+}
+
+function stash (params, requestBody, opts) {
+	if (params.private_key) {
+		requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
+	}
+
+	requestBody = encryptBody(requestBody);
+	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
+	return [params, requestBody, opts];
+}
+
+function get (params, requestBody, opts) {
+	requestBody = encryptBody(requestBody);
+	return [params, requestBody, opts];
+}
+
+function destroy (params, requestBody, opts) {
+	requestBody = encryptBody(requestBody);
+	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
+	return [params, requestBody, opts];
 }
 
 function encryptBody (requestBody) {
@@ -63,34 +90,6 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId) {
 	};
 
 	return headers;
-}
-
-function stash (params, requestBody, opts) {
-	assert(params.private_key, 'private_key param is required');
-	assert(params.virgil_card_id, 'virgil_card_id param is required');
-
-	if (params.private_key) {
-		requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
-	}
-
-	requestBody = encryptBody(requestBody);
-	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
-	return [params, requestBody, opts];
-}
-
-function get (params, requestBody, opts) {
-	assert(params.identity, 'identity is required');
-	assert(params.response_password, 'response_password');
-	assert(params.virgil_card_id, 'virgil_card_id');
-	requestBody = encryptBody(requestBody);
-	return [params, requestBody, opts];
-}
-
-function destroy (params, requestBody, opts) {
-	assert(params.virgil_card_id, 'virgil_card_id is param is required');
-	requestBody = encryptBody(requestBody);
-	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
-	return [params, requestBody, opts];
 }
 
 function parseResponse (res) {
