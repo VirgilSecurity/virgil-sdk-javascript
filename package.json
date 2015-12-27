@@ -20,7 +20,6 @@
   "license": "BSD",
   "dependencies": {
     "apiapi": "^1.4.0",
-    "lodash": "^3.10.1",
     "node-uuid": "^1.4.3",
     "virgil-crypto": "^0.2.6"
   },
