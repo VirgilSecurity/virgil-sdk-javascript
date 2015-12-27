@@ -72,7 +72,7 @@ function parseResponse (res) {
 	var body = res.data;
 	if (body) {
 		if (body.public_key) {
-			body.public_key.public_key = new Buffer(body.public_key.public_key, 'base64').toString('utf8');
+			body.public_key = new Buffer(body.public_key, 'base64').toString('utf8');
 		}
 		return body;
 	}
