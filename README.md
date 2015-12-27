@@ -54,7 +54,7 @@ Initialize the identity verification process.
 var identityPromise = virgil.identity.verify({
 	type: 'email',
 	value: 'test1@virgilsecurity.com'
-});
+}).then(...);
 ```
 
 #### Confirm and Get an Identity Token
@@ -72,7 +72,7 @@ var identityPromise = virgil.identity.confirm({
 		// How many times it could be used
 		count_to_live: 1
 	}
-});
+}).then(...);
 ```
 
 ## Cards and Public Keys
@@ -84,13 +84,13 @@ A Virgil Card is the main entity of the Public Keys Service, it includes the inf
 An identity token which can be received [here](#identity-check) is used during the registration.
 
 ```javascript
-TODO
+TODO waiting for doc update
 var keyPair = new virgil.crypto.KeyPair();
 virgil.cards.create({
 	identity_token: 'token field from identity.confirm response',
 	public_key: keyPair.publicKey,
 	private_key: keyPair.privateKey,
-});
+}).then(...);
 ```
 
 #### Search for Cards
@@ -101,7 +101,7 @@ Search for the Virgil Card by provided parameters.
 virgil.cards.search({
 	value: "test2@virgilsecurity.com",
 	type: 'email'
-});
+}).then(...);
 ```
 
 #### Search for Application Cards
@@ -109,8 +109,7 @@ virgil.cards.search({
 Search for the Virgil Cards by a defined pattern. The example below returns a list of applications for Virgil Security company.
 
 ```javascript
-TODO
-var foundAppCards = await virgilHub.Cards.SearchAppAsync("com.virgil.*");
+virgil.cards.searchApp({ value: "com.virgil.*" }).then(...);
 ```
 
 #### Trust a Virgil Card
@@ -125,7 +124,7 @@ virgil.cards.trust({
 	signed_virgil_card_hash: 'hash of virgil card you want to trust',
 	private_key: 'your private key',
 	virgil_card_id: 'your virgil_card_id'
-});
+}).then(...);
 ```
 
 #### Untrust a Virgil Card
@@ -137,14 +136,14 @@ virgil.cards.untrust({
 	signed_virgil_card_id: 'virgil_card_id you want to give trust to',
 	private_key: 'your private key',
 	virgil_card_id: 'your virgil_card_id'
-});
+}).then(...);
 ```
 #### Revoke a Virgil Card
 
 This operation is used to delete the Virgil Card from the search and mark it as deleted. 
 
 ```javascript
-TODO
+TODO waiting for doc update
 await virgilHub.Cards.Revoke(myCard.Id, keyPair.PrivateKey());
 ```
 
@@ -153,7 +152,7 @@ await virgilHub.Cards.Revoke(myCard.Id, keyPair.PrivateKey());
 Gets a public key from the Public Keys Service by the specified ID.
 
 ```javascript
-await virgilHub.PublicKeys.Get(myCard.PublicKey.Id);
+virgil.publicKeys.get({ public_key_id: 'some public key id' }).then(...);
 ```
 
 ## Private Keys
@@ -173,7 +172,10 @@ Use the public key identifier on the Public Keys Service to save the private key
 The Private Keys Service stores private keys the original way as they were transferred. That's why we strongly recommend to trasfer the keys which were generated with a password.
 
 ```javascript
-await virgilHub.PrivateKeys.Stash(myCard.Id, keyPair.PrivateKey());
+virgil.privateKeys.stash({
+	virgil_card_id: 'your virgil card id',
+	private_key: 'your private key'
+}).then(...);
 ```
 
 #### Get a Private Key
@@ -181,11 +183,28 @@ await virgilHub.PrivateKeys.Stash(myCard.Id, keyPair.PrivateKey());
 To get a private key you need to pass a prior verification of the Virgil Card where your public key is used.
   
 ```javascript
-var identityRequest = await virgilHub.Identity.Verify("test1@virgilsecurity.com", IdentityType.Email);
-// use confirmation code that has been sent to you email box.
-var identityToken = await virgilHub.Identity.Confirm(identityRequest.Id, "%CONFIRMATION_CODE%");
-
-var privateKey = await virgilHub.PrivateKeys.Get(myCard.Id, identityToken);
+virgi.identity.verify({
+	type: 'email',
+	value: 'test1@virgilsecurity.com'
+}).then(function confirmIdentity (verifyResult) {
+	// use confirmation code that has been sent to you email box.
+	return virgil.identity.confirm({
+		action_id: verifyResult.action_id,
+		confirmation_code: 'confirmation code from email',
+		token: {
+			time_to_live: 3600,
+			count_to_live: 1
+		}
+	});
+}).then(function stashPrivateKey (confirmResult) {
+	return virgil.privateKeys.get({
+		virgil_card_id: 'your virgil card id',
+		identity: {
+			type: 'email',
+			value: 'test1@virgilsecurity.com'
+		}
+	});
+}).then(...);
 ```
 
 #### Destroy a Private Key
@@ -193,10 +212,8 @@ var privateKey = await virgilHub.PrivateKeys.Get(myCard.Id, identityToken);
 This operation deletes the private key from the service without a possibility to be restored. 
   
 ```javascript
-await virgilHub.PrivateKeys.Destroy(myCard.Id, keyPair.PrivateKey());
+virgil.privateKeys.destroy({
+	virgil_card_id: 'your virgil card id',
+	private_key: 'your privateKey'
+}).then(...);
 ```
-
-## See Also
-
-* [Quickstart](quickstart.md)
-* [Reference API for SDK](sdk-reference-api.md)
