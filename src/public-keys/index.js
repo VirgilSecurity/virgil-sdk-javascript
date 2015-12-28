@@ -31,7 +31,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 	apiClient.crypto = opts.crypto;
 	apiClient.signer = new apiClient.crypto.Signer();
-	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
+	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
 
 	return apiClient;

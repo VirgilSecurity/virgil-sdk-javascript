@@ -49,11 +49,11 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 	apiClient.crypto = opts.crypto;
 	apiClient.signer = new apiClient.crypto.Signer();
-	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
+	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
 
 	return apiClient;
-}
+};
 
 function trust (params, requestBody, opts) {
 	requestBody.signed_digest = this.signer.sign(params.signed_virgil_card_hash, params.private_key).toString('base64');
@@ -69,7 +69,7 @@ function untrust (params, requestBody, opts) {
 function create (params, requestBody, opts) {
 	this.assert(params.private_key, 'private_key param is required');
 	this.assert(params.public_key || params.public_key_id, 'public_key or public_key_id param is required');
-	this.assert(params.identity, 'identity param is required')
+	this.assert(params.identity, 'identity param is required');
 
 	if (params.public_key) {
 		requestBody.public_key = new Buffer(params.public_key, 'utf8').toString('base64');
@@ -85,7 +85,7 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId) {
 
 	var headers = {
 		'X-VIRGIL-REQUEST-SIGN': this.signer.sign(requestText, privateKey).toString('base64'),
-		'X-VIRGIL-REQUEST-UUID': requestUUID,
+		'X-VIRGIL-REQUEST-UUID': requestUUID
 	};
 
 	if (virgilCardId) {

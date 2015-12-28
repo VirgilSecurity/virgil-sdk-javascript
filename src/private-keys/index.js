@@ -15,7 +15,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		methods: {
 			stash: 'post /private-key',
 			get: 'post /private-key/actions/grab',
-			destroy: 'post /private-key/actions/delete',
+			destroy: 'post /private-key/actions/delete'
 		},
 
 		headers: {
@@ -25,7 +25,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		before: {
 			stash: stash,
 			get: get,
-			destroy: destroy,
+			destroy: destroy
 		},
 
 		body: {
@@ -46,12 +46,12 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 	apiClient.crypto = opts.crypto;
 	apiClient.signer = new apiClient.crypto.Signer();
-	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
+	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
 	apiClient.encryptBody = encryptBody;
 
 	return apiClient;
-}
+};
 
 function stash (params, requestBody, opts) {
 	if (params.private_key) {
@@ -80,7 +80,7 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId) {
 
 	var headers = {
 		'X-VIRGIL-REQUEST-SIGN': this.signer.sign(requestText, privateKey).toString('base64'),
-		'X-VIRGIL-REQUEST-UUID': requestUUID,
+		'X-VIRGIL-REQUEST-UUID': requestUUID
 	};
 
 	return headers;
