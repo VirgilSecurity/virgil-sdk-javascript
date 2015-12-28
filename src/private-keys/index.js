@@ -15,7 +15,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		methods: {
 			stash: 'post /private-key',
 			get: 'post /private-key/actions/grab',
-			destroy: 'post /private-key/actions/delete'
+			destroy: 'post /private-key/actions/delete',
 		},
 
 		headers: {
@@ -25,7 +25,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		transformRequest: {
 			stash: stash,
 			get: get,
-			destroy: destroy
+			destroy: destroy,
 		},
 
 		body: {
@@ -45,51 +45,57 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	});
 
 	apiClient.crypto = opts.crypto;
-	apiClient.signer = new apiClient.crypto.Signer();
-	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
+	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
 	apiClient.encryptBody = encryptBody;
 
 	return apiClient;
-};
+}
 
 function stash (params, requestBody, opts) {
-	if (params.private_key) {
-		requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
-	}
-
-	requestBody = this.encryptBody(requestBody);
-	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
-	return [params, requestBody, opts];
+	requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
+	return this.encryptBody(requestBody).then(function (requestBody) {
+		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function (headers) {
+			opts.headers = headers;
+			return [params, requestBody, opts];
+		})
+	});
 }
 
 function get (params, requestBody, opts) {
-	requestBody = this.encryptBody(requestBody);
-	return [params, requestBody, opts];
+	return this.encryptBody(requestBody).then(function (requestBody) {
+		return [params, requestBody, opts];
+	});
 }
 
 function destroy (params, requestBody, opts) {
-	requestBody = this.encryptBody(requestBody);
-	opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id);
-	return [params, requestBody, opts];
+	return this.encryptBody(requestBody).then(function (requestBody) {
+		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function (headers) {
+			opts.headers = headers;
+			return [params, requestBody, opts];
+		})
+	});
 }
 
-function getRequestHeaders (requestBody, privateKey, virgilCardId) {
+function getRequestHeaders (requestBody, privateKey, privateKeyPassword) {
 	var requestUUID = this.generateUUID();
 	var requestText = requestUUID + JSON.stringify(requestBody);
 
-	var headers = {
-		'X-VIRGIL-REQUEST-SIGN': this.signer.sign(requestText, privateKey).toString('base64'),
-		'X-VIRGIL-REQUEST-UUID': requestUUID
-	};
+	return this.crypto.signAsync(requestText, privateKey, privateKeyPassword).then(function (sign) {
+		return {
+			'X-VIRGIL-REQUEST-SIGN': sign.toString('base64'),
+			'X-VIRGIL-REQUEST-UUID': requestUUID,
+		}
+	});
 
 	return headers;
 }
 
 function encryptBody (requestBody) {
-	var cipher = new this.crypto.Cipher();
-	cipher.addKeyRecipient(PRIVATE_KEYS_SERVICE_APP_ID, PRIVATE_KEYS_SERVICE_PUBLIC_KEY);
-	return cipher.encrypt(JSON.stringify(requestBody)).toString('base64');
+	return this.crypto.encryptAsync(JSON.stringify(requestBody), PRIVATE_KEYS_SERVICE_APP_ID, PRIVATE_KEYS_SERVICE_PUBLIC_KEY)
+		.then(function (result) {
+			return result.toString('base64');
+		});
 }
 
 function transformResponse (res) {
