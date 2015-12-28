@@ -22,7 +22,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 			'X-VIRGIL-ACCESS-TOKEN': applicationToken
 		},
 
-		before: {
+		transformRequest: {
 			stash: stash,
 			get: get,
 			destroy: destroy
@@ -41,7 +41,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		},
 
 		errorHandler: errorHandler,
-		parse: parseResponse
+		transformResponse: transformResponse
 	});
 
 	apiClient.crypto = opts.crypto;
@@ -92,11 +92,7 @@ function encryptBody (requestBody) {
 	return cipher.encrypt(JSON.stringify(requestBody)).toString('base64');
 }
 
-function parseResponse (res) {
-	if (res.status === 404) {
-		throw new Error('Item not found');
-	}
-
+function transformResponse (res) {
 	var body = res.data;
 	if (body) {
 		if (body.public_key) {

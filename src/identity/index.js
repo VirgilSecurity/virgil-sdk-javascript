@@ -14,7 +14,7 @@ module.exports = function createAPIClient (opts) {
 			validate: 'post /validate'
 		},
 
-		body: {
+		transformRequest: {
 			verify: ['type', 'value'],
 			confirm: ['confirmation_code', 'action_id', 'token'],
 			validate: ['type', 'value', 'validation_token']

@@ -22,7 +22,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 			'X-VIRGIL-ACCESS-TOKEN': applicationToken
 		},
 
-		before: {
+		transformRequest: {
 			create: create,
 			trust: trust,
 			untrust: untrust
@@ -44,7 +44,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		},
 
 		errorHandler: errorHandler,
-		parse: parseResponse
+		transformResponse: transformResponse
 	});
 
 	apiClient.crypto = opts.crypto;
@@ -95,7 +95,7 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId) {
 	return headers;
 }
 
-function parseResponse (res) {
+function transformResponse (res) {
 	var body = res.data;
 
 	if (body) {
