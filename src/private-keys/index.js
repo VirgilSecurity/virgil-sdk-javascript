@@ -53,13 +53,12 @@ module.exports = function createAPIClient (applicationToken, opts) {
 }
 
 function stash (params, requestBody, opts) {
-	if (params.private_key) {
-		requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
-	}
-
+	requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
 	return this.encryptBody(requestBody).then(function (requestBody) {
-		opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.private_key_password);
-		return [params, requestBody, opts];
+		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function (headers) {
+			opts.headers = headers;
+			return [params, requestBody, opts];
+		})
 	});
 }
 
@@ -71,8 +70,10 @@ function get (params, requestBody, opts) {
 
 function destroy (params, requestBody, opts) {
 	return this.encryptBody(requestBody).then(function (requestBody) {
-		opts.headers = this.getRequestHeaders(requestBody, params.private_key, params.private_key_password);
-		return [params, requestBody, opts];
+		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function (headers) {
+			opts.headers = headers;
+			return [params, requestBody, opts];
+		})
 	});
 }
 
