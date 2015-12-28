@@ -17,7 +17,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 			'X-VIRGIL-ACCESS-TOKEN': applicationToken
 		},
 
-		before: {
+		transformRequest: {
 			getPublicKey: getPublicKey,
 		},
 
@@ -26,7 +26,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		},
 
 		errorHandler: errorHandler,
-		parse: parseResponse
+		transformResponse: transformResponse
 	});
 
 	apiClient.crypto = opts.crypto;
@@ -63,11 +63,7 @@ function getPublicKey (params, requestBody, opts) {
 	return [params, requestBody, opts];
 }
 
-function parseResponse (res) {
-	if (res.status === 404) {
-		throw new Error('Item not found');
-	}
-
+function transformResponse (res) {
 	var body = res.data;
 	if (body) {
 		if (body.public_key) {
