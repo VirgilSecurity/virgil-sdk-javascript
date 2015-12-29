@@ -45,17 +45,17 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	});
 
 	apiClient.crypto = opts.crypto;
-	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
+	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
 	apiClient.encryptBody = encryptBody;
 
 	return apiClient;
-}
+};
 
 function stash (params, requestBody, opts) {
 	requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
-	return this.encryptBody(requestBody).then(function (requestBody) {
-		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function (headers) {
+	return this.encryptBody(requestBody).then(function(requestBody) {
+		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function(headers) {
 			opts.headers = headers;
 			return [params, requestBody, opts];
 		})
@@ -63,14 +63,14 @@ function stash (params, requestBody, opts) {
 }
 
 function get (params, requestBody, opts) {
-	return this.encryptBody(requestBody).then(function (requestBody) {
+	return this.encryptBody(requestBody).then(function(requestBody) {
 		return [params, requestBody, opts];
 	});
 }
 
 function destroy (params, requestBody, opts) {
-	return this.encryptBody(requestBody).then(function (requestBody) {
-		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function (headers) {
+	return this.encryptBody(requestBody).then(function(requestBody) {
+		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function(headers) {
 			opts.headers = headers;
 			return [params, requestBody, opts];
 		})
@@ -81,19 +81,17 @@ function getRequestHeaders (requestBody, privateKey, privateKeyPassword) {
 	var requestUUID = this.generateUUID();
 	var requestText = requestUUID + JSON.stringify(requestBody);
 
-	return this.crypto.signAsync(requestText, privateKey, privateKeyPassword).then(function (sign) {
+	return this.crypto.signAsync(requestText, privateKey, privateKeyPassword).then(function(sign) {
 		return {
 			'X-VIRGIL-REQUEST-SIGN': sign.toString('base64'),
-			'X-VIRGIL-REQUEST-UUID': requestUUID,
+			'X-VIRGIL-REQUEST-UUID': requestUUID
 		}
 	});
-
-	return headers;
 }
 
 function encryptBody (requestBody) {
 	return this.crypto.encryptAsync(JSON.stringify(requestBody), PRIVATE_KEYS_SERVICE_APP_ID, PRIVATE_KEYS_SERVICE_PUBLIC_KEY)
-		.then(function (result) {
+		.then(function(result) {
 			return result.toString('base64');
 		});
 }

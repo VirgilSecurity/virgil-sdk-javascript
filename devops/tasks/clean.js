@@ -2,12 +2,8 @@ import gulp from 'gulp';
 import del from 'del';
 import { PATHS } from '../config';
 
-gulp.task('clean:tmp', (cb) => {
-	del([PATHS.tmp], cb);
-});
-
 gulp.task('clean:build', (cb) => {
 	del([PATHS.build], cb);
 });
 
-gulp.task('clean', ['clean:tmp', 'clean:build']);
+gulp.task('clean', ['clean:build']);

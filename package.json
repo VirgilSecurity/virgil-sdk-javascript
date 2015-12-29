@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Virgil Security Services SDK",
   "main": "index.js",
+  "browser": "dist/virgil-sdk.min.js",
   "scripts": {
     "test": "node tests",
     "build": "gulp build --debug && gulp build --production"
@@ -21,9 +22,11 @@
   "license": "BSD",
   "dependencies": {
     "apiapi": "^1.6.0",
+    "bowser": "^1.0.0",
+    "es6-error": "^2.0.2",
     "node-uuid": "^1.4.3",
-    "virgil-crypto": "^0.2.7",
-    "operative": "^0.4.4"
+    "operative": "^0.4.4",
+    "virgil-crypto": "^0.2.7"
   },
   "devDependencies": {
     "babel": "^5.8.21",

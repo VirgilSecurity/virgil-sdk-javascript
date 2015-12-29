@@ -6,7 +6,9 @@ import _ from 'lodash';
 
 export const fromRoot = pathJoin.bind(path, path.resolve(__dirname, '../'));
 
-export const PROJECT_INFO = packageJson;
+export const PATHS = {
+	build: fromRoot('dist')
+};
 
 export const ENVIRONMENTS = {
 	DEV: 'development',
@@ -17,23 +19,21 @@ const ARGV = yargs.argv;
 
 export const IS_DEBUG = !!ARGV.debug;
 export const IS_WATCH = !!ARGV.watch;
-export const IS_DEV = !!ARGV[ENVIRONMENTS.DEV];
-export const IS_PROD = !IS_DEV;
+export const IS_PROD = !!ARGV[ENVIRONMENTS.PROD];
+export const IS_DEV = !IS_PROD;
 
 export const BUNDLE_POSTFIX = `${IS_DEV ? 'dev' : 'min'}`;
 export const SDK_VERSION = packageJson.version;
 
-const WEBPACK_DEFINES = {
-	SDK_VERSION: JSON.stringify(SDK_VERSION),
-	IS_DEBUG: IS_DEBUG,
-	IS_DEV: IS_DEV,
-	IS_PROD: IS_PROD
-};
-
 export const WEBPACK_CLIENT = (() => {
 	let plugins = [
 		new webpack.optimize.OccurenceOrderPlugin(),
-		new DefinePlugin(WEBPACK_DEFINES)
+		new DefinePlugin({
+			SDK_VERSION: JSON.stringify(SDK_VERSION),
+			IS_DEBUG: IS_DEBUG,
+			IS_DEV: IS_DEV,
+			IS_PROD: IS_PROD
+		})
 	];
 
 	if (!IS_DEV) {
@@ -46,15 +46,17 @@ export const WEBPACK_CLIENT = (() => {
 
 	return {
 		entry: {
-			sdk: fromRoot('index.js'),
-			crypto: fromRoot('src/crypto/browser.js')
+			sdk: fromRoot('index.js')/*,
+			crypto: fromRoot('src/crypto/browser.js')*/
 		},
 
 		output: {
-			path: fromRoot('dist'),
+			path: PATHS.build,
 			filename: `virgil-[name].${BUNDLE_POSTFIX}.js`,
 			libraryTarget: 'umd'
 		},
+
+		target: 'web',
 
 		cache: IS_DEBUG,
 		debug: IS_DEBUG,
@@ -73,7 +75,10 @@ export const WEBPACK_CLIENT = (() => {
 
 		resolve: {
 			modulesDirectories: ['node_modules'],
-			extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
+			extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
+			alias: {
+				'virgil-crypto': './src/crypto/browser.js'
+			}
 		},
 
 		module: {
