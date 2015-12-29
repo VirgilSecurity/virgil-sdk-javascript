@@ -4,24 +4,37 @@ import 'babel-core/external-helpers';
 // workaround for error: `only one instance of babel/polyfill is allowed`
 // so, include the babel/polyfill into build, but load only single instance
 if (global && !global._babelPolyfill) {
-  require('babel/polyfill');
+	require('babel/polyfill');
 }
 
 import 'operative';
+import { Buffer } from 'buffer';
+window.Buffer = window.Buffer || Buffer;
 import VirgilCrypto from '../lib/crypto-module';
-import virgilEmscripten from 'raw!../lib/virgil-emscripten';
-import workerCrypto from 'raw!./worker-crypto-context';
+import {
+	bufferToByteArray,
+	stringToByteArray,
+	byteArrayToBuffer,
+	byteArrayToString,
+	toByteArray,
+	toBase64,
+	base64ToBuffer
+} from '../lib/crypto-utils';
 import KeysTypesEnum from './keys-types-enum';
 import _ from 'lodash';
 import browser from 'bowser';
 import { getErrorMessage, throwVirgilError, throwValidationError } from '../lib/crypto-errors';
+
+// raw resources
+import rawVirgilEmscripten from 'raw!../lib/virgil-emscripten';
+import rawWorkerCrypto from 'raw!./worker-crypto-context';
 
 export function blobScript (code) {
 	return URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
 }
 
 export function createWorkerCryptoFunc (func) {
-	return window.operative(func, [blobScript(virgilEmscripten), blobScript(workerCrypto)]);
+	return window.operative(func, [blobScript(rawVirgilEmscripten), blobScript(rawWorkerCrypto)]);
 }
 
 let isIE = () => browser.msie;
@@ -322,24 +335,20 @@ export class Crypto {
 	 * @returns {string} - base64 String!
 	 */
 	static encryptWithPassword (initialData, password = '', isEmbeddedContentInfo = true) {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'base64 String' });
-		}
-
 		let virgilCipher = new Crypto.VirgilCipher();
-		let encryptedDataBase64;
+		let encryptedDataBuffer;
 
 		try {
-			let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialData);
+			let dataByteArray = toByteArray(initialData);
 			let passwordByteArray;
 
 			if (password) {
-				passwordByteArray = Crypto.VirgilByteArrayFromUTF8(password);
+				passwordByteArray = toByteArray(password);
 				virgilCipher.addPasswordRecipient(passwordByteArray);
 			}
 
 			let encryptedDataByteArray = virgilCipher.encrypt(dataByteArray, isEmbeddedContentInfo);
-			encryptedDataBase64 = Crypto.VirgilByteArrayToBase64(encryptedDataByteArray);
+			encryptedDataBuffer = Buffer(encryptedDataByteArray.data());
 
 			// cleanup memory to avoid memory leaks
 			dataByteArray.delete();
@@ -352,7 +361,7 @@ export class Crypto {
 			virgilCipher.delete();
 		}
 
-		return encryptedDataBase64;
+		return encryptedDataBuffer;
 	}
 
 	/**
@@ -557,7 +566,7 @@ export class Crypto {
 	/**
 	 * Decrypt data using private key and using workers
 	 *
-	 * @param initialEncryptedData {string} - base64 String!
+	 * @param initialEncryptedData {Buffer}
 	 * @param recipientId {string}
 	 * @param privateKeyBase64 {string} - base64 String!
 	 * @param [privateKeyPassword] {string}
@@ -565,10 +574,6 @@ export class Crypto {
 	 * @private
 	 */
 	static _decryptWithKeyAsync (initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword = '') {
-		if (!_.isString(initialEncryptedData)) {
-			throwValidationError('00001', { arg: 'initialEncryptedData', type: 'base64 String' });
-		}
-
 		if (!_.isString(recipientId)) {
 			throwValidationError('00001', { arg: 'recipientId', type: 'String' });
 		}
@@ -578,31 +583,33 @@ export class Crypto {
 		}
 
 		let worker = createWorkerCryptoFunc(function(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword) {
-			let deferred = this.deferred();
-			let Crypto = this.Crypto;
-			let virgilCipher = new Crypto.VirgilCipher();
-
-			try {
-				let recipientIdByteArray = Crypto.VirgilByteArrayFromUTF8(recipientId);
-				let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialEncryptedData);
-				let privateKeyByteArray = Crypto.VirgilByteArrayFromBase64(privateKeyBase64);
-				let privateKeyPasswordByteArray = Crypto.VirgilByteArrayFromUTF8(privateKeyPassword);
-				let decryptedDataByteArray = virgilCipher.decryptWithKey(dataByteArray, recipientIdByteArray, privateKeyByteArray, privateKeyPasswordByteArray);
-				let decryptedDataBase64 = Crypto.VirgilByteArrayToBase64(decryptedDataByteArray);
-
-				// cleanup memory to avoid memory leaks
-				recipientIdByteArray.delete();
-				dataByteArray.delete();
-				privateKeyByteArray.delete();
-				decryptedDataByteArray.delete();
-				privateKeyPasswordByteArray.delete();
-
-				deferred.resolve(decryptedDataBase64);
-			} catch (e) {
-				deferred.reject(e);
-			} finally {
-				virgilCipher.delete();
-			}
+			console.log(bufferToByteArray);
+			debugger;
+			//let deferred = this.deferred();
+			//let Crypto = this.Crypto;
+			//let virgilCipher = new Crypto.VirgilCipher();
+			//
+			//try {
+			//	let recipientIdByteArray = Crypto.VirgilByteArrayFromUTF8(recipientId);
+			//	let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialEncryptedData);
+			//	let privateKeyByteArray = Crypto.VirgilByteArrayFromBase64(privateKeyBase64);
+			//	let privateKeyPasswordByteArray = Crypto.VirgilByteArrayFromUTF8(privateKeyPassword);
+			//	let decryptedDataByteArray = virgilCipher.decryptWithKey(dataByteArray, recipientIdByteArray, privateKeyByteArray, privateKeyPasswordByteArray);
+			//	let decryptedDataBase64 = Crypto.VirgilByteArrayToBase64(decryptedDataByteArray);
+			//
+			//	// cleanup memory to avoid memory leaks
+			//	recipientIdByteArray.delete();
+			//	dataByteArray.delete();
+			//	privateKeyByteArray.delete();
+			//	decryptedDataByteArray.delete();
+			//	privateKeyPasswordByteArray.delete();
+			//
+			//	deferred.resolve(decryptedDataBase64);
+			//} catch (e) {
+			//	deferred.reject(e);
+			//} finally {
+			//	virgilCipher.delete();
+			//}
 		});
 
 		return worker(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword).catch(() => {
@@ -618,18 +625,14 @@ export class Crypto {
 	 * @returns {string} - base64 String!
 	 */
 	static decryptWithPassword (initialEncryptedData, password = '') {
-		if (!_.isString(initialEncryptedData)) {
-			throwValidationError('00001', { arg: 'initialEncryptedData', type: 'base64 String' });
-		}
-
 		let virgilCipher = new Crypto.VirgilCipher();
-		let decryptedData;
+		let decryptedDataBuffer;
 
 		try {
-			let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialEncryptedData);
-			let passwordByteArray = Crypto.VirgilByteArrayFromUTF8(password);
+			let dataByteArray = toByteArray(initialEncryptedData);
+			let passwordByteArray = toByteArray(password);
 			let decryptedDataByteArray = virgilCipher.decryptWithPassword(dataByteArray, passwordByteArray);
-			decryptedData = Crypto.VirgilByteArrayToBase64(decryptedDataByteArray);
+			decryptedDataBuffer = byteArrayToBuffer(decryptedDataByteArray);
 
 			// cleanup memory to avoid memory leaks
 			dataByteArray.delete();
@@ -641,7 +644,7 @@ export class Crypto {
 			virgilCipher.delete();
 		}
 
-		return decryptedData;
+		return decryptedDataBuffer;
 	}
 
 	/**
@@ -661,7 +664,11 @@ export class Crypto {
 				}
 			});
 		} else {
-			return Crypto._decryptWithPasswordAsync(initialEncryptedData, password);
+			// convert to base64 to support base64 based interface and avoid redundant blobs in workers
+			return Crypto._decryptWithPasswordAsync(toBase64(initialEncryptedData), password).then((result) => {
+				// convert the base64 response to Buffer for support new interface
+				return base64ToBuffer(result);
+			});
 		}
 	}
 
@@ -674,10 +681,6 @@ export class Crypto {
 	 * @private
 	 */
 	static _decryptWithPasswordAsync (initialEncryptedData, password = '') {
-		if (!_.isString(initialEncryptedData)) {
-			throwValidationError('00001', { arg: 'initialEncryptedData', type: 'base64 String' });
-		}
-
 		let worker = createWorkerCryptoFunc(function(initialEncryptedData, password) {
 			let deferred = this.deferred();
 			let Crypto = this.Crypto;
