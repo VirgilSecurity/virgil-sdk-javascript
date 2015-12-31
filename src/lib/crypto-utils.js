@@ -40,3 +40,5 @@ export const toByteArray = (data) => {
 export const toBase64 = (data) => VirgilCrypto.VirgilBase64.encode(toByteArray(data));
 
 export const base64ToBuffer = (data) => byteArrayToBuffer(VirgilCrypto.VirgilBase64.decode(data));
+
+export const stringToBuffer = (data) => byteArrayToBuffer(toByteArray(data));

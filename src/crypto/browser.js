@@ -11,15 +11,7 @@ import 'operative';
 import { Buffer } from 'buffer';
 window.Buffer = window.Buffer || Buffer;
 import VirgilCrypto from '../lib/crypto-module';
-import {
-	bufferToByteArray,
-	stringToByteArray,
-	byteArrayToBuffer,
-	byteArrayToString,
-	toByteArray,
-	toBase64,
-	base64ToBuffer
-} from '../lib/crypto-utils';
+import * as CryptoUtils from '../lib/crypto-utils';
 import KeysTypesEnum from './keys-types-enum';
 import _ from 'lodash';
 import browser from 'bowser';
@@ -42,6 +34,9 @@ let isIE = () => browser.msie;
 export class Crypto {
 
 	static Version = SDK_VERSION;
+
+	static KeysTypesEnum = KeysTypesEnum;
+
 	static VirgilCipher = VirgilCrypto.VirgilCipher;
 	static VirgilSigner = VirgilCrypto.VirgilSigner;
 	static VirgilKeyPair = VirgilCrypto.VirgilKeyPair;
@@ -49,36 +44,42 @@ export class Crypto {
 	static VirgilByteArrayToBase64 = VirgilCrypto.VirgilBase64.encode;
 	static VirgilByteArrayFromBase64 = VirgilCrypto.VirgilBase64.decode;
 	static VirgilByteArrayFromUTF8 = VirgilCrypto.VirgilByteArray.fromUTF8;
-	static KeysTypesEnum = KeysTypesEnum;
+
+	static toByteArray: CryptoUtils.toByteArray;
+	static byteArrayToBuffer: CryptoUtils.byteArrayToBuffer;
+	static byteArrayToString: CryptoUtils.byteArrayToString;
+	static toBase64: CryptoUtils.toBase64;
+	static base64ToBuffer: CryptoUtils.base64ToBuffer;
+	static stringToBuffer: CryptoUtils.stringToBuffer;
 
 	/**
 	 * Encrypt data using public key
 	 *
-	 * @param initialData {string} - base64 String!
+	 * @param initialData {string|Buffer}
 	 * @param recipientId {string}
 	 * @param publicKey {string}
-	 * @returns {string} - base64 String!
+	 * @returns {Buffer}
 	 */
 	static encryptWithKey (initialData, recipientId, publicKey) {
-		if (!_.isString(recipientId)) {
-			throwValidationError('00001', { arg: 'recipientId', type: 'String' });
-		}
-
-		if (!_.isString(publicKey)) {
-			throwValidationError('00001', { arg: 'publicKey', type: 'String' });
-		}
+		//if (!_.isString(recipientId)) {
+		//	throwValidationError('00001', { arg: 'recipientId', type: 'String' });
+		//}
+        //
+		//if (!_.isString(publicKey)) {
+		//	throwValidationError('00001', { arg: 'publicKey', type: 'String' });
+		//}
 
 		let virgilCipher = new Crypto.VirgilCipher();
-		let encryptedDataBase64;
+		let encryptedDataBuffer;
 
 		try {
-			let recipientIdByteArray = Crypto.VirgilByteArrayFromUTF8(recipientId);
-			let dataByteArray = Crypto.VirgilByteArrayFromBase64(btoa(initialData));
-			let publicKeyByteArray = Crypto.VirgilByteArrayFromUTF8(publicKey);
+			let recipientIdByteArray = CryptoUtils.toByteArray(recipientId);
+			let dataByteArray = CryptoUtils.toByteArray(initialData);
+			let publicKeyByteArray = CryptoUtils.toByteArray(publicKey);
 
 			virgilCipher.addKeyRecipient(recipientIdByteArray, publicKeyByteArray);
 			let encryptedDataByteArray = virgilCipher.encrypt(dataByteArray, true);
-			encryptedDataBase64 = Crypto.VirgilByteArrayToBase64(encryptedDataByteArray);
+			encryptedDataBuffer = CryptoUtils.byteArrayToBuffer(encryptedDataByteArray);
 
 			// cleanup memory to avoid memory leaks
 			recipientIdByteArray.delete();
@@ -90,13 +91,13 @@ export class Crypto {
 			virgilCipher.delete();
 		}
 
-		return encryptedDataBase64;
+		return encryptedDataBuffer;
 	}
 
 	/**
 	 * Encrypt data using public key and using workers
 	 *
-	 * @param initialData {string} - base64 String!
+	 * @param initialData {string|Buffer}
 	 * @param recipientId {string}
 	 * @param publicKey {string}
 	 * @returns {Promise}
@@ -118,24 +119,20 @@ export class Crypto {
 	/**
 	 * Encrypt data using public key and using workers
 	 *
-	 * @param initialData {string} - base64 String!
+	 * @param initialData {string|Buffer}
 	 * @param recipientId {string}
 	 * @param publicKey {string}
 	 * @returns {Promise}
 	 * @private
 	 */
 	static _encryptWithKeyAsync (initialData, recipientId, publicKey) {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'String' });
-		}
-
-		if (!_.isString(recipientId)) {
-			throwValidationError('00001', { arg: 'recipientId', type: 'String' });
-		}
-
-		if (!_.isString(publicKey)) {
-			throwValidationError('00001', { arg: 'publicKey', type: 'String' });
-		}
+		//if (!_.isString(recipientId)) {
+		//	throwValidationError('00001', { arg: 'recipientId', type: 'String' });
+		//}
+        //
+		//if (!_.isString(publicKey)) {
+		//	throwValidationError('00001', { arg: 'publicKey', type: 'String' });
+		//}
 
 		let worker = createWorkerCryptoFunc(function(initialData, recipientId, publicKey) {
 			let deferred = this.deferred();
@@ -164,51 +161,53 @@ export class Crypto {
 			}
 		});
 
-		return worker(initialData, recipientId, publicKey).catch(() => {
-			return getErrorMessage(['crypto', '90001'], { initialData: initialData, key: publicKey });
-		});
+		return worker(CryptoUtils.toBase64(initialData), recipientId, publicKey).then(
+			(result) => {
+				// convert the base64 response to Buffer for support new interface
+				return CryptoUtils.base64ToBuffer(result);
+			},
+			() => {
+				return getErrorMessage(['crypto', '90001'], { initialData: initialData, key: publicKey });
+			}
+		);
 	}
 
 	/**
 	 * Encrypt data using public key
 	 *
-	 * @param initialData {string} - base64 String!
-	 * @param recipients {array}
-	 * @returns {string} - base64 String!
+	 * @param initialData {string|Buffer}
+	 * @param recipients {Array}
+	 * @returns {Buffer}
 	 */
 	static encryptWithKeyMultiRecipients (initialData, recipients) {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'String' });
-		}
-
-		if (!_.isArray(recipients)) {
-			throwValidationError('00001', { arg: 'recipients', type: 'Array' });
-		}
-
-		if (_.isArray(recipients) && recipients.length === 0) {
-			throwValidationError('00002', { arg: 'recipients', type: 'should contain at least one item' });
-		}
-
-		_.each(recipients, (recipient) => {
-			if (!_.isString(recipient.recipientId)) {
-				throwValidationError('00001', { arg: 'recipientId', type: 'String' });
-			}
-
-			if (!_.isString(recipient.publicKey)) {
-				throwValidationError('00001', { arg: 'publicKey', type: 'String' });
-			}
-		});
+		//if (!_.isArray(recipients)) {
+		//	throwValidationError('00001', { arg: 'recipients', type: 'Array' });
+		//}
+        //
+		//if (_.isArray(recipients) && recipients.length === 0) {
+		//	throwValidationError('00002', { arg: 'recipients', type: 'should contain at least one item' });
+		//}
+        //
+		//_.each(recipients, (recipient) => {
+		//	if (!_.isString(recipient.recipientId)) {
+		//		throwValidationError('00001', { arg: 'recipientId', type: 'String' });
+		//	}
+        //
+		//	if (!_.isString(recipient.publicKey)) {
+		//		throwValidationError('00001', { arg: 'publicKey', type: 'String' });
+		//	}
+		//});
 
 		let virgilCipher = new Crypto.VirgilCipher();
-		let encryptedDataBase64;
+		let encryptedDataBuffer;
 		let recipientIdsByteArrays = [];
 
 		try {
-			let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialData);
+			let dataByteArray = CryptoUtils.toByteArray(initialData);
 
 			_.each(recipients, (recipient) => {
-				let recipientIdByteArray = Crypto.VirgilByteArrayFromUTF8(recipient.recipientId);
-				let publicKeyByteArray = Crypto.VirgilByteArrayFromUTF8(recipient.publicKey);
+				let recipientIdByteArray = CryptoUtils.toByteArray(recipient.recipientId);
+				let publicKeyByteArray = CryptoUtils.toByteArray(recipient.publicKey);
 
 				virgilCipher.addKeyRecipient(recipientIdByteArray, publicKeyByteArray);
 
@@ -216,7 +215,7 @@ export class Crypto {
 			});
 
 			let encryptedDataByteArray = virgilCipher.encrypt(dataByteArray, true);
-			encryptedDataBase64 = Crypto.VirgilByteArrayToBase64(encryptedDataByteArray);
+			encryptedDataBuffer = CryptoUtils.byteArrayToBuffer(encryptedDataByteArray);
 
 			// cleanup memory to avoid memory leaks
 			dataByteArray.delete();
@@ -228,14 +227,14 @@ export class Crypto {
 			virgilCipher.delete();
 		}
 
-		return encryptedDataBase64;
+		return encryptedDataBuffer;
 	}
 
 	/**
 	 * Encrypt data using public key and using workers
 	 *
-	 * @param initialData {string} - base64 String!
-	 * @param recipients {array}
+	 * @param initialData {string|Buffer}
+	 * @param recipients {Array}
 	 * @returns {Promise}
 	 */
 	static encryptWithKeyMultiRecipientsAsync (initialData, recipients) {
@@ -255,33 +254,29 @@ export class Crypto {
 	/**
 	 * Encrypt data using public key and using workers
 	 *
-	 * @param initialData {string} - base64 String!
-	 * @param recipients {array}
+	 * @param initialData {string|Buffer}
+	 * @param recipients {Array}
 	 * @returns {Promise}
 	 * @private
 	 */
 	static _encryptWithKeyMultiRecipientsAsync (initialData, recipients) {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'String' });
-		}
-
-		if (!_.isArray(recipients)) {
-			throwValidationError('00001', { arg: 'recipients', type: 'Array' });
-		}
-
-		if (_.isArray(recipients) && recipients.length === 0) {
-			throwValidationError('00002', { arg: 'recipients', type: 'should contain at least one item' });
-		}
-
-		_.each(recipients, (recipient) => {
-			if (!_.isString(recipient.recipientId)) {
-				throwValidationError('00001', { arg: 'recipientId', type: 'String' });
-			}
-
-			if (!_.isString(recipient.publicKey)) {
-				throwValidationError('00001', { arg: 'publicKey', type: 'String' });
-			}
-		});
+		//if (!_.isArray(recipients)) {
+		//	throwValidationError('00001', { arg: 'recipients', type: 'Array' });
+		//}
+        //
+		//if (_.isArray(recipients) && recipients.length === 0) {
+		//	throwValidationError('00002', { arg: 'recipients', type: 'should contain at least one item' });
+		//}
+        //
+		//_.each(recipients, (recipient) => {
+		//	if (!_.isString(recipient.recipientId)) {
+		//		throwValidationError('00001', { arg: 'recipientId', type: 'String' });
+		//	}
+        //
+		//	if (!_.isString(recipient.publicKey)) {
+		//		throwValidationError('00001', { arg: 'publicKey', type: 'String' });
+		//	}
+		//});
 
 		let worker = createWorkerCryptoFunc(function(initialData, recipients) {
 			let deferred = this.deferred();
@@ -321,34 +316,40 @@ export class Crypto {
 			}
 		});
 
-		return worker(initialData, recipients).catch(() => {
-			return getErrorMessage(['crypto', '90008'], { initialData: initialData, recipients: recipients });
-		});
+		return worker(CryptoUtils.toBase64(initialData), recipients).then(
+			(result) => {
+				// convert the base64 response to Buffer for support new interface
+				return CryptoUtils.base64ToBuffer(result);
+			},
+			() => {
+				return getErrorMessage(['crypto', '90008'], { initialData: initialData, recipients: recipients });
+			}
+		);
 	}
 
 	/**
 	 * Encrypt data using password
 	 *
-	 * @param initialData {string} - base64 String!
+	 * @param initialData {string|Buffer}
 	 * @param [password = ''] {string}
 	 * @param [isEmbeddedContentInfo = true] {boolean}
-	 * @returns {string} - base64 String!
+	 * @returns {Buffer}
 	 */
 	static encryptWithPassword (initialData, password = '', isEmbeddedContentInfo = true) {
 		let virgilCipher = new Crypto.VirgilCipher();
 		let encryptedDataBuffer;
 
 		try {
-			let dataByteArray = toByteArray(initialData);
+			let dataByteArray = CryptoUtils.toByteArray(initialData);
 			let passwordByteArray;
 
 			if (password) {
-				passwordByteArray = toByteArray(password);
+				passwordByteArray = CryptoUtils.toByteArray(password);
 				virgilCipher.addPasswordRecipient(passwordByteArray);
 			}
 
 			let encryptedDataByteArray = virgilCipher.encrypt(dataByteArray, isEmbeddedContentInfo);
-			encryptedDataBuffer = Buffer(encryptedDataByteArray.data());
+			encryptedDataBuffer = CryptoUtils.byteArrayToBuffer(encryptedDataByteArray);
 
 			// cleanup memory to avoid memory leaks
 			dataByteArray.delete();
@@ -367,7 +368,7 @@ export class Crypto {
 	/**
 	 * Encrypt data using password and using workers
 	 *
-	 * @param initialData {string} - base64 String!
+	 * @param initialData {string|Buffer}
 	 * @param [password = ''] {string}
 	 * @param [isEmbeddedContentInfo = true] {boolean}
 	 * @returns {Promise}
@@ -389,17 +390,13 @@ export class Crypto {
 	/**
 	 * Encrypt data using password and using workers
 	 *
-	 * @param initialData {string} - base64 String!
+	 * @param initialData {string|Buffer}
 	 * @param [password = ''] {string}
 	 * @param [isEmbeddedContentInfo = true] {boolean}
 	 * @returns {Promise}
 	 * @private
 	 */
 	static _encryptWithPasswordAsync (initialData, password = '', isEmbeddedContentInfo = true) {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'base64 String' });
-		}
-
 		let worker = createWorkerCryptoFunc(function(initialData, password, isEmbeddedContentInfo) {
 			let deferred = this.deferred();
 			let Crypto = this.Crypto;
@@ -431,19 +428,25 @@ export class Crypto {
 			}
 		});
 
-		return worker(initialData, password, isEmbeddedContentInfo).catch(() => {
-			return getErrorMessage(['crypto', '90003'], { initialData: initialData, password: password });
-		});
+		return worker(CryptoUtils.toBase64(initialData), password, isEmbeddedContentInfo).then(
+			(result) => {
+				// convert the base64 response to Buffer for support new interface
+				return CryptoUtils.base64ToBuffer(result);
+			},
+			() => {
+				return getErrorMessage(['crypto', '90003'], { initialData: initialData, password: password });
+			}
+		);
 	}
 
 	/**
 	 * Encrypt data
 	 *
-	 * @param initialData string - base64 string!
-	 * @param recipient {string|array}
+	 * @param initialData {string|Buffer}
+	 * @param recipient {string|Array}
 	 * @param [publicKey] {string}
 	 *
-	 * @returns {string} - base64 string!
+	 * @returns {Buffer}
 	 */
 	static encrypt (initialData, recipient, publicKey) {
 		let encryptedData;
@@ -467,8 +470,8 @@ export class Crypto {
 	/**
 	 * Encrypt data async
 	 *
-	 * @param initialData string - base64 string!
-	 * @param recipient {string|array}
+	 * @param initialData {string|Buffer}
+	 * @param recipient {string|Array}
 	 * @param [publicKey] {string}
 	 *
 	 * @returns {Promise}
@@ -495,35 +498,31 @@ export class Crypto {
 	/**
 	 * Decrypt data using private key
 	 *
-	 * @param initialEncryptedData {string} - base64 String!
+	 * @param initialEncryptedData {string|Buffer}
 	 * @param recipientId {string}
-	 * @param privateKeyBase64 {string} - base64 String!
+	 * @param privateKey {string|Buffer}
 	 * @param [privateKeyPassword] {string}
-	 * @returns {string} - base64 String!
+	 * @returns {Buffer}
 	 */
-	static decryptWithKey (initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword = '') {
-		if (!_.isString(initialEncryptedData)) {
-			throwValidationError('00001', { arg: 'initialEncryptedData', type: 'base64 String' });
-		}
-
-		if (!_.isString(recipientId)) {
-			throwValidationError('00001', { arg: 'recipientId', type: 'String' });
-		}
-
-		if (!_.isString(privateKeyBase64)) {
-			throwValidationError('00001', { arg: 'privateKeyBase64', type: 'base64 String' });
-		}
+	static decryptWithKey (initialEncryptedData, recipientId, privateKey, privateKeyPassword = '') {
+		//if (!_.isString(recipientId)) {
+		//	throwValidationError('00001', { arg: 'recipientId', type: 'String' });
+		//}
+        //
+		//if (!_.isString(privateKey)) {
+		//	throwValidationError('00001', { arg: 'privateKeyBase64', type: 'base64 String' });
+		//}
 
 		let virgilCipher = new Crypto.VirgilCipher();
-		let decryptedDataBase64;
+		let decryptedDataBuffer;
 
 		try {
-			let recipientIdByteArray = Crypto.VirgilByteArrayFromUTF8(recipientId);
-			let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialEncryptedData);
-			let privateKeyByteArray = Crypto.VirgilByteArrayFromBase64(privateKeyBase64);
-			let privateKeyPasswordByteArray = Crypto.VirgilByteArrayFromUTF8(privateKeyPassword);
+			let recipientIdByteArray = CryptoUtils.toByteArray(recipientId);
+			let dataByteArray = CryptoUtils.toByteArray(initialEncryptedData);
+			let privateKeyByteArray = CryptoUtils.toByteArray(privateKey);
+			let privateKeyPasswordByteArray = CryptoUtils.toByteArray(privateKeyPassword);
 			let decryptedDataByteArray = virgilCipher.decryptWithKey(dataByteArray, recipientIdByteArray, privateKeyByteArray, privateKeyPasswordByteArray);
-			decryptedDataBase64 = Crypto.VirgilByteArrayToBase64(decryptedDataByteArray);
+			decryptedDataBuffer = CryptoUtils.byteArrayToBuffer(decryptedDataByteArray);
 
 			// cleanup memory to avoid memory leaks
 			recipientIdByteArray.delete();
@@ -532,34 +531,34 @@ export class Crypto {
 			decryptedDataByteArray.delete();
 			privateKeyPasswordByteArray.delete();
 		} catch (e) {
-			throwVirgilError('90002', { initialData: initialEncryptedData, key: privateKeyBase64 });
+			throwVirgilError('90002', { initialData: initialEncryptedData, key: privateKey });
 		} finally {
 			virgilCipher.delete();
 		}
 
-		return decryptedDataBase64;
+		return decryptedDataBuffer;
 	}
 
 	/**
 	 * Decrypt data using private key and using workers
 	 *
-	 * @param initialEncryptedData {string} - base64 String!
+	 * @param initialEncryptedData {Buffer}
 	 * @param recipientId {string}
-	 * @param privateKeyBase64 {string} - base64 String!
+	 * @param privateKey {string|Buffer}
 	 * @param [privateKeyPassword] {string}
 	 * @returns {Promise}
 	 */
-	static decryptWithKeyAsync (initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword) {
+	static decryptWithKeyAsync (initialEncryptedData, recipientId, privateKey, privateKeyPassword) {
 		if (isIE()) {
 			return new Promise((resolve, reject) => {
 				try {
-					resolve(Crypto.decryptWithKey(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword));
+					resolve(Crypto.decryptWithKey(initialEncryptedData, recipientId, privateKey, privateKeyPassword));
 				} catch (e) {
 					reject(e.message);
 				}
 			});
 		} else {
-			return Crypto._decryptWithKeyAsync(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword);
+			return Crypto._decryptWithKeyAsync(initialEncryptedData, recipientId, privateKey, privateKeyPassword);
 		}
 	}
 
@@ -568,71 +567,71 @@ export class Crypto {
 	 *
 	 * @param initialEncryptedData {Buffer}
 	 * @param recipientId {string}
-	 * @param privateKeyBase64 {string} - base64 String!
+	 * @param privateKey {string|Buffer}
 	 * @param [privateKeyPassword] {string}
 	 * @returns {Promise}
 	 * @private
 	 */
-	static _decryptWithKeyAsync (initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword = '') {
-		if (!_.isString(recipientId)) {
-			throwValidationError('00001', { arg: 'recipientId', type: 'String' });
-		}
-
-		if (!_.isString(privateKeyBase64)) {
-			throwValidationError('00001', { arg: 'privateKeyBase64', type: 'base64 String' });
-		}
+	static _decryptWithKeyAsync (initialEncryptedData, recipientId, privateKey, privateKeyPassword = '') {
+		//if (!_.isString(recipientId)) {
+		//	throwValidationError('00001', { arg: 'recipientId', type: 'String' });
+		//}
 
 		let worker = createWorkerCryptoFunc(function(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword) {
-			console.log(bufferToByteArray);
-			debugger;
-			//let deferred = this.deferred();
-			//let Crypto = this.Crypto;
-			//let virgilCipher = new Crypto.VirgilCipher();
-			//
-			//try {
-			//	let recipientIdByteArray = Crypto.VirgilByteArrayFromUTF8(recipientId);
-			//	let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialEncryptedData);
-			//	let privateKeyByteArray = Crypto.VirgilByteArrayFromBase64(privateKeyBase64);
-			//	let privateKeyPasswordByteArray = Crypto.VirgilByteArrayFromUTF8(privateKeyPassword);
-			//	let decryptedDataByteArray = virgilCipher.decryptWithKey(dataByteArray, recipientIdByteArray, privateKeyByteArray, privateKeyPasswordByteArray);
-			//	let decryptedDataBase64 = Crypto.VirgilByteArrayToBase64(decryptedDataByteArray);
-			//
-			//	// cleanup memory to avoid memory leaks
-			//	recipientIdByteArray.delete();
-			//	dataByteArray.delete();
-			//	privateKeyByteArray.delete();
-			//	decryptedDataByteArray.delete();
-			//	privateKeyPasswordByteArray.delete();
-			//
-			//	deferred.resolve(decryptedDataBase64);
-			//} catch (e) {
-			//	deferred.reject(e);
-			//} finally {
-			//	virgilCipher.delete();
-			//}
+			let deferred = this.deferred();
+			let Crypto = this.Crypto;
+			let virgilCipher = new Crypto.VirgilCipher();
+
+			try {
+				let recipientIdByteArray = Crypto.VirgilByteArrayFromUTF8(recipientId);
+				let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialEncryptedData);
+				let privateKeyByteArray = Crypto.VirgilByteArrayFromBase64(privateKeyBase64);
+				let privateKeyPasswordByteArray = Crypto.VirgilByteArrayFromUTF8(privateKeyPassword);
+				let decryptedDataByteArray = virgilCipher.decryptWithKey(dataByteArray, recipientIdByteArray, privateKeyByteArray, privateKeyPasswordByteArray);
+				let decryptedDataBase64 = Crypto.VirgilByteArrayToBase64(decryptedDataByteArray);
+
+				// cleanup memory to avoid memory leaks
+				recipientIdByteArray.delete();
+				dataByteArray.delete();
+				privateKeyByteArray.delete();
+				decryptedDataByteArray.delete();
+				privateKeyPasswordByteArray.delete();
+
+				deferred.resolve(decryptedDataBase64);
+			} catch (e) {
+				deferred.reject(e);
+			} finally {
+				virgilCipher.delete();
+			}
 		});
 
-		return worker(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword).catch(() => {
-			return getErrorMessage(['crypto', '90002'], { initialData: initialEncryptedData, key: privateKeyBase64 });
-		});
+		return worker(CryptoUtils.toBase64(initialEncryptedData), recipientId, CryptoUtils.toBase64(privateKey), privateKeyPassword).then(
+			(result) => {
+				// convert the base64 response to Buffer for support new interface
+				return CryptoUtils.base64ToBuffer(result);
+			},
+			() => {
+				return getErrorMessage(['crypto', '90002'], { initialData: initialEncryptedData, key: privateKey });
+			}
+		);
 	}
 
 	/**
 	 * Decrypt data using password
 	 *
-	 * @param initialEncryptedData {string}
+	 * @param initialEncryptedData {Buffer}
 	 * @param [password = ''] {string}
-	 * @returns {string} - base64 String!
+	 * @returns {Buffer}
 	 */
 	static decryptWithPassword (initialEncryptedData, password = '') {
 		let virgilCipher = new Crypto.VirgilCipher();
 		let decryptedDataBuffer;
 
 		try {
-			let dataByteArray = toByteArray(initialEncryptedData);
-			let passwordByteArray = toByteArray(password);
+			let dataByteArray = CryptoUtils.toByteArray(initialEncryptedData);
+			let passwordByteArray = CryptoUtils.toByteArray(password);
 			let decryptedDataByteArray = virgilCipher.decryptWithPassword(dataByteArray, passwordByteArray);
-			decryptedDataBuffer = byteArrayToBuffer(decryptedDataByteArray);
+			decryptedDataBuffer = CryptoUtils.byteArrayToBuffer(decryptedDataByteArray);
 
 			// cleanup memory to avoid memory leaks
 			dataByteArray.delete();
@@ -650,7 +649,7 @@ export class Crypto {
 	/**
 	 * Decrypt data using password and using workers
 	 *
-	 * @param initialEncryptedData {string}
+	 * @param initialEncryptedData {Buffer}
 	 * @param [password = ''] {string}
 	 * @returns {Promise}
 	 */
@@ -664,18 +663,14 @@ export class Crypto {
 				}
 			});
 		} else {
-			// convert to base64 to support base64 based interface and avoid redundant blobs in workers
-			return Crypto._decryptWithPasswordAsync(toBase64(initialEncryptedData), password).then((result) => {
-				// convert the base64 response to Buffer for support new interface
-				return base64ToBuffer(result);
-			});
+			return Crypto._decryptWithPasswordAsync(initialEncryptedData, password);
 		}
 	}
 
 	/**
 	 * Decrypt data using password and using workers
 	 *
-	 * @param initialEncryptedData {string}
+	 * @param initialEncryptedData {Buffer}
 	 * @param [password = ''] {string}
 	 * @returns {Promise}
 	 * @private
@@ -705,21 +700,27 @@ export class Crypto {
 			}
 		});
 
-		return worker(initialEncryptedData, password).catch(() => {
-			return getErrorMessage(['crypto', '90004'], { initialData: initialEncryptedData, password: password });
-		});
+		return worker(CryptoUtils.toBase64(initialEncryptedData), password).then(
+			(result) => {
+				// convert the base64 response to Buffer for support new interface
+				return CryptoUtils.base64ToBuffer(result);
+			},
+			() => {
+				return getErrorMessage(['crypto', '90004'], { initialData: initialEncryptedData, password: password });
+			}
+		);
 	}
 
 	/**
 	 * Decrypt data
 	 *
-	 * @param initialEncryptedData {string} - base64 String!
+	 * @param initialEncryptedData {Buffer}
 	 * @param recipientId {string}
-	 * @param [privateKeyBase64] {string} - base64 String!
-	 * @param [privateKeyPassword] {string}
-	 * @returns {string} - base64 String!
+	 * @param [privateKey] {string|Buffer}
+	 * @param [privateKeyPassword = ''] {string}
+	 * @returns {Buffer}
 	 */
-	static decrypt (initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword) {
+	static decrypt (initialEncryptedData, recipientId, privateKey, privateKeyPassword = '') {
 		let decryptedData;
 
 		if (arguments.length === 2) {
@@ -727,7 +728,7 @@ export class Crypto {
 
 			decryptedData = Crypto.decryptWithPassword(initialEncryptedData, password)
 		} else {
-			decryptedData = Crypto.decryptWithKey(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword)
+			decryptedData = Crypto.decryptWithKey(initialEncryptedData, recipientId, privateKey, privateKeyPassword)
 		}
 
 		return decryptedData;
@@ -736,13 +737,13 @@ export class Crypto {
 	/**
 	 * Decrypt data async
 	 *
-	 * @param initialEncryptedData {string} - base64 String!
+	 * @param initialEncryptedData {string|Buffer}
 	 * @param recipientId {string}
-	 * @param [privateKeyBase64] {string} - base64 String!
-	 * @param [privateKeyPassword] {string}
+	 * @param [privateKey] {string|Buffer}
+	 * @param [privateKeyPassword = ''] {string}
 	 * @returns {Promise}
 	 */
-	static decryptAsync (initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword) {
+	static decryptAsync (initialEncryptedData, recipientId, privateKey, privateKeyPassword = '') {
 		let decryptedDataPromise;
 
 		if (arguments.length === 2) {
@@ -750,7 +751,7 @@ export class Crypto {
 
 			decryptedDataPromise = Crypto.decryptWithPasswordAsync(initialEncryptedData, password)
 		} else {
-			decryptedDataPromise = Crypto.decryptWithKeyAsync(initialEncryptedData, recipientId, privateKeyBase64, privateKeyPassword)
+			decryptedDataPromise = Crypto.decryptWithKeyAsync(initialEncryptedData, recipientId, privateKey, privateKeyPassword)
 		}
 
 		return decryptedDataPromise;
@@ -759,84 +760,68 @@ export class Crypto {
 	/**
 	 * Sign the encrypted data using private key
 	 *
-	 * @param initialData {string} - base64 String!
-	 * @param privateKeyBase64 {string} - base64 String!
+	 * @param initialData {string|Buffer}
+	 * @param privateKey {string|Buffer}
 	 * @param [privateKeyPassword = ''] {string}
-	 * @returns {string} - base64 String!
+	 * @returns {Buffer}
 	 */
-	static sign (initialData, privateKeyBase64, privateKeyPassword = '') {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'base64 String' });
-		}
-
-		if (!_.isString(privateKeyBase64)) {
-			throwValidationError('00001', { arg: 'privateKeyBase64', type: 'String' });
-		}
-
+	static sign (initialData, privateKey, privateKeyPassword = '') {
 		let virgilSigner = new Crypto.VirgilSigner();
-		let signBase64;
+		let signBuffer;
 
 		try {
-			let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialData);
-			let privateKeyByteArray = Crypto.VirgilByteArrayFromBase64(privateKeyBase64);
-			let privateKeyPasswordByteArray = Crypto.VirgilByteArrayFromUTF8(privateKeyPassword);
+			let dataByteArray = CryptoUtils.toByteArray(initialData);
+			let privateKeyByteArray = CryptoUtils.toByteArray(privateKey);
+			let privateKeyPasswordByteArray = CryptoUtils.toByteArray(privateKeyPassword);
 
 			let sign = virgilSigner.sign(dataByteArray, privateKeyByteArray, privateKeyPasswordByteArray);
-			signBase64 = Crypto.VirgilByteArrayToBase64(sign);
+			signBuffer = CryptoUtils.byteArrayToBuffer(sign);
 
 			// cleanup memory to avoid memory leaks
 			dataByteArray.delete();
 			privateKeyByteArray.delete();
 			privateKeyPasswordByteArray.delete();
 		} catch (e) {
-			throwVirgilError('90005', { initialData: initialData, key: privateKeyBase64, password: privateKeyPassword });
+			throwVirgilError('90005', { initialData: initialData, key: privateKey, password: privateKeyPassword });
 		} finally {
 			virgilSigner.delete();
 		}
 
-		return signBase64;
+		return signBuffer;
 	}
 
 	/**
 	 * Sign the encrypted data using private key using workers
 	 *
-	 * @param initialData {string} - base64 String!
-	 * @param privateKeyBase64 {string} - base64 String!
+	 * @param initialData {string|Buffer}
+	 * @param privateKey {string|Buffer}
 	 * @param [privateKeyPassword = ''] {string}
 	 * @returns {Promise}
 	 */
-	static signAsync (initialData, privateKeyBase64, privateKeyPassword) {
+	static signAsync (initialData, privateKey, privateKeyPassword = '') {
 		if (isIE()) {
 			return new Promise((resolve, reject) => {
 				try {
-					resolve(Crypto.sign(initialData, privateKeyBase64, privateKeyPassword));
+					resolve(Crypto.sign(initialData, privateKey, privateKeyPassword));
 				} catch (e) {
 					reject(e.message);
 				}
 			});
 		} else {
-			return Crypto._signAsync(initialData, privateKeyBase64, privateKeyPassword);
+			return Crypto._signAsync(initialData, privateKey, privateKeyPassword);
 		}
 	}
 
 	/**
 	 * Sign the encrypted data using private key using workers
 	 *
-	 * @param initialData {string} - base64 String!
-	 * @param privateKeyBase64 {string} - base64 String!
+	 * @param initialData {string|Buffer}
+	 * @param privateKey {string|Buffer}
 	 * @param [privateKeyPassword = ''] {string}
 	 * @returns {Promise}
 	 * @private
 	 */
-	static _signAsync (initialData, privateKeyBase64, privateKeyPassword = '') {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'base64 String' });
-		}
-
-		if (!_.isString(privateKeyBase64)) {
-			throwValidationError('00001', { arg: 'privateKeyBase64', type: 'String' });
-		}
-
+	static _signAsync (initialData, privateKey, privateKeyPassword = '') {
 		let worker = createWorkerCryptoFunc(function(initialData, privateKeyBase64, privateKeyPassword) {
 			let deferred = this.deferred();
 			let Crypto = this.Crypto;
@@ -863,39 +848,37 @@ export class Crypto {
 			}
 		});
 
-		return worker(initialData, privateKeyBase64, privateKeyPassword).catch(() => {
-			return getErrorMessage(['crypto', '90005'], { initialData: initialData, key: privateKeyBase64, password: privateKeyPassword });
-		});
+		return worker(CryptoUtils.toBase64(initialData), CryptoUtils.toBase64(privateKey), privateKeyPassword).then(
+			(result) => {
+				// convert the base64 response to Buffer for support new interface
+				return CryptoUtils.base64ToBuffer(result);
+			},
+			() => {
+				return getErrorMessage(['crypto', '90005'], { initialData: initialData, key: privateKey, password: privateKeyPassword });
+			}
+		);
 	}
 
 	/**
 	 * Verify signed data using public key
 	 *
-	 * @param initialData {string}
+	 * @param initialData {string|Buffer}
 	 * @param publicKey {string}
-	 * @param sign {string} - base64 String!
+	 * @param sign {Buffer}
 	 * @returns {boolean}
 	 */
 	static verify (initialData, publicKey, sign) {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'base64 String' });
-		}
-
-		if (!_.isString(publicKey)) {
-			throwValidationError('00001', { arg: 'publicKey', type: 'String' });
-		}
-
-		if (!_.isString(sign)) {
-			throwValidationError('00001', { arg: 'sign', type: 'base64 String' });
-		}
+		//if (!_.isString(publicKey)) {
+		//	throwValidationError('00001', { arg: 'publicKey', type: 'String' });
+		//}
 
 		let virgilSigner = new Crypto.VirgilSigner();
 		let isVerified;
 
 		try {
-			let signByteArray = Crypto.VirgilByteArrayFromBase64(sign);
-			let dataByteArray = Crypto.VirgilByteArrayFromBase64(initialData);
-			let publicKeyByteArray = Crypto.VirgilByteArrayFromUTF8(publicKey);
+			let dataByteArray = CryptoUtils.toByteArray(initialData);
+			let publicKeyByteArray = CryptoUtils.toByteArray(publicKey);
+			let signByteArray = CryptoUtils.toByteArray(sign);
 			isVerified = virgilSigner.verify(dataByteArray, signByteArray, publicKeyByteArray);
 
 			// cleanup memory to avoid memory leaks
@@ -914,9 +897,9 @@ export class Crypto {
 	/**
 	 * Verify signed data using public key using workers
 	 *
-	 * @param initialData {string}
+	 * @param initialData {string|Buffer}
 	 * @param publicKey {string}
-	 * @param sign {string} - base64 String!
+	 * @param sign {Buffer}
 	 * @returns {Promise}
 	 */
 	static verifyAsync (initialData, publicKey, sign) {
@@ -936,24 +919,16 @@ export class Crypto {
 	/**
 	 * Verify signed data using public key using workers
 	 *
-	 * @param initialData {string}
+	 * @param initialData {string|Buffer}
 	 * @param publicKey {string}
-	 * @param sign {string} - base64 String!
+	 * @param sign {Buffer}
 	 * @returns {Promise}
 	 * @private
 	 */
 	static _verifyAsync (initialData, publicKey, sign) {
-		if (!_.isString(initialData)) {
-			throwValidationError('00001', { arg: 'initialData', type: 'base64 String' });
-		}
-
-		if (!_.isString(publicKey)) {
-			throwValidationError('00001', { arg: 'publicKey', type: 'String' });
-		}
-
-		if (!_.isString(sign)) {
-			throwValidationError('00001', { arg: 'sign', type: 'base64 String' });
-		}
+		//if (!_.isString(publicKey)) {
+		//	throwValidationError('00001', { arg: 'publicKey', type: 'String' });
+		//}
 
 		let worker = createWorkerCryptoFunc(function(initialData, publicKey, sign) {
 			let deferred = this.deferred();
@@ -979,7 +954,7 @@ export class Crypto {
 			}
 		});
 
-		return worker(initialData, publicKey, sign).catch(() => {
+		return worker(CryptoUtils.toBase64(initialData), publicKey, CryptoUtils.toBase64(sign)).catch(() => {
 			return getErrorMessage(['crypto', '90006'], { initialData: initialData, key: publicKey, sign: sign });
 		});
 	}
@@ -991,20 +966,20 @@ export class Crypto {
 	 * @param [keysType = 'ecBrainpool512'] {string}
 	 * @returns {{publicKey: *, privateKey: *}}
 	 */
-	static generateKeys (password = '', keysType = KeysTypesEnum.ecBrainpool512) {
+	static generateKeyPair (password = '', keysType = KeysTypesEnum.ecBrainpool512) {
 		password = !!password ? password : '';
 		keysType = KeysTypesEnum(keysType);
 
-		if (_.isUndefined(keysType)) {
-			throwValidationError('00002', { arg: 'keysType', type: `equal to one of ${_.values(KeysTypesEnum).join(', ')} - use the KeysTypesEnum for it.` });
-		}
+		//if (_.isUndefined(keysType)) {
+		//	throwValidationError('00002', { arg: 'keysType', type: `equal to one of ${_.values(KeysTypesEnum).join(', ')} - use the KeysTypesEnum for it.` });
+		//}
 
 		let virgilKeys;
 		let publicKey;
 		let privateKey;
 
 		try {
-			let passwordByteArray = Crypto.VirgilByteArrayFromUTF8(password);
+			let passwordByteArray = CryptoUtils.toByteArray(password);
 			virgilKeys = Crypto.VirgilKeyPair[keysType](passwordByteArray);
 
 			publicKey = virgilKeys.publicKey().toUTF8();
@@ -1024,38 +999,6 @@ export class Crypto {
 	}
 
 	/**
-	 * Generate the key pair - public and private keys
-	 *
-	 * @param [password = ''] {string}
-	 * @param [keysType = 'ecBrainpool512'] {string}
-	 * @returns {{publicKey: *, privateKey: *}}
-	 */
-	static generateKeyPair (password, keysType) {
-		return Crypto.generateKeys(password, keysType);
-	}
-
-	/**
-	 * Generate the key pair - public and private keys using workers
-	 *
-	 * @param [password = ''] {String}
-	 * @param [keysType = 'ecBrainpool512'] {string}
-	 * @returns {Promise}
-	 */
-	static generateKeysAsync (password, keysType) {
-		if (isIE()) {
-			return new Promise((resolve, reject) => {
-				try {
-					resolve(Crypto.generateKeys(password, keysType));
-				} catch (e) {
-					reject(e.message);
-				}
-			});
-		} else {
-			return Crypto._generateKeysAsync(password, keysType);
-		}
-	}
-
-	/**
 	 * Generate the key pair - public and private keys using workers
 	 *
 	 * @param [password = ''] {String}
@@ -1063,7 +1006,17 @@ export class Crypto {
 	 * @returns {Promise}
 	 */
 	static generateKeyPairAsync (password, keysType) {
-		return Crypto.generateKeysAsync(password, keysType);
+		if (isIE()) {
+			return new Promise((resolve, reject) => {
+				try {
+					resolve(Crypto.generateKeyPair(password, keysType));
+				} catch (e) {
+					reject(e.message);
+				}
+			});
+		} else {
+			return Crypto._generateKeyPairAsync(password, keysType);
+		}
 	}
 
 	/**
@@ -1074,13 +1027,13 @@ export class Crypto {
 	 * @returns {Promise}
 	 * @private
 	 */
-	static _generateKeysAsync (password = '', keysType = KeysTypesEnum.ecBrainpool512) {
+	static _generateKeyPairAsync (password = '', keysType = KeysTypesEnum.ecBrainpool512) {
 		password = !!password ? password : '';
 		keysType = KeysTypesEnum(keysType);
 
-		if (_.isUndefined(keysType)) {
-			throwValidationError('00002', { arg: 'keysType', type: `equal to one of ${_.values(KeysTypesEnum).join(', ')} - use the KeysTypesEnum for it.` });
-		}
+		//if (_.isUndefined(keysType)) {
+		//	throwValidationError('00002', { arg: 'keysType', type: `equal to one of ${_.values(KeysTypesEnum).join(', ')} - use the KeysTypesEnum for it.` });
+		//}
 
 		let worker = createWorkerCryptoFunc(function(password, keysType) {
 			let deferred = this.deferred();
