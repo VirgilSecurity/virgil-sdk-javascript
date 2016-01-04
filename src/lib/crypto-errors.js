@@ -17,12 +17,8 @@ export const errors = {
 	'90008': 'Unable to ENCRYPT the given data "{initialData}", using the recipients "{recipients}"'
 };
 
-export function getErrorMessage (code = '00000', tokens) {
-	return _.template(errors[code])(tokens);
-}
-
 export function throwVirgilError (code, tokens) {
-	throw new VirgilError(getErrorMessage(code, tokens), code);
+	throw new VirgilError(_.template(errors[code])(tokens), code);
 }
 
 export function throwValidationError (code, tokens) {
