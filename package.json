@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "Virgil Security Services SDK",
   "contributors": [
-      "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
-      "Egor Gumenyuk <boo1ean0807@gmail.com> (https://github.com/boo1ean/)"
-    ],
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/VirgilSecurity/virgil-sdk-javascript"
-    },
+    "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
+    "Egor Gumenyuk <boo1ean0807@gmail.com> (https://github.com/boo1ean/)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VirgilSecurity/virgil-sdk-javascript"
+  },
   "main": "index.js",
   "browser": "dist/virgil-sdk.min.js",
   "scripts": {
