@@ -4,7 +4,7 @@ module.exports = function createErrorHandler (errors) {
 			throw createError(res.data.code);
 		}
 		throw res;
-	}
+	};
 
 	function createError (code) {
 		var err = new Error();

@@ -11,7 +11,7 @@ module.exports = function createAPIClient (opts) {
 		methods: {
 			verify: 'post /verify',
 			confirm: 'post /confirm',
-			validate: 'post /validate',
+			validate: 'post /validate'
 		},
 
 		transformRequest: {

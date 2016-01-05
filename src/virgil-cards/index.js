@@ -47,17 +47,17 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	});
 
 	apiClient.crypto = opts.crypto;
-	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID: uuid;
+	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
 
 	return apiClient;
-}
+};
 
 function trust (params, requestBody, opts) {
-	return this.crypto.signAsync(params.signed_virgil_card_hash, params.private_key, params.private_key_password).then(function (signedDigest) {
-		requestBody.signed_digest = signedDigest.toString('base64')
+	return this.crypto.signAsync(params.signed_virgil_card_hash, params.private_key, params.private_key_password).then(function(signedDigest) {
+		requestBody.signed_digest = signedDigest.toString('base64');
 
-		return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function (headers) {
+		return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function(headers) {
 			opts.headers = headers;
 			return [params, requestBody, opts];
 		});
@@ -65,7 +65,7 @@ function trust (params, requestBody, opts) {
 }
 
 function untrust (params, requestBody, opts) {
-	return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function (headers) {
+	return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function(headers) {
 		opts.headers = headers;
 		return [params, requestBody, opts];
 	});
@@ -74,13 +74,13 @@ function untrust (params, requestBody, opts) {
 function create (params, requestBody, opts) {
 	this.assert(params.private_key, 'private_key param is required');
 	this.assert(params.public_key || params.public_key_id, 'public_key or public_key_id param is required');
-	this.assert(params.identity, 'identity param is required')
+	this.assert(params.identity, 'identity param is required');
 
 	if (params.public_key) {
 		requestBody.public_key = new Buffer(params.public_key, 'utf8').toString('base64');
 	}
 
-	return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function (headers) {
+	return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function(headers) {
 		opts.headers = headers;
 		return [params, requestBody, opts];
 	});
@@ -90,10 +90,10 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId, privateKeyPas
 	var requestUUID = this.generateUUID();
 	var requestText = requestUUID + JSON.stringify(requestBody);
 
-	return this.crypto.signAsync(requestText, privateKey, privateKeyPassword).then(function (sign) {
+	return this.crypto.signAsync(requestText, privateKey, privateKeyPassword).then(function(sign) {
 		var headers = {
 			'X-VIRGIL-REQUEST-SIGN': sign.toString('base64'),
-			'X-VIRGIL-REQUEST-UUID': requestUUID,
+			'X-VIRGIL-REQUEST-UUID': requestUUID
 		};
 
 		if (virgilCardId) {

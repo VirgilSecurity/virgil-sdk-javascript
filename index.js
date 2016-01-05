@@ -10,13 +10,19 @@ function VirgilSDK (applicationToken, opts) {
 	}
 
 	opts = opts || {};
-	opts.crypto = opts.crypto || VirgilCrypto;
+	// trying to get crypto from opts, then checking the es6 module default,
+	// otherwise simply required crypto module
+	opts.crypto = opts.crypto || VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
 	this.applicationToken = applicationToken;
+	this.crypto = opts.crypto;
 	this.cards = createVirgilCardsApi(applicationToken, opts);
 	this.privateKeys = createPrivateKeysApi(applicationToken, opts);
 	this.publicKeys = createPublicKeysApi(applicationToken, opts);
 	this.identity = createIdentityApi(opts);
 }
+
+// umd export support
+VirgilSDK.VirgilSDK = VirgilSDK;
 
 module.exports = VirgilSDK;
