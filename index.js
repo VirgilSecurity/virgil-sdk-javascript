@@ -1,4 +1,4 @@
-var VirgilCrypto = require('virgil-crypto');
+var VirgilCrypto = require('virgil-crypto-javascript');
 var createVirgilCardsApi = require('./src/virgil-cards');
 var createPublicKeysApi = require('./src/public-keys');
 var createPrivateKeysApi = require('./src/private-keys');

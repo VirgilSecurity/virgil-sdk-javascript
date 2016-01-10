@@ -35,8 +35,7 @@
     "es6-error": "^2.0.2",
     "node-uuid": "^1.4.3",
     "operative": "^0.4.4",
-    "virgil-crypto": "^0.2.7",
-    "virgil-crypto-javascript": "^1.0.0"
+    "virgil-crypto-javascript": "^1.0.5"
   },
   "devDependencies": {
     "babel": "^5.8.21",
