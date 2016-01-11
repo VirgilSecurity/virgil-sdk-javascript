@@ -1,4 +1,5 @@
 var VirgilCrypto = require('virgil-crypto-javascript');
+var cryptoAsyncPatch = require('./src/crypto-async-patch');
 var createVirgilCardsApi = require('./src/virgil-cards');
 var createPublicKeysApi = require('./src/public-keys');
 var createPrivateKeysApi = require('./src/private-keys');
@@ -12,7 +13,7 @@ function VirgilSDK (applicationToken, opts) {
 	opts = opts || {};
 	// trying to get crypto from opts, then checking the es6 module default,
 	// otherwise simply required crypto module
-	opts.crypto = opts.crypto || VirgilCrypto.VirgilCrypto || VirgilCrypto;
+	opts.crypto = cryptoAsyncPatch(opts.crypto || VirgilCrypto.VirgilCrypto || VirgilCrypto);
 
 	this.applicationToken = applicationToken;
 	this.crypto = opts.crypto;
