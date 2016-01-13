@@ -11,7 +11,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 		methods: {
 			create: 'post /virgil-card',
-			destroy: 'delete /virgil-card/{virgil_card_id}',
+			revoke: 'delete /virgil-card/{virgil_card_id}',
 			trust: 'post /virgil-card/{virgil_card_id}/actions/sign',
 			untrust: 'post /virgil-card/{virgil_card_id}/actions/unsign',
 			search: 'post /virgil-card/actions/search',
@@ -24,14 +24,14 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 		transformRequest: {
 			create: create,
-			destroy: untrust,
+			revoke: untrust,
 			trust: trust,
 			untrust: untrust
 		},
 
 		body: {
 			create: ['public_key_id', 'public_key', 'identity', 'data'],
-			destroy: ['identity'],
+			revoke: ['identity'],
 			trust: ['signed_virgil_card_id', 'signed_digest'],
 			unsign: ['signed_virgil_card_id'],
 			search: ['value', 'type', 'relations', 'include_unconfirmed'],
@@ -39,7 +39,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		},
 
 		required: {
-			destroy: ['identity'],
+			revoke: ['identity'],
 			trust: ['signed_virgil_card_id', 'signed_virgil_card_hash', 'private_key', 'virgil_card_id'],
 			untrust: ['signed_virgil_card_id', 'private_key', 'virgil_card_id'],
 			search: ['value', 'type'],
