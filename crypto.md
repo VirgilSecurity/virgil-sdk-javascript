@@ -148,5 +148,4 @@ var decryptedText = crypto.decrypt(encryptedText, password);
 ## See Also
 
 * [Quickstart](quickstart.md)
-* [Tutorial Keys SDK](public-keys.md)
-* [Tutorial Private Keys SDK](private-keys.md)
+* [Tutorial Keys SDK](keys.md)
