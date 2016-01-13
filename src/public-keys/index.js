@@ -43,7 +43,7 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId, privateKeyPas
 	return this.crypto.signAsync(requestText, privateKey, privateKeyPassword).then(function(sign) {
 		var headers = {
 			'X-VIRGIL-REQUEST-SIGN': sign.toString('base64'),
-			'X-VIRGIL-REQUEST-UUID': requestUUID
+			'X-VIRGIL-REQUEST-ID': requestUUID
 		};
 
 		if (virgilCardId) {

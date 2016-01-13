@@ -10,7 +10,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};
 
 	var apiClient = new ApiClient({
-		baseUrl: opts.privateKeysBaseUrl || 'https://private-keys.virgilsecurity.com/v3',
+		baseUrl: opts.privateKeysBaseUrl || 'https://keys-private.virgilsecurity.com/v3',
 
 		methods: {
 			stash: 'post /private-key',
@@ -53,9 +53,11 @@ module.exports = function createAPIClient (applicationToken, opts) {
 };
 
 function stash (params, requestBody, opts) {
+	var self = this;
 	requestBody.private_key = new Buffer(params.private_key, 'utf8').toString('base64');
+
 	return this.encryptBody(requestBody).then(function(requestBody) {
-		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function(headers) {
+		return self.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function(headers) {
 			opts.headers = headers;
 			return [params, requestBody, opts];
 		})
@@ -69,8 +71,10 @@ function get (params, requestBody, opts) {
 }
 
 function destroy (params, requestBody, opts) {
+	var self = this;
+
 	return this.encryptBody(requestBody).then(function(requestBody) {
-		return this.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function(headers) {
+		return self.getRequestHeaders(requestBody, params.private_key, params.private_key_password).then(function(headers) {
 			opts.headers = headers;
 			return [params, requestBody, opts];
 		})
@@ -84,7 +88,7 @@ function getRequestHeaders (requestBody, privateKey, privateKeyPassword) {
 	return this.crypto.signAsync(requestText, privateKey, privateKeyPassword).then(function(sign) {
 		return {
 			'X-VIRGIL-REQUEST-SIGN': sign.toString('base64'),
-			'X-VIRGIL-REQUEST-UUID': requestUUID
+			'X-VIRGIL-REQUEST-ID': requestUUID
 		}
 	});
 }
