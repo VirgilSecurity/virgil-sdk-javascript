@@ -1,219 +1,167 @@
-# Tutorial Javascript Virgil Services SDK 
+# Quickstart javascript
 
 - [Introduction](#introduction)
-- [Install](#install)
 - [Obtaining an Access Token](#obtaining-an-access-token)
-- [Identity Check](#identity-check)
-  - [Request Verification](#request-verification)
-  - [Confirm and Get an Identity Token](#confirm-and-get-an-identity-token)
-- [Cards and Public Keys](#cards-and-public-keys)
-  - [Publish a Virgil Card](#publish-a-virgil-card)
-  - [Search for Cards](#search-for-cards)
-  - [Search for Application Cards](#search-for-application-cards)
-  - [Trust a Virgil Card](#trust-a-virgil-card)
-  - [Untrust a Virgil Card](#untrust-a-virgil-card)
-  - [Revoke a Virgil Card](#revoke-a-virgil-card)
-  - [Get a Public Key](#get-a-public-key)
-- [Private Keys](#private-keys)
-  - [Stash a Private Key](#stash-a-private-key)
-  - [Get a Private Key](#get-a-private-key)
-  - [Destroy a Private Key](#destroy-a-private-key)
+- [Install](#install)
+- [Use case](#use-case)
+    - [Initialization](#initialization)
+    - [Step 1. Create and Publish the Keys](#step-1-create-and-publish-the-keys)
+    - [Step 2. Encrypt and Sign](#step-2-encrypt-and-sign)
+    - [Step 3. Send an Email](#step-3-send-an-email)
+    - [Step 4. Receive an Email](#step-4-receive-an-email)
+    - [Step 5. Verify and Decrypt](#step-5-verify-and-decrypt)
+- [See also](#see-also)
 
-##Introduction
+## Introduction
 
-This tutorial explains how to use the Public Keys Service with SDK library in .NET applications. 
+This guide will help you get started using the Crypto Library and Virgil Keys Services.
+Let's build an encrypted mail exchange system as one of the possible [use cases](#use-case) of Virgil Security Services. ![Use case mail](https://raw.githubusercontent.com/VirgilSecurity/virgil/master/images/Email-diagram.jpg)
 
-##Install
+## Obtaining an Access Token
+
+First you must create a free Virgil Security developer's account by signing up [here](https://developer.virgilsecurity.com/account/signup). Once you have your account you can [sign in](https://developer.virgilsecurity.com/account/signin) and generate an access token for your application.
+
+The access token provides authenticated secure access to Virgil Keys Services and is passed with each API call. The access token also allows the API to associate your app’s requests with your Virgil Security developer's account.
+
+Use this token to initialize the SDK client [here](#initialization).
+
+## Install
+
+You can easily add SDK dependency to your project, just follow the examples below:
 
 ```
 npm install virgil-sdk
 ```
 
-##Obtaining an Access Token
+## Use Case
+**Secure any data end to end**: users need to securely exchange information (text messages, files, audio, video etc) while enabling both in transit and at rest protection. 
 
-First you must create a free Virgil Security developer's account by signing up [here](https://virgilsecurity.com/account/signup). Once you have your account you can [sign in](https://virgilsecurity.com/account/signin) and generate an access token for your application.
+- Application generates public and private key pairs using Virgil Crypto library and use Virgil Keys service to enable secure end to end communications:
+    - public key on Virgil Public Keys Service;
+    - private key on Virgil Private Keys Service or locally.
+- Sender's information is encrypted in Virgil Crypto Library with the recipient’s public key.
+- Sender's encrypted information is signed with his private key in Virgil Crypto Library.
+- Application securely transfers the encrypted data, sender's digital signature and UDID to the recipient without any risk to be revealed.
+- Application on the recipient's side verifies that the signature of transferred data is valid using the signature and sender’s public key in Virgil Crypto Library.
+- Received information is decrypted with the recepient's private key using Virgil Crypto Library.
+- Decrypted data is provided to the recipient.
 
-The access token provides an authenticated secure access to the Public Keys Service and is passed with each API call. The access token also allows the API to associate your app’s requests with your Virgil Security developer's account.
-
-Simply add your access token to the client constuctor.
+## Initialization
 
 ```javascript
 var Virgil = require('virgil-sdk');
 var virgil = new Virgil("%ACCESS_TOKEN%");
-``` 
+```
 
-## Identity Check
+## Step 1. Create and Publish the Keys
+First we are generating the keys and publishing them to the Public Keys Service where they are available in an open access for other users (e.g. recipient) to verify and encrypt the data for the key owner.
 
-All the Virgil Security services are strongly interconnected with the Identity Service. It determines the ownership of the identity being checked using particular mechanisms and as a result it generates a temporary token to be used for the operations which require an identity verification. 
-
-#### Request Verification
-
-Initialize the identity verification process.
+The following code example creates a new public/private key pair.
 
 ```javascript
-var identityPromise = virgil.identity.verify({
+var password = "jUfreBR7";
+// the private key's password is optional 
+var keyPair = virgil.crypto.generateKeyPair(password); 
+```
+
+We are verifying whether the user really owns the provided email address and getting a temporary token for public key registration on the Public Keys Service.
+
+```javascript
+virgil.identity.verify({
 	type: 'email',
-	value: 'test1@virgilsecurity.com'
-}).then(...);
-```
-
-#### Confirm and Get an Identity Token
-
-Confirm the identity and get a temporary token.
-
-```javascript
-var identityPromise = virgil.identity.confirm({
-	action_id: 'action_id field from identity.verify response',
-	confirmation_code: 'confirmation code sent to your email',
-	token: {
-		// How long this token will live
-		time_to_live: 3600,
-
-		// How many times it could be used
-		count_to_live: 1
-	}
-}).then(...);
-```
-
-## Cards and Public Keys
-
-A Virgil Card is the main entity of the Public Keys Service, it includes the information about the user and his public key. The Virgil Card identifies the user by one of his available types, such as an email, a phone number, etc.
-
-#### Publish a Virgil Card
-
-An identity token which can be received [here](#identity-check) is used during the registration.
-
-```javascript
-TODO waiting for doc update
-var keyPair = new virgil.crypto.KeyPair();
-virgil.cards.create({
-	identity_token: 'token field from identity.confirm response',
-	public_key: keyPair.publicKey,
-	private_key: keyPair.privateKey,
-}).then(...);
-```
-
-#### Search for Cards
-
-Search for the Virgil Card by provided parameters.
-
-```javascript
-virgil.cards.search({
-	value: "test2@virgilsecurity.com",
-	type: 'email'
-}).then(...);
-```
-
-#### Search for Application Cards
-
-Search for the Virgil Cards by a defined pattern. The example below returns a list of applications for Virgil Security company.
-
-```javascript
-virgil.cards.searchApp({ value: "com.virgil.*" }).then(...);
-```
-
-#### Trust a Virgil Card
-
-Any Virgil Card user can act as a certification center within the Virgil Security ecosystem. Every user can certify another's Virgil Card and build a net of trust based on it.
-
-The example below demonstrates how to certify a user's Virgil Card by signing its hash attribute. 
-
-```javascript
-virgil.cards.trust({
-	signed_virgil_card_id: 'virgil_card_id you want to give trust to',
-	signed_virgil_card_hash: 'hash of virgil card you want to trust',
-	private_key: 'your private key',
-	virgil_card_id: 'your virgil_card_id'
-}).then(...);
-```
-
-#### Untrust a Virgil Card
-
-Naturally it is possible to stop trusting the Virgil Card owner as in all relations. This is not an exception in Virgil Security system.
-
-```javascript
-virgil.cards.untrust({
-	signed_virgil_card_id: 'virgil_card_id you want to give trust to',
-	private_key: 'your private key',
-	virgil_card_id: 'your virgil_card_id'
-}).then(...);
-```
-#### Revoke a Virgil Card
-
-This operation is used to delete the Virgil Card from the search and mark it as deleted. 
-
-```javascript
-TODO waiting for doc update
-await virgilHub.Cards.Revoke(myCard.Id, keyPair.PrivateKey());
-```
-
-#### Get a Public Key
-
-Gets a public key from the Public Keys Service by the specified ID.
-
-```javascript
-virgil.publicKeys.get({ public_key_id: 'some public key id' }).then(...);
-```
-
-## Private Keys
-
-The security of private keys is crucial for the public key cryptosystems. Anyone who can obtain a private key can use it to impersonate the rightful owner during all communications and transactions on intranets or on the internet. Therefore, private keys must be in the possession only of authorized users, and they must be protected from unauthorized use.
-
-Virgil Security provides a set of tools and services for storing private keys in a safe storage which lets you synchronize your private keys between the devices and applications.
-
-Usage of this service is optional.
-
-#### Stash a Private Key
-
-Private key can be added for storage only in case you have already registered a public key on the Public Keys Service.
-
-Use the public key identifier on the Public Keys Service to save the private keys. 
-
-The Private Keys Service stores private keys the original way as they were transferred. That's why we strongly recommend to trasfer the keys which were generated with a password.
-
-```javascript
-virgil.privateKeys.stash({
-	virgil_card_id: 'your virgil card id',
-	private_key: 'your private key'
-}).then(...);
-```
-
-#### Get a Private Key
-
-To get a private key you need to pass a prior verification of the Virgil Card where your public key is used.
-  
-```javascript
-virgi.identity.verify({
-	type: 'email',
-	value: 'test1@virgilsecurity.com'
+	value: 'user@virgilsecurity.com'
 }).then(function confirmIdentity (verifyResult) {
 	// use confirmation code that has been sent to you email box.
 	return virgil.identity.confirm({
 		action_id: verifyResult.action_id,
-		confirmation_code: 'confirmation code from email',
-		token: {
-			time_to_live: 3600,
-			count_to_live: 1
-		}
+		confirmation_code: '%CONFIRMATION_CODE%'
 	});
-}).then(function stashPrivateKey (confirmResult) {
-	return virgil.privateKeys.get({
-		virgil_card_id: 'your virgil card id',
-		identity: {
-			type: 'email',
-			value: 'test1@virgilsecurity.com'
-		}
-	});
-}).then(...);
+});
 ```
+We are registering a Virgil Card which includes a public key and an email address identifier. The card will be used for the public key identification and searching for it in the Public Keys Service.
 
-#### Destroy a Private Key
-
-This operation deletes the private key from the service without a possibility to be restored. 
-  
 ```javascript
-virgil.privateKeys.destroy({
-	virgil_card_id: 'your virgil card id',
-	private_key: 'your privateKey'
-}).then(...);
+virgil.cards.create({
+	public_key: keyPair.publicKey,
+	private_key: keyPair.privateKey,
+	identity: {
+		type: 'email',
+		value: 'user@virgilsecurity.com',
+		validation_token: 'token from identity.confirm'
+	}
+});
 ```
+
+## Step 2. Encrypt and Sign
+We are searching for the recipient's public key on the Public Keys Service to encrypt a message for him. And we are signing the encrypted message with our private key so that the recipient can make sure the message had been sent from the declared sender.
+
+```javascript
+var message = "Encrypt me, Please!!!";
+
+virgil.cards.search({ value: 'recipient-test@virgilsecurity.com', type: 'email' })
+	.then(function (recipientCards) {
+		var cards = recipientCards.map(function (card) {
+			return {
+				recipientId: card.identity.id,
+				publicKey: card.public_key.public_key
+			};
+		});
+
+		var encryptedMessage = virgil.cards.encrypt(message, cards);
+		var sign = virgil.crypto.sign(encryptedMessage, keyPair.privateKey);
+
+		// ...
+	});
+```
+
+## Step 3. Send an Email
+We are merging the message and the signature into one structure and sending the letter to the recipient using a simple mail client.
+
+```javascript
+var body = JSON.stringify({
+	content: encryptedMessage.toString('base64'),
+	sign: sign.toString('base64')
+});
+
+mailClient.send({
+	to: "recipient-test@virgilsecurity.com",
+	subject: "Secure the Future",
+	body: body
+});
+```
+
+## Step 4. Receive an Email
+An encrypted letter is received on the recipient's side using a simple mail client.
+
+```javascript
+// get first email with specified subject using simple mail client
+var email = mailClient.getByEmailAndSubject('recipient-test@virgilsecurity.com', 'Secure the Future');
+var body = JSON.parse(email.body);
+```
+
+## Step 5. Verify and Decrypt
+We are making sure the letter came from the declared sender by getting his card on Public Keys Service. In case of success we are decrypting the letter using the recipient's private key.
+
+```javascript
+virgil.cards.search({
+	value: email.from,
+	type: 'email'
+}).then(function (cards) {
+	var senderPublicKey = cards[0].public_key.public_key;
+	var contentBuffer = new Buffer(encryptedBody.content, 'base64');
+	var signBuffer = new Buffer(encryptedBody.sign, 'base64');
+
+	var isValid = virgil.crypto.verify(contentBuffer, senderPublicKey, signBuffer);
+	if (!isValid) {
+		throw new Error('Signature is not valid');
+	}
+
+	var originalMessage = virgil.crypto.decrypt(contentBuffer, recipientKeyPair.privateKey);
+});
+```
+
+## See Also
+
+* [Tutorial Crypto Library](crypto.md)
+* [Tutorial Keys SDK](public-keys.md)
+* [Tutorial Private Keys SDK](private-keys.md)
