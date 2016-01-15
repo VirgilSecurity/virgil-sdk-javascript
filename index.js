@@ -18,7 +18,7 @@ function VirgilSDK (applicationToken, opts) {
 	this.applicationToken = applicationToken;
 	this.crypto = opts.crypto;
 	this.cards = createVirgilCardsApi(applicationToken, opts);
-	this.privateKeys = createPrivateKeysApi(applicationToken, opts);
+	this.privateKeys = createPrivateKeysApi(applicationToken, opts, this.cards);
 	this.publicKeys = createPublicKeysApi(applicationToken, opts);
 	this.identity = createIdentityApi(opts);
 }

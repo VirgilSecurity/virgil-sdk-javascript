@@ -1,6 +1,6 @@
 module.exports = function createErrorHandler (errors) {
 	return function handleError (res) {
-		if (res.data.code) {
+		if (res.data && res.data.code) {
 			throw createError(res.data.code);
 		}
 		throw res;
