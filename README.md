@@ -1,6 +1,6 @@
 # Virgil Security for Javascript
 
-<a href="https://d3js.org"><img width="230px" src="https://github.com/VirgilSecurity/virgil-net/blob/master/logo.png" align="left" hspace="10" vspace="6"></a>
+<a href="https://virgilsecurity.com"><img width="230px" src="https://github.com/VirgilSecurity/virgil-net/blob/master/logo.png" align="left" hspace="10" vspace="6"></a>
 
 Virgil is a stack of security libraries (ECIES with Crypto Agility wrapped in Virgil Cryptogram) and all the necessary infrastructure to enable seamless, end-to-end encryption for any application, platform or device. Get in touch with us to get preview access to our key infrastructure.
 
@@ -8,8 +8,8 @@ Virgil Security, Inc., guides software developers into the forthcoming security 
 
 ## Resources
 
-* [Quickstart](quickstart.md)
-* [Crypto Library](crypto.md)
+* [QuickStart](quickstart.md)
+* [Crypto Library](https://github.com/VirgilSecurity/virgil-crypto-javascript)
 * [SDK](keys.md)
 
 ## License
@@ -17,4 +17,3 @@ BSD 3-Clause. See [LICENSE](https://github.com/VirgilSecurity/virgil/blob/master
 
 ## Contacts
 Email: <support@virgilsecurity.com>
-

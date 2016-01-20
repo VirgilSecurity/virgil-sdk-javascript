@@ -48,7 +48,7 @@ npm install virgil-sdk
 
 ## Initialization
 
-```javascript
+```
 var Virgil = require('virgil-sdk');
 var virgil = new Virgil("%ACCESS_TOKEN%");
 ```
@@ -58,7 +58,7 @@ First we are generating the keys and publishing them to the Public Keys Service 
 
 The following code example creates a new public/private key pair.
 
-```javascript
+```
 var password = "jUfreBR7";
 // the private key's password is optional 
 var keyPair = virgil.crypto.generateKeyPair(password); 
@@ -66,7 +66,7 @@ var keyPair = virgil.crypto.generateKeyPair(password);
 
 We are verifying whether the user really owns the provided email address and getting a temporary token for public key registration on the Public Keys Service.
 
-```javascript
+```
 virgil.identity.verify({
 	type: 'email',
 	value: 'user@virgilsecurity.com'
@@ -80,7 +80,7 @@ virgil.identity.verify({
 ```
 We are registering a Virgil Card which includes a public key and an email address identifier. The card will be used for the public key identification and searching for it in the Public Keys Service.
 
-```javascript
+```
 virgil.cards.create({
 	public_key: keyPair.publicKey,
 	private_key: keyPair.privateKey,
@@ -95,7 +95,7 @@ virgil.cards.create({
 ## Step 2. Encrypt and Sign
 We are searching for the recipient's public key on the Public Keys Service to encrypt a message for him. And we are signing the encrypted message with our private key so that the recipient can make sure the message had been sent from the declared sender.
 
-```javascript
+```
 var message = "Encrypt me, Please!!!";
 
 virgil.cards.search({ value: 'recipient-test@virgilsecurity.com', type: 'email' })
@@ -117,7 +117,7 @@ virgil.cards.search({ value: 'recipient-test@virgilsecurity.com', type: 'email' 
 ## Step 3. Send an Email
 We are merging the message and the signature into one structure and sending the letter to the recipient using a simple mail client.
 
-```javascript
+```
 var body = JSON.stringify({
 	content: encryptedMessage.toString('base64'),
 	sign: sign.toString('base64')
@@ -133,7 +133,7 @@ mailClient.send({
 ## Step 4. Receive an Email
 An encrypted letter is received on the recipient's side using a simple mail client.
 
-```javascript
+```
 // get first email with specified subject using simple mail client
 var email = mailClient.getByEmailAndSubject('recipient-test@virgilsecurity.com', 'Secure the Future');
 var body = JSON.parse(email.body);
@@ -142,7 +142,7 @@ var body = JSON.parse(email.body);
 ## Step 5. Verify and Decrypt
 We are making sure the letter came from the declared sender by getting his card on Public Keys Service. In case of success we are decrypting the letter using the recipient's private key.
 
-```javascript
+```
 virgil.cards.search({
 	value: email.from,
 	type: 'email'
