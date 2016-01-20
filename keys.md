@@ -1,35 +1,70 @@
 # Tutorial Javascript Virgil Services SDK 
 
 - [Introduction](#introduction)
-- [Install](#install)
+- [Installation](#installation)
+    - [NPM](#npm)
+    - [Bower](#bower)
+    - [CDN](#cdn)
+- [Initialization](#initialization)
+    - [Node](#node)
+    - [Browsers](#browsers)
 - [Obtaining an Access Token](#obtaining-an-access-token)
 - [Identity Check](#identity-check)
-  - [Request Verification](#request-verification)
-  - [Confirm and Get an Identity Token](#confirm-and-get-an-identity-token)
+      - [Request Verification](#request-verification)
+      - [Confirm and Get an Identity Token](#confirm-and-get-an-identity-token)
 - [Cards and Public Keys](#cards-and-public-keys)
-  - [Publish a Virgil Card](#publish-a-virgil-card)
-  - [Search for Cards](#search-for-cards)
-  - [Search for Application Cards](#search-for-application-cards)
-  - [Trust a Virgil Card](#trust-a-virgil-card)
-  - [Untrust a Virgil Card](#untrust-a-virgil-card)
-  - [Revoke a Virgil Card](#revoke-a-virgil-card)
-  - [Get a Public Key](#get-a-public-key)
+      - [Publish a Virgil Card](#publish-a-virgil-card)
+      - [Search for Cards](#search-for-cards)
+      - [Search for Application Cards](#search-for-application-cards)
+      - [Trust a Virgil Card](#trust-a-virgil-card)
+      - [Untrust a Virgil Card](#untrust-a-virgil-card)
+      - [Revoke a Virgil Card](#revoke-a-virgil-card)
+      - [Get a Public Key](#get-a-public-key)
 - [Private Keys](#private-keys)
-  - [Stash a Private Key](#stash-a-private-key)
-  - [Get a Private Key](#get-a-private-key)
-  - [Destroy a Private Key](#destroy-a-private-key)
+      - [Stash a Private Key](#stash-a-private-key)
+      - [Get a Private Key](#get-a-private-key)
+      - [Destroy a Private Key](#destroy-a-private-key)
+- [See Also](#see-also)
 
-##Introduction
+## Introduction
 
-This tutorial explains how to use the Public Keys Service with SDK library in .NET applications. 
+This tutorial explains how to use the Public Keys Service with SDK library in JavaScript applications. 
 
-##Install
+## Installation
 
-```
+### NPM
+
+```sh
 npm install virgil-sdk
 ```
 
-##Obtaining an Access Token
+### Bower
+```sh
+bower install virgil-sdk
+```
+
+### CDN
+```html
+<script src="https://cdn.virgilsecurity.com/packages/javascript/sdk/latest/virgil-sdk.min.js"></script>
+```
+
+## Initialization
+
+### Node
+
+```javascript
+var Virgil = require('virgil-sdk');
+var virgil = new Virgil("%ACCESS_TOKEN%");
+```
+
+### Browsers
+
+```javascript
+var Virgil = window.VirgilSDK;
+var virgil = new Virgil("%ACCESS_TOKEN%");
+```
+
+## Obtaining an Access Token
 
 First you must create a free Virgil Security developer's account by signing up [here](https://virgilsecurity.com/account/signup). Once you have your account you can [sign in](https://virgilsecurity.com/account/signin) and generate an access token for your application.
 
@@ -38,7 +73,6 @@ The access token provides an authenticated secure access to the Public Keys Serv
 Simply add your access token to the client constuctor.
 
 ```javascript
-var Virgil = require('virgil-sdk');
 var virgil = new Virgil("%ACCESS_TOKEN%");
 ``` 
 
@@ -226,4 +260,4 @@ virgil.privateKeys.destroy({
 ## See Also
 
 * [Quickstart](quickstart.md)
-* [Tutorial Crypto Library](crypto.md)
+* [Tutorial Crypto Library](https://github.com/VirgilSecurity/virgil-crypto-javascript)
