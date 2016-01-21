@@ -86,10 +86,7 @@ export const WEBPACK_CONFIG = {
 
 	resolve: {
 		modulesDirectories: ['node_modules'],
-		extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx'],
-		alias: {
-			'virgil-crypto': 'virgil-crypto-javascript'
-		}
+		extensions: ['', '.webpack.js', '.web.js', '.js', '.jsx']
 	},
 
 	module: {
