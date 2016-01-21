@@ -240,7 +240,8 @@ virgi.identity.verify({
 		virgil_card_id: 'your virgil card id',
 		identity: {
 			type: 'email',
-			value: 'test1@virgilsecurity.com'
+			value: 'test1@virgilsecurity.com',
+			validation_token: confirmResult.validation_token
 		}
 	});
 });
