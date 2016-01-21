@@ -1,13 +1,7 @@
-# Tutorial Javascript Virgil Services SDK 
+# Tutorial JavaScript Virgil Services SDK 
 
 - [Introduction](#introduction)
-- [Installation](#installation)
-    - [NPM](#npm)
-    - [Bower](#bower)
-    - [CDN](#cdn)
-- [Initialization](#initialization)
-    - [Node](#node)
-    - [Browsers](#browsers)
+- [Install](#installation)
 - [Obtaining an Access Token](#obtaining-an-access-token)
 - [Identity Check](#identity-check)
       - [Request Verification](#request-verification)
@@ -46,22 +40,6 @@ bower install virgil-sdk
 ### CDN
 ```html
 <script src="https://cdn.virgilsecurity.com/packages/javascript/sdk/latest/virgil-sdk.min.js"></script>
-```
-
-## Initialization
-
-### Node
-
-```javascript
-var Virgil = require('virgil-sdk');
-var virgil = new Virgil("%ACCESS_TOKEN%");
-```
-
-### Browsers
-
-```javascript
-var Virgil = window.VirgilSDK;
-var virgil = new Virgil("%ACCESS_TOKEN%");
 ```
 
 ## Obtaining an Access Token
