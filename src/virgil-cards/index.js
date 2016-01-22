@@ -7,7 +7,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};
 
 	var apiClient = new ApiClient({
-		baseUrl: opts.cardsBaseUrl || 'https://keys.virgilsecurity.com/v2',
+		baseUrl: opts.cardsBaseUrl || 'https://keys.virgilsecurity.com/v3',
 
 		methods: {
 			create: 'post /virgil-card',
@@ -47,7 +47,15 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		},
 
 		errorHandler: errorHandler,
-		transformResponse: transformResponse
+
+		transformResponse: {
+			create: transformResponse,
+			revoke: transformResponse,
+			trust: transformResponse,
+			untrust: transformResponse,
+			search: transformSearchResponse,
+			searchApp: transformResponse
+		}
 	});
 
 	apiClient.crypto = opts.crypto;
@@ -109,12 +117,17 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId, privateKeyPas
 }
 
 function transformResponse (res) {
-	var body = res.data;
+	return transformRequestPublicKey(res.data);
+}
 
-	if (body) {
-		if (body.public_key) {
-			body.public_key.public_key = new Buffer(body.public_key.public_key, 'base64').toString('utf8');
-		}
-		return body;
+function transformSearchResponse (res) {
+	return res.data.map(transformRequestPublicKey, []);
+}
+
+function transformRequestPublicKey (data) {
+	if (data && data.public_key) {
+		data.public_key.public_key = new Buffer(data.public_key.public_key, 'base64').toString('utf8');
 	}
+
+	return data;
 }

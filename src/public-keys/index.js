@@ -7,7 +7,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};
 
 	var apiClient = new ApiClient({
-		baseUrl: opts.publicKeysBaseUrl || 'https://keys.virgilsecurity.com/v2',
+		baseUrl: opts.publicKeysBaseUrl || 'https://keys.virgilsecurity.com/v3',
 
 		methods: {
 			getPublicKey: 'get /public-key/{public_key_id}'
@@ -69,10 +69,12 @@ function getPublicKey (params, requestBody, opts) {
 
 function transformResponse (res) {
 	var body = res.data;
+
 	if (body) {
 		if (body.public_key) {
 			body.public_key = new Buffer(body.public_key, 'base64').toString('utf8');
 		}
+
 		return body;
 	}
 }
