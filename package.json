@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
@@ -36,7 +36,7 @@
     "es6-error": "^2.0.2",
     "node-uuid": "^1.4.3",
     "operative": "^0.4.4",
-    "virgil-crypto": "^1.1.4"
+    "virgil-crypto": "^1.1.5"
   },
   "devDependencies": {
     "babel": "^5.8.21",
