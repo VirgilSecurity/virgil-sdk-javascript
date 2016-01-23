@@ -112,7 +112,7 @@ function encryptBody (requestBody) {
 	return fetchVirgilPrivateKeysCard(self.cardsClient)
 		.then(function fetchVirgilCard (privateKeysCard) {
 			var requestBodyString = JSON.stringify(requestBody);
-			var privateKeysServicePublicKey = new Buffer(privateKeysCard.public_key.public_key, 'base64').toString('utf8');
+			var privateKeysServicePublicKey = privateKeysCard.public_key.public_key;
 
 			return self.crypto.encryptAsync(requestBodyString, privateKeysCard.id, privateKeysServicePublicKey)
 				.then(function encryptRequestBody (result) {

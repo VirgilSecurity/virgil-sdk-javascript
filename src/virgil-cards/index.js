@@ -54,7 +54,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 			trust: transformResponse,
 			untrust: transformResponse,
 			search: transformSearchResponse,
-			searchApp: transformResponse
+			searchApp: transformSearchResponse
 		}
 	});
 
