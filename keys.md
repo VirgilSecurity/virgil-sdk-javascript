@@ -100,6 +100,7 @@ var keyPair = new virgil.crypto.generateKeyPair();
 virgil.cards.create({
 	public_key: keyPair.publicKey,
 	private_key: keyPair.privateKey,
+	private_key_password: '<your_private_key_password>',
 	identity: {
 		type: 'email',
 		value: 'user@virgilsecurity.com',
@@ -138,6 +139,7 @@ virgil.cards.trust({
 	signed_virgil_card_id: 'virgil_card_id you want to give trust to',
 	signed_virgil_card_hash: 'hash of virgil card you want to trust',
 	private_key: 'your private key',
+	private_key_password: '<your_private_key_password>',
 	virgil_card_id: 'your virgil_card_id'
 });
 ```
@@ -150,6 +152,7 @@ Naturally it is possible to stop trusting the Virgil Card owner as in all relati
 virgil.cards.untrust({
 	signed_virgil_card_id: 'virgil_card_id you want to give trust to',
 	private_key: 'your private key',
+	private_key_password: '<your_private_key_password>',
 	virgil_card_id: 'your virgil_card_id'
 });
 ```
@@ -160,7 +163,8 @@ This operation is used to delete the Virgil Card from the search and mark it as 
 ```javascript
 virgil.cards.revoke({
 	virgil_card_id: 'your virgil card id',
-	private_key: 'your private key'
+	private_key: 'your private key',
+	private_key_password: '<your_private_key_password>'
 });
 ```
 
@@ -191,7 +195,8 @@ The Private Keys Service stores private keys the original way as they were trans
 ```javascript
 virgil.privateKeys.stash({
 	virgil_card_id: 'your virgil card id',
-	private_key: 'your private key'
+	private_key: 'your private key',
+	private_key_password: '<your_private_key_password>'
 }).then(...);
 ```
 
@@ -232,7 +237,8 @@ This operation deletes the private key from the service without a possibility to
 ```javascript
 virgil.privateKeys.destroy({
 	virgil_card_id: 'your virgil card id',
-	private_key: 'your privateKey'
+	private_key: 'your privateKey',
+	private_key_password: '<your_private_key_password>'
 });
 ```
 

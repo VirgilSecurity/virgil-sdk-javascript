@@ -104,6 +104,7 @@ The app is registering a Virgil Card which includes a public key and an email ad
 virgil.cards.create({
 	public_key: keyPair.publicKey,
 	private_key: keyPair.privateKey,
+	private_key_password: '<your_private_key_password>',
 	identity: {
 		type: 'email',
 		value: 'user@virgilsecurity.com',
