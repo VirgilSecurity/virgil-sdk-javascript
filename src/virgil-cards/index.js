@@ -39,7 +39,6 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		},
 
 		required: {
-			revoke: ['identity'],
 			trust: ['signed_virgil_card_id', 'signed_virgil_card_hash', 'private_key', 'virgil_card_id'],
 			untrust: ['signed_virgil_card_id', 'private_key', 'virgil_card_id'],
 			search: ['value', 'type'],

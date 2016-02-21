@@ -164,9 +164,16 @@ This operation is used to delete the Virgil Card from the search and mark it as 
 virgil.cards.revoke({
 	virgil_card_id: 'your virgil card id',
 	private_key: 'your private key',
-	private_key_password: '<your_private_key_password>'
+	private_key_password: '<your_private_key_password>',
+	identity: {
+		type: 'email',
+		value: 'user@virgilsecurity.com',
+		validation_token: 'token from identity.confirm'
+	}
 });
 ```
+
+`identity` param is optional. It must be specified only for confirmed Virgil Card instances.
 
 #### Get a Public Key
 
