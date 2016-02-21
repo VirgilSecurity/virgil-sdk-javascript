@@ -117,6 +117,34 @@ test('virgil cards flow', function testVerify (t) {
 	}
 });
 
+test('virgil cards public passworded key', function (t) {
+	var card, identity;
+	var password = 'this is password';
+	var keyPair = virgil.crypto.generateKeyPair(password);
+
+	getIdentity()
+		.then(publishVirgilCard)
+		.tap(assertPublishResponse)
+		.catch(console.error);
+
+	function publishVirgilCard (res) {
+		return virgil.cards.create({
+			public_key: keyPair.publicKey,
+			private_key: keyPair.privateKey,
+			private_key_password: password,
+			identity: res
+		});
+	}
+
+	function assertPublishResponse (res) {
+		logResponse('cards.create', res);
+		t.ok(res.is_confirmed, 'card is confirmed');
+		t.ok(res.identity.is_confirmed, 'identity is confirmed');
+		t.equal(res.public_key.public_key, keyPair.publicKey, 'public key matches');
+		t.end();
+	}
+});
+
 test('virgil cards server error', function (t) {
 	return virgil.cards.create({
 		public_key: keyPair.publicKey,

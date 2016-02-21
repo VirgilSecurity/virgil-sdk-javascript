@@ -55,6 +55,27 @@ test('private keys flow', function testVerify (t) {
 	}
 });
 
+test('private key stash passworded', function (t) {
+	var password = 'keys password';
+	getVirgilCard(password)
+		.spread(stashPrivateKey)
+		.then(assertStashPrivateKey)
+		.catch(console.error);
+
+	function stashPrivateKey (keyPair, identity, virgilCard) {
+		return virgil.privateKeys.stash({
+			virgil_card_id: virgilCard.id,
+			private_key: keyPair.privateKey,
+			private_key_password: password
+		});
+	}
+
+	function assertStashPrivateKey (res) {
+		logResponse('privateKeys.stash passworded', res);
+		t.end();
+	}
+});
+
 test('private keys local error', function (t) {
 	return virgil.privateKeys.stash({
 		virgil_card_id: 'nope',
