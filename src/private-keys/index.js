@@ -135,7 +135,9 @@ function transformResponse (res) {
 
 function transformResponseGet (response, originalParams, requestParams) {
 	return this.crypto.decryptAsync(new Buffer(response.data, 'base64'), requestParams.response_password).then(function decryptGetResponse (decryptedResponse) {
-		return JSON.parse(decryptedResponse.toString('utf8'));
+		var res = JSON.parse(decryptedResponse.toString('utf8'));
+		res.private_key = new Buffer(res.private_key, 'base64').toString('utf8');
+		return res;
 	});
 }
 
