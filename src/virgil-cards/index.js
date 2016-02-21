@@ -66,10 +66,11 @@ module.exports = function createAPIClient (applicationToken, opts) {
 };
 
 function trust (params, requestBody, opts) {
+	var self = this;
 	return this.crypto.signAsync(params.signed_virgil_card_hash, params.private_key, params.private_key_password).then(function(signedDigest) {
 		requestBody.signed_digest = signedDigest.toString('base64');
 
-		return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function(headers) {
+		return self.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function(headers) {
 			opts.headers = headers;
 			return [params, requestBody, opts];
 		});
