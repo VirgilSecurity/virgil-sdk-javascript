@@ -55,6 +55,25 @@ test('private keys flow', function testVerify (t) {
 	}
 });
 
+test('private keys local error', function (t) {
+	return virgil.privateKeys.stash({
+		virgil_card_id: 'nope',
+		private_key: 'not a real key'
+	}).catch(function (e) {
+		t.end();
+	});
+});
+
+test('private keys server error', function (t) {
+	return virgil.privateKeys.get({
+		virgil_card_id: 'e812f5af-0c06-4326-844b-0a31ab2c251a',
+		identity: {}
+	}).catch(function (e) {
+		t.equal(e.code, 60010, 'error code match');
+		t.end();
+	});
+});
+
 function logResponse (label, res) {
 	console.log('\n%s:\n', label);
 	console.log(res);

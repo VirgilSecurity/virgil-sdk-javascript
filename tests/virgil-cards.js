@@ -117,6 +117,17 @@ test('virgil cards flow', function testVerify (t) {
 	}
 });
 
+test('virgil cards server error', function (t) {
+	return virgil.cards.create({
+		public_key: keyPair.publicKey,
+		private_key: keyPair.privateKey,
+		identity: {}
+	}).catch(function (e) {
+		t.equal(e.code, 30201, 'error code match');
+		t.end();
+	});
+});
+
 function logResponse (label, res) {
 	console.log('\n%s:\n', label);
 	console.log(res);

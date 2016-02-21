@@ -74,6 +74,19 @@ test('identity verify flow', function testVerify (t) {
 	}
 });
 
+test('identity server error', function test (t) {
+	var requestParams = {
+		"type": "not email",
+		"value": username + "@mailinator.com"
+	}
+
+	virgil.identity.verify(requestParams)
+		.catch(function (e) {
+			t.equal(e.code, 40100, 'error code match');
+			t.end();
+		});
+});
+
 function logResponse (label, res) {
 	console.log('\n%s:\n', label);
 	console.log(res);
