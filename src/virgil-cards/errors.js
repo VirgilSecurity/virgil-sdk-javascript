@@ -32,4 +32,5 @@ module.exports = {
 	'30403': "Sign Signed digest must be base64 encoded string",
 	'30404': "Cannot save the Sign because it exists already",
 	'31000': "Value search parameter is mandatory",
+	'30306': "Virgil Card cannot sign itself"
 };
