@@ -39,7 +39,7 @@ test('identity verify flow', function testVerify (t) {
 					})
 					.then(resolve)
 					.catch(reject);
-			}, 1000);
+			}, 200);
 		});
 	}
 
