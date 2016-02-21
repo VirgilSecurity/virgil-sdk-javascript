@@ -1,8 +1,6 @@
-var Promise = require('bluebird');
 var test = require('tape');
 var virgil = require('./helpers/virgil');
 var getIdentity = require('./helpers/get-identity');
-var mailinator = require('./helpers/mailinator');
 
 var keyPair = virgil.crypto.generateKeyPair();
 
