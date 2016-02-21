@@ -225,7 +225,7 @@ virgi.identity.verify({
 			count_to_live: 1
 		}
 	});
-}).then(function stashPrivateKey (confirmResult) {
+}).then(function getPrivateKey (confirmResult) {
 	return virgil.privateKeys.get({
 		virgil_card_id: 'your virgil card id',
 		identity: {
