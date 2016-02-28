@@ -4,7 +4,6 @@ var getIdentity = require('./helpers/get-identity');
 
 var keyPair = virgil.crypto.generateKeyPair();
 
-// TODO this need to be updated if staging data wiped
 var signedCard = {
 	id: 'e812f5af-0c06-4326-844b-0a31ab2c251a',
 	hash: 'KkDKOTFTt3SxF+ZEGuhEepqERTpXIIz5fitScB1qvUPWKv8iWkgJPCLi4xPUu5kinxAYBhgAIanunvpgv3uY8A=='
