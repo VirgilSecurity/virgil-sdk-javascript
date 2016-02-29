@@ -1,4 +1,4 @@
-# Virgil Security for Javascript
+# Virgil Security for Javascript [![Build Status](https://travis-ci.org/VirgilSecurity/virgil-sdk-javascript.svg?branch=master)](https://travis-ci.org/VirgilSecurity/virgil-sdk-javascript)
 
 <a href="https://virgilsecurity.com"><img width="230px" src="https://github.com/VirgilSecurity/virgil-net/blob/master/logo.png" align="left" hspace="10" vspace="6"></a>
 
