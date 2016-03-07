@@ -3,20 +3,22 @@
 - [Introduction](#introduction)
 - [Obtaining an Access Token](#obtaining-an-access-token)
 - [Install](#install)
-- [Use Case](#use-case)
- - [Initialization](#initialization)
- - [Step 1. Create and Publish the Keys](#step-1-create-and-publish-the-keys)
- - [Step 2. Encrypt and Sign](#step-2-encrypt-and-sign)
- - [Step 3. Send an Email](#step-3-send-an-email)
- - [Step 4. Receive an Email](#step-4-receive-an-email)
- - [Step 5. Get Sender's Card](#step-5-get-senders-card)
- - [Step 6. Verify and Decrypt](#step-6-verify-and-decrypt)
-- [See Also](#see-also)
+- [Use case](#use-case)
+    - [Initialization](#initialization)
+    - [Step 1. Create and Publish the Keys](#step-1-create-and-publish-the-keys)
+    - [Step 2. Encrypt and Sign](#step-2-encrypt-and-sign)
+    - [Step 3. Send a Message](#step-3-send-a-message)
+    - [Step 4. Receive a Message](#step-4-receive-a-message)
+    - [Step 5. Get Sender's Card](#step-5-get-senders-card)
+    - [Step 6. Verify and Decrypt](#step-6-verify-and-decrypt)
+- [See also](#see-also)
 
 ## Introduction
 
-This guide will help you get started using the Crypto Library and Virgil Keys Services.
-Let's build an encrypted mail exchange system as one of the possible [use cases](#use-case) of Virgil Security Services. ![Use case mail](https://raw.githubusercontent.com/VirgilSecurity/virgil/master/images/Email-diagram.jpg)
+This guide will help you get started using the Crypto Library and Virgil Keys Services for the most popular platforms and languages.
+This branch focuses on the JavaScript library implementation and covers its usage.
+
+Let's build an encrypted IP messaging system as one of the possible [use cases](#use-case) of Virgil Security Services. ![Use case mail](https://raw.githubusercontent.com/VirgilSecurity/virgil/master/images/IPMessaging.jpg)
 
 ## Obtaining an Access Token
 
@@ -27,6 +29,8 @@ The access token provides authenticated secure access to Virgil Keys Services an
 Use this token to initialize the SDK client [here](#initialization).
 
 ## Install
+
+You can easily add SDK dependency to your project, just follow the examples below:
 
 ### NPM
 
@@ -45,16 +49,16 @@ bower install virgil-sdk
 ```
 
 ## Use Case
-**Secure any data end to end**: users need to securely exchange information (text messages, files, audio, video etc) while enabling both in transit and at rest protection.
+**Secure any data end to end**: users need to securely exchange information (text messages, files, audio, video etc) while enabling both in transit and at rest protection. 
 
 - Application generates public and private key pairs using Virgil Crypto library and use Virgil Keys service to enable secure end to end communications:
- - public key on Virgil Public Keys Service;
- - private key on Virgil Private Keys Service or locally.
-- Sender's information is encrypted in Virgil Crypto Library with the recipient’s public key.
-- Sender's encrypted information is signed with his private key in Virgil Crypto Library.
-- Application securely transfers the encrypted data, sender's digital signature and UDID to the recipient without any risk to be revealed.
-- Application on the recipient's side verifies that the signature of transferred data is valid using the signature and sender’s public key in Virgil Crypto Library.
-- Received information is decrypted with the recepient's private key using Virgil Crypto Library.
+    - public key on Virgil Public Keys Service;
+    - private key on Virgil Private Keys Service or locally.
+- Sender’s information is encrypted in Virgil Crypto Library with the recipient’s public key.
+- Sender’s encrypted information is signed with his private key in Virgil Crypto Library.
+- Application securely transfers the encrypted data, sender’s digital signature and UDID to the recipient without any risk to be revealed.
+- Application on the recipient’s side verifies that the signature of transferred data is valid using the signature and sender’s public key in Virgil Crypto Library.
+- Received information is decrypted with the recipient’s private key using Virgil Crypto Library.
 - Decrypted data is provided to the recipient.
 
 ## Initialization
@@ -78,6 +82,7 @@ First a mail exchange application is generating the keys and publishing them to 
 
 The following code example creates a new public/private key pair.
 
+
 ```javascript
 var password = "jUfreBR7";
 // the private key's password is optional 
@@ -94,27 +99,28 @@ virgil.identity.verify({
 	// use confirmation code that has been sent to you email box.
 	return virgil.identity.confirm({
 		action_id: verifyResult.action_id,
-		confirmation_code: '%CONFIRMATION_CODE%'
+		confirmation_code: 'CONFIRMATION_CODE'
 	});
 });
 ```
+
 The app is registering a Virgil Card which includes a public key and an email address identifier. The card will be used for the public key identification and searching for it in the Public Keys Service.
 
 ```javascript
 virgil.cards.create({
 	public_key: keyPair.publicKey,
 	private_key: keyPair.privateKey,
-	private_key_password: '<your_private_key_password>',
+	private_key_password: 'YOUR_PRIVATE_KEY_PASSWORD',
 	identity: {
 		type: 'email',
 		value: 'user@virgilsecurity.com',
-		validation_token: 'token from identity.confirm'
+		validation_token: 'TOKEN_FROM_IDENTITY.CONFIRM'
 	}
 });
 ```
 
 ## Step 2. Encrypt and Sign
-The app is searching for the recipient's public key on the Public Keys Service to encrypt a message for him. The app is signing the encrypted message with sender's private key so that the recipient can make sure the message had been sent from the declared sender.
+The app is searching for the recipient’s public key on the Public Keys Service to encrypt a message for him. The app is signing the encrypted message with sender’s private key so that the recipient can make sure the message had been sent from the declared sender.
 
 ```javascript
 var message = "Encrypt me, Please!!!";
@@ -130,59 +136,57 @@ virgil.cards.search({ value: 'recipient-test@virgilsecurity.com', type: 'email' 
 
 		var encryptedMessage = virgil.cards.encrypt(message, cards);
 		var sign = virgil.crypto.sign(encryptedMessage, keyPair.privateKey);
-
 		// ...
 	});
 ```
 
-## Step 3. Send an Email
-The app is merging the message and the signature into one structure and sending the letter to the recipient using a simple mail client.
+## Step 3. Send a Message
+The app is merging the message text and the signature into one structure and sending the message to the recipient using a simple IP messaging client.
 
 ```javascript
-var body = JSON.stringify({
-	content: encryptedMessage.toString('base64'),
+channel.sendMessage({
+	to: 'recipient-test@virgilsecurity.com',
+	message: encryptedMessage.toString('base64'),
 	sign: sign.toString('base64')
-});
-
-mailClient.send({
-	to: "recipient-test@virgilsecurity.com",
-	subject: "Secure the Future",
-	body: body
 });
 ```
 
-## Step 4. Receive an Email
-An encrypted letter is received on the recipient's side using a simple mail client.
+## Step 4. Receive a Message
+An encrypted message is received on the recipient’s side using an IP messaging client.
 
 ```javascript
-// get first email with specified subject using simple mail client
-var email = mailClient.getByEmailAndSubject('recipient-test@virgilsecurity.com', 'Secure the Future');
-var body = JSON.parse(email.body);
+// subscribe to channel's new messages.
+channel.on('message', function receiveMessage (message) {
+
+});
 ```
 
 ## Step 5. Get Sender's Card
-
-In order to decrypt the received data the app on recipient's side needs to get sender's Virgil Card from the Public Keys Service.
-
-## Step 6. Verify and Decrypt
-The app is making sure the letter came from the declared sender by getting his card on Public Keys Service. In case of success the app is decrypting the letter using the recipient's private key.
+In order to decrypt and verify the received data the app on recipient’s side needs to get sender’s Virgil Card from the Public Keys Service.
 
 ```javascript
 virgil.cards.search({
-	value: email.from,
+	value: message.from,
 	type: 'email'
 }).then(function (cards) {
-	var senderPublicKey = cards[0].public_key.public_key;
-	var contentBuffer = new Buffer(encryptedBody.content, 'base64');
-	var signBuffer = new Buffer(encryptedBody.sign, 'base64');
 
-	var isValid = virgil.crypto.verify(contentBuffer, senderPublicKey, signBuffer);
-	if (!isValid) {
-		throw new Error('Signature is not valid');
-	}
-
-	var originalMessage = virgil.crypto.decrypt(contentBuffer, recipientKeyPair.privateKey);
 });
+```
+
+## Step 6. Verify and Decrypt
+Application is making sure the message came from the declared sender by getting his card on Public Keys Service. In case of success the message is decrypted using the recipient's private key.
+
+```javascript
+var senderPublicKey = cards[0].public_key.public_key;
+var contentBuffer = new Buffer(encryptedBody.content, 'base64');
+var signBuffer = new Buffer(encryptedBody.sign, 'base64');
+
+var isValid = virgil.crypto.verify(contentBuffer, senderPublicKey, signBuffer);
+if (!isValid) {
+	throw new Error('Signature is not valid');
+}
+
+var originalMessage = virgil.crypto.decrypt(contentBuffer, recipientKeyPair.privateKey);
 ```
 
 ## See Also
