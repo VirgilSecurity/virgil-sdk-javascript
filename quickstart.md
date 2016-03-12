@@ -99,7 +99,11 @@ virgil.identity.verify({
 	// use confirmation code that has been sent to you email box.
 	return virgil.identity.confirm({
 		action_id: verifyResult.action_id,
-		confirmation_code: 'CONFIRMATION_CODE'
+		confirmation_code: 'CONFIRMATION_CODE',
+		token: {
+			time_to_live: 60, // Seconds token will live
+			count_to_live: 1  // How much times token could be used
+		}
 	});
 });
 ```
