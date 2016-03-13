@@ -5,12 +5,11 @@
 - [Install](#install)
 - [Use case](#use-case)
     - [Initialization](#initialization)
-    - [Step 1. Create and Publish the Keys](#step-1-create-and-publish-the-keys)
+    - [Step 1. Generate and Publish the Keys](#step-1-generate-and-publish-the-keys)
     - [Step 2. Encrypt and Sign](#step-2-encrypt-and-sign)
     - [Step 3. Send a Message](#step-3-send-a-message)
     - [Step 4. Receive a Message](#step-4-receive-a-message)
-    - [Step 5. Get Sender's Card](#step-5-get-senders-card)
-    - [Step 6. Verify and Decrypt](#step-6-verify-and-decrypt)
+	- [Step 5. Verify and Decrypt](#step-5-verify-and-decrypt)
 - [See also](#see-also)
 
 ## Introduction
@@ -77,11 +76,10 @@ var Virgil = window.VirgilSDK;
 var virgil = new Virgil("%ACCESS_TOKEN%");
 ```
 
-## Step 1. Create and Publish the Keys
+## Step 1. Generate and Publish the Keys
 First a mail exchange application is generating the keys and publishing them to the Public Keys Service where they are available in an open access for other users (e.g. recipient) to verify and encrypt the data for the key owner.
 
 The following code example creates a new public/private key pair.
-
 
 ```javascript
 var password = "jUfreBR7";
@@ -120,77 +118,73 @@ virgil.cards.create({
 		value: 'user@virgilsecurity.com',
 		validation_token: 'TOKEN_FROM_IDENTITY.CONFIRM'
 	}
+}).then(function (recipientCard) {
+
 });
 ```
 
 ## Step 2. Encrypt and Sign
+
 The app is searching for the recipient’s public key on the Public Keys Service to encrypt a message for him. The app is signing the encrypted message with sender’s private key so that the recipient can make sure the message had been sent from the declared sender.
 
 ```javascript
-var message = "Encrypt me, Please!!!";
-
-virgil.cards.search({ value: 'recipient-test@virgilsecurity.com', type: 'email' })
-	.then(function (recipientCards) {
-		var cards = recipientCards.map(function (card) {
-			return {
-				recipientId: card.identity.id,
-				publicKey: card.public_key.public_key
-			};
-		});
-
-		var encryptedMessage = virgil.cards.encrypt(message, cards);
-		var sign = virgil.crypto.sign(encryptedMessage, keyPair.privateKey);
-		// ...
-	});
+getChannelRecipients()
+	.then(function encryptMessageForAllMembersAndSend (recipients) {
+		const encryptedMessage = virgil.crypto.encrypt(message, recipients);
+		const sign = virgil.crypto.sign(encryptedMessage, privateKey);
+		//...
+	})
+		
 ```
 
 ## Step 3. Send a Message
 The app is merging the message text and the signature into one structure and sending the message to the recipient using a simple IP messaging client.
 
 ```javascript
-channel.sendMessage({
-	to: 'recipient-test@virgilsecurity.com',
-	message: encryptedMessage.toString('base64'),
-	sign: sign.toString('base64')
-});
+messagingService.sendMessageToChannel({
+	channel_name: 'some channel name',
+	identity_token: 'messaging service user identity token',
+	message: JSON.stringify({
+		message: encryptedMessage.toString('base64'),
+		sign: sign.toString('base64')
+	})
+})
 ```
 
 ## Step 4. Receive a Message
-An encrypted message is received on the recipient’s side using an IP messaging client.
+
+An encrypted message is received on the recipient’s side using an IP messaging client. In order to decrypt and verify the received data the app on recipient’s side needs to get sender’s Virgil Card from the Keys Service.
 
 ```javascript
-// subscribe to channel's new messages.
-channel.on('message', function receiveMessage (message) {
-
-});
+messagingService.getChannelMessages({ channel_name: 'some channel name' })
+	.map(function (messagePayload) {
+		return virgil.cards.search({ value: messagePayload.sender_identifier, type: 'email' })
+			.then(function (cards) {
+				var senderCard = cards[0];
+				// ...
+			});
+	})
 ```
 
-## Step 5. Get Sender's Card
-In order to decrypt and verify the received data the app on recipient’s side needs to get sender’s Virgil Card from the Public Keys Service.
+## Step 5. Verify and Decrypt
+
+Application is making sure the message came from the declared sender by getting his card on Virgil Public Keys Service. In case of success the message is decrypted using the recipient's private key.
 
 ```javascript
-virgil.cards.search({
-	value: message.from,
-	type: 'email'
-}).then(function (cards) {
+var payload = JSON.parse(message.message);
+var encryptedMessage = new virgil.crypto.Buffer(payload.message, 'base64');
+var sign = new virgil.crypto.Buffer(payload.sign, 'base64');
 
-});
-```
+var isVerified = virgil.crypto.verify(encryptedMessage, senderCard.public_key.public_key, sign);
 
-## Step 6. Verify and Decrypt
-Application is making sure the message came from the declared sender by getting his card on Public Keys Service. In case of success the message is decrypted using the recipient's private key.
-
-```javascript
-var senderPublicKey = cards[0].public_key.public_key;
-var contentBuffer = new Buffer(encryptedBody.content, 'base64');
-var signBuffer = new Buffer(encryptedBody.sign, 'base64');
-
-var isValid = virgil.crypto.verify(contentBuffer, senderPublicKey, signBuffer);
-if (!isValid) {
-	throw new Error('Signature is not valid');
+if (!isVerified) {
+	throw new Error('The message signature is not valid');
 }
 
-var originalMessage = virgil.crypto.decrypt(contentBuffer, recipientKeyPair.privateKey);
+var decryptedMessage = virgil.crypto.decrypt(encryptedMessage, recipientCard.id, privateKey);
+// Decrypt returns decrypted content as buffer in order to get original text content
+// toString method should be used
+var originalMessage = decryptedMessage.toString('utf8');
 ```
 
 ## See Also
