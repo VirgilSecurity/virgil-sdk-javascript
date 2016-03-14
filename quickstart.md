@@ -200,6 +200,7 @@ var originalMessage = decryptedMessage.toString('utf8');
 ```
 
 - [virgil.crypto.verify] (https://github.com/VirgilSecurity/virgil-crypto-javascript#sign-and-verify-data-using-key)
+- [virgil.crypto.decrypt] (https://github.com/VirgilSecurity/virgil-crypto-javascript#using-key-with-password-for-multiple-recipients)
 
 ## See Also
 
