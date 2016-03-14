@@ -87,6 +87,8 @@ var password = "jUfreBR7";
 var keyPair = virgil.crypto.generateKeyPair(password); 
 ```
 
+- [virgil.crypto.generateKeyPair] (https://github.com/VirgilSecurity/virgil-crypto-javascript/#generate-keys)
+
 The app is verifying whether the user really owns the provided email address and getting a temporary token for public key registration on the Public Keys Service.
 
 ```javascript
@@ -106,6 +108,9 @@ virgil.identity.verify({
 });
 ```
 
+- [virgil.identity.verify] (https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/master/keys.md#request-verification)
+- [virgil.identity.confirm] (https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/master/keys.md#confirm-and-get-an-identity-token)
+
 The app is registering a Virgil Card which includes a public key and an email address identifier. The card will be used for the public key identification and searching for it in the Public Keys Service.
 
 ```javascript
@@ -123,6 +128,8 @@ virgil.cards.create({
 });
 ```
 
+- [virgil.cards.create] (https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/master/keys.md#publish-a-virgil-card)
+
 ## Step 2. Encrypt and Sign
 
 The app is searching for the recipient’s public key on the Public Keys Service to encrypt a message for him. The app is signing the encrypted message with sender’s private key so that the recipient can make sure the message had been sent from the declared sender.
@@ -136,6 +143,9 @@ getChannelRecipients()
 	})
 		
 ```
+
+- [virgil.crypto.encrypt] (https://github.com/VirgilSecurity/virgil-crypto-javascript/#encryptdecrypt-data)
+- [virgil.crypto.sign] (https://github.com/VirgilSecurity/virgil-crypto-javascript#sign-and-verify-data-using-key)
 
 ## Step 3. Send a Message
 The app is merging the message text and the signature into one structure and sending the message to the recipient using a simple IP messaging client.
@@ -166,6 +176,8 @@ messagingService.getChannelMessages({ channel_name: 'some channel name' })
 	})
 ```
 
+- [virgil.cards.search] (https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/master/keys.md#search-for-cards)
+
 ## Step 5. Verify and Decrypt
 
 Application is making sure the message came from the declared sender by getting his card on Virgil Public Keys Service. In case of success the message is decrypted using the recipient's private key.
@@ -186,6 +198,8 @@ var decryptedMessage = virgil.crypto.decrypt(encryptedMessage, recipientCard.id,
 // toString method should be used
 var originalMessage = decryptedMessage.toString('utf8');
 ```
+
+- [virgil.crypto.verify] (https://github.com/VirgilSecurity/virgil-crypto-javascript#sign-and-verify-data-using-key)
 
 ## See Also
 
