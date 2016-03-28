@@ -31,6 +31,10 @@ test('identity verify flow', function testVerify (t) {
 			setTimeout(function () {
 				mailinator.getMessagesAsync(username)
 					.then(function (messages) {
+
+						t.ok(messages, 'got mailinator messages');
+						t.ok(messages.length > 0, 'ok with mailinator messages');
+
 						return mailinator.readMessageAsync(messages[messages.length - 1].id)
 							.then(function (message) {
 								var matches = message.data.parts[0].body.match(/\>(.+)\<\/b\>/);
