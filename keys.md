@@ -120,6 +120,16 @@ virgil.cards.search({
 });
 ```
 
+Search for the Virgil Card including cards with unconfirmed Identity.
+
+```javascript
+virgil.cards.search({
+	value: "test2@virgilsecurity.com",
+	type: 'email',
+	include_unconfirmed: true
+});
+```
+
 #### Search for Application Cards
 
 Search for the Virgil Cards by a defined pattern. The example below returns a list of applications for Virgil Security company.
