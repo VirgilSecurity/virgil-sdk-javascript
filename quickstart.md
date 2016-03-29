@@ -92,7 +92,7 @@ var keyPair = virgil.crypto.generateKeyPair(password);
 ```
 - [virgil.crypto.generateKeyPair] (https://github.com/VirgilSecurity/virgil-crypto-javascript/#generate-keys)
 
-The app is registering a Virgil Card which includes a public key and an email address identifier. The card will be used for the public key identification and searching for it in the Public Keys Service.
+The app is registering a Virgil Card which includes a public key and an email address identifier. The card will be used for the public key identification and searching for it in the Public Keys Service. You can create a Virgil Card with or without identity verification, see both examples [here...](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/master/keys.md#publish-a-virgil-card)
 
 ```javascript
 virgil.cards.create({
