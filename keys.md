@@ -48,7 +48,7 @@ First you must create a free Virgil Security developer's account by signing up [
 
 The access token provides an authenticated secure access to the Public Keys Service and is passed with each API call. The access token also allows the API to associate your app’s requests with your Virgil Security developer's account.
 
-Simply add your access token to the client constuctor.
+Simply add your access token to the client constructor.
 
 ```javascript
 var virgil = new Virgil("%ACCESS_TOKEN%");
@@ -64,8 +64,8 @@ Initialize the identity verification process.
 
 ```javascript
 virgil.identity.verify({
-	type: 'email',
-	value: 'test1@virgilsecurity.com'
+    type: 'email',
+    value: 'test1@virgilsecurity.com'
 });
 ```
 
@@ -75,21 +75,23 @@ Confirm the identity and get a temporary token.
 
 ```javascript
 virgil.identity.confirm({
-	action_id: 'action_id field from identity.verify response',
-	confirmation_code: 'confirmation code sent to your email',
-	token: {
-		// How long this token will live
-		time_to_live: 3600,
+    action_id: 'action_id field from identity.verify response',
+    confirmation_code: 'confirmation code sent to your email',
+    token: {
+        // How long this token will live
+        time_to_live: 3600,
 
-		// How many times it could be used
-		count_to_live: 1
-	}
+        // How many times it could be used
+        count_to_live: 1
+    }
 });
 ```
 
 ## Cards and Public Keys
 
 A Virgil Card is the main entity of the Public Keys Service, it includes the information about the user and his public key. The Virgil Card identifies the user by one of his available types, such as an email, a phone number, etc.
+
+The Virgil Card might be created with a confirmed or unconfirmed Identity. The difference is whether Virgil Services take part in [the Identity verfification](#identity-check). With confirmed Cards you can be sure that the account with a particular email has been verified and the email owner is really the Identity owner. Be careful using unconfirmed Cards because they could have been created by any user. 
 
 #### Publish a Virgil Card
 
@@ -98,29 +100,29 @@ An identity token which can be received [here](#identity-check) is used during t
 ```javascript
 var keyPair = new virgil.crypto.generateKeyPair();
 virgil.cards.create({
-	public_key: keyPair.publicKey,
-	private_key: keyPair.privateKey,
-	private_key_password: '<your_private_key_password>',
-	identity: {
-		type: 'email',
-		value: 'user@virgilsecurity.com',
-		validation_token: 'token from identity.confirm'
-	}
+    public_key: keyPair.publicKey,
+    private_key: keyPair.privateKey,
+    private_key_password: '<your_private_key_password>',
+    identity: {
+        type: 'email',
+        value: 'user@virgilsecurity.com',
+        validation_token: 'token from identity.confirm'
+    }
 });
 ```
 
-Creating a Card without an Identity verification. Pay attention that you will have to set an additional attribute to include the Cards with unconfirmed Identities into your search, see an [example](https://github.com/VirgilSecurity/virgil-sdk-net/blob/master/Docs/public-keys.md#search-for-cards).
+Creating a Card without an Identity verification. Pay attention that you will have to set an additional attribute to include the Cards with unconfirmed Identities into your search, see an [example](#search-for-cards).
 
 ```javascript
 var keyPair = new virgil.crypto.generateKeyPair();
 virgil.cards.create({
-	public_key: keyPair.publicKey,
-	private_key: keyPair.privateKey,
-	private_key_password: '<your_private_key_password>',
-	identity: {
-		type: 'email',
-		value: 'user@virgilsecurity.com'
-	}
+    public_key: keyPair.publicKey,
+    private_key: keyPair.privateKey,
+    private_key_password: '<your_private_key_password>',
+    identity: {
+        type: 'email',
+        value: 'user@virgilsecurity.com'
+    }
 });
 ```
 
@@ -130,8 +132,8 @@ Search for the Virgil Card by provided parameters.
 
 ```javascript
 virgil.cards.search({
-	value: "test2@virgilsecurity.com",
-	type: 'email'
+    value: "test2@virgilsecurity.com",
+    type: 'email'
 });
 ```
 
@@ -139,9 +141,9 @@ Search for the Virgil Card including cards with unconfirmed Identity.
 
 ```javascript
 virgil.cards.search({
-	value: "test2@virgilsecurity.com",
-	type: 'email',
-	include_unconfirmed: true
+    value: "test2@virgilsecurity.com",
+    type: 'email',
+    include_unconfirmed: true
 });
 ```
 
@@ -161,11 +163,11 @@ The example below demonstrates how to certify a user's Virgil Card by signing it
 
 ```javascript
 virgil.cards.trust({
-	signed_virgil_card_id: 'virgil_card_id you want to give trust to',
-	signed_virgil_card_hash: 'hash of virgil card you want to trust',
-	private_key: 'your private key',
-	private_key_password: '<your_private_key_password>',
-	virgil_card_id: 'your virgil_card_id'
+    signed_virgil_card_id: 'virgil_card_id you want to give trust to',
+    signed_virgil_card_hash: 'hash of virgil card you want to trust',
+    private_key: 'your private key',
+    private_key_password: '<your_private_key_password>',
+    virgil_card_id: 'your virgil_card_id'
 });
 ```
 
@@ -175,10 +177,10 @@ Naturally it is possible to stop trusting the Virgil Card owner as in all relati
 
 ```javascript
 virgil.cards.untrust({
-	signed_virgil_card_id: 'virgil_card_id you want to give trust to',
-	private_key: 'your private key',
-	private_key_password: '<your_private_key_password>',
-	virgil_card_id: 'your virgil_card_id'
+    signed_virgil_card_id: 'virgil_card_id you want to give trust to',
+    private_key: 'your private key',
+    private_key_password: '<your_private_key_password>',
+    virgil_card_id: 'your virgil_card_id'
 });
 ```
 #### Revoke a Virgil Card
@@ -187,14 +189,14 @@ This operation is used to delete the Virgil Card from the search and mark it as 
 
 ```javascript
 virgil.cards.revoke({
-	virgil_card_id: 'your virgil card id',
-	private_key: 'your private key',
-	private_key_password: '<your_private_key_password>',
-	identity: {
-		type: 'email',
-		value: 'user@virgilsecurity.com',
-		validation_token: 'token from identity.confirm'
-	}
+    virgil_card_id: 'your virgil card id',
+    private_key: 'your private key',
+    private_key_password: '<your_private_key_password>',
+    identity: {
+        type: 'email',
+        value: 'user@virgilsecurity.com',
+        validation_token: 'token from identity.confirm'
+    }
 });
 ```
 
@@ -222,13 +224,13 @@ Private key can be added for storage only in case you have already registered a 
 
 Use the public key identifier on the Public Keys Service to save the private keys. 
 
-The Private Keys Service stores private keys the original way as they were transferred. That's why we strongly recommend to trasfer the keys which were generated with a password.
+The Private Keys Service stores private keys the original way as they were transferred. That's why we strongly recommend to transfer the keys which were generated with a password.
 
 ```javascript
 virgil.privateKeys.stash({
-	virgil_card_id: 'your virgil card id',
-	private_key: 'your private key',
-	private_key_password: '<your_private_key_password>'
+    virgil_card_id: 'your virgil card id',
+    private_key: 'your private key',
+    private_key_password: '<your_private_key_password>'
 }).then(...);
 ```
 
@@ -238,27 +240,27 @@ To get a private key you need to pass a prior verification of the Virgil Card wh
   
 ```javascript
 virgi.identity.verify({
-	type: 'email',
-	value: 'test1@virgilsecurity.com'
+    type: 'email',
+    value: 'test1@virgilsecurity.com'
 }).then(function confirmIdentity (verifyResult) {
-	// use confirmation code that has been sent to you email box.
-	return virgil.identity.confirm({
-		action_id: verifyResult.action_id,
-		confirmation_code: 'confirmation code from email',
-		token: {
-			time_to_live: 3600,
-			count_to_live: 1
-		}
-	});
+    // use confirmation code that has been sent to you email box.
+    return virgil.identity.confirm({
+        action_id: verifyResult.action_id,
+        confirmation_code: 'confirmation code from email',
+        token: {
+            time_to_live: 3600,
+            count_to_live: 1
+        }
+    });
 }).then(function getPrivateKey (confirmResult) {
-	return virgil.privateKeys.get({
-		virgil_card_id: 'your virgil card id',
-		identity: {
-			type: 'email',
-			value: 'test1@virgilsecurity.com',
-			validation_token: confirmResult.validation_token
-		}
-	});
+    return virgil.privateKeys.get({
+        virgil_card_id: 'your virgil card id',
+        identity: {
+            type: 'email',
+            value: 'test1@virgilsecurity.com',
+            validation_token: confirmResult.validation_token
+        }
+    });
 });
 ```
 
@@ -268,9 +270,9 @@ This operation deletes the private key from the service without a possibility to
   
 ```javascript
 virgil.privateKeys.destroy({
-	virgil_card_id: 'your virgil card id',
-	private_key: 'your privateKey',
-	private_key_password: '<your_private_key_password>'
+    virgil_card_id: 'your virgil card id',
+    private_key: 'your privateKey',
+    private_key_password: '<your_private_key_password>'
 });
 ```
 
