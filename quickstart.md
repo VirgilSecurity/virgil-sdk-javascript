@@ -90,30 +90,7 @@ var password = "jUfreBR7";
 // the private key's password is optional 
 var keyPair = virgil.crypto.generateKeyPair(password); 
 ```
-
 - [virgil.crypto.generateKeyPair] (https://github.com/VirgilSecurity/virgil-crypto-javascript/#generate-keys)
-
-The app is verifying whether the user really owns the provided email address and getting a temporary token for public key registration on the Public Keys Service.
-
-```javascript
-virgil.identity.verify({
-	type: 'email',
-	value: 'user@virgilsecurity.com'
-}).then(function confirmIdentity (verifyResult) {
-	// use confirmation code that has been sent to you email box.
-	return virgil.identity.confirm({
-		action_id: verifyResult.action_id,
-		confirmation_code: 'CONFIRMATION_CODE',
-		token: {
-			time_to_live: 60, // Seconds token will live
-			count_to_live: 1  // How much times token could be used
-		}
-	});
-});
-```
-
-- [virgil.identity.verify] (https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/master/keys.md#request-verification)
-- [virgil.identity.confirm] (https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/master/keys.md#confirm-and-get-an-identity-token)
 
 The app is registering a Virgil Card which includes a public key and an email address identifier. The card will be used for the public key identification and searching for it in the Public Keys Service.
 
@@ -124,10 +101,9 @@ virgil.cards.create({
 	private_key_password: 'YOUR_PRIVATE_KEY_PASSWORD',
 	identity: {
 		type: 'email',
-		value: 'user@virgilsecurity.com',
-		validation_token: 'TOKEN_FROM_IDENTITY.CONFIRM'
+		value: 'user@virgilsecurity.com'
 	}
-}).then(function (recipientCard) {
+}).then(function (myCard) {
 
 });
 ```
