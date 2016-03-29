@@ -91,7 +91,7 @@ virgil.identity.confirm({
 
 A Virgil Card is the main entity of the Public Keys Service, it includes the information about the user and his public key. The Virgil Card identifies the user by one of his available types, such as an email, a phone number, etc.
 
-The Virgil Card might be created with a confirmed or unconfirmed Identity. The difference is whether Virgil Services take part in [the Identity verfification](#identity-check). With confirmed Cards you can be sure that the account with a particular email has been verified and the email owner is really the Identity owner. Be careful using unconfirmed Cards because they could have been created by any user. 
+The Virgil Card might be created with a confirmed or unconfirmed Identity. The difference is whether Virgil Services take part in [the Identity verification](#identity-check). With confirmed Cards you can be sure that the account with a particular email has been verified and the email owner is really the Identity owner. Be careful using unconfirmed Cards because they could have been created by any user. 
 
 #### Publish a Virgil Card
 
@@ -224,7 +224,7 @@ Private key can be added for storage only in case you have already registered a 
 
 Use the public key identifier on the Public Keys Service to save the private keys. 
 
-The Private Keys Service stores private keys the original way as they were transferred. That's why we strongly recommend to transfer the keys which were generated with a password.
+The Private Keys Service stores private keys the original way as they were transferred. That's why we strongly recommend  transferring the keys which were generated with a password.
 
 ```javascript
 virgil.privateKeys.stash({
