@@ -109,6 +109,21 @@ virgil.cards.create({
 });
 ```
 
+Creating a Card without an Identity verification. Pay attention that you will have to set an additional attribute to include the Cards with unconfirmed Identities into your search, see an [example](https://github.com/VirgilSecurity/virgil-sdk-net/blob/master/Docs/public-keys.md#search-for-cards).
+
+```javascript
+var keyPair = new virgil.crypto.generateKeyPair();
+virgil.cards.create({
+	public_key: keyPair.publicKey,
+	private_key: keyPair.privateKey,
+	private_key_password: '<your_private_key_password>',
+	identity: {
+		type: 'email',
+		value: 'user@virgilsecurity.com'
+	}
+});
+```
+
 #### Search for Cards
 
 Search for the Virgil Card by provided parameters.
