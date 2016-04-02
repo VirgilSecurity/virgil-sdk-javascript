@@ -19,6 +19,10 @@ module.exports = function (email) {
 			setTimeout(function () {
 				mailinator.getMessagesAsync(username)
 					.then(function (messages) {
+						if (!messages || !messages.length) {
+							throw new Error('Failed to fetch emails from mailinator');
+						}
+
 						return mailinator.readMessageAsync(messages[messages.length - 1].id)
 							.then(function (message) {
 								var matches = message.data.parts[0].body.match(/\>(.+)\<\/b\>/);
@@ -27,7 +31,7 @@ module.exports = function (email) {
 					})
 					.then(resolve)
 					.catch(reject);
-			}, 200);
+			}, 600);
 		});
 	}
 
