@@ -3,6 +3,7 @@ var virgil = require('./helpers/virgil');
 var getIdentity = require('./helpers/get-identity');
 
 var keyPair = virgil.crypto.generateKeyPair();
+var APP_NAMESPACE = process.env.VIRGIL_APP_NAMESPACE || 'com.testjavascript';
 
 var signedCard = {
 	id: 'e812f5af-0c06-4326-844b-0a31ab2c251a',
@@ -40,6 +41,7 @@ test('virgil cards flow', function testVerify (t) {
 
 	function assertPublishResponse (res) {
 		logResponse('cards.create', res);
+		t.ok(res, 'card is published');
 		t.ok(res.is_confirmed, 'card is confirmed');
 		t.ok(res.identity.is_confirmed, 'identity is confirmed');
 		t.equal(res.public_key.public_key, keyPair.publicKey, 'public key matches');
@@ -55,15 +57,17 @@ test('virgil cards flow', function testVerify (t) {
 
 	function assertSearch (res) {
 		logResponse('cards.search', res);
+		t.ok(res[0], 'card is found');
 		t.equal(res[0].public_key.public_key, keyPair.publicKey, 'search public key is ok');
 	}
 
 	function searchApp () {
-		return virgil.cards.searchApp({ value: "com.testjavascript.*" });
+		return virgil.cards.searchApp({ value: APP_NAMESPACE + ".*" });
 	}
 
 	function assertSearchApp (res) {
 		logResponse('cards.searchApp', res)
+		t.ok(res[0], 'app card is found');
 		t.ok(res[0].is_confirmed, 'found app is confirmed');
 	}
 
@@ -78,6 +82,7 @@ test('virgil cards flow', function testVerify (t) {
 
 	function assertTrust (res) {
 		logResponse('cards.trust', res);
+		t.ok(res, 'trust completed');
 		t.equal(res.signer_virgil_card_id, card.id, 'signer card is ok');
 		t.equal(res.signed_virgil_card_id, signedCard.id, 'signed card is ok');
 	}
@@ -137,6 +142,7 @@ test('virgil cards public passworded key', function (t) {
 
 	function assertPublishResponse (res) {
 		logResponse('cards.create', res);
+		t.ok(res, 'card is published (passworded)');
 		t.ok(res.is_confirmed, 'card is confirmed');
 		t.ok(res.identity.is_confirmed, 'identity is confirmed');
 		t.equal(res.public_key.public_key, keyPair.publicKey, 'public key matches');
