@@ -3,7 +3,7 @@ var virgil = require('./helpers/virgil');
 var getIdentity = require('./helpers/get-identity');
 
 var keyPair = virgil.crypto.generateKeyPair();
-var APP_NAMESPACE = process.env.VIRGIL_APP_NAMESPACE || 'com.testjavascript';
+var APP_NAMESPACE = process.env.VIRGIL_APP_NAMESPACE || 'com.virgilsecurity';
 
 var signedCard = {
 	id: 'e812f5af-0c06-4326-844b-0a31ab2c251a',
