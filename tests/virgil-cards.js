@@ -3,12 +3,7 @@ var virgil = require('./helpers/virgil');
 var getIdentity = require('./helpers/get-identity');
 
 var keyPair = virgil.crypto.generateKeyPair();
-var APP_NAMESPACE = process.env.VIRGIL_APP_NAMESPACE || 'com.virgilsecurity';
-
-var signedCard = {
-	id: 'e812f5af-0c06-4326-844b-0a31ab2c251a',
-	hash: 'KkDKOTFTt3SxF+ZEGuhEepqERTpXIIz5fitScB1qvUPWKv8iWkgJPCLi4xPUu5kinxAYBhgAIanunvpgv3uY8A=='
-};
+var signedCard;
 
 test('virgil cards flow', function testVerify (t) {
 	var card, identity;
@@ -62,13 +57,14 @@ test('virgil cards flow', function testVerify (t) {
 	}
 
 	function searchApp () {
-		return virgil.cards.searchApp({ value: APP_NAMESPACE + ".*" });
+		return virgil.cards.searchApp({ value: 'com.virgilsecurity.*' });
 	}
 
 	function assertSearchApp (res) {
 		logResponse('cards.searchApp', res)
 		t.ok(res[0], 'app card is found');
 		t.ok(res[0].is_confirmed, 'found app is confirmed');
+		signedCard = res[0];
 	}
 
 	function trust () {
