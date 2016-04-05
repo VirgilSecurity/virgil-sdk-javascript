@@ -8,9 +8,9 @@ Virgil Security, Inc., guides software developers into the forthcoming security 
 
 ## Resources
 
-* [QuickStart](quickstart.md)
-* [Crypto Library](https://github.com/VirgilSecurity/virgil-crypto-javascript)
-* [SDK](keys.md)
+* [QuickStart](https://github.com/VirgilSecurity/virgil/blob/master/javascript/quickstart/readme.md)
+* [Crypto Library](https://github.com/VirgilSecurity/virgil/blob/master/javascript/crypto-library/readme.md)
+* [SDK](https://github.com/VirgilSecurity/virgil/blob/master/javascript/keys-sdk/readme.md)
 
 ## License
 BSD 3-Clause. See [LICENSE](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE) for details.
