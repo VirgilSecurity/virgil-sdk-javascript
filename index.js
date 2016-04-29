@@ -25,5 +25,9 @@ function VirgilSDK (applicationToken, opts) {
 
 // umd export support
 VirgilSDK.VirgilSDK = VirgilSDK;
+VirgilSDK.utils = {
+	obfuscate: (VirgilCrypto.VirgilCrypto || VirgilCrypto).obfuscate,
+	generateValidationToken: (VirgilCrypto.VirgilCrypto || VirgilCrypto).generateValidationToken
+};
 
 module.exports = VirgilSDK;
