@@ -1,6 +1,7 @@
 var test = require('tape');
 var virgil = require('./helpers/virgil');
 var getIdentity = require('./helpers/get-identity');
+var VirgilSDK = require('../');
 
 var keyPair = virgil.crypto.generateKeyPair();
 var signedCard;
@@ -13,12 +14,8 @@ test('virgil cards flow', function testVerify (t) {
 		.tap(assertPublishResponse)
 		.then(search)
 		.tap(assertSearch)
-		.then(searchApp)
-		.tap(assertSearchApp)
-		.then(trust)
-		.tap(assertTrust)
-		.then(untrust)
-		.tap(assertUntrust)
+		.then(searchGlobal)
+		.tap(assertSearchGlobal)
 		.then(getPublicKey)
 		.tap(assertGetPublicKey)
 		.then(revokeCard)
@@ -56,43 +53,15 @@ test('virgil cards flow', function testVerify (t) {
 		t.equal(res[0].public_key.public_key, keyPair.publicKey, 'search public key is ok');
 	}
 
-	function searchApp () {
-		return virgil.cards.searchApp({ value: 'com.virgilsecurity.*' });
+	function searchGlobal () {
+		return virgil.cards.searchGlobal({ value: 'com.virgilsecurity.*', type: VirgilSDK.IdentityTypes.application });
 	}
 
-	function assertSearchApp (res) {
-		logResponse('cards.searchApp', res)
+	function assertSearchGlobal (res) {
+		logResponse('cards.searchGlobal', res)
 		t.ok(res[0], 'app card is found');
 		t.ok(res[0].is_confirmed, 'found app is confirmed');
 		signedCard = res[0];
-	}
-
-	function trust () {
-		return virgil.cards.trust({
-			signed_virgil_card_id: signedCard.id,
-			signed_virgil_card_hash: signedCard.hash,
-			private_key: keyPair.privateKey,
-			virgil_card_id: card.id
-		});
-	}
-
-	function assertTrust (res) {
-		logResponse('cards.trust', res);
-		t.ok(res, 'trust completed');
-		t.equal(res.signer_virgil_card_id, card.id, 'signer card is ok');
-		t.equal(res.signed_virgil_card_id, signedCard.id, 'signed card is ok');
-	}
-
-	function untrust () {
-		return virgil.cards.untrust({
-			signed_virgil_card_id: signedCard.id,
-			private_key: keyPair.privateKey,
-			virgil_card_id: card.id
-		});
-	}
-
-	function assertUntrust (res) {
-		logResponse('cards.untrust', res);
 	}
 
 	function getPublicKey () {
