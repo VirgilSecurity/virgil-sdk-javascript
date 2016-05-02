@@ -109,7 +109,7 @@ function getRequestHeaders (requestBody, privateKey, privateKeyPassword) {
 function encryptBody (requestBody) {
 	var self = this;
 
-	return fetchVirgilPrivateKeysCard(self.cardsClient)
+	return fetchVirgilPrivateKeysCard(self.cardsClient, this.crypto.IdentityTypes.application)
 		.then(function fetchVirgilCard (privateKeysCard) {
 			var requestBodyString = JSON.stringify(requestBody);
 			var privateKeysServicePublicKey = privateKeysCard.public_key.public_key;
@@ -141,13 +141,13 @@ function transformResponseGet (response, originalParams, requestParams) {
 	});
 }
 
-function fetchVirgilPrivateKeysCard (cardsClient) {
+function fetchVirgilPrivateKeysCard (cardsClient, identityType) {
 	if (fetchVirgilPrivateKeysCard.card) {
 		return new Promise(function(resolve) {
 			resolve(fetchVirgilPrivateKeysCard.card);
 		});
 	} else {
-		return cardsClient.searchApp({ value: PRIVATE_KEYS_SERVICE_APP_ID })
+		return cardsClient.searchGlobal({ value: PRIVATE_KEYS_SERVICE_APP_ID, type: identityType })
 			.then(function searchVirgilCard (cards) {
 				return fetchVirgilPrivateKeysCard.card = cards[0];
 			});
