@@ -35,6 +35,6 @@ VirgilSDK.utils = {
 };
 
 // Expose idenity types enum
-VirgilSDK.IdentityTypes = Crypto.IdentityTypes;
+VirgilSDK.IdentityTypes = Crypto.IdentityTypesEnum;
 
 module.exports = VirgilSDK;
