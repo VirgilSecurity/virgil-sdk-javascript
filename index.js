@@ -23,11 +23,18 @@ function VirgilSDK (applicationToken, opts) {
 	this.identity = createIdentityApi(opts);
 }
 
+var Crypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
+
 // umd export support
 VirgilSDK.VirgilSDK = VirgilSDK;
+
+// Expose some utils
 VirgilSDK.utils = {
-	obfuscate: (VirgilCrypto.VirgilCrypto || VirgilCrypto).obfuscate,
-	generateValidationToken: (VirgilCrypto.VirgilCrypto || VirgilCrypto).generateValidationToken
+	obfuscate: Crypto.obfuscate,
+	generateValidationToken: Crypto.generateValidationToken
 };
+
+// Expose idenity types enum
+VirgilSDK.IdentityTypes = Crypto.IdentityTypes;
 
 module.exports = VirgilSDK;
