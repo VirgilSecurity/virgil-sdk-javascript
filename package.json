@@ -32,7 +32,7 @@
     "apiapi": "^1.7.0",
     "bluebird": "^2.10.2",
     "node-uuid": "^1.4.3",
-    "virgil-crypto": "^1.5.0"
+    "virgil-crypto": "^1.5.1"
   },
   "devDependencies": {
     "buffer": "^3.6.0",
