@@ -81,12 +81,19 @@ return /******/ (function(modules) { // webpackBootstrap
 		this.identity = createIdentityApi(opts);
 	}
 
+	var Crypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
+
 	// umd export support
 	VirgilSDK.VirgilSDK = VirgilSDK;
+
+	// Expose some utils
 	VirgilSDK.utils = {
-		obfuscate: (VirgilCrypto.VirgilCrypto || VirgilCrypto).obfuscate,
-		generateValidationToken: (VirgilCrypto.VirgilCrypto || VirgilCrypto).generateValidationToken
+		obfuscate: Crypto.obfuscate,
+		generateValidationToken: Crypto.generateValidationToken
 	};
+
+	// Expose idenity types enum
+	VirgilSDK.IdentityTypes = Crypto.IdentityTypesEnum;
 
 	module.exports = VirgilSDK;
 
@@ -14596,7 +14603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function encryptBody(requestBody) {
 		var self = this;
 
-		return fetchVirgilPrivateKeysCard(self.cardsClient).then(function fetchVirgilCard(privateKeysCard) {
+		return fetchVirgilPrivateKeysCard(self.cardsClient, this.crypto.IdentityTypes.application).then(function fetchVirgilCard(privateKeysCard) {
 			var requestBodyString = JSON.stringify(requestBody);
 			var privateKeysServicePublicKey = privateKeysCard.public_key.public_key;
 
@@ -14626,13 +14633,13 @@ return /******/ (function(modules) { // webpackBootstrap
 		});
 	}
 
-	function fetchVirgilPrivateKeysCard(cardsClient) {
+	function fetchVirgilPrivateKeysCard(cardsClient, identityType) {
 		if (fetchVirgilPrivateKeysCard.card) {
 			return new Promise(function (resolve) {
 				resolve(fetchVirgilPrivateKeysCard.card);
 			});
 		} else {
-			return cardsClient.searchApp({ value: PRIVATE_KEYS_SERVICE_APP_ID }).then(function searchVirgilCard(cards) {
+			return cardsClient.searchGlobal({ value: PRIVATE_KEYS_SERVICE_APP_ID, type: identityType }).then(function searchVirgilCard(cards) {
 				return fetchVirgilPrivateKeysCard.card = cards[0];
 			});
 		}
@@ -14837,10 +14844,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			methods: {
 				create: 'post /virgil-card',
 				revoke: 'delete /virgil-card/{virgil_card_id}',
-				trust: 'post /virgil-card/{virgil_card_id}/actions/sign',
-				untrust: 'post /virgil-card/{virgil_card_id}/actions/unsign',
 				search: 'post /virgil-card/actions/search',
-				searchApp: 'post /virgil-card/actions/search/app'
+				searchGlobal: 'post /virgil-card/actions/search/{type}'
 			},
 
 			headers: {
@@ -14849,25 +14854,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 			transformRequest: {
 				create: create,
-				revoke: untrust,
-				trust: trust,
-				untrust: untrust
+				revoke: revoke
 			},
 
 			body: {
 				create: ['public_key_id', 'public_key', 'identity', 'data'],
 				revoke: ['identity'],
-				trust: ['signed_virgil_card_id', 'signed_digest'],
-				unsign: ['signed_virgil_card_id'],
-				search: ['value', 'type', 'relations', 'include_unconfirmed'],
-				searchApp: ['value']
+				searchGlobal: ['value', 'type', 'include_unauthorized'],
+				search: ['value']
 			},
 
 			required: {
-				trust: ['signed_virgil_card_id', 'signed_virgil_card_hash', 'private_key', 'virgil_card_id'],
-				untrust: ['signed_virgil_card_id', 'private_key', 'virgil_card_id'],
-				search: ['value', 'type'],
-				searchApp: ['value']
+				searchGlobal: ['value', 'type'],
+				search: ['value']
 			},
 
 			errorHandler: errorHandler,
@@ -14875,10 +14874,8 @@ return /******/ (function(modules) { // webpackBootstrap
 			transformResponse: {
 				create: transformResponse,
 				revoke: transformResponse,
-				trust: transformResponse,
-				untrust: transformResponse,
 				search: transformSearchResponse,
-				searchApp: transformSearchResponse
+				searchGlobal: transformSearchResponse
 			}
 		});
 
@@ -14889,19 +14886,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		return apiClient;
 	};
 
-	function trust(params, requestBody, opts) {
-		var self = this;
-		return this.crypto.signAsync(params.signed_virgil_card_hash, params.private_key, params.private_key_password).then(function (signedDigest) {
-			requestBody.signed_digest = signedDigest.toString('base64');
-
-			return self.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function (headers) {
-				opts.headers = headers;
-				return [params, requestBody, opts];
-			});
-		});
-	}
-
-	function untrust(params, requestBody, opts) {
+	function revoke(params, requestBody, opts) {
 		return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function (headers) {
 			opts.headers = headers;
 			return [params, requestBody, opts];
@@ -29551,7 +29536,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				return _buffer.Buffer;
 			}
 		});
-		var Version = ("1.4.0");
+		var Version = ("1.5.2");
 		exports.Version = Version;
 		var VirgilCrypto = babelHelpers._extends({ Buffer: Buffer }, VirgilCryptoAPI);
 		exports.VirgilCrypto = VirgilCrypto;
@@ -54330,7 +54315,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		module.exports = {
 			email: 'email',
-			custom: 'custon'
+			application: 'application'
 		};
 
 	/***/ },
