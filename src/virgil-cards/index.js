@@ -12,10 +12,8 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		methods: {
 			create: 'post /virgil-card',
 			revoke: 'delete /virgil-card/{virgil_card_id}',
-			trust: 'post /virgil-card/{virgil_card_id}/actions/sign',
-			untrust: 'post /virgil-card/{virgil_card_id}/actions/unsign',
 			search: 'post /virgil-card/actions/search',
-			searchApp: 'post /virgil-card/actions/search/app'
+			searchGlobal: 'post /virgil-card/actions/search/{type}'
 		},
 
 		headers: {
@@ -24,25 +22,19 @@ module.exports = function createAPIClient (applicationToken, opts) {
 
 		transformRequest: {
 			create: create,
-			revoke: untrust,
-			trust: trust,
-			untrust: untrust
+			revoke: revoke
 		},
 
 		body: {
 			create: ['public_key_id', 'public_key', 'identity', 'data'],
 			revoke: ['identity'],
-			trust: ['signed_virgil_card_id', 'signed_digest'],
-			unsign: ['signed_virgil_card_id'],
-			search: ['value', 'type', 'relations', 'include_unconfirmed'],
-			searchApp: ['value']
+			searchGlobal: ['value', 'type', 'include_unauthorized'],
+			search: ['value']
 		},
 
 		required: {
-			trust: ['signed_virgil_card_id', 'signed_virgil_card_hash', 'private_key', 'virgil_card_id'],
-			untrust: ['signed_virgil_card_id', 'private_key', 'virgil_card_id'],
-			search: ['value', 'type'],
-			searchApp: ['value']
+			searchGlobal: ['value', 'type'],
+			search: ['value']
 		},
 
 		errorHandler: errorHandler,
@@ -50,10 +42,8 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		transformResponse: {
 			create: transformResponse,
 			revoke: transformResponse,
-			trust: transformResponse,
-			untrust: transformResponse,
 			search: transformSearchResponse,
-			searchApp: transformSearchResponse
+			searchGlobal: transformSearchResponse
 		}
 	});
 
@@ -64,19 +54,8 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	return apiClient;
 };
 
-function trust (params, requestBody, opts) {
-	var self = this;
-	return this.crypto.signAsync(params.signed_virgil_card_hash, params.private_key, params.private_key_password).then(function(signedDigest) {
-		requestBody.signed_digest = signedDigest.toString('base64');
 
-		return self.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function(headers) {
-			opts.headers = headers;
-			return [params, requestBody, opts];
-		});
-	});
-}
-
-function untrust (params, requestBody, opts) {
+function revoke (params, requestBody, opts) {
 	return this.getRequestHeaders(requestBody, params.private_key, params.virgil_card_id, params.private_key_password).then(function(headers) {
 		opts.headers = headers;
 		return [params, requestBody, opts];
