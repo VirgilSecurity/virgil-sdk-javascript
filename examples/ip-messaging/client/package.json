@@ -40,7 +40,7 @@
     "sass-loader": "^3.0.0",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.6",
-    "virgil-sdk": "^1.1.1",
+    "virgil-sdk": "^1.4.1",
     "webpack": "^1.12.2",
     "webpack-dev-server": "^1.14.0"
   }

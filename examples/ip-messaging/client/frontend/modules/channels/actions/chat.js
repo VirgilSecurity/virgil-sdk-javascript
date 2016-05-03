@@ -155,6 +155,6 @@ function findCardsByEmail (email) {
 		return Promise.resolve(cardsCache[email]);
 	}
 
-	return virgil.cards.search({ value: email, type: 'email' })
+	return virgil.cards.searchGlobal({ value: email, type: 'email' })
 		.tap(cards => cardsCache[email] = cards);
 }
