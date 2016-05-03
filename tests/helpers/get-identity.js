@@ -31,7 +31,7 @@ module.exports = function (email) {
 					})
 					.then(resolve)
 					.catch(reject);
-			}, 1500);
+			}, 10000);
 		});
 	}
 
