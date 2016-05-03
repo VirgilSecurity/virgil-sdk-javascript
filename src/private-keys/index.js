@@ -109,7 +109,7 @@ function getRequestHeaders (requestBody, privateKey, privateKeyPassword) {
 function encryptBody (requestBody) {
 	var self = this;
 
-	return fetchVirgilPrivateKeysCard(self.cardsClient, this.crypto.IdentityTypes.application)
+	return fetchVirgilPrivateKeysCard(self.cardsClient, this.crypto.IdentityTypesEnum.application)
 		.then(function fetchVirgilCard (privateKeysCard) {
 			var requestBodyString = JSON.stringify(requestBody);
 			var privateKeysServicePublicKey = privateKeysCard.public_key.public_key;
