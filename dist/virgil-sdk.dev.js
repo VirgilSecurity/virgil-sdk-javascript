@@ -14603,7 +14603,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function encryptBody(requestBody) {
 		var self = this;
 
-		return fetchVirgilPrivateKeysCard(self.cardsClient, this.crypto.IdentityTypes.application).then(function fetchVirgilCard(privateKeysCard) {
+		return fetchVirgilPrivateKeysCard(self.cardsClient, this.crypto.IdentityTypesEnum.application).then(function fetchVirgilCard(privateKeysCard) {
 			var requestBodyString = JSON.stringify(requestBody);
 			var privateKeysServicePublicKey = privateKeysCard.public_key.public_key;
 
@@ -14783,45 +14783,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	module.exports = {
-		'20100': "The request ID header was used already",
-		'20101': "The request ID header is invalid",
-		'20200': "The request sing header not found",
-		'20201': "The Virgil Card ID header not specified or incorrect",
-		'20202': "The request sign header is invalid",
-		'20203': "Public Key value is required in request body",
-		'20204': "Public Key value in request body must be base64 encoded value",
-		'20205': "Public Key IDs in URL part and public key for the Virgil Card retrieved from X-VIRGIL-REQUEST-SIGN-VIRGIL-CARD-ID header must match",
-		'20206': "The public key id in the request body is invalid",
-		'20208': "Virgil card ids in url and authentication header must match",
-		'20300': "The Virgil application token was not specified or invalid",
-		'20301': "The Virgil statistics application error",
-		'30000': "JSON specified as a request body is invalid",
-		'30100': "Public Key ID is invalid",
-		'30101': "Public key length invalid",
-		'30102': "Public key must be base64-encoded string",
-		'30201': "Identity type is invalid. Valid types are: 'email', 'application'",
-		'30202': "Email value specified for the email identity is invalid",
-		'30203': "Cannot create unconfirmed application identity",
-		'30204': "Application value specified for the application identity is invalid",
-		'30300': "Signed Virgil Card not found by UUID provided",
-		'30301': "Virgil Card's signs list contains an item with invalid signed_id value",
-		'30302': "Virgil Card's one of sined digests is invalid",
-		'30303': "Virgil Card's data parameters must be strings",
-		'30304': "Virgil Card's data parameters must be an array of strings",
-		'30305': "Virgil Card custom data entry value length validation failed",
-		'30306': "Virgil Card cannot sign itself",
-		'30400': "Sign object not found for id specified",
-		'30402': "The signed digest value is invalid",
-		'30403': "Sign Signed digest must be base64 encoded string",
-		'30404': "Cannot save the Sign because it exists already",
-		'31000': "Value search parameter is mandatory",
-		'31010': "Search value parameter is mandatory for the application search",
-		'31020': "Virgil Card's signs parameter must be an array",
-		'31030': "Identity validation token is invalid",
-		'31040': "Virgil Card revokation parameters do not match Virgil Card's identity",
-		'31050': "Virgil Identity service error",
-		'31060': "Identities parameter is invalid",
-		'31070': "Identity validation failed"
+		'10000': 'Internal application error',
+		'20100': 'The request ID header was used already',
+		'20101': 'The request ID header is invalid',
+		'20200': 'The request sing header not found',
+		'20201': 'The Virgil Card ID header not specified or incorrect',
+		'20202': 'The request sign header is invalid',
+		'20203': 'Public Key value is required in request body',
+		'20204': 'Public Key value in request body must be base64 encoded value',
+		'20205': 'Public Key IDs in URL part and public key for the Virgil Card retrieved from X-VIRGIL-REQUEST-SIGN-VIRGIL-CARD-ID header must match',
+		'20206': 'The public key id in the request body is invalid',
+		'20208': 'Virgil card ids in url and authentication header must match',
+		'20300': 'The Virgil application token was not specified or invalid',
+		'20301': 'The Virgil statistics application error',
+		'30000': 'JSON specified as a request body is invalid',
+		'30100': 'Public Key ID is invalid',
+		'30101': 'Public key length invalid',
+		'30102': 'Public key must be base64-encoded string',
+		'30202': 'Email value specified for the email identity is invalid',
+		'30204': 'Application value specified for the application identity is invalid',
+		'30205': 'Custom identity validation failed',
+		'30303': 'Virgil Card\'s data parameters must be strings',
+		'30304': 'Virgil Card\'s data parameter must be a dictionary of strings',
+		'30305': 'Virgil Card custom data entry value length validation failed',
+		'31000': 'Value search parameter is mandatory',
+		'31010': 'Search value parameter is mandatory for the global search',
+		'31030': 'Identity validation token is invalid',
+		'31040': 'Virgil Card revocation parameters do not match Virgil Card\'s identity',
+		'31050': 'Virgil Identity service error',
+		'31051': 'Custom identity\'s validation token is incorrect',
+		'31052': 'Custom identity\'s unique id was used alreaady',
+		'31053': 'Custom identity\'s validation token is malformed',
+		'31060': 'Identities parameter is invalid',
+		'31070': 'Identity validation failed'
 	};
 
 /***/ },
@@ -29536,7 +29530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				return _buffer.Buffer;
 			}
 		});
-		var Version = ("1.5.2");
+		var Version = ("1.5.5");
 		exports.Version = Version;
 		var VirgilCrypto = babelHelpers._extends({ Buffer: Buffer }, VirgilCryptoAPI);
 		exports.VirgilCrypto = VirgilCrypto;
@@ -53764,12 +53758,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 
 			if (!_lodash2['default'].isString(privateKey)) {
-				throw new TypeError('privateKey msut be string');
+				throw new TypeError('privateKey must be string');
 			}
 
 			var uid = _nodeUuid2['default'].v4();
 			var signature = (0, _sign2['default'])(uid + identityType + identityValue, privateKey, privateKeyPassword);
-			var validationToken = Buffer.concat([new Buffer(uid), new Buffer('.'), signature]);
+			var validationToken = Buffer.concat([new Buffer(uid), new Buffer('.'), new Buffer(signature.toString('base64'))]);
 			return validationToken.toString('base64');
 		}
 
@@ -54315,7 +54309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		module.exports = {
 			email: 'email',
-			application: 'application'
+			application: 'app'
 		};
 
 	/***/ },
