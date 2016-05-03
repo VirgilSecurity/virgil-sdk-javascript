@@ -130,7 +130,7 @@ test('create private virgil card', function (t) {
 		var token = VirgilSDK.utils.generateValidationToken(
 			username,
 			identityType,
-			process.env.VIRGIL_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
+			process.env.VIRGIL_APP_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/\|/g, '\n'), // workaround for travis env vars
 			process.env.VIRGIL_APP_PRIVATE_KEY_PASSWORD
 		);
 
