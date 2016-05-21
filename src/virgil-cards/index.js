@@ -29,7 +29,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 			create: ['public_key_id', 'public_key', 'identity', 'data'],
 			revoke: ['identity'],
 			searchGlobal: ['value', 'type', 'include_unauthorized'],
-			search: ['value']
+			search: ['value', 'type']
 		},
 
 		required: {
