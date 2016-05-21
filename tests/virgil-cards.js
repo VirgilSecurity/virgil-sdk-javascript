@@ -161,7 +161,7 @@ test('create private virgil card', function (t) {
 	function search (res) {
 		return virgil.cards.search({
 			value: res.identity.value,
-			type: 'email'
+			type: 'username'
 		});
 	}
 
