@@ -28,6 +28,9 @@ var Crypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 // umd export support
 VirgilSDK.VirgilSDK = VirgilSDK;
 
+// Expose crypto
+VirgilSDK.Crypto = Crypto;
+
 // Expose some utils
 VirgilSDK.utils = {
 	obfuscate: Crypto.obfuscate,

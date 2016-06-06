@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
