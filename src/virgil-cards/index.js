@@ -54,7 +54,12 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	apiClient.crypto = opts.crypto;
 	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
-	apiClient.verifyResponse = createVerifyResponseMethod('com.virgilsecurity.keys', apiClient, apiClient.crypto).verifyResponse;
+	apiClient.verifyResponse = createVerifyResponseMethod(
+		'com.virgilsecurity.keys',
+		apiClient,
+		apiClient.crypto,
+		opts.cardsServicePublicKey
+	).verifyResponse;
 
 	return apiClient;
 };

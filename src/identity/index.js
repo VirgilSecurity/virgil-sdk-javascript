@@ -34,9 +34,13 @@ module.exports = function createAPIClient (opts, cardsClient) {
 		errorHandler: errorHandler
 	});
 
-	apiClient.verifyResponse = createVerifyResponseMethod('com.virgilsecurity.identity', cardsClient, cardsClient.crypto).verifyResponse;
+	apiClient.verifyResponse = createVerifyResponseMethod(
+		'com.virgilsecurity.identity',
+		cardsClient,
+		cardsClient.crypto,
+		opts.identityServicePublicKey
+	).verifyResponse;
 
-	console.log(apiClient.verifyResponse);
 	return apiClient;
 };
 
