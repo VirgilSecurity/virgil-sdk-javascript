@@ -1,6 +1,6 @@
 var ApiClient = require('apiapi');
 var errors = require('./errors');
-var errorHandler = require('../error-handler')(errors);
+var errorHandler = require('../utils/error-handler')(errors);
 
 module.exports = function createAPIClient (opts) {
 	opts = typeof opts === 'object' ? opts : {};

@@ -1,7 +1,9 @@
 var ApiClient = require('apiapi');
 var uuid = require('node-uuid');
 var errors = require('./errors');
-var errorHandler = require('../error-handler')(errors);
+var parseJSON = require('../utils/parse-json');
+var errorHandler = require('../utils/error-handler')(errors);
+var createVerifyResponseMethod = require('../utils/verify-response');
 
 module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};
@@ -19,6 +21,8 @@ module.exports = function createAPIClient (applicationToken, opts) {
 		headers: {
 			'X-VIRGIL-ACCESS-TOKEN': applicationToken
 		},
+
+		rawResponse: true,
 
 		transformRequest: {
 			create: create,
@@ -50,6 +54,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 	apiClient.crypto = opts.crypto;
 	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
 	apiClient.getRequestHeaders = getRequestHeaders;
+	apiClient.verifyResponse = createVerifyResponseMethod('com.virgilsecurity.keys', apiClient, apiClient.crypto).verifyResponse;
 
 	return apiClient;
 };
@@ -96,11 +101,21 @@ function getRequestHeaders (requestBody, privateKey, virgilCardId, privateKeyPas
 }
 
 function transformResponse (res) {
-	return transformRequestPublicKey(res.data);
+	return this.verifyResponse(res)
+		.then(function (card) {
+			return transformRequestPublicKey(parseJSON(res.data));
+		});
 }
 
-function transformSearchResponse (res) {
-	return res.data.map(transformRequestPublicKey, []);
+function transformSearchResponse (res, params) {
+	if (params.ignore_verification) {
+		return parseJSON(res.data).map(transformRequestPublicKey, []);
+	}
+
+	return this.verifyResponse(res)
+		.then(function () {
+			return parseJSON(res.data).map(transformRequestPublicKey, []);
+		});
 }
 
 function transformRequestPublicKey (data) {

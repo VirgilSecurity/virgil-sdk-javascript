@@ -1,8 +1,12 @@
+var parseJSON = require('./parse-json');
 module.exports = function createErrorHandler (errors) {
 	return function handleError (res) {
-		if (res.data && res.data.code) {
-			throw createError(res.data.code);
+		var data = typeof res.data === 'object'? res.data : parseJSON(res.data);
+
+		if (data && data.code) {
+			throw createError(data.code);
 		}
+
 		throw res;
 	};
 

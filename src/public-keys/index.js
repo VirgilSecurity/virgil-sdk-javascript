@@ -1,7 +1,7 @@
 var ApiClient = require('apiapi');
 var uuid = require('node-uuid');
 var errors = require('./errors');
-var errorHandler = require('../error-handler')(errors);
+var errorHandler = require('../utils/error-handler')(errors);
 
 module.exports = function createAPIClient (applicationToken, opts) {
 	opts = typeof opts === 'object' ? opts : {};

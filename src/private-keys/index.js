@@ -2,9 +2,8 @@ var ApiClient = require('apiapi');
 var Promise = require('bluebird');
 var uuid = require('node-uuid');
 var errors = require('./errors');
-var errorHandler = require('../error-handler')(errors);
-
-var PRIVATE_KEYS_SERVICE_APP_ID = 'com.virgilsecurity.private-keys';
+var errorHandler = require('../utils/error-handler')(errors);
+var createFetchServiceCardMethod = require('../utils/verify-response');
 
 module.exports = function createAPIClient (applicationToken, opts, cardsClient) {
 	opts = typeof opts === 'object' ? opts : {};
@@ -51,6 +50,8 @@ module.exports = function createAPIClient (applicationToken, opts, cardsClient) 
 	apiClient.cardsClient = cardsClient;
 	apiClient.crypto = opts.crypto;
 	apiClient.generateUUID = typeof opts.generateUUID === 'function' ? opts.generateUUID : uuid;
+
+	apiClient.fetchServiceCard = createFetchServiceCardMethod('com.virgilsecurity.private-keys', cardsClient, cardsClient.crypto).fetchServiceCard;
 	apiClient.getRequestHeaders = getRequestHeaders;
 	apiClient.encryptBody = encryptBody;
 
@@ -109,7 +110,7 @@ function getRequestHeaders (requestBody, privateKey, privateKeyPassword) {
 function encryptBody (requestBody) {
 	var self = this;
 
-	return fetchVirgilPrivateKeysCard(self.cardsClient, this.crypto.IdentityTypesEnum.application)
+	return this.fetchServiceCard()
 		.then(function fetchVirgilCard (privateKeysCard) {
 			var requestBodyString = JSON.stringify(requestBody);
 			var privateKeysServicePublicKey = privateKeysCard.public_key.public_key;
