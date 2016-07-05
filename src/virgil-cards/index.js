@@ -22,6 +22,7 @@ module.exports = function createAPIClient (applicationToken, opts) {
 			'X-VIRGIL-ACCESS-TOKEN': applicationToken
 		},
 
+		responseType: 'text',
 		rawResponse: true,
 
 		transformRequest: {

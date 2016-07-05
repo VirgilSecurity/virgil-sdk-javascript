@@ -14556,6 +14556,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				validate: ['type', 'value', 'validation_token']
 			},
 
+			responseType: 'text',
 			rawResponse: true,
 			errorHandler: errorHandler
 		});
@@ -14843,6 +14844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			},
 
 			rawResponse: true,
+			responseType: 'text',
 			errorHandler: errorHandler,
 			transformResponse: transformResponse
 		});
@@ -14973,6 +14975,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				'X-VIRGIL-ACCESS-TOKEN': applicationToken
 			},
 
+			responseType: 'text',
 			rawResponse: true,
 
 			transformRequest: {

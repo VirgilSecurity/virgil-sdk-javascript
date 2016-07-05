@@ -30,6 +30,7 @@ module.exports = function createAPIClient (opts, cardsClient) {
 			validate: ['type', 'value', 'validation_token']
 		},
 
+		responseType: 'text',
 		rawResponse: true,
 		errorHandler: errorHandler
 	});

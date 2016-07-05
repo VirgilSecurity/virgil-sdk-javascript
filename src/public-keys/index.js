@@ -28,6 +28,7 @@ module.exports = function createAPIClient (applicationToken, opts, cardsClient) 
 		},
 
 		rawResponse: true,
+		responseType: 'text',
 		errorHandler: errorHandler,
 		transformResponse: transformResponse
 	});
