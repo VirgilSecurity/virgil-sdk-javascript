@@ -1,4 +1,4 @@
-module.exports = {
+export const errors = {
 	'10000': "Internal application error",
 	'10100': "JSON specified as a request body is invalid",
 	'40100': "Identity type is invalid",
@@ -16,5 +16,5 @@ module.exports = {
 	'40300': "Application value is invalid",
 	'40310': "Application's signed message is invalid",
 	'41000': "Identity entity was not found",
-	'41010': "Identity's confirmation period has expired",
+	'41010': "Identity's confirmation period has expired"
 };

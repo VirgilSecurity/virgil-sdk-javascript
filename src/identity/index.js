@@ -1,10 +1,10 @@
-var ApiClient = require('apiapi');
-var errors = require('./errors');
-var errorHandler = require('../utils/error-handler')(errors);
-var parseJSON = require('../utils/parse-json');
-var createVerifyResponseMethod = require('../utils/verify-response');
+import ApiClient from 'apiapi';
+import { errors } from './errors';
+import { createErrorHandler } from '../utils/error-handler';
 
-module.exports = function createAPIClient (opts, cardsClient) {
+const errorHandler = createErrorHandler(errors);
+
+export function createIdentityClient (opts) {
 	opts = typeof opts === 'object' ? opts : {};
 
 	var apiClient = new ApiClient({
@@ -22,32 +22,14 @@ module.exports = function createAPIClient (opts, cardsClient) {
 			validate: ['type', 'value', 'validation_token']
 		},
 
-		transformResponse: transformResponse,
-
 		required: {
 			verify: ['type', 'value'],
 			confirm: ['confirmation_code', 'action_id', 'token'],
 			validate: ['type', 'value', 'validation_token']
 		},
 
-		responseType: 'text',
-		rawResponse: true,
 		errorHandler: errorHandler
 	});
 
-	apiClient.verifyResponse = createVerifyResponseMethod(
-		'com.virgilsecurity.identity',
-		cardsClient,
-		cardsClient.crypto,
-		opts.identityServicePublicKey
-	).verifyResponse;
-
 	return apiClient;
-};
-
-function transformResponse (res) {
-	return this.verifyResponse(res)
-		.then(function parseResponse () {
-			return parseJSON(res.data);
-		})
 }
