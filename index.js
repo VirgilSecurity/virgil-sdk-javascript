@@ -1,43 +1,32 @@
-var VirgilCrypto = require('virgil-crypto');
-var cryptoAsyncPatch = require('./src/crypto-async-patch');
-var createVirgilCardsApi = require('./src/virgil-cards');
-var createPublicKeysApi = require('./src/public-keys');
-var createPrivateKeysApi = require('./src/private-keys');
-var createIdentityApi = require('./src/identity');
+require('babel-register');
 
-function VirgilSDK (applicationToken, opts) {
-	if (!applicationToken) {
-		throw new Error('Application token is required');
-	}
+import { VirgilCrypto } from 'virgil-crypto';
+import { virgilCrypto } from './src/crypto/virgil-crypto';
+import { createVirgilClient } from './src/client/virgil-client';
+import { cardRequest } from './src/client/card-request';
+import { cardRevokeRequest } from './src/client/card-revoke-request';
+import { requestSigner } from './src/common/request-signer';
+import { cardValidator } from './src/common/card-validator';
 
-	opts = opts || {};
-	// trying to get crypto from opts, then checking the es6 module default,
-	// otherwise simply required crypto module
-	opts.crypto = cryptoAsyncPatch(opts.crypto || VirgilCrypto.VirgilCrypto || VirgilCrypto);
-
-	this.applicationToken = applicationToken;
-	this.crypto = opts.crypto;
-	this.cards = createVirgilCardsApi(applicationToken, opts);
-	this.privateKeys = createPrivateKeysApi(applicationToken, opts, this.cards);
-	this.publicKeys = createPublicKeysApi(applicationToken, opts, this.cards);
-	this.identity = createIdentityApi(opts, this.cards);
-}
-
-var Crypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
-
-// umd export support
-VirgilSDK.VirgilSDK = VirgilSDK;
-
-// Expose crypto
-VirgilSDK.Crypto = Crypto;
-
-// Expose some utils
-VirgilSDK.utils = {
-	obfuscate: Crypto.obfuscate,
-	generateValidationToken: Crypto.generateValidationToken
+const virgil = {
+	client: createVirgilClient,
+	crypto: virgilCrypto(),
+	cardCreateRequest: cardRequest,
+	cardRevokeRequest: cardRevokeRequest,
+	requestSigner: requestSigner,
+	cardValidator: cardValidator
 };
 
-// Expose idenity types enum
-VirgilSDK.IdentityTypes = Crypto.IdentityTypesEnum;
+// umd export support
+virgil.virgil = virgil;
 
-module.exports = VirgilSDK;
+// Expose Buffer
+virgil.Buffer = VirgilCrypto.Buffer;
+
+// Expose some utils
+virgil.utils = {
+	obfuscate: VirgilCrypto.obfuscate,
+	generateValidationToken: VirgilCrypto.generateValidationToken
+};
+
+module.exports = virgil;
