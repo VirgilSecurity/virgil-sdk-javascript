@@ -1,4 +1,4 @@
-module.exports = function parseJSON (input) {
+export function parseJSON (input) {
 	try {
 		return JSON.parse(input);
 	} catch (e) {

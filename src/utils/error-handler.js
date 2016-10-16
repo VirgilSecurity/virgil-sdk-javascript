@@ -1,7 +1,8 @@
-var parseJSON = require('./parse-json');
-module.exports = function createErrorHandler (errors) {
+import { parseJSON } from './parse-json';
+
+export function createErrorHandler (errors) {
 	return function handleError (res) {
-		var data = typeof res.data === 'object'? res.data : parseJSON(res.data);
+		const data = typeof res.data === 'object'? res.data : parseJSON(res.data);
 
 		if (data && data.code) {
 			throw createError(data.code);
@@ -11,9 +12,9 @@ module.exports = function createErrorHandler (errors) {
 	};
 
 	function createError (code) {
-		var err = new Error();
+		const err = new Error();
 		err.message = errors[code];
 		err.code = code;
 		return err;
 	}
-};
+}
