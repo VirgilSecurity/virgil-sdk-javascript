@@ -1,5 +1,6 @@
-import { assert } from '../utils/utils';
-import { signableRequest, signableRequestFromTransferFormat } from './signable-request';
+var assert = require('../utils/utils').assert;
+var signableRequest = require('./signable-request').signableRequest;
+var signableRequestFromTransferFormat = require('./signable-request').signableRequestFromTransferFormat;
 
 /**
  * Creates and initializes a request to create Card
@@ -14,10 +15,14 @@ import { signableRequest, signableRequestFromTransferFormat } from './signable-r
  *
  * @returns {Object} - Create Card Request
  * */
-export function cardRequest (params) {
-	const { identity, identity_type, scope = 'application', public_key } = params;
-	const info = params.info ? Object.assign({}, params.info) : null;
-	const data = params.data ? Object.assign({}, params.data) : null;
+function cardRequest (params) {
+	params = params || {};
+	var identity = params.identity,
+		identity_type = params.identity_type,
+		scope = params.scope || 'application',
+		public_key = params.public_key,
+		info = params.info ? Object.assign({}, params.info) : null,
+		data = params.data ? Object.assign({}, params.data) : null;
 
 	assert(identity, '"identity" parameter is required.');
 	assert(identity_type, '"identity_type" parameter is required.');
@@ -26,13 +31,13 @@ export function cardRequest (params) {
 	assert(public_key, '"public_key" parameter is required.');
 	assert(Buffer.isBuffer(public_key), '"public_key" parameter must be a Buffer');
 
-	const requestData = {
-		identity,
-		identity_type,
-		scope,
-		public_key,
-		info,
-		data
+	var requestData = {
+		identity: identity,
+		identity_type: identity_type,
+		scope: scope,
+		public_key: public_key,
+		info: info,
+		data: data
 	};
 
 	return Object.create(signableRequest(requestData));
@@ -44,3 +49,5 @@ export function cardRequest (params) {
  * @returns {Object} - Create Card Request
  * */
 cardRequest.fromTransferFormat = signableRequestFromTransferFormat.bind(cardRequest);
+
+module.exports = cardRequest;

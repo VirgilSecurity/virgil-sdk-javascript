@@ -1,12 +1,10 @@
-import ApiClient from 'apiapi';
-import { errors } from './errors';
-import { createErrorHandler } from '../utils/error-handler';
-import { parseCardResponse } from '../utils/parse-card-response';
+var ApiClient = require('apiapi');
+var errors = require('./errors');
+var errorHandler = require('../utils/error-handler')(errors);
+var parseCardResponse = require('../utils/parse-card-response').parseCardResponse;
 
-const errorHandler = createErrorHandler(errors);
-
-export function createCardsClient (applicationToken, opts = {}) {
-	const apiClient = new ApiClient({
+module.exports = function createCardsClient (applicationToken, opts) {
+	var apiClient = new ApiClient({
 		baseUrl: opts.cardsBaseUrl || 'https://cards.virgilsecurity.com/v4',
 
 		methods: {
@@ -41,7 +39,7 @@ export function createCardsClient (applicationToken, opts = {}) {
 	});
 
 	return apiClient;
-}
+};
 
 function revoke (params, requestBody, opts) {
 	this.assert(params.content_snapshot, '"content_snapshot" parameter is required');

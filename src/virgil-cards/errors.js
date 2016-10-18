@@ -1,4 +1,4 @@
-export const errors = {
+module.exports = {
 	'10000': 'Internal application error',
 	'20300': 'The Virgil application token was not specified or invalid',
 	'20301': 'The Virgil authenticator service responded with an error',

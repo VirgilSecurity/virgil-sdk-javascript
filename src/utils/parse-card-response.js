@@ -1,12 +1,12 @@
-import { parseJSON } from '../utils/parse-json';
-import { deserializeContentSnapshot, deserializePublicKey, deserializeSignatures } from './serializer';
+var parseJSON = require('../utils/parse-json');
+var serializer = require('./serializer');
 
-export function parseCardResponse(res) {
-	const cardData = parseContentSnapshot(res.content_snapshot);
+function parseCardResponse(res) {
+	var cardData = parseContentSnapshot(res.content_snapshot);
 	return {
 		id: res.id,
-		snapshot: deserializeContentSnapshot(res.content_snapshot),
-		publicKey: deserializePublicKey(cardData.public_key),
+		snapshot: serializer.deserializeContentSnapshot(res.content_snapshot),
+		publicKey: serializer.deserializePublicKey(cardData.public_key),
 		identity: cardData.identity,
 		identityType: cardData.identity_type,
 		scope: cardData.scope,
@@ -14,10 +14,15 @@ export function parseCardResponse(res) {
 		info: cardData.info,
 		createdAt: res.meta.created_at,
 		version: res.meta.card_version,
-		signatures: deserializeSignatures(res.meta.signs)
+		signatures: serializer.deserializeSignatures(res.meta.signs)
 	};
 }
 
-export function parseContentSnapshot(snapshot) {
-	return parseJSON(deserializeContentSnapshot(snapshot).toString('utf8'));
+function parseContentSnapshot(snapshot) {
+	return parseJSON(serializer.deserializeContentSnapshot(snapshot).toString('utf8'));
 }
+
+module.exports = {
+	parseCardResponse: parseCardResponse,
+	parseContentSnapshot: parseContentSnapshot
+};

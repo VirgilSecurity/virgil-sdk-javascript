@@ -1,5 +1,5 @@
-import { createReadCardsClient } from '../virgil-cards/cards-read-client';
-import { createCardsClient } from '../virgil-cards/cards-client';
+var createReadCardsClient = require('../virgil-cards/cards-read-client');
+var createCardsClient = require('../virgil-cards/cards-client');
 
 /**
  * @typedef {Object} Card
@@ -34,18 +34,20 @@ import { createCardsClient } from '../virgil-cards/cards-client';
  *
  * @returns {Object} - Virgil Client
  * */
-export function createVirgilClient(accessToken, options = {}) {
+function createVirgilClient(accessToken, options) {
 	if (!accessToken) {
 		throw new Error('Access token is required.');
 	}
 
-	const cardsReadOnlyClient = createReadCardsClient(accessToken, options);
-	const cardsClient = createCardsClient(accessToken, options);
+	options = options || {};
 
-	let cardValidator = null;
-	const validateCards = function (cards) {
+	var cardsReadOnlyClient = createReadCardsClient(accessToken, options);
+	var cardsClient = createCardsClient(accessToken, options);
+
+	var cardValidator = null;
+	var validateCards = function (cards) {
 		cards = Array.isArray(cards) ? cards : [cards];
-		const invalidCards = cards.filter((card) => !cardValidator.validate(card));
+		var invalidCards = cards.filter(function (card) { return !cardValidator.validate(card); });
 		if (invalidCards.length) {
 			throw new Error('Card validation failed.');
 		}
@@ -58,8 +60,8 @@ export function createVirgilClient(accessToken, options = {}) {
 		 * @param {string} cardId - Id of card to get
 		 * @returns {Promise.<Card>}
 		 * */
-		getCard(cardId) {
-			return cardsReadOnlyClient.get({ card_id: cardId }).then((card) => {
+		getCard: function (cardId) {
+			return cardsReadOnlyClient.get({ card_id: cardId }).then(function (card) {
 				if (cardValidator) {
 					validateCards(card);
 				}
@@ -74,12 +76,10 @@ export function createVirgilClient(accessToken, options = {}) {
 		 * @returns {Promise.<Card[]>}
 		 * */
 		searchCards(params) {
-			const { identities, identity_type, scope = 'application' } = params;
-			return cardsReadOnlyClient.search({
-				identities,
-				identity_type,
-				scope
-			}).then((cards) => {
+			params = params || {};
+			params.scope = params.scope || 'application';
+
+			return cardsReadOnlyClient.search(params).then(function (cards) {
 				if (cardValidator) {
 					validateCards(cards);
 				}
@@ -95,7 +95,7 @@ export function createVirgilClient(accessToken, options = {}) {
 		 * */
 		createCard(request) {
 			return cardsClient.create(request.toTransferFormat())
-				.then((card) => {
+				.then(function (card) {
 					if (cardValidator) {
 						validateCards(card);
 					}
@@ -111,9 +111,11 @@ export function createVirgilClient(accessToken, options = {}) {
 		 * @returns {Promise}
 		 * */
 		revokeCard(cardId, request) {
+			var requestData = request.toTransferFormat();
 			return cardsClient.revoke({
 				card_id: cardId,
-				...request.toTransferFormat()
+				content_snapshot: requestData.content_snapshot,
+				meta: requestData.meta
 			});
 		},
 
@@ -131,3 +133,5 @@ export function createVirgilClient(accessToken, options = {}) {
 		}
 	};
 }
+
+module.exports = createVirgilClient;

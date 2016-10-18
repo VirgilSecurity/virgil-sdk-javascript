@@ -1,11 +1,11 @@
 /**
  * Creates an object capable of signing requests to Virgil Services
  * */
-export function requestSigner(crypto) {
+function requestSigner(crypto) {
 
 	return {
-		selfSign,
-		authoritySign
+		selfSign: selfSign,
+		authoritySign: authoritySign
 	};
 
 	/**
@@ -17,8 +17,8 @@ export function requestSigner(crypto) {
 	 * @returns {Object} Request Signer
 	 * */
 	function selfSign(request, privateKey) {
-		const fingerprint = crypto.calculateFingerprint(request.getSnapshot());
-		const id = fingerprint.toString('hex');
+		var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
+		var id = fingerprint.toString('hex');
 		request.appendSignature(id, crypto.sign(fingerprint, privateKey));
 		return this;
 	}
@@ -34,8 +34,10 @@ export function requestSigner(crypto) {
 	 * @returns {Object} Request Signer
 	 * */
 	function authoritySign(request, signerId, privateKey) {
-		const fingerprint = crypto.calculateFingerprint(request.getSnapshot());
+		var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
 		request.appendSignature(signerId, crypto.sign(fingerprint, privateKey));
 		return this;
 	}
 }
+
+module.exports = requestSigner;

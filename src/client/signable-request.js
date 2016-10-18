@@ -1,23 +1,17 @@
-import {
-	serializePublicKey,
-	deserializePublicKey,
-	serializeSignatures,
-	deserializeSignatures,
-	serializeContentSnapshot,
-	deserializeContentSnapshot } from '../utils/serializer';
+var serializer = require('../utils/serializer');
 
-export function signableRequest (reqData) {
+function signableRequest (reqData) {
 	if (reqData.public_key) {
-		reqData.public_key = serializePublicKey(reqData.public_key);
+		reqData.public_key = serializer.serializePublicKey(reqData.public_key);
 	}
 
-	const snapshot = new Buffer(JSON.stringify(reqData));
-	const signatures = {};
+	var snapshot = new Buffer(JSON.stringify(reqData));
+	var signatures = {};
 
 	return {
-		getSnapshot,
-		appendSignature,
-		toTransferFormat
+		getSnapshot: getSnapshot,
+		appendSignature: appendSignature,
+		toTransferFormat: toTransferFormat
 	};
 
 	/**
@@ -44,25 +38,32 @@ export function signableRequest (reqData) {
 	 * */
 	function toTransferFormat() {
 		return {
-			content_snapshot: serializeContentSnapshot(snapshot),
+			content_snapshot: serializer.serializeContentSnapshot(snapshot),
 			meta: {
-				signs: serializeSignatures(signatures)
+				signs: serializer.serializeSignatures(signatures)
 			}
 		}
 	}
 }
 
-export function signableRequestFromTransferFormat(dto) {
-	const contentJSON = deserializeContentSnapshot(dto.content_snapshot).toString('utf8');
+function signableRequestFromTransferFormat(dto) {
+	const contentJSON = serializer.deserializeContentSnapshot(dto.content_snapshot).toString('utf8');
 	const params = JSON.parse(contentJSON);
 	if (params.public_key) {
-		params.public_key = deserializePublicKey(params.public_key);
+		params.public_key = serializer.deserializePublicKey(params.public_key);
 	}
 
 	const request = this.call(null, params);
-	const signatures = deserializeSignatures(dto.meta.signs);
+	const signatures = serializer.deserializeSignatures(dto.meta.signs);
 
-	Object.entries(signatures).forEach(([ signerId, signature ]) => request.appendSignature(signerId, signature));
+	Object.keys(signatures).forEach(function (signerId) {
+		request.appendSignature(signerId, signatures[signerId]);
+	});
 
 	return request;
 }
+
+module.exports = {
+	signableRequest: signableRequest,
+	signableRequestFromTransferFormat: signableRequestFromTransferFormat
+};

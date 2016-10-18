@@ -1,16 +1,16 @@
-require('babel-register');
+var VirgilCrypto = require('virgil-crypto');
+var initVirgilCrypto = require('./src/crypto/virgil-crypto');
+var createVirgilClient = require('./src/client/virgil-client');
+var cardRequest = require('./src/client/card-request');
+var cardRevokeRequest = require('./src/client/card-revoke-request');
+var requestSigner = require('./src/common/request-signer');
+var cardValidator = require('./src/common/card-validator');
 
-import { VirgilCrypto } from 'virgil-crypto';
-import { virgilCrypto } from './src/crypto/virgil-crypto';
-import { createVirgilClient } from './src/client/virgil-client';
-import { cardRequest } from './src/client/card-request';
-import { cardRevokeRequest } from './src/client/card-revoke-request';
-import { requestSigner } from './src/common/request-signer';
-import { cardValidator } from './src/common/card-validator';
+VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
-const virgil = {
+var virgil = {
 	client: createVirgilClient,
-	crypto: virgilCrypto(),
+	crypto: initVirgilCrypto(),
 	cardCreateRequest: cardRequest,
 	cardRevokeRequest: cardRevokeRequest,
 	requestSigner: requestSigner,

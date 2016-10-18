@@ -1,4 +1,4 @@
-export function serializeSignatures(signatures) {
+function serializeSignatures(signatures) {
 	return Object.keys(signatures)
 		.reduce((result, signerId) => {
 			result[signerId] = signatures[signerId].toString('base64');
@@ -6,7 +6,7 @@ export function serializeSignatures(signatures) {
 		}, {});
 }
 
-export function deserializeSignatures (signatures) {
+function deserializeSignatures (signatures) {
 	return Object.keys(signatures)
 		.reduce((result, signerId) => {
 			result[signerId] = new Buffer(signatures[signerId], 'base64');
@@ -14,18 +14,27 @@ export function deserializeSignatures (signatures) {
 		}, {});
 }
 
-export function serializePublicKey(publicKey) {
+function serializePublicKey(publicKey) {
 	return publicKey.toString('base64');
 }
 
-export function deserializePublicKey (publicKey) {
+function deserializePublicKey (publicKey) {
 	return new Buffer(publicKey, 'base64');
 }
 
-export function serializeContentSnapshot(snapshot) {
+function serializeContentSnapshot(snapshot) {
 	return snapshot.toString('base64');
 }
 
-export function deserializeContentSnapshot (snapshot) {
+function deserializeContentSnapshot (snapshot) {
 	return new Buffer(snapshot, 'base64');
 }
+
+module.exports = {
+	serializeSignatures: serializeSignatures,
+	deserializeSignatures: deserializeSignatures,
+	serializePublicKey: serializePublicKey,
+	deserializePublicKey: deserializePublicKey,
+	serializeContentSnapshot: serializeContentSnapshot,
+	deserializeContentSnapshot: deserializeContentSnapshot
+};

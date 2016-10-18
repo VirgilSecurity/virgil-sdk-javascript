@@ -1,7 +1,7 @@
-import { VirgilCrypto } from 'virgil-crypto';
-import cryptoAsyncPatch from '../crypto-async-patch';
+var VirgilCrypto = require('virgil-crypto');
+var cryptoAsyncPatch = require('../crypto-async-patch');
 
-const Buffer = VirgilCrypto.Buffer;
+VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
 cryptoAsyncPatch(VirgilCrypto);
 
@@ -22,36 +22,36 @@ cryptoAsyncPatch(VirgilCrypto);
  * @property {PublicKey} publicKey - Public part of the key
  */
 
-const keyValueStore = new WeakMap();
+var keyValueStore = new WeakMap();
 
-export function virgilCrypto() {
+function virgilCrypto() {
 
 	return {
-		generateKeys,
-		importPrivateKey,
-		importPublicKey,
-		exportPrivateKey,
-		exportPublicKey,
-		extractPublicKey,
-		encrypt,
-		decrypt,
-		sign,
-		verify,
-		hash,
-		calculateFingerprint,
+		generateKeys: generateKeys,
+		importPrivateKey: importPrivateKey,
+		importPublicKey: importPublicKey,
+		exportPrivateKey: exportPrivateKey,
+		exportPublicKey: exportPublicKey,
+		extractPublicKey: extractPublicKey,
+		encrypt: encrypt,
+		decrypt: decrypt,
+		sign: sign,
+		verify: verify,
+		hash: hash,
+		calculateFingerprint: calculateFingerprint,
 		HashAlgorithm: VirgilCrypto.HashAlgorithm,
 		KeyPairType: VirgilCrypto.KeysTypeEnum
 	};
 
 	function createPrivateKey(recipientId, value) {
-		const privateKey = {};
-		keyValueStore.set(privateKey, { recipientId, value });
+		var privateKey = {};
+		keyValueStore.set(privateKey, { recipientId: recipientId, value: value });
 		return privateKey;
 	}
 
 	function createPublicKey(recipientId, value) {
-		const publicKey = {};
-		keyValueStore.set(publicKey, { recipientId, value });
+		var publicKey = {};
+		keyValueStore.set(publicKey, { recipientId: recipientId, value: value });
 		return publicKey;
 	}
 
@@ -62,10 +62,10 @@ export function virgilCrypto() {
 	 * @returns {object}
 	 * */
 	function generateKeys(keyPairType) {
-		const keyPair = VirgilCrypto.generateKeyPair({ type: keyPairType });
-		const publicKeyDER = VirgilCrypto.publicKeyToDER(keyPair.publicKey);
-		const privateKeyDER = VirgilCrypto.privateKeyToDER(keyPair.privateKey);
-		const keyPairId = VirgilCrypto.hash(publicKeyDER);
+		var keyPair = VirgilCrypto.generateKeyPair({ type: keyPairType });
+		var publicKeyDER = VirgilCrypto.publicKeyToDER(keyPair.publicKey);
+		var privateKeyDER = VirgilCrypto.privateKeyToDER(keyPair.privateKey);
+		var keyPairId = VirgilCrypto.hash(publicKeyDER);
 
 		return {
 			privateKey: createPrivateKey(keyPairId, privateKeyDER),
@@ -90,8 +90,8 @@ export function virgilCrypto() {
 			VirgilCrypto.decryptPrivateKey(rawPrivateKey, new Buffer(password)) :
 			rawPrivateKey;
 
-		const privateKeyDER = VirgilCrypto.privateKeyToDER(rawPrivateKey);
-		const publicKey = VirgilCrypto.extractPublicKey(privateKeyDER);
+		var privateKeyDER = VirgilCrypto.privateKeyToDER(rawPrivateKey);
+		var publicKey = VirgilCrypto.extractPublicKey(privateKeyDER);
 
 		return createPrivateKey(VirgilCrypto.hash(publicKey), privateKeyDER);
 	}
@@ -120,7 +120,7 @@ export function virgilCrypto() {
 	 * @returns {Buffer}
 	 * */
 	function exportPrivateKey(privateKey, password) {
-		const keyData = keyValueStore.get(privateKey);
+		var keyData = keyValueStore.get(privateKey);
 		if (!keyData) {
 			throw new Error('Cannot export private key. Object passed is not a valid private key.');
 		}
@@ -129,8 +129,8 @@ export function virgilCrypto() {
 			return VirgilCrypto.privateKeyToDER(keyData.value);
 		}
 
-		const passwordBuffer = new Buffer(password);
-		const encryptedKey = VirgilCrypto.encryptPrivateKey(keyData.value, passwordBuffer);
+		var passwordBuffer = new Buffer(password);
+		var encryptedKey = VirgilCrypto.encryptPrivateKey(keyData.value, passwordBuffer);
 		return VirgilCrypto.privateKeyToDER(encryptedKey, passwordBuffer);
 	}
 
@@ -142,7 +142,7 @@ export function virgilCrypto() {
 	 * @returns {Buffer}
 	 * */
 	function exportPublicKey(publicKey) {
-		const keyData = keyValueStore.get(publicKey);
+		var keyData = keyValueStore.get(publicKey);
 		if (!keyData) {
 			throw new Error('Cannot export public key. Object passed is not a valid public key.');
 		}
@@ -183,8 +183,8 @@ export function virgilCrypto() {
 
 		recipients = Array.isArray(recipients) ? recipients : [recipients];
 
-		const publicKeys = recipients.map((recipient) => {
-			const keyData = keyValueStore.get(recipient);
+		var publicKeys = recipients.map((recipient) => {
+			var keyData = keyValueStore.get(recipient);
 			if (!keyData) {
 				throw new Error('Cannot encrypt data. Object passed is not a valid public key.');
 			}
@@ -207,7 +207,7 @@ export function virgilCrypto() {
 			throw new TypeError('Cannot decrypt the given data. Argument "cipherData" must be a Buffer.');
 		}
 
-		const keyData = keyValueStore.get(privateKey);
+		var keyData = keyValueStore.get(privateKey);
 		if (!keyData) {
 			throw new Error('Cannot decrypt with given key. Object passed is not a valid private key.');
 		}
@@ -226,7 +226,7 @@ export function virgilCrypto() {
 			throw new TypeError('Cannot sign the given data. Argument "data" must be a Buffer.');
 		}
 
-		const keyData = keyValueStore.get(privateKey);
+		var keyData = keyValueStore.get(privateKey);
 		if (!keyData) {
 			throw new Error('Cannot sign with given key. Object passed is not a valid private key');
 		}
@@ -252,7 +252,7 @@ export function virgilCrypto() {
 			throw new TypeError('Cannot verify the signature. Argument "signature" must be a Buffer.');
 		}
 
-		const keyData = keyValueStore.get(publicKey);
+		var keyData = keyValueStore.get(publicKey);
 		if (!keyData) {
 			throw new Error('Cannot verify the signature. Object provided is not a valid public key.');
 		}
@@ -293,3 +293,5 @@ export function virgilCrypto() {
 }
 
 virgilCrypto.KeyPairTypes = VirgilCrypto.KeysTypesEnum;
+
+module.exports = virgilCrypto;

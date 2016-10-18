@@ -1,13 +1,10 @@
-import ApiClient from 'apiapi';
-import { errors } from './errors';
-import { createErrorHandler } from '../utils/error-handler';
-import { parseCardResponse } from '../utils/parse-card-response';
+var ApiClient = require('apiapi');
+var errors = require('./errors');
+var errorHandler = require('../utils/error-handler')(errors);
+var parseCardResponse = require('../utils/parse-card-response').parseCardResponse;
 
-const errorHandler = createErrorHandler(errors);
-
-export function createReadCardsClient (applicationToken, opts = {}) {
-
-	const apiClient = new ApiClient({
+module.exports = function createReadCardsClient (applicationToken, opts) {
+	var apiClient = new ApiClient({
 		baseUrl: opts.cardsReadBaseUrl || 'https://cards-ro.virgilsecurity.com/v4',
 
 		methods: {
@@ -36,7 +33,7 @@ export function createReadCardsClient (applicationToken, opts = {}) {
 	});
 
 	return apiClient;
-}
+};
 
 function transformGetResponse(res) {
 	return parseCardResponse(res.data);

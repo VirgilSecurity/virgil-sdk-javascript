@@ -1,5 +1,6 @@
-import { assert } from '../utils/utils';
-import { signableRequest, signableRequestFromTransferFormat } from './signable-request';
+var assert = require('../utils/utils').assert;
+var signableRequest = require('./signable-request').signableRequest;
+var signableRequestFromTransferFormat = require('./signable-request').signableRequestFromTransferFormat;
 
 /**
  * Creates and initializes a request to revoke Card
@@ -10,15 +11,17 @@ import { signableRequest, signableRequestFromTransferFormat } from './signable-r
  *
  * @returns {Object} - Revoke Card Request
  * */
-export function cardRevokeRequest(params) {
-	const { card_id, revocation_reason = 'unspecified' } = params;
+function cardRevokeRequest(params) {
+	params = params || {};
+	var card_id = params.card_id,
+		revocation_reason = params.revocation_reason || 'unspecified';
 
 	assert(card_id, '"card_id" parameter is required.');
 	assert(revocation_reason, '"revocation_reason" parameter is required.');
 	assert(['unspecified', 'compromised'].indexOf(revocation_reason) > -1,
 		'"revocation_reason" must be either "unspecified" or "compromised"');
 
-	return Object.create(signableRequest({ card_id, revocation_reason }));
+	return Object.create(signableRequest({ card_id: card_id, revocation_reason: revocation_reason }));
 }
 
 /**
@@ -27,3 +30,5 @@ export function cardRevokeRequest(params) {
  * @returns {Object} - Revoke Card Request
  * */
 cardRevokeRequest.fromTransferFormat = signableRequestFromTransferFormat.bind(cardRevokeRequest);
+
+module.exports = cardRevokeRequest;

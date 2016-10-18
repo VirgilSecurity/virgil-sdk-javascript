@@ -1,10 +1,8 @@
-import ApiClient from 'apiapi';
-import { errors } from './errors';
-import { createErrorHandler } from '../utils/error-handler';
+var ApiClient = require('apiapi');
+var errors = require('./errors');
+var errorHandler = require('../utils/error-handler')(errors);
 
-const errorHandler = createErrorHandler(errors);
-
-export function createIdentityClient (opts) {
+function createIdentityClient (opts) {
 	opts = typeof opts === 'object' ? opts : {};
 
 	var apiClient = new ApiClient({
@@ -33,3 +31,5 @@ export function createIdentityClient (opts) {
 
 	return apiClient;
 }
+
+module.exports = createIdentityClient;

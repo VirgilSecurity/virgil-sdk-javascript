@@ -1,4 +1,4 @@
-export const errors = {
+module.exports = {
 	'10000': "Internal application error",
 	'10100': "JSON specified as a request body is invalid",
 	'40100': "Identity type is invalid",
