@@ -1,4 +1,5 @@
 var serializer = require('../utils/serializer');
+var assign = require('../utils/utils').assign;
 
 function signableRequest (reqData) {
 	if (reqData.public_key) {
@@ -6,13 +7,14 @@ function signableRequest (reqData) {
 	}
 
 	var snapshot = new Buffer(JSON.stringify(reqData));
-	var signatures = {};
+	var signatures = Object.create(null);
 
-	return {
-		getSnapshot: getSnapshot,
-		appendSignature: appendSignature,
-		toTransferFormat: toTransferFormat
-	};
+	var request = assign({}, reqData);
+	request.getSnapshot = getSnapshot;
+	request.appendSignature = appendSignature;
+	request.toTransferFormat = toTransferFormat;
+
+	return request;
 
 	/**
 	 * Returns the snapshot of the request

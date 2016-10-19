@@ -106,14 +106,13 @@ function createVirgilClient(accessToken, options) {
 		/**
 		 * Revoke a Virgil Card
 		 *
-		 * @param {string} cardId - Id of Card to revoke
 		 * @param {Object} request - Revoke Card Request
 		 * @returns {Promise}
 		 * */
-		revokeCard(cardId, request) {
+		revokeCard(request) {
 			var requestData = request.toTransferFormat();
 			return cardsClient.revoke({
-				card_id: cardId,
+				card_id: request.card_id,
 				content_snapshot: requestData.content_snapshot,
 				meta: requestData.meta
 			});
