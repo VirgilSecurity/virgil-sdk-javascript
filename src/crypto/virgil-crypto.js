@@ -40,7 +40,7 @@ function virgilCrypto() {
 		hash: hash,
 		calculateFingerprint: calculateFingerprint,
 		HashAlgorithm: VirgilCrypto.HashAlgorithm,
-		KeyPairType: VirgilCrypto.KeysTypeEnum
+		KeyPairType: VirgilCrypto.KeysTypesEnum
 	};
 
 	function createPrivateKey(recipientId, value) {
@@ -291,7 +291,5 @@ function virgilCrypto() {
 		return VirgilCrypto.hash(data, algorithm);
 	}
 }
-
-virgilCrypto.KeyPairTypes = VirgilCrypto.KeysTypesEnum;
 
 module.exports = virgilCrypto;
