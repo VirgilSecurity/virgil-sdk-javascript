@@ -49,7 +49,9 @@ function createVirgilClient(accessToken, options) {
 		cards = Array.isArray(cards) ? cards : [cards];
 		var invalidCards = cards.filter(function (card) { return !cardValidator.validate(card); });
 		if (invalidCards.length) {
-			throw new Error('Card validation failed.');
+			var error = new Error('Card validation failed');
+			error.invalidCards = invalidCards;
+			throw error;
 		}
 	};
 
