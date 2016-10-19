@@ -1,8 +1,8 @@
 # JavaScript SDK Programming Guide [![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](https://www.npmjs.com/package/virgil-sdk)
 
-This guide is a practical introduction to creating apps for the Browser/Node.js that makes use of Virgil Security features. The code examples in this guide are written in JavaScript. 
+This guide is a practical introduction to creating JavaScript apps for browsers/Node.js that make use of Virgil Security features. The code examples in this guide are written in JavaScript. 
 
-In this guide you will find code for every task you need to implement in order to create an application using Virgil Security. It also includes a description of the main objects and functions. The aim of this guide is to get you up and running quickly. You should be able to copy and paste the code provided here into your own apps and use it with minumal changes.
+In this guide you will find code for every task you need to implement in order to create an application using Virgil Security. It also includes a description of the main objects and functions. The aim of this guide is to get you up and running quickly. You should be able to copy and paste the code provided here into your own apps and use it with minimal changes.
 
 ## Table of Contents
 
@@ -66,11 +66,11 @@ When you register an application on the Virgil developer's [dashboard](https://d
 
 ### Connecting to Virgil
 
-To start using Virgil services in your app, you must call a ```client``` factory function available through ```virgil``` namespace to create a `client` object that you can then use to create, revoke, search and get *Virgil Cards* (Public keys) from Virgil Services. 
+To start using Virgil services in your app, you must call a `client` factory function available through `virgil` namespace to create a `client` object that you can then use to create, revoke, search and get *Virgil Cards* (Public keys) from Virgil Services. 
 
 ### Initializing an API Client
 
-The ```client``` factory function requires your application's *accessToken* as its first parameter
+The `client` factory function requires your application's *accessToken* as its first parameter
 
 ```javascript
 var client = virgil.client("[YOUR_ACCESS_TOKEN_HERE]");
@@ -88,7 +88,7 @@ var client = virgil.client("[YOUR_ACCESS_TOKEN_HERE]", {
 ```
 
 ### Using Crypto
-The ```crypto``` object available through ```virgil``` namespace provides implementation of cryptographic operations such as hashing, signature generation and verification as well as encryption and decryption. It is initialized automatically when SDK is loaded. All api functions of ```virgil.crypto``` accept and return byte arrays as Node.js `Buffer`s. For browsers an implementation of `Buffer` module is provided by [this library](https://github.com/feross/buffer) and is avalable through ```virgil``` namespace ```Buffer``` property.
+The `crypto` object available through `virgil` namespace provides implementation of cryptographic operations such as hashing, signature generation and verification as well as encryption and decryption. It is initialized automatically when SDK is loaded. All api functions of `virgil.crypto` accept and return byte arrays as Node.js `Buffer`s. For browsers an implementation of `Buffer` module is provided by [this library](https://github.com/feross/buffer) and is available through `virgil` namespace `Buffer` property.
 
 ```javascript
 var crypto = virgil.crypto;
@@ -121,7 +121,7 @@ var aliceKeys = crypto.generateKeys();
 
 ### Prepare request
 
-To make request object to create a Virgil Card use ```virgil.cardCreateRequest``` factory function. It accepts an `options` object with the following properties:
+To make request object to create a Virgil Card use `virgil.cardCreateRequest` factory function. It accepts an `options` object with the following properties:
  - **public_key** - Public key associated with the Card as a `Buffer` (Required)
  - **scope** - Determines the *Virgil Card*'s scope that can be either *'global'* or *'application'*. Creating 'global' cards is *not supported* by this SDK currently so you may omit this parameter as it defaults to "application"
  - **identity_type** - Can be any string value (Required)
@@ -158,7 +158,7 @@ client.createCard(createCardRequest).then(function (aliceCard) {
 ```
 
 ## Get Virgil Card by Id
-To get a single Virgil Card by its Id use ```client.getCard``` method. It accepts a single argument - `card_id` as a string
+To get a single Virgil Card by its Id use `client.getCard` method. It accepts a single argument - `card_id` as a string
 
 ```javascript
 var client = virgil.client("[YOUR_ACCESS_TOKEN_HERE]");
@@ -169,10 +169,10 @@ client.getCard(cardId).then(function (card) {
 ```
 
 ## Search for Virgil Cards
-The ```client.searchCards``` method performs the `Virgil Card`s search by criteria. It accepts a single `options` parameter with the following properties:
-- *identities* - An array of identity values to search for (Required)
-- *identity_type* - Narrows the search by specific type of identity (Optional)
-- *scope* - Specifies the scope to perform search on. Either 'global' or 'application' (Optional; defaults to "application")
+The `client.searchCards` method performs the `Virgil Card`s search by criteria. It accepts a single `options` parameter with the following properties:
+- **identities** - An array of identity values to search for (Required)
+- **identity_type** - Specifies the *identity_type* of *Virgil Cards* to be found (Optional)
+- **scope** - Specifies the scope to perform search on. Either 'global' or 'application' (Optional; defaults to "application")
 
 ```javascript
 var client = virgil.client("[YOUR_ACCESS_TOKEN_HERE]");
@@ -186,7 +186,7 @@ client.searchCards(criteria).then(function (cards) {
 ```
 
 ## Validating Virgil Cards
-This sample uses *built-in* ```cardValidator``` to validate cards. By default ```cardValidator``` validates only *Cards Service* signature. 
+This sample uses *built-in* `cardValidator` to validate cards. By default `cardValidator` validates only *Cards Service* signature. 
 
 ```javascript
 // Get the crypto reference
@@ -241,9 +241,10 @@ var appKey = crypto.importPrivateKey(appKeyData, appKeyPassword);
 
 ### Prepare revocation request
 
-To make a request object to revoke a Virgil Card use ```virgil.cardRevokeRequest``` factory function. It accepts an `options` object with the following properties:
- - *card_id* - Id of card to revoke (Required)
- - *revocation_reason* - The reason for revoking the card. Must be either "unspecified" or "compromised". Default is "unspecified"
+To make a request object to revoke a Virgil Card use `virgil.cardRevokeRequest` factory function. It accepts an `options` object with the following properties:
+ - **card_id** - Id of card to revoke (Required)
+ - **revocation_reason** - The reason for revoking the card. Must be either "unspecified" or "compromised". 
+ Default is "unspecified"
 
 ```javascript
 var cardId = "[YOUR_CARD_ID_HERE]";
@@ -283,7 +284,7 @@ var aliceKeys = crypto.generateKeys(crypto.KeyPairType.FAST_EC_X25519) // Curve2
 ```
 
 ### Import and Export Keys
-All `virgil.crypto` api functions accept and return keys in an internal format. To get the raw key data as Buffer object use `exportPrivateKey` and `exportPublicKey` methods of `virgil.crypto` passing the appropriate internal key representation. To get the internal key representation out of the raw key data use `importPrivateKey` and `importPublicKey` respectively.
+All `virgil.crypto` api functions accept and return keys in an internal format. To get the raw key data as `Buffer` object use `exportPrivateKey` and `exportPublicKey` methods of `virgil.crypto` passing the appropriate internal key representation. To get the internal key representation out of the raw key data use `importPrivateKey` and `importPublicKey` respectively:
 
 ```javascript
  var exportedPrivateKey = crypto.exportPrivateKey(aliceKeys.privateKey);
@@ -306,8 +307,8 @@ var aliceKeys = crypto.generateKeys();
 ### Encrypt Data
 
 The `virgil.crypto.encrypt` method requires two parameters:
-- *data* - The data to be encrypted as a Buffer
-- *recipients* - Public key or an array of public keys to encrypt the data with
+- **data** - The data to be encrypted as a Buffer
+- **recipients** - Public key or an array of public keys to encrypt the data with
 
 ```javascript
 // Browsers
@@ -323,8 +324,8 @@ var cipherData = crypto.encrypt(plaintext, aliceKeys.publicKey);
 ### Decrypt Data
 
 The `virgil.crypto.decrypt` method requires two parameters:
-- *cipherData* - Encrypted data as a Buffer
-- *privateKey* - The private key to decrypt with
+- **cipherData** - Encrypted data as a Buffer
+- **privateKey** - The private key to decrypt with
 
 ```javascript
 var decryptedData = crypto.decrypt(cipherData, aliceKeys.privateKey);
