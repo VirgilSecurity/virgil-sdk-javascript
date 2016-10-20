@@ -2147,7 +2147,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
 	var serializer = __webpack_require__(13);
-	var assign = __webpack_require__(6).assign;
+	var assign = __webpack_require__(4).assign;
 
 	function signableRequest(reqData) {
 		if (reqData.public_key) {
@@ -2221,6 +2221,49 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 4 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	function assert(condition, errorMessage) {
+		if (!condition) {
+			throw new Error(errorMessage);
+		}
+	}
+
+	function isEmpty(obj) {
+		return Object.keys(obj).length === 0;
+	}
+
+	function assign(target, source) {
+		if (typeof Object.assign !== 'function') {
+			if (target === undefined || target === null) {
+				throw new TypeError('Cannot convert undefined or null to object');
+			}
+
+			var output = Object(target);
+			if (source !== undefined && source !== null) {
+				for (var nextKey in source) {
+					if (source.hasOwnProperty(nextKey)) {
+						output[nextKey] = source[nextKey];
+					}
+				}
+			}
+
+			return output;
+		}
+
+		return Object.assign(target, source);
+	}
+
+	module.exports = {
+		assert: assert,
+		isEmpty: isEmpty,
+		assign: assign
+	};
+
+/***/ },
+/* 5 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -2406,10 +2449,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(4).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(5).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -2485,50 +2528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).setImmediate, __webpack_require__(5).clearImmediate))
-
-/***/ },
-/* 6 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	function assert(condition, errorMessage) {
-		if (!condition) {
-			throw new Error(errorMessage);
-		}
-	}
-
-	function isEmpty(obj) {
-		return Object.keys(obj).length === 0;
-	}
-
-	function assign(target, source) {
-		if (typeof Object.assign !== 'function') {
-			if (target === undefined || target === null) {
-				throw new TypeError('Cannot convert undefined or null to object');
-			}
-
-			var output = Object(target);
-			if (source !== undefined && source !== null) {
-				for (var nextKey in source) {
-					if (source.hasOwnProperty(nextKey)) {
-						output[nextKey] = source[nextKey];
-					}
-				}
-			}
-
-			return output;
-		}
-
-		return Object.assign(target, source);
-	}
-
-	module.exports = {
-		assert: assert,
-		isEmpty: isEmpty,
-		assign: assign
-	};
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).setImmediate, __webpack_require__(6).clearImmediate))
 
 /***/ },
 /* 7 */
@@ -16481,7 +16481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
 /* 20 */
@@ -22361,7 +22361,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	},{"./es5":13}]},{},[4])(4)
 	});                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), (function() { return this; }()), __webpack_require__(5).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), (function() { return this; }()), __webpack_require__(6).setImmediate))
 
 /***/ },
 /* 27 */
@@ -35290,7 +35290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
-	var assert = __webpack_require__(6).assert;
+	var assert = __webpack_require__(4).assert;
 	var signableRequest = __webpack_require__(3).signableRequest;
 	var signableRequestFromTransferFormat = __webpack_require__(3).signableRequestFromTransferFormat;
 
@@ -35351,7 +35351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var assert = __webpack_require__(6).assert;
+	var assert = __webpack_require__(4).assert;
 	var signableRequest = __webpack_require__(3).signableRequest;
 	var signableRequestFromTransferFormat = __webpack_require__(3).signableRequestFromTransferFormat;
 
@@ -35537,6 +35537,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
+	var assign = __webpack_require__(4).assign;
+
 	function cardValidator(crypto) {
 
 		var SERVICE_CARD_ID = '3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853';
@@ -35569,9 +35571,18 @@ return /******/ (function(modules) { // webpackBootstrap
 			}
 
 			var fingerprint = crypto.calculateFingerprint(card.snapshot);
-			return Object.keys(verifiers).every(function (verifierId) {
+			var fingerprintHEX = fingerprint.toString('hex');
+
+			if (fingerprintHEX !== card.id) {
+				return false;
+			}
+
+			var allVerifiers = assign({}, verifiers);
+			allVerifiers[fingerprintHEX] = crypto.importPublicKey(card.publicKey);
+
+			return Object.keys(allVerifiers).every(function (verifierId) {
 				var sign = card.signatures[verifierId],
-				    pubkey = verifiers[verifierId];
+				    pubkey = allVerifiers[verifierId];
 				if (!sign) {
 					return false;
 				}
@@ -35961,7 +35972,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				throw new Error('Cannot verify the signature. Object provided is not a valid public key.');
 			}
 
-			return VirgilCrypto.verify(data, keyData.value, signature);
+			return VirgilCrypto.verify(data, signature, keyData.value);
 		}
 
 		/**
@@ -41015,7 +41026,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	},{"./es5.js":14}]},{},[4])(4)
 	});                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), (function() { return this; }()), __webpack_require__(5).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), (function() { return this; }()), __webpack_require__(6).setImmediate))
 
 /***/ },
 /* 42 */
