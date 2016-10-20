@@ -1,3 +1,5 @@
+var assign = require('../utils/utils.js').assign;
+
 function cardValidator (crypto) {
 
 	var SERVICE_CARD_ID = '3e29d43373348cfb373b7eae189214dc01d7237765e572db685839b64adca853';
@@ -30,9 +32,18 @@ function cardValidator (crypto) {
 		}
 
 		var fingerprint = crypto.calculateFingerprint(card.snapshot);
-		return Object.keys(verifiers).every(function (verifierId) {
+		var fingerprintHEX = fingerprint.toString('hex');
+
+		if (fingerprintHEX !== card.id) {
+			return false;
+		}
+
+		var allVerifiers = assign({}, verifiers);
+		allVerifiers[fingerprintHEX] = crypto.importPublicKey(card.publicKey);
+
+		return Object.keys(allVerifiers).every(function (verifierId) {
 			var sign   = card.signatures[verifierId],
-				pubkey = verifiers[verifierId];
+				pubkey = allVerifiers[verifierId];
 			if (!sign) {
 				return false;
 			}

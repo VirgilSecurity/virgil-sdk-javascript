@@ -257,7 +257,7 @@ function virgilCrypto() {
 			throw new Error('Cannot verify the signature. Object provided is not a valid public key.');
 		}
 
-		return VirgilCrypto.verify(data, keyData.value, signature);
+		return VirgilCrypto.verify(data, signature, keyData.value);
 	}
 
 	/**
