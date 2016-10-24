@@ -188,7 +188,11 @@ function virgilCrypto() {
 			if (!keyData) {
 				throw new Error('Cannot encrypt data. Object passed is not a valid public key.');
 			}
-			return keyData;
+
+			return {
+				recipientId: keyData.recipientId,
+				publicKey: keyData.value
+			};
 		});
 
 		return VirgilCrypto.encrypt(data, publicKeys);
