@@ -36038,11 +36038,6 @@ return /******/ (function(modules) { // webpackBootstrap
 				'Authorization': 'VIRGIL ' + applicationToken
 			},
 
-			transformRequest: {
-				create: create,
-				revoke: revoke
-			},
-
 			body: {
 				create: ['content_snapshot', 'meta'],
 				revoke: ['content_snapshot', 'meta']
@@ -36062,22 +36057,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		return apiClient;
 	};
-
-	function revoke(params, requestBody, opts) {
-		this.assert(params.content_snapshot, '"content_snapshot" parameter is required');
-		this.assert(params.meta, '"meta" parameter is required');
-		this.assert(params.meta.signs, '"meta.signs" parameter is required');
-
-		return [params, requestBody, opts];
-	}
-
-	function create(params, requestBody, opts) {
-		this.assert(params.content_snapshot, '"content_snapshot" parameter is required');
-		this.assert(params.meta, '"meta" parameter is required');
-		this.assert(params.meta.signs, '"meta.signs" parameter is required');
-
-		return [params, requestBody, opts];
-	}
 
 	function transformCreateResponse(res) {
 		return parseCardResponse(res.data);
