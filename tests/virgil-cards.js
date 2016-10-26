@@ -127,6 +127,8 @@ test('setup alice', function (t) {
 			alicePrivateKey = virgil.crypto.exportPrivateKey(keyPair.privateKey);
 			aliceCardId = card.id;
 			t.end();
+		}).catch(function (err) {
+			t.fail(err.message);
 		});
 });
 
@@ -151,6 +153,8 @@ test('setup bob', function (t) {
 			bobPrivateKey = virgil.crypto.exportPrivateKey(keyPair.privateKey);
 			bobCardId = card.id;
 			t.end();
+		}).catch(function (err) {
+			t.fail(err.message);
 		});
 });
 
@@ -169,6 +173,8 @@ test('alice encrypt message for bob', function (t) {
 		.then(function (msg) {
 			messageToBob = msg;
 			t.end();
+		}).catch(function (err) {
+			t.fail(err.message);
 		});
 
 	function findBob() {
@@ -221,6 +227,8 @@ test('bob verify', function (t) {
 		.tap(function (isVerified) {
 			t.ok(isVerified, 'Singature verified.');
 			t.end();
+		}).catch(function (err) {
+			t.fail(err.message);
 		});
 
 	function findAlice() {
@@ -258,6 +266,8 @@ test('cleanup alice', function (t) {
 		.then(function (res) {
 			t.ok(res, 'Card revoked');
 			t.end();
+		}).catch(function (err) {
+			t.fail(err.message);
 		});
 });
 
@@ -272,6 +282,8 @@ test('cleanup bob', function (t) {
 		.then(function (res) {
 			t.ok(res, 'Card revoked');
 			t.end();
+		}).catch(function (err) {
+			t.fail(err.message);
 		});
 });
 
