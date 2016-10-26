@@ -77,7 +77,7 @@ function createVirgilClient(accessToken, options) {
 		 * @param {SearchCriteria} params
 		 * @returns {Promise.<Card[]>}
 		 * */
-		searchCards(params) {
+		searchCards: function (params) {
 			params = params || {};
 			params.scope = params.scope || 'application';
 
@@ -95,7 +95,7 @@ function createVirgilClient(accessToken, options) {
 		 * @param {Object} request - Create Card Request
 		 * @returns {Promise.<Card>}
 		 * */
-		createCard(request) {
+		createCard: function (request) {
 			return cardsClient.create(request.toTransferFormat())
 				.then(function (card) {
 					if (cardValidator) {
@@ -111,7 +111,7 @@ function createVirgilClient(accessToken, options) {
 		 * @param {Object} request - Revoke Card Request
 		 * @returns {Promise}
 		 * */
-		revokeCard(request) {
+		revokeCard: function (request) {
 			var requestData = request.toTransferFormat();
 			return cardsClient.revoke({
 				card_id: request.card_id,
@@ -125,7 +125,7 @@ function createVirgilClient(accessToken, options) {
 		 *
 		 * @param {Object} validator - The validator object
 		 * */
-		setCardValidator(validator) {
+		setCardValidator: function (validator) {
 			if (!validator) {
 				throw new TypeError('Argument "validator" is required');
 			}

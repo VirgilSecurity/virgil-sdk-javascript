@@ -1,6 +1,6 @@
 function serializeSignatures(signatures) {
 	return Object.keys(signatures)
-		.reduce((result, signerId) => {
+		.reduce(function (result, signerId) {
 			result[signerId] = signatures[signerId].toString('base64');
 			return result;
 		}, {});
@@ -8,7 +8,7 @@ function serializeSignatures(signatures) {
 
 function deserializeSignatures (signatures) {
 	return Object.keys(signatures)
-		.reduce((result, signerId) => {
+		.reduce(function (result, signerId) {
 			result[signerId] = new Buffer(signatures[signerId], 'base64');
 			return result;
 		}, {});

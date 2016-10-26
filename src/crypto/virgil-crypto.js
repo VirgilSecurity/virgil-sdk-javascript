@@ -183,7 +183,7 @@ function virgilCrypto() {
 
 		recipients = Array.isArray(recipients) ? recipients : [recipients];
 
-		var publicKeys = recipients.map((recipient) => {
+		var publicKeys = recipients.map(function (recipient) {
 			var keyData = keyValueStore.get(recipient);
 			if (!keyData) {
 				throw new Error('Cannot encrypt data. Object passed is not a valid public key.');
