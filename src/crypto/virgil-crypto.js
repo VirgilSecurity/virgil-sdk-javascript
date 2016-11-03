@@ -39,6 +39,8 @@ function virgilCrypto() {
 		verify: verify,
 		hash: hash,
 		calculateFingerprint: calculateFingerprint,
+		signThenEncrypt: signThenEncrypt,
+		decryptThenVerify: decryptThenVerify,
 		HashAlgorithm: VirgilCrypto.HashAlgorithm,
 		KeyPairType: VirgilCrypto.KeysTypesEnum
 	};
@@ -163,6 +165,8 @@ function virgilCrypto() {
 		if (!keyData) {
 			throw new Error('Cannot extract public key. Object passed is not a valid private key.');
 		}
+		
+		password = password || '';
 
 		var publicKey = VirgilCrypto.extractPublicKey(keyData.value, new Buffer(password));
 		return createPublicKey(keyData.recipientId, VirgilCrypto.publicKeyToDER(publicKey));
@@ -262,6 +266,54 @@ function virgilCrypto() {
 		}
 
 		return VirgilCrypto.verify(data, signature, keyData.value);
+	}
+
+	function signThenEncrypt(data, privateKey, publicKeys) {
+		if (!Buffer.isBuffer(data)) {
+			throw new TypeError('Cannot sign and encrypt. Argument "data" must be a Buffer.');
+		}
+
+		var privateKeyData = keyValueStore.get(privateKey);
+		if (!privateKeyData) {
+			throw new Error('Object provided is not a valid private key');
+		}
+
+		publicKeys = Array.isArray(publicKeys) ? publicKeys : [publicKeys];
+		var recipients = publicKeys.map(function (publicKey) {
+			var pubKeyData = keyValueStore.get(publicKey);
+			if (!pubKeyData) {
+				throw new Error('Object provided is not a valid public key');
+			}
+
+			return {
+				recipientId: pubKeyData.recipientId,
+				publicKey: pubKeyData.value
+			};
+		});
+
+		return VirgilCrypto.signThenEncrypt(data, privateKeyData.value, recipients);
+	}
+
+	function decryptThenVerify(cipherData, privateKey, publicKey) {
+		if (!Buffer.isBuffer(cipherData)) {
+			throw new TypeError('Argument "cipherData" must be a Buffer.');
+		}
+
+		var privateKeyData = keyValueStore.get(privateKey);
+		if (!privateKeyData) {
+			throw new Error('Object provided is not a valid private key');
+		}
+
+		var publicKeyData = keyValueStore.get(publicKey);
+		if (!publicKeyData) {
+			throw new Error('Object provided is not a valid public key');
+		}
+
+		return VirgilCrypto.decryptThenVerify(
+			cipherData,
+			privateKeyData.recipientId,
+			privateKeyData.value,
+			publicKeyData.value);
 	}
 
 	/**
