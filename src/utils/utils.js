@@ -8,25 +8,34 @@ function isEmpty(obj) {
 	return Object.keys(obj).length === 0;
 }
 
-function assign(target, source) {
+function assign(target, firstSource) {
+	// Object.assign polyfill taken from MDN
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 	if (typeof Object.assign !== 'function') {
 		if (target === undefined || target === null) {
-			throw new TypeError('Cannot convert undefined or null to object');
+			throw new TypeError('Cannot convert first argument to object');
 		}
 
-		var output = Object(target);
-		if (source !== undefined && source !== null) {
-			for (var nextKey in source) {
-				if (source.hasOwnProperty(nextKey)) {
-					output[nextKey] = source[nextKey];
+		var to = Object(target);
+		for (var i = 1; i < arguments.length; i++) {
+			var nextSource = arguments[i];
+			if (nextSource === undefined || nextSource === null) {
+				continue;
+			}
+
+			var keysArray = Object.keys(Object(nextSource));
+			for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+				var nextKey = keysArray[nextIndex];
+				var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+				if (desc !== undefined && desc.enumerable) {
+					to[nextKey] = nextSource[nextKey];
 				}
 			}
 		}
-
-		return output;
+		return to;
 	}
 
-	return Object.assign(target, source);
+	return Object.assign.apply(null, arguments);
 }
 
 module.exports = {

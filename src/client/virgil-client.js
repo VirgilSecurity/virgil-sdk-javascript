@@ -96,7 +96,7 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise.<Card>}
 		 * */
 		createCard: function (request) {
-			return cardsClient.create(request.toTransferFormat())
+			return cardsClient.create(request.getRequestModel())
 				.then(function (card) {
 					if (cardValidator) {
 						validateCards(card);
@@ -112,7 +112,7 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise}
 		 * */
 		revokeCard: function (request) {
-			var requestData = request.toTransferFormat();
+			var requestData = request.getRequestModel();
 			return cardsClient.revoke({
 				card_id: request.card_id,
 				content_snapshot: requestData.content_snapshot,

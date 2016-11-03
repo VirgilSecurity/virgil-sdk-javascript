@@ -1,8 +1,8 @@
 var VirgilCrypto = require('virgil-crypto');
 var initVirgilCrypto = require('./src/crypto/virgil-crypto');
 var createVirgilClient = require('./src/client/virgil-client');
-var cardRequest = require('./src/client/card-request');
-var cardRevokeRequest = require('./src/client/card-revoke-request');
+var cardRequest = require('./src/client/create-card-request');
+var cardRevokeRequest = require('./src/client/revoke-card-request');
 var requestSigner = require('./src/common/request-signer');
 var cardValidator = require('./src/common/card-validator');
 
@@ -11,8 +11,8 @@ VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 var virgil = {
 	client: createVirgilClient,
 	crypto: initVirgilCrypto(),
-	cardCreateRequest: cardRequest,
-	cardRevokeRequest: cardRevokeRequest,
+	createCardRequest: cardRequest,
+	revokeCardRequest: cardRevokeRequest,
 	requestSigner: requestSigner,
 	cardValidator: cardValidator
 };

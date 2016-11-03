@@ -1,6 +1,6 @@
 var assert = require('../utils/utils').assert;
 var signableRequest = require('./signable-request').signableRequest;
-var signableRequestFromTransferFormat = require('./signable-request').signableRequestFromTransferFormat;
+var signableRequestImport = require('./signable-request').signableRequestImport;
 
 /**
  * Creates and initializes a request to create Card
@@ -15,14 +15,15 @@ var signableRequestFromTransferFormat = require('./signable-request').signableRe
  *
  * @returns {Object} - Create Card Request
  * */
-function cardRequest (params) {
+function createCardRequest (params) {
 	params = params || {};
-	var identity = params.identity,
-		identity_type = params.identity_type,
-		scope = params.scope || 'application',
-		public_key = params.public_key,
-		info = params.info ? Object.assign({}, params.info) : null,
-		data = params.data ? Object.assign({}, params.data) : null;
+
+	var identity = params.identity;
+	var	identity_type = params.identity_type;
+	var	scope = params.scope || 'application';
+	var	public_key = params.public_key;
+	var	info = params.info ? Object.assign({}, params.info) : null;
+	var	data = params.data ? Object.assign({}, params.data) : null;
 
 	assert(identity, '"identity" parameter is required.');
 	assert(identity_type, '"identity_type" parameter is required.');
@@ -35,12 +36,12 @@ function cardRequest (params) {
 		identity: identity,
 		identity_type: identity_type,
 		scope: scope,
-		public_key: public_key,
+		public_key: public_key.toString('base64'),
 		info: info,
 		data: data
 	};
 
-	return Object.create(signableRequest(requestData));
+	return signableRequest(requestData);
 }
 
 /**
@@ -48,6 +49,6 @@ function cardRequest (params) {
  *
  * @returns {Object} - Create Card Request
  * */
-cardRequest.fromTransferFormat = signableRequestFromTransferFormat.bind(cardRequest);
+createCardRequest.import = signableRequestImport;
 
-module.exports = cardRequest;
+module.exports = createCardRequest;

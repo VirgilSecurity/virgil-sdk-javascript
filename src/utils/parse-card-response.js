@@ -1,12 +1,20 @@
 var parseJSON = require('../utils/parse-json');
-var serializer = require('./serializer');
 
-function parseCardResponse(res) {
-	var cardData = parseContentSnapshot(res.content_snapshot);
+module.exports = function parseCardResponse(res) {
+	var contentSnapshot = new Buffer(res.content_snapshot, 'base64');
+	var signaturesBase64 = res.meta.signs;
+	var signatures = Object.keys(signaturesBase64)
+		.reduce(function (result, signerId) {
+			result[signerId] = new Buffer(signaturesBase64[signerId], 'base64');
+			return result;
+		}, {});
+
+	var cardData = parseJSON(contentSnapshot.toString('utf8'));
+
 	return {
 		id: res.id,
-		snapshot: serializer.deserializeContentSnapshot(res.content_snapshot),
-		publicKey: serializer.deserializePublicKey(cardData.public_key),
+		snapshot: contentSnapshot,
+		publicKey: new Buffer(cardData.public_key, 'base64'),
 		identity: cardData.identity,
 		identityType: cardData.identity_type,
 		scope: cardData.scope,
@@ -14,15 +22,6 @@ function parseCardResponse(res) {
 		info: cardData.info,
 		createdAt: res.meta.created_at,
 		version: res.meta.card_version,
-		signatures: serializer.deserializeSignatures(res.meta.signs)
+		signatures: signatures
 	};
-}
-
-function parseContentSnapshot(snapshot) {
-	return parseJSON(serializer.deserializeContentSnapshot(snapshot).toString('utf8'));
-}
-
-module.exports = {
-	parseCardResponse: parseCardResponse,
-	parseContentSnapshot: parseContentSnapshot
 };

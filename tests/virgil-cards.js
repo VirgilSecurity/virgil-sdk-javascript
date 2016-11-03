@@ -31,7 +31,7 @@ test('virgil cards flow', function testVerify (t) {
 		var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
 		var username = 'testjssdk' + Math.random();
 
-		var createCardRequest = virgil.cardCreateRequest({
+		var createCardRequest = virgil.createCardRequest({
 			identity: username,
 			identity_type: 'username',
 			public_key: rawPublicKey
@@ -89,7 +89,7 @@ test('virgil cards flow', function testVerify (t) {
 	}
 
 	function revokeCard () {
-		var revokeRequest = virgil.cardRevokeRequest({
+		var revokeRequest = virgil.revokeCardRequest({
 			card_id: createdCard.id,
 			revocation_reason: 'unspecified'
 		});
@@ -111,7 +111,7 @@ test('setup alice', function (t) {
 	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
 	var username = 'alice_test_sdk';
 
-	var createCardRequest = virgil.cardCreateRequest({
+	var createCardRequest = virgil.createCardRequest({
 		identity: username,
 		identity_type: 'username',
 		public_key: rawPublicKey
@@ -137,7 +137,7 @@ test('setup bob', function (t) {
 	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
 	var username = 'bob_test_sdk';
 
-	var createCardRequest = virgil.cardCreateRequest({
+	var createCardRequest = virgil.createCardRequest({
 		identity: username,
 		identity_type: 'username',
 		public_key: rawPublicKey
@@ -256,7 +256,7 @@ test('bob verify', function (t) {
 });
 
 test('cleanup alice', function (t) {
-	var cardRevokeRequest = virgil.cardRevokeRequest({
+	var cardRevokeRequest = virgil.revokeCardRequest({
 		card_id: aliceCardId
 	});
 	var signer = virgil.requestSigner(virgil.crypto);
@@ -272,7 +272,7 @@ test('cleanup alice', function (t) {
 });
 
 test('cleanup bob', function (t) {
-	var cardRevokeRequest = virgil.cardRevokeRequest({
+	var cardRevokeRequest = virgil.revokeCardRequest({
 		card_id: bobCardId
 	});
 	var signer = virgil.requestSigner(virgil.crypto);
