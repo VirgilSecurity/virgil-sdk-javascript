@@ -110,18 +110,18 @@ var appKeyData = new virgil.Buffer("[YOUR_BASE64_ENCODED_APP_KEY_HERE]", "base64
 // Node
 // var appKeyData = new Buffer("[YOUR_BASE64_ENCODED_APP_KEY_HERE]", "base64");
 
-var appKey = crypto.importPrivateKey(appKeyData, appKeyPassword);
+var appKey = virgil.crypto.importPrivateKey(appKeyData, appKeyPassword);
 ```
 
 ### Generate a new keypair using *virgil.crypto* object. 
 
 ```javascript
-var aliceKeys = crypto.generateKeys();
+var aliceKeys = virgil.crypto.generateKeys();
 ```
 
 ### Prepare request
 
-To make request object to create a Virgil Card use `virgil.cardCreateRequest` factory function. It accepts an `options` object with the following properties:
+To make request object to create a Virgil Card use `virgil.createCardRequest` factory function. It accepts an `options` object with the following properties:
  - **public_key** - Public key associated with the Card as a `Buffer` (Required)
  - **scope** - Determines the *Virgil Card*'s scope that can be either *'global'* or *'application'*. Creating 'global' cards is *not supported* by this SDK currently so you may omit this parameter as it defaults to "application"
  - **identity_type** - Can be any string value (Required)
@@ -130,8 +130,8 @@ To make request object to create a Virgil Card use `virgil.cardCreateRequest` fa
  - **info** - Associative array with predefined keys that contain information about the device associated with the Card. The keys are always 'device_name' and 'device' and the values must not exceed 256 characters. (Optional)
 
 ```javascript
-var exportedPublicKey = crypto.exportPublicKey(aliceKeys.publicKey);
-var createCardRequest = virgil.cardCreateRequest({
+var exportedPublicKey = virgil.crypto.exportPublicKey(aliceKeys.publicKey);
+var createCardRequest = virgil.createCardRequest({
       public_key: exportedPublicKey,
       identity: "alice",
       identity_type: "username"
@@ -143,7 +143,7 @@ var createCardRequest = virgil.cardCreateRequest({
 When you have the request object ready you must sign it with two private keys: the key of the Card being created and your application's key. Use `virgil.requestSigner` function to create an object you can use to sign the request
 
 ```javascript
-var requestSigner = virgil.requestSigner(crypto);
+var requestSigner = virgil.requestSigner(virgil.crypto);
 
 requestSigner.selfSign(createCardRequest, aliceKeys.privateKey);
 requestSigner.authoritySign(createCardRequest, appID, appKey);
@@ -189,10 +189,7 @@ client.searchCards(criteria).then(function (cards) {
 This sample uses *built-in* `cardValidator` to validate cards. By default `cardValidator` validates only *Cards Service* signature. 
 
 ```javascript
-// Get the crypto reference
-var crypto = virgil.crypto;
-
-var validator = virgil.cardValidator(crypto);
+var validator = virgil.cardValidator(virgil.crypto);
 
 // Your can also add another Public Key for verification.
 // validator.addVerifier("[VERIFIER_CARD_ID]", [VERIFIER_PUBLIC_KEY_AS_BUFFER]);
@@ -221,8 +218,7 @@ client.searchCards(criteria)
 
 ```javascript
 var client = virgil.client("[YOUR_ACCESS_TOKEN_HERE]");
-var crypto = virgil.crypto;
-var requestSigner = virgil.requestSigner(crypto);
+var requestSigner = virgil.requestSigner(virgil.crypto);
 ```
 
 ### Prepare *Application* credentials 
@@ -236,12 +232,12 @@ var appKeyData = new virgil.Buffer("[YOUR_BASE64_ENCODED_APP_KEY_HERE]", "base64
 // Node
 // var appKeyData = new Buffer("[YOUR_BASE64_ENCODED_APP_KEY_HERE]", "base64");
 
-var appKey = crypto.importPrivateKey(appKeyData, appKeyPassword);
+var appKey = virgil.crypto.importPrivateKey(appKeyData, appKeyPassword);
 ```
 
 ### Prepare revocation request
 
-To make a request object to revoke a Virgil Card use `virgil.cardRevokeRequest` factory function. It accepts an `options` object with the following properties:
+To make a request object to revoke a Virgil Card use `virgil.revokeCardRequest` factory function. It accepts an `options` object with the following properties:
  - **card_id** - Id of card to revoke (Required)
  - **revocation_reason** - The reason for revoking the card. Must be either "unspecified" or "compromised". 
  Default is "unspecified"
@@ -249,7 +245,7 @@ To make a request object to revoke a Virgil Card use `virgil.cardRevokeRequest` 
 ```javascript
 var cardId = "[YOUR_CARD_ID_HERE]";
 
-var revokeRequest = virgil.cardRevokeRequest({
+var revokeRequest = virgil.revokeCardRequest({
   card_id: cardId,
   revocation_reason: "compromised"
 });
@@ -274,24 +270,24 @@ client.revokeCard(revokeRequest).then(function () {
 The following code sample illustrates key pair generation. The default algorithm is ed25519.
 
 ```javascript
- var aliceKeys = crypto.generateKeys();
+ var aliceKeys = virgil.crypto.generateKeys();
 ```
 
 To specify a different algorithm, pass one of the values of `virgil.crypto.KeyPairType` enumeration
 
 ```javascript
-var aliceKeys = crypto.generateKeys(crypto.KeyPairType.FAST_EC_X25519) // Curve25519
+var aliceKeys = virgil.crypto.generateKeys(crypto.KeyPairType.FAST_EC_X25519) // Curve25519
 ```
 
 ### Import and Export Keys
 All `virgil.crypto` api functions accept and return keys in an internal format. To get the raw key data as `Buffer` object use `exportPrivateKey` and `exportPublicKey` methods of `virgil.crypto` passing the appropriate internal key representation. To get the internal key representation out of the raw key data use `importPrivateKey` and `importPublicKey` respectively:
 
 ```javascript
- var exportedPrivateKey = crypto.exportPrivateKey(aliceKeys.privateKey);
- var exportedPublicKey = crypto.exportPublicKey(aliceKeys.publicKey);
+ var exportedPrivateKey = virgil.crypto.exportPrivateKey(aliceKeys.privateKey);
+ var exportedPublicKey = virgil.crypto.exportPublicKey(aliceKeys.publicKey);
 
- var privateKey = crypto.importPrivateKey(exportedPrivateKey);
- var publicKey = crypto.importPublicKey(exportedPublicKey);
+ var privateKey = virgil.crypto.importPrivateKey(exportedPrivateKey);
+ var publicKey = virgil.crypto.importPublicKey(exportedPublicKey);
 ```
 
 ## Encryption and Decryption
@@ -300,8 +296,8 @@ Data encryption using ECIES scheme with AES-GCM.
 Generate keypair
 
 ```javascript
-var crypto = virgil.crypto;
-var aliceKeys = crypto.generateKeys();
+var crypto = virgil.virgil.crypto;
+var aliceKeys = virgil.crypto.generateKeys();
 ```
 
 ### Encrypt Data
@@ -318,7 +314,7 @@ var plaintext = new virgil.Buffer("Hello Bob!");
 // var plaintext = new Buffer("Hello Bob!");
 
 
-var cipherData = crypto.encrypt(plaintext, aliceKeys.publicKey);
+var cipherData = virgil.crypto.encrypt(plaintext, aliceKeys.publicKey);
 ```
 
 ### Decrypt Data
@@ -328,17 +324,16 @@ The `virgil.crypto.decrypt` method requires two parameters:
 - **privateKey** - The private key to decrypt with
 
 ```javascript
-var decryptedData = crypto.decrypt(cipherData, aliceKeys.privateKey);
+var decryptedData = virgil.crypto.decrypt(cipherData, aliceKeys.privateKey);
 ```
 
-## Generating and Verifying Signatures
+## Signatures
 This section walks you through the steps necessary to use the `virgil.crypto` to generate a digital signature for data and to verify that a signature is authentic. 
 
 Generate a new Public/Private keypair and *data* to be signed.
 
 ```javascript
-var crypto = virgil.crypto;
-var aliceKeys = crypto.generateKeys();
+var aliceKeys = virgil.crypto.generateKeys();
 
 // The data to be signed with alice's Private key
 // Browsers
@@ -348,26 +343,40 @@ var data = new virgil.Buffer("Hello Bob, How are you?");
 // var data = new Buffer("Hello Bob, How are you?");
 ```
 
-### Generating a Signature
+### Generate Signature
 
 Sign the SHA-384 fingerprint of data using your private key. To generate the signature, simply call one of the sign methods:
 
 ```javascript
-var signature = crypto.sign(data, aliceKeys.privateKey);
+var signature = virgil.crypto.sign(data, aliceKeys.privateKey);
 ```
 
-### Verifying a Signature
+### Verify Signature
 
 Verify the signature of the SHA-384 fingerprint of data using Public key. The signature can now be verified by calling the verify method:
 
 ```javascript
- var isValid = crypto.verify(data, signature, alice.publicKey);
+ var isValid = virgil.crypto.verify(data, signature, aliceKeys.publicKey);
  ```
+ 
+### Sign then encrypt
+Generates the signature, encrypts the data and attaches the signature to the cipher data. Returns a signed cipher data. 
+To encrypt for multiple recipients, pass an array of public keys as third parameter
+
+```
+var cipherData = virgil.crypto.signThenEncrypt(data, aliceKeys.privateKey, bobKeys.publicKey);
+```
+
+### Decrypt then verify
+Decrypts the data and verifies attached signature. Returns decrypted data if verification succeeded or throws `VirgilCryptoError` if it failed. 
+
+```
+var decryptedData = virgil.crypto.decryptThenVerify(cipherData, bobKeys.privateKey, aliceKeys.publicKey);
+```
  
 ## Fingerprint Generation
 The default algorithm for Fingerprint generation is SHA-256.
 ```javascript
-var crypto = virgil.crypto;
 
 // Browsers
 var content = new virgil.Buffer("CONTENT_TO_CALCULATE_FINGERPRINT_OF");
@@ -375,7 +384,7 @@ var content = new virgil.Buffer("CONTENT_TO_CALCULATE_FINGERPRINT_OF");
 // Node.js
 // var content = new Buffer("CONTENT_TO_CALCULATE_FINGERPRINT_OF");
 
-var fingerprint = crypto.calculateFingerprint(content);
+var fingerprint = virgil.crypto.calculateFingerprint(content);
 ```
 
 ## Release Notes
