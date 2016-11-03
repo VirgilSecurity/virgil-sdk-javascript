@@ -359,19 +359,35 @@ Verify the signature of the SHA-384 fingerprint of data using Public key. The si
  var isValid = virgil.crypto.verify(data, signature, aliceKeys.publicKey);
  ```
  
+## Authenticated Encryption
+Authenticated Encryption provides both data confidentiality and data integrity assurances to the information being protected.
+
+```javascript
+ 
+var alice = virgil.crypto.generateKeys();
+var bob = virgil.crypto.generateKeys();
+
+// The data to be signed with alice's Private key
+// Browsers
+var data = new virgil.Buffer("Hello Bob, How are you?");
+
+// Node.js
+// var data = new Buffer("Hello Bob, How are you?");
+```
+
 ### Sign then encrypt
 Generates the signature, encrypts the data and attaches the signature to the cipher data. Returns a signed cipher data. 
 To encrypt for multiple recipients, pass an array of public keys as third parameter
 
 ```
-var cipherData = virgil.crypto.signThenEncrypt(data, aliceKeys.privateKey, bobKeys.publicKey);
+var cipherData = virgil.crypto.signThenEncrypt(data, alice.privateKey, bob.publicKey);
 ```
 
 ### Decrypt then verify
 Decrypts the data and verifies attached signature. Returns decrypted data if verification succeeded or throws `VirgilCryptoError` if it failed. 
 
 ```
-var decryptedData = virgil.crypto.decryptThenVerify(cipherData, bobKeys.privateKey, aliceKeys.publicKey);
+var decryptedData = virgil.crypto.decryptThenVerify(cipherData, bob.privateKey, alice.publicKey);
 ```
  
 ## Fingerprint Generation
