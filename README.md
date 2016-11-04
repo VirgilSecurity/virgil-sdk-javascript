@@ -23,6 +23,9 @@ In this guide you will find code for every task you need to implement in order t
 * [Generating and Verifying Signatures](#generating-and-verifying-signatures)
   * [Generating a Signature](#generating-a-signature)
   * [Verifying a Signature](#verifying-a-signature)
+* [Authenticated Encryption](#authenticated-encryption)
+  * [Sign then Encrypt](#sign-then-encrypt)
+  * [Decrypt then Verify](#decrypt-then-verify)
 * [Fingerprint Generation](#fingerprint-generation)
 * [Release Notes](#release-notes)
 
