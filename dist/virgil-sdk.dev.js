@@ -2174,7 +2174,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					return result;
 				}, {});
 
-				var params = JSON.parse(contentSnapshot.toString('utf8'));
+				var params = JSON.parse(snapshot.toString('utf8'));
 				return assign({}, params, methods);
 			}
 		};
@@ -2266,6 +2266,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function assign(target, firstSource) {
+		// Object.assign polyfill taken from MDN
+		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 		if (typeof Object.assign !== 'function') {
 			if (target === undefined || target === null) {
 				throw new TypeError('Cannot convert first argument to object');
@@ -3093,7 +3095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var parseJSON = __webpack_require__(12);
 
 	module.exports = function parseCardResponse(res) {
-		var contentSnapshot = new Buffer(res.content_snapshot);
+		var contentSnapshot = new Buffer(res.content_snapshot, 'base64');
 		var signaturesBase64 = res.meta.signs;
 		var signatures = Object.keys(signaturesBase64).reduce(function (result, signerId) {
 			result[signerId] = new Buffer(signaturesBase64[signerId], 'base64');
@@ -35749,7 +35751,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			identity: identity,
 			identity_type: identity_type,
 			scope: scope,
-			public_key: public_key,
+			public_key: public_key.toString('base64'),
 			info: info,
 			data: data
 		};
@@ -36227,12 +36229,15 @@ return /******/ (function(modules) { // webpackBootstrap
 				throw new TypeError('Unexpected type of "rawPrivateKey", use Buffer.');
 			}
 
-			rawPrivateKey = password ? VirgilCrypto.decryptPrivateKey(rawPrivateKey, new Buffer(password)) : rawPrivateKey;
+			if (arguments.length === 2) {
+				rawPrivateKey = VirgilCrypto.decryptPrivateKey(rawPrivateKey, new Buffer(password));
+			}
 
 			var privateKeyDER = VirgilCrypto.privateKeyToDER(rawPrivateKey);
 			var publicKey = VirgilCrypto.extractPublicKey(privateKeyDER);
+			var publicKeyDER = VirgilCrypto.publicKeyToDER(publicKey);
 
-			return createPrivateKey(VirgilCrypto.hash(publicKey), privateKeyDER);
+			return createPrivateKey(VirgilCrypto.hash(publicKeyDER), privateKeyDER);
 		}
 
 		/**
@@ -36247,7 +36252,9 @@ return /******/ (function(modules) { // webpackBootstrap
 				throw new TypeError('Unexpected type of "rawPublicKey", use Buffer.');
 			}
 
-			return createPublicKey(VirgilCrypto.hash(rawPublicKey), VirgilCrypto.publicKeyToDER(rawPublicKey));
+			var publicKeyDER = VirgilCrypto.publicKeyToDER(rawPublicKey);
+
+			return createPublicKey(VirgilCrypto.hash(publicKeyDER), publicKeyDER);
 		}
 
 		/**
