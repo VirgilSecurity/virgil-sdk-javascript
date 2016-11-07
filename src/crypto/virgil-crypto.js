@@ -88,14 +88,15 @@ function virgilCrypto() {
 			throw new TypeError('Unexpected type of "rawPrivateKey", use Buffer.');
 		}
 
-		rawPrivateKey = password ?
-			VirgilCrypto.decryptPrivateKey(rawPrivateKey, new Buffer(password)) :
-			rawPrivateKey;
+		if (arguments.length === 2) {
+			rawPrivateKey = VirgilCrypto.decryptPrivateKey(rawPrivateKey, new Buffer(password));
+		}
 
 		var privateKeyDER = VirgilCrypto.privateKeyToDER(rawPrivateKey);
 		var publicKey = VirgilCrypto.extractPublicKey(privateKeyDER);
+		var publicKeyDER = VirgilCrypto.publicKeyToDER(publicKey);
 
-		return createPrivateKey(VirgilCrypto.hash(publicKey), privateKeyDER);
+		return createPrivateKey(VirgilCrypto.hash(publicKeyDER), privateKeyDER);
 	}
 
 	/**
@@ -110,7 +111,9 @@ function virgilCrypto() {
 			throw new TypeError('Unexpected type of "rawPublicKey", use Buffer.');
 		}
 
-		return createPublicKey(VirgilCrypto.hash(rawPublicKey), VirgilCrypto.publicKeyToDER(rawPublicKey));
+		var publicKeyDER = VirgilCrypto.publicKeyToDER(rawPublicKey);
+
+		return createPublicKey(VirgilCrypto.hash(publicKeyDER), publicKeyDER);
 	}
 
 	/**
@@ -165,7 +168,7 @@ function virgilCrypto() {
 		if (!keyData) {
 			throw new Error('Cannot extract public key. Object passed is not a valid private key.');
 		}
-		
+
 		password = password || '';
 
 		var publicKey = VirgilCrypto.extractPublicKey(keyData.value, new Buffer(password));
