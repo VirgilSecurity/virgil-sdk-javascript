@@ -54,6 +54,12 @@ Or get it from CDN
 
 Or [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases)
 
+> IMPORTANT!
+> Please note that in browser environment we're using Web Workers internally to invoke some heavy cryptographic 
+> operations which means that Chrome and Opera will give an error 
+> `"Uncaught SecurityError: Script at '[blob url here]' cannot be accessed from origin 'null'."` when you try to use Virgil SDK locally. 
+> It needs to be on a proper domain.
+
 ## User and App Credentials
 
 When you register an application on the Virgil developer's [dashboard](https://developer.virgilsecurity.com/dashboard), you are provided you with an *appID*, *appKey* and *accessToken*.
@@ -94,8 +100,12 @@ var client = virgil.client("[YOUR_ACCESS_TOKEN_HERE]", {
 The `crypto` object available through `virgil` namespace provides implementation of cryptographic operations such as hashing, signature generation and verification as well as encryption and decryption. It is initialized automatically when SDK is loaded. All api functions of `virgil.crypto` accept and return byte arrays as Node.js `Buffer`s. For browsers an implementation of `Buffer` module is provided by [this library](https://github.com/feross/buffer) and is available through `virgil` namespace `Buffer` property.
 
 ```javascript
-var crypto = virgil.crypto;
+var virgilCrypto = virgil.crypto;
 ```
+
+> Note that in Browsers that implement Web Cryptography API you cannot assign to a variable named `crypto`
+> from top-level code (i.e. code that is not part of a function) because there's a property of the 
+> same name on the global object that you cannot overwrite. Use a different name.
 
 ## Creating a Virgil Card
 
@@ -279,7 +289,7 @@ The following code sample illustrates key pair generation. The default algorithm
 To specify a different algorithm, pass one of the values of `virgil.crypto.KeyPairType` enumeration
 
 ```javascript
-var aliceKeys = virgil.crypto.generateKeys(crypto.KeyPairType.FAST_EC_X25519) // Curve25519
+var aliceKeys = virgil.crypto.generateKeys(virgil.crypto.KeyPairType.FAST_EC_X25519) // Curve25519
 ```
 
 ### Import and Export Keys
@@ -311,7 +321,6 @@ Data encryption using ECIES scheme with AES-GCM.
 Generate keypair
 
 ```javascript
-var crypto = virgil.virgil.crypto;
 var aliceKeys = virgil.crypto.generateKeys();
 ```
 
