@@ -1,4 +1,6 @@
-# Virgil Security for Javascript [![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](https://www.npmjs.com/package/virgil-sdk)
+# Virgil Javascript SDK v3 [![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](https://www.npmjs.com/package/virgil-sdk)
+
+> Note. This document covers version 3 of Virgil JavaScript SDK. Version 4 can be found [here](https://github.com/VirgilSecurity/virgil-sdk-javascript/tree/v4)
 
 <a href="https://virgilsecurity.com"><img width="230px" src="https://github.com/VirgilSecurity/virgil-net/blob/master/logo.png" align="left" hspace="10" vspace="6"></a>
 
