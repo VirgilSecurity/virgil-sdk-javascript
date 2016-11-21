@@ -130,8 +130,8 @@ test('create private virgil card', function (t) {
 		var token = VirgilSDK.utils.generateValidationToken(
 			username,
 			identityType,
-			process.env.VIRGIL_APP_PRIVATE_KEY.replace(/\\n/g, '\n'),
-			process.env.VIRGIL_APP_PRIVATE_KEY_PASSWORD
+			process.env.VIRGIL_APP_PRIVATE_KEY_V3.replace(/\\n/g, '\n'),
+			process.env.VIRGIL_APP_PRIVATE_KEY_PASSWORD_V3
 		);
 
 		return Promise.resolve({
