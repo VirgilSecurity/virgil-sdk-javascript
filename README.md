@@ -49,7 +49,10 @@ npm install virgil-sdk@beta
 
 Or get it from CDN
 ```html
-<script src="https://cdn.virgilsecurity.com/packages/javascript/sdk_beta/4.0.0-beta.5/virgil-sdk.min.js" crossorigin="anonymous"></script>
+<script 
+src="https://cdn.virgilsecurity.com/packages/javascript/sdk_beta/4.0.0-beta.5/virgil-sdk.min.js"  
+integrity="sha256-7GjzXPYP9XsmXBUWnCaDfAFuP1Yi39Rli9e6eu3/Dkk="
+crossorigin="anonymous"></script>
 ```
 
 Or [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases)
