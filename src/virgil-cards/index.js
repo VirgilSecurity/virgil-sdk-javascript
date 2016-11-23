@@ -1,5 +1,5 @@
 var ApiClient = require('apiapi');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var errors = require('./errors');
 var parseJSON = require('../utils/parse-json');
 var errorHandler = require('../utils/error-handler')(errors);

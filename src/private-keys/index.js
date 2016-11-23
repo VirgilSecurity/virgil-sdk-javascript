@@ -1,6 +1,6 @@
 var ApiClient = require('apiapi');
 var Promise = require('bluebird');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var errors = require('./errors');
 var errorHandler = require('../utils/error-handler')(errors);
 var createFetchServiceCardMethod = require('../utils/verify-response');
