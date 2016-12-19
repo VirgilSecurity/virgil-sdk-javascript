@@ -1,5 +1,6 @@
-var createReadCardsClient = require('../virgil-cards/cards-read-client');
-var createCardsClient = require('../virgil-cards/cards-client');
+var createReadCardsClient = require('../apis/cards-ro');
+var createCardsClient = require('../apis/cards');
+var createIdentityClient = require('../apis/identity');
 
 /**
  * @typedef {Object} Card
@@ -13,7 +14,7 @@ var createCardsClient = require('../virgil-cards/cards-client');
  * @property {Object} info - Device information associated with Card
  * @property {string} createdAt - UNIX timestamp of the date the Card was created
  * @property {string} version - Version of service API the Card was created with
- * @property {Object} signatures - Card's signatures as <signer_id>:<signature> pairs
+ * @property {Object.<string, Buffer>} signatures - Card's signatures as <signer_id>:<signature> pairs
  * */
 
 /**

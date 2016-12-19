@@ -1,5 +1,5 @@
 var ApiClient = require('apiapi');
-var errors = require('./errors');
+var errors = require('./cards-errors');
 var errorHandler = require('../utils/error-handler')(errors);
 var parseCardResponse = require('../utils/parse-card-response');
 

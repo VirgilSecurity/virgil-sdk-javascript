@@ -1,5 +1,5 @@
 var ApiClient = require('apiapi');
-var errors = require('./errors');
+var errors = require('./identity-errors');
 var errorHandler = require('../utils/error-handler')(errors);
 
 function createIdentityClient (opts) {
