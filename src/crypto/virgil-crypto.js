@@ -6,20 +6,20 @@ VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 cryptoAsyncPatch(VirgilCrypto);
 
 /**
- * Represents private key.
- * @typedef {Object} PrivateKey
+ * Private key handle.
+ * @typedef {Object} PrivateKeyHandle
  */
 
 /**
- * Represents public key.
- * @typedef {Object} PublicKey
+ * Public key handle.
+ * @typedef {Object} PublicKeyHandle
  */
 
 /**
  * Represents key pair.
  * @typedef {Object} KeyPair
- * @property {PrivateKey} privateKey - Private part of the key
- * @property {PublicKey} publicKey - Public part of the key
+ * @property {PrivateKeyHandle} privateKey - Private part of the key
+ * @property {PublicKeyHandle} publicKey - Public part of the key
  */
 
 var keyValueStore = new WeakMap();
@@ -35,6 +35,8 @@ function virgilCrypto() {
 		extractPublicKey: extractPublicKey,
 		encrypt: encrypt,
 		decrypt: decrypt,
+		encryptWithPassword: encryptWithPassword,
+		decryptWithPassword: decryptWithPassword,
 		sign: sign,
 		verify: verify,
 		hash: hash,
@@ -179,7 +181,7 @@ function virgilCrypto() {
 	 * Encrypts the data for recipients.
 	 *
 	 * @param {Buffer} data - Data to encrypt
-	 * @param {PublicKey|PublicKey[]} recipients - Public keys to encrypt the data with.
+	 * @param {PublicKeyHandle|PublicKeyHandle[]} recipients - Public keys to encrypt the data with.
 	 *
 	 * @returns {Buffer} - Encrypted data
 	 * */
@@ -209,7 +211,7 @@ function virgilCrypto() {
 	 * Decrypts the data with private key.
 	 *
 	 * @param {Buffer} cipherData - Encrypted data
-	 * @param {PrivateKey} privateKey - Private key to decrypt with
+	 * @param {PrivateKeyHandle} privateKey - Private key to decrypt with
 	 *
 	 * @returns {Buffer} - Decrypted data
 	 * */
@@ -230,7 +232,7 @@ function virgilCrypto() {
 	 * Signs the data with private key.
 	 *
 	 * @param {Buffer} data - Data to sign
-	 * @param {PrivateKey} privateKey - Private key to sign with
+	 * @param {PrivateKeyHandle} privateKey - Private key to sign with
 	 * */
 	function sign(data, privateKey) {
 		if (!Buffer.isBuffer(data)) {
@@ -250,7 +252,7 @@ function virgilCrypto() {
 	 *
 	 * @param {Buffer} data - The data to verify signature of
 	 * @param {Buffer} signature - The signature to verify
-	 * @param {PublicKey} publicKey - Public key to verify with
+	 * @param {PublicKeyHandle} publicKey - Public key to verify with
 	 *
 	 * @returns {Boolean}
 	 * */
@@ -271,6 +273,15 @@ function virgilCrypto() {
 		return VirgilCrypto.verify(data, signature, keyData.value);
 	}
 
+	/**
+	 * Signs the data with private key, then encrypts the data with attached
+	 * 		signature with public keys.
+	 * @param {Buffer} data
+	 * @param {PrivateKeyHandle} privateKey
+	 * @param {PublicKeyHandle|PublicKeyHandle[]} publicKeys Recipient's
+	 * 		public key or array of recipients' public keys.
+	 * 	@returns {Buffer} Encrypted data with attached signature.
+	 * */
 	function signThenEncrypt(data, privateKey, publicKeys) {
 		if (!Buffer.isBuffer(data)) {
 			throw new TypeError('Cannot sign and encrypt. Argument "data" must be a Buffer.');
@@ -297,6 +308,15 @@ function virgilCrypto() {
 		return VirgilCrypto.signThenEncrypt(data, privateKeyData.value, recipients);
 	}
 
+	/**
+	 * Decrypts the cipher data with private key, then verifies the signature
+	 * 		with public key.
+	 * 	@param {Buffer} cipherData
+	 * 	@param {PrivateKeyHandle} privateKey
+	 * 	@param {PublicKeyHandle} publicKey
+	 * 	@returns {Buffer} Decrypted data iff verification is successful,
+	 * 			otherwise throws {!VirgilCryptoError}.
+	 * */
 	function decryptThenVerify(cipherData, privateKey, publicKey) {
 		if (!Buffer.isBuffer(cipherData)) {
 			throw new TypeError('Argument "cipherData" must be a Buffer.');
@@ -348,6 +368,26 @@ function virgilCrypto() {
 		}
 
 		return VirgilCrypto.hash(data, algorithm);
+	}
+
+	/**
+	 * Encrypts the data using password to derive encryption key.
+	 * @param {Buffer} data
+	 * @param {string} password
+	 * @returns {Buffer} Encrypted data.
+	 * */
+	function encryptWithPassword (data, password) {
+		return VirgilCrypto.encrypt(data, new Buffer(password));
+	}
+
+	/**
+	 * Decrypts the cipher data using password to derive decryption key.
+	 * @param {Buffer} cipherData
+	 * @param {string} password
+	 * @returns {Buffer} Decrypted data.
+	 * */
+	function decryptWithPassword (cipherData, password) {
+		return VirgilCrypto.decrypt(cipherData, new Buffer(password));
 	}
 }
 
