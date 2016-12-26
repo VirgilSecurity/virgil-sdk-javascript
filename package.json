@@ -32,6 +32,8 @@
   "dependencies": {
     "apiapi": "^1.7.1",
     "bluebird": "^2.10.2",
+    "core-error-predicates": "^1.1.0",
+    "mkdirp": "^0.5.1",
     "virgil-crypto": "^2.0.0-beta.4"
   },
   "devDependencies": {
@@ -50,7 +52,9 @@
     "mailinator": "^1.0.2",
     "operative": "^0.4.4",
     "raw-loader": "^0.5.1",
+    "rimraf": "^2.5.4",
     "script-loader": "^0.6.1",
+    "sinon": "^1.17.6",
     "tape": "^4.4.0",
     "vinyl-named": "^1.1.0",
     "webpack": "^1.12.9",
