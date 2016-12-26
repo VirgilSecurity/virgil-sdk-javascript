@@ -1,4 +1,4 @@
-var assert = require('../utils/utils').assert;
+var assert = require('../shared/utils').assert;
 var signableRequest = require('./signable-request').signableRequest;
 var signableRequestImport = require('./signable-request').signableRequestImport;
 

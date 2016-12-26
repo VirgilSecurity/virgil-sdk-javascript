@@ -1,4 +1,4 @@
-var parseJSON = require('../utils/parse-json');
+var parseJSON = require('./parse-json');
 
 module.exports = function parseCardResponse(res) {
 	var contentSnapshot = new Buffer(res.content_snapshot, 'base64');

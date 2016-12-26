@@ -1,4 +1,4 @@
-var assign = require('../utils/utils').assign;
+var assign = require('../shared/utils').assign;
 
 function signableRequest () {
 	var snapshot;

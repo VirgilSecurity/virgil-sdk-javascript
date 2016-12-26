@@ -1,6 +1,6 @@
 var ApiClient = require('apiapi');
 var errors = require('./identity-errors');
-var errorHandler = require('../utils/error-handler')(errors);
+var errorHandler = require('../shared/error-handler')(errors);
 
 function createIdentityClient (opts) {
 	opts = typeof opts === 'object' ? opts : {};

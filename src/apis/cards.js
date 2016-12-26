@@ -1,7 +1,7 @@
 var ApiClient = require('apiapi');
 var errors = require('./cards-errors');
-var errorHandler = require('../utils/error-handler')(errors);
-var parseCardResponse = require('../utils/parse-card-response');
+var errorHandler = require('../shared/error-handler')(errors);
+var parseCardResponse = require('../shared/parse-card-response');
 
 module.exports = function createCardsClient (applicationToken, opts) {
 	var apiClient = new ApiClient({

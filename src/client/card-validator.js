@@ -1,4 +1,4 @@
-var assign = require('../utils/utils.js').assign;
+var assign = require('../shared/utils.js').assign;
 
 function cardValidator (crypto) {
 
