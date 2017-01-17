@@ -1,7 +1,5 @@
-function assert(condition, errorMessage) {
-	if (!condition) {
-		throw new Error(errorMessage);
-	}
+function stringToBuffer(str) {
+	return new Buffer(str);
 }
 
 function isEmpty(obj) {
@@ -20,9 +18,17 @@ function isNumber(obj) {
 	return typeof obj === 'number';
 }
 
+function isBuffer(obj) {
+	return Buffer.isBuffer(obj);
+}
+
+function assert(condition, errorMessage) {
+	if (!condition) {
+		throw new Error(errorMessage);
+	}
+}
+
 function assign(target, firstSource) {
-	// Object.assign polyfill taken from MDN
-	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
 	if (typeof Object.assign !== 'function') {
 		if (target === undefined || target === null) {
 			throw new TypeError('Cannot convert first argument to object');
@@ -76,8 +82,6 @@ function inherits(ctor, superCtor) {
 	 * @return {*} The return value of the superclass method/constructor.
 	 */
 	ctor.base = function(me, methodName, var_args) {
-		// Copying using loop to avoid deop due to passing arguments object to
-		// function. This is faster in many JS engines as of late 2014.
 		var args = new Array(arguments.length - 2);
 		for (var i = 2; i < arguments.length; i++) {
 			args[i - 2] = arguments[i];
@@ -96,7 +100,9 @@ module.exports = {
 	isString: isString,
 	isNumber: isNumber,
 	isFunction: isFunction,
+	isBuffer: isBuffer,
 	assign: assign,
 	inherits: inherits,
-	abstractMethod: abstractMethod
+	abstractMethod: abstractMethod,
+	stringToBuffer: stringToBuffer
 };
