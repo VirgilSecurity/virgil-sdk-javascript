@@ -1,103 +1,126 @@
+/**
+ * @fileoverview A class that allows to construct and digitally sign request
+ * to the Virgil Security Cards Service.
+ *
+ * */
+
+'use strict';
+
 var assign = require('../shared/utils').assign;
+var stringToBuffer = require('../shared/utils').stringToBuffer;
+var serializer = require('../shared/serializer');
 
-function signableRequest () {
-	var snapshot;
-	var signatures;
+var privateData = new WeakMap();
 
-	var methods = {
-		getSnapshot: getSnapshot,
-		appendSignature: appendSignature,
-		getSignature: getSignature,
-		getRequestModel: getRequestModel,
-		export: exportRequest
-	};
+/**
+ * Initializes a new request with the given snapshot,
+ * signatures and parameters.
+ *
+ * @param {Buffer} snapshot - The snapshot of request.
+ * @param {Object} signatures - Object representing a mapping from signer ids
+ * 		to the signatures.
+ * @param {Object} params - Request parameters.
+ *
+ * @constructor
+ * */
+function SignableRequest (snapshot, signatures, params) {
+	privateData.set(this, {
+		snapshot: snapshot,
+		signatures: signatures
+	});
 
-	return {
-		init: function init (params) {
-			snapshot = new Buffer(JSON.stringify(params));
-			signatures = Object.create(null);
+	assign(this, params);
+}
 
-			return assign({}, params, methods);
-		},
-		restore: function restore (contentSnapshot, signs) {
-			snapshot = new Buffer(contentSnapshot, 'base64');
-			signatures = Object.keys(signs)
-				.reduce(function (result, key) {
-					result[key] = new Buffer(signs[key], 'base64');
-					return result;
-				}, {});
+/**
+ * Returns the snapshot of the request.
+ *
+ * @returns {Buffer} The snapshot.
+ * */
+SignableRequest.prototype.getSnapshot = function () {
+	return privateData.get(this).snapshot;
+};
 
-			var params = JSON.parse(snapshot.toString('utf8'));
-			return assign({}, params, methods);
+/**
+ * Appends a signature to the request.
+ *
+ * @param {string} signerId - Id of the signer.
+ * @param {Buffer} signature - The signature bytes.
+ * */
+SignableRequest.prototype.appendSignature = function (signerId, signature) {
+	privateData.get(this).signatures[signerId] = signature;
+};
+
+/**
+ * Returns a signature corresponding to the given signer id,
+ * or {code: null} if not found.
+ *
+ * @param {string} signerId - Id of the signer.
+ *
+ * @returns {Buffer} Either the signature or {code: null}.
+ * */
+SignableRequest.prototype.getSignature = function (signerId) {
+	return privateData.get(this).signatures[signerId] || null;
+};
+
+/**
+ * Returns serializable representation of the request.
+ *
+ * @returns {Object}
+ * */
+SignableRequest.prototype.getRequestModel = function () {
+	var privateFields = privateData.get(this);
+	var requestModel =  {
+		content_snapshot: privateFields.snapshot,
+		meta: {
+			signs: privateFields.signatures
 		}
 	};
 
-	/**
-	 * Returns the snapshot of the request
-	 * */
-	function getSnapshot() {
-		return snapshot;
-	}
+	return serializer.serializeSignedContent(requestModel);
+};
 
-	/**
-	 * Appends a signature to the request
-	 *
-	 * @param {string} signerId - Id of signer
-	 * @param {Buffer} signature - Signature value
-	 * */
-	function appendSignature(signerId, signature) {
-		signatures[signerId] = signature;
-	}
+/**
+ * Exports the request to base64-encoded string.
+ *
+ * @returns {string}
+ * */
+SignableRequest.prototype.export = function () {
+	var json = JSON.stringify(this.getRequestModel());
+	return stringToBuffer(json).toString('base64');
+};
 
-	/**
-	 * Returns a signature by signer Id
-	 *
-	 * @param {string} signerId - Id of signer
-	 * @returns {string} The signature
-	 * */
-	function getSignature(signerId) {
-		return signatures[signerId];
-	}
+/**
+ * Creates a new request instance with the given parameters.
+ *
+ * returns {SignableRequest} - The newly created request.
+ * */
+function createSignableRequest (params) {
+	var snapshot = stringToBuffer(JSON.stringify(params));
+	var signatures = Object.create(null);
 
-	/**
-	 * Returns serializable representation of the request
-	 *
-	 * @returns {Object}
-	 * */
-	function getRequestModel() {
-		return {
-			content_snapshot: snapshot.toString('base64'),
-			meta: {
-				signs: Object.keys(signatures)
-					.reduce(function (result, key) {
-						result[key] = signatures[key].toString('base64');
-						return result;
-					}, {})
-			}
-		}
-	}
-
-	/**
-	 * Exports request to base64-encoded string
-	 * */
-	function exportRequest() {
-		var json = JSON.stringify(getRequestModel());
-		var buf = new Buffer(json);
-		return buf.toString('base64');
-	}
+	return new SignableRequest(snapshot, signatures, params);
 }
 
-function signableRequestCreate (params) {
-	return signableRequest().init(params);
-}
+/**
+ * Creates a new request instance from the previously exported request.
+ * The new request has the exact same snapshot as the exported one.
+ *
+ * returns {SignableRequest} - The imported request.
+ * */
+function importSignableRequest (exportedRequest) {
+	var requestJSON = stringToBuffer(exportedRequest, 'base64')
+						.toString('utf8');
+	var requestModel = serializer.deserializeSignedContent(
+									JSON.parse(requestJSON));
+	var snapshot = requestModel.content_snapshot;
+	var signatures = requestModel.meta.signs;
+	var params = JSON.parse(snapshot.toString('utf8'));
 
-function signableRequestImport (exportedRequest) {
-	var json = new Buffer(exportedRequest, 'base64');
-	var requestModel = JSON.parse(json.toString('utf8'));
-	return signableRequest().restore(requestModel.content_snapshot, requestModel.meta.signs);
+	return new SignableRequest(snapshot, signatures, params);
 }
 
 module.exports = {
-	signableRequest: signableRequestCreate,
-	signableRequestImport: signableRequestImport
+	createSignableRequest: createSignableRequest,
+	importSignableRequest: importSignableRequest
 };

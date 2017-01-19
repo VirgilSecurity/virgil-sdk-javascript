@@ -1,5 +1,6 @@
-function stringToBuffer(str) {
-	return new Buffer(str);
+function stringToBuffer(str, encoding) {
+	encoding = encoding || 'utf8';
+	return new Buffer(str, encoding);
 }
 
 function isEmpty(obj) {
