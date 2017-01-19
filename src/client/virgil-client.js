@@ -1,21 +1,7 @@
 var createReadCardsClient = require('../apis/cards-ro');
 var createCardsClient = require('../apis/cards');
 var createIdentityClient = require('../apis/identity');
-
-/**
- * @typedef {Object} Card
- * @property {string} id - Card identifier
- * @property {Buffer} snapshot - Card content snapshot
- * @property {Buffer} publicKey - Public key associated with Card
- * @property {string} identity - Card's identity
- * @property {string} identityType - Card's identity type
- * @property {string} scope - Card's scope
- * @property {Object} data - Custom data associated with Card
- * @property {Object} info - Device information associated with Card
- * @property {string} createdAt - UNIX timestamp of the date the Card was created
- * @property {string} version - Version of service API the Card was created with
- * @property {Object.<string, Buffer>} signatures - Card's signatures as <signer_id>:<signature> pairs
- * */
+var Card = require('./card');
 
 /**
  * @typedef {Object} SearchCriteria
@@ -64,12 +50,14 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise.<Card>}
 		 * */
 		getCard: function (cardId) {
-			return cardsReadOnlyClient.get({ card_id: cardId }).then(function (card) {
-				if (cardValidator) {
-					validateCards(card);
-				}
-				return card;
-			});
+			return cardsReadOnlyClient.get({ card_id: cardId })
+				.then(responseToCard)
+				.then(function (card) {
+					if (cardValidator) {
+						validateCards(card);
+					}
+					return card;
+				});
 		},
 
 		/**
@@ -82,12 +70,16 @@ function createVirgilClient(accessToken, options) {
 			params = params || {};
 			params.scope = params.scope || 'application';
 
-			return cardsReadOnlyClient.search(params).then(function (cards) {
-				if (cardValidator) {
-					validateCards(cards);
-				}
-				return cards;
-			});
+			return cardsReadOnlyClient.search(params)
+				.then(function (results) {
+					return results.map(responseToCard);
+				})
+				.then(function (cards) {
+					if (cardValidator) {
+						validateCards(cards);
+					}
+					return cards;
+				});
 		},
 
 		/**
@@ -98,6 +90,7 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		createCard: function (request) {
 			return cardsClient.create(request.getRequestModel())
+				.then(responseToCard)
 				.then(function (card) {
 					if (cardValidator) {
 						validateCards(card);
@@ -134,6 +127,10 @@ function createVirgilClient(accessToken, options) {
 			cardValidator = validator;
 		}
 	};
+}
+
+function responseToCard (res) {
+	return Card.import(res);
 }
 
 module.exports = createVirgilClient;

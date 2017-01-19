@@ -1,7 +1,6 @@
 var ApiClient = require('apiapi');
 var errors = require('./cards-errors');
 var errorHandler = require('../shared/error-handler')(errors);
-var parseCardResponse = require('../shared/parse-card-response');
 
 module.exports = function createReadCardsClient (applicationToken, opts) {
 	var apiClient = new ApiClient({
@@ -26,19 +25,10 @@ module.exports = function createReadCardsClient (applicationToken, opts) {
 
 		errorHandler: errorHandler,
 
-		transformResponse: {
-			'get': transformGetResponse,
-			'search': transformSearchResponse
+		transformResponse: function transformResponse (res) {
+			return res.data;
 		}
 	});
 
 	return apiClient;
 };
-
-function transformGetResponse(res) {
-	return parseCardResponse(res.data);
-}
-
-function transformSearchResponse(res) {
-	return res.data.map(parseCardResponse);
-}
