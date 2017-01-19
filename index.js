@@ -5,6 +5,7 @@ var cardRequest = require('./src/client/create-card-request');
 var cardRevokeRequest = require('./src/client/revoke-card-request');
 var requestSigner = require('./src/client/request-signer');
 var cardValidator = require('./src/client/card-validator');
+var Card = require('./src/client/card');
 
 
 var virgil = {
@@ -24,7 +25,8 @@ virgil.Buffer = VirgilCrypto.Buffer;
 
 // Expose some utils
 virgil.utils = {
-	obfuscate: VirgilCrypto.obfuscate
+	obfuscate: VirgilCrypto.obfuscate,
+	importCard: Card.import
 };
 
 module.exports = virgil;
