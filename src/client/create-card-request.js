@@ -11,9 +11,9 @@ var importSignableRequest = require('./signable-request')
  * @param {Object} params - Request parameters.
  * @param {string} params.identity - Identity associated with the Card.
  * @param {string} params.identity_type - Type of identity.
- * 			Currently only 'email' or 'custom'.
- * @param {string} params.scope - The scope of the Card.
- * 			Currently only 'global' or 'application'.
+ * 			For Global Cards the only types supported are 'email' and
+ * 			'application'. For Application Cards it can be any string.
+ * @param {CardScope} params.scope - The scope of the Card.
  * @param {Buffer} params.public_key - Public key associated with the Card.
  * @param {Object} params.data - User data associated with the Card.
  * @param {{device: string, device_name: string}} params.info - Information on

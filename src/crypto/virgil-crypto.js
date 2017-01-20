@@ -84,8 +84,8 @@ function virgilCrypto() {
 	/**
 	 * Generates a new key pair.
 	 *
-	 * @param {string} [keyPairType] - Optional type of the key pair.
-	 * 			See {code: virgilCrypto.KeyPairType} for available options.
+	 * @param {KeyPairType} [keyPairType] - Optional type of the key pair.
+	 * 			See {code: virgil.crypto.KeyPairType} for available options.
 	 * @returns {Object.<{ publicKey: {CryptoKeyHandle}, privateKey: {CryptoKeyHandle}}>}:
 	 * 			The newly generated key pair.
 	 * */
@@ -131,7 +131,7 @@ function virgilCrypto() {
 	 * @returns {CryptoKeyHandle} - The imported key handle.
 	 * */
 	function importPublicKey(publicKeyBytes) {
-		assert(isBuffer(publicKeyBytes), 'Argument "privateKeyBytes" should be a Buffer');
+		assert(isBuffer(publicKeyBytes), 'Argument "publicKeyBytes" should be a Buffer');
 		var publicKeyDER = VirgilCrypto.publicKeyToDER(publicKeyBytes);
 		return createPublicKeyHandle(VirgilCrypto.hash(publicKeyDER), publicKeyDER);
 	}

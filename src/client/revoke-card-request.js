@@ -9,7 +9,8 @@ var importSignableRequest = require('./signable-request')
  *
  * @param {Object} params - Request parameters.
  * @param {string} params.card_id - Id of card to revoke.
- * @param {string} params.revocation_reason - Reason behind revoking the card.
+ * @param {RevocationReason} params.revocation_reason - Reason behind
+ * 			revoking the card.
  *
  * @returns {SignableRequest} - The newly created RevokeCardRequest.
  * */

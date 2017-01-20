@@ -6,7 +6,9 @@ var cardRevokeRequest = require('./src/client/revoke-card-request');
 var requestSigner = require('./src/client/request-signer');
 var cardValidator = require('./src/client/card-validator');
 var Card = require('./src/client/card');
-
+var IdentityType = require('./src/client/card-identity-type');
+var CardScope = require('./src/client/card-scope');
+var RevocationReason = require('./src/client/card-revocation-reason');
 
 var virgil = {
 	client: createVirgilClient,
@@ -14,7 +16,10 @@ var virgil = {
 	createCardRequest: cardRequest,
 	revokeCardRequest: cardRevokeRequest,
 	requestSigner: requestSigner,
-	cardValidator: cardValidator
+	cardValidator: cardValidator,
+	IdentityType: IdentityType,
+	CardScope: CardScope,
+	RevocationReason: RevocationReason
 };
 
 // umd export support
