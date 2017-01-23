@@ -73,7 +73,7 @@ test('export signable request', function testVerify (t) {
 	var testParams = testData.export_signable_request;
 	var privateKey = virgil.crypto.importPrivateKey(new Buffer(testParams.private_key, 'base64'));
 	var publicKey = virgil.crypto.extractPublicKey(privateKey);
-	var importedRequest = virgil.createCardRequest.import(testParams.exported_request);
+	var importedRequest = virgil.publishCardRequest.import(testParams.exported_request);
 
 	var fingerprint = virgil.crypto.calculateFingerprint(importedRequest.getSnapshot());
 	var ownerSign = importedRequest.getSignature(fingerprint.toString('hex'));

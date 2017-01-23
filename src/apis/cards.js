@@ -7,7 +7,7 @@ module.exports = function createCardsClient (applicationToken, opts) {
 		baseUrl: opts.cardsBaseUrl || 'https://cards.virgilsecurity.com/v4',
 
 		methods: {
-			create: 'post /card',
+			publish: 'post /card',
 			revoke: 'delete /card/{card_id}'
 		},
 
@@ -16,17 +16,17 @@ module.exports = function createCardsClient (applicationToken, opts) {
 		},
 
 		body: {
-			create: ['content_snapshot', 'meta'],
+			publish: ['content_snapshot', 'meta'],
 			revoke: ['content_snapshot', 'meta']
 		},
 
 		required: {
-			create: ['content_snapshot', 'meta'],
+			publish: ['content_snapshot', 'meta'],
 			revoke: ['content_snapshot', 'meta']
 		},
 
 		errorHandler: errorHandler,
-		
+
 		transformResponse: function transformResponse (res) {
 			return res.data;
 		}

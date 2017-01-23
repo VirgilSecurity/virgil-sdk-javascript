@@ -83,13 +83,14 @@ function createVirgilClient(accessToken, options) {
 		},
 
 		/**
-		 * Create a Virgil Card
+		 * Publish a new Card to the Virgil Services.
 		 *
-		 * @param {Object} request - Create Card Request
-		 * @returns {Promise.<Card>}
+		 * @param {PublishCardRequest} request - Request object containing
+		 * 		the data required for publishing.
+		 * @returns {Promise.<Card>} The published card.
 		 * */
-		createCard: function (request) {
-			return cardsClient.create(request.getRequestModel())
+		publishCard: function (request) {
+			return cardsClient.publish(request.getRequestModel())
 				.then(responseToCard)
 				.then(function (card) {
 					if (cardValidator) {
