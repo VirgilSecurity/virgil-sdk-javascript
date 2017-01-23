@@ -90,7 +90,7 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise.<Card>} The published card.
 		 * */
 		publishCard: function (request) {
-			return cardsClient.publish(request.getRequestModel())
+			return cardsClient.publish(request.getRequestBody())
 				.then(responseToCard)
 				.then(function (card) {
 					if (cardValidator) {
@@ -107,7 +107,7 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise}
 		 * */
 		revokeCard: function (request) {
-			var requestData = request.getRequestModel();
+			var requestData = request.getRequestBody();
 			return cardsClient.revoke({
 				card_id: request.card_id,
 				content_snapshot: requestData.content_snapshot,

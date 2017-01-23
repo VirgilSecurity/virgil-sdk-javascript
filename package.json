@@ -32,6 +32,7 @@
   "dependencies": {
     "apiapi": "^1.7.1",
     "bluebird": "^2.10.2",
+    "lodash": "^4.17.4",
     "virgil-crypto": "^2.0.1"
   },
   "devDependencies": {

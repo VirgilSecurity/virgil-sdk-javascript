@@ -1,3 +1,5 @@
+'use strict';
+
 var assert = require('../shared/utils').assert;
 var createSignableRequest = require('./signable-request')
 	.createSignableRequest;
@@ -5,14 +7,27 @@ var importSignableRequest = require('./signable-request')
 	.importSignableRequest;
 
 /**
- * Creates and initializes a request to revoke Card.
+ * @classdesc Represents a request to revoke a Virgil Card from the
+ * Virgil Cards Service.
+ *
+ * @class
+ * @name RevokeCardRequest
+ * @augments SignableRequest
+ * @property {string} card_id - Id of the card to revoke.
+ * @property {string} revocation_reason - The reason for card
+ * 			revocation.
+ * */
+
+/**
+ * Creates and initializes a request to revoke a Virgil Card.
  *
  * @param {Object} params - Request parameters.
- * @param {string} params.card_id - Id of card to revoke.
- * @param {RevocationReason} params.revocation_reason - Reason behind
- * 			revoking the card.
+ * @param {string} params.card_id - Id of the card to revoke.
+ * @param {RevocationReason} [params.revocation_reason='unspecified'] -
+ * 			Optional reason for revoking the card.
+ * 			Default is 'unspecified'.
  *
- * @returns {SignableRequest} - The newly created RevokeCardRequest.
+ * @returns {RevocationReason} - The newly created RevokeCardRequest.
  * */
 function cardRevokeRequest(params) {
 	params = params || {};
@@ -20,7 +35,6 @@ function cardRevokeRequest(params) {
 	var	revocation_reason = params.revocation_reason || 'unspecified';
 
 	assert(card_id, '"card_id" parameter is required.');
-	assert(revocation_reason, '"revocation_reason" parameter is required.');
 	assert(['unspecified', 'compromised'].indexOf(revocation_reason) > -1,
 		'"revocation_reason" must be either "unspecified" or "compromised"');
 
@@ -33,7 +47,7 @@ function cardRevokeRequest(params) {
 /**
  * Restores a RevokeCardRequest from its serialized representation.
  *
- * @returns {SignableRequest} - The restored RevokeCardRequest.
+ * @returns {RevokeCardRequest} - The restored RevokeCardRequest.
  * */
 cardRevokeRequest.import = importSignableRequest;
 

@@ -6,15 +6,15 @@
 
 'use strict';
 
-var assign = require('../shared/utils').assign;
-var stringToBuffer = require('../shared/utils').stringToBuffer;
-var serializer = require('../shared/serializer');
+var utils = require('../shared/utils');
 
 var privateData = new WeakMap();
 
 /**
  * Initializes a new request with the given snapshot,
  * signatures and parameters.
+ *
+ * @class
  *
  * @param {Buffer} snapshot - The snapshot of request.
  * @param {Object} signatures - Object representing a mapping from signer ids
@@ -29,7 +29,7 @@ function SignableRequest (snapshot, signatures, params) {
 		signatures: signatures
 	});
 
-	assign(this, params);
+	utils.assign(this, params);
 }
 
 /**
@@ -68,16 +68,15 @@ SignableRequest.prototype.getSignature = function (signerId) {
  *
  * @returns {Object}
  * */
-SignableRequest.prototype.getRequestModel = function () {
+SignableRequest.prototype.getRequestBody = function () {
 	var privateFields = privateData.get(this);
-	var requestModel =  {
-		content_snapshot: privateFields.snapshot,
+	return  {
+		content_snapshot: utils.bufferToBase64(privateFields.snapshot),
 		meta: {
-			signs: privateFields.signatures
+			signs: utils.mapValues(privateFields.signatures,
+									utils.bufferToBase64)
 		}
 	};
-
-	return serializer.serializeSignedContent(requestModel);
 };
 
 /**
@@ -86,8 +85,8 @@ SignableRequest.prototype.getRequestModel = function () {
  * @returns {string}
  * */
 SignableRequest.prototype.export = function () {
-	var json = JSON.stringify(this.getRequestModel());
-	return stringToBuffer(json).toString('base64');
+	var json = JSON.stringify(this.getRequestBody());
+	return utils.stringToBase64(json);
 };
 
 /**
@@ -96,7 +95,8 @@ SignableRequest.prototype.export = function () {
  * returns {SignableRequest} - The newly created request.
  * */
 function createSignableRequest (params) {
-	var snapshot = stringToBuffer(JSON.stringify(params));
+	var json = JSON.stringify(params);
+	var snapshot = utils.stringToBuffer(json);
 	var signatures = Object.create(null);
 
 	return new SignableRequest(snapshot, signatures, params);
@@ -109,12 +109,10 @@ function createSignableRequest (params) {
  * returns {SignableRequest} - The imported request.
  * */
 function importSignableRequest (exportedRequest) {
-	var requestJSON = stringToBuffer(exportedRequest, 'base64')
-						.toString('utf8');
-	var requestModel = serializer.deserializeSignedContent(
-									JSON.parse(requestJSON));
-	var snapshot = requestModel.content_snapshot;
-	var signatures = requestModel.meta.signs;
+	var requestJSON = utils.base64ToString(exportedRequest);
+	var requestModel = JSON.parse(requestJSON);
+	var snapshot = utils.base64ToBuffer(requestModel.content_snapshot);
+	var signatures = utils.mapValues(requestModel.meta.signs, utils.base64ToBuffer);
 	var params = JSON.parse(snapshot.toString('utf8'));
 
 	return new SignableRequest(snapshot, signatures, params);

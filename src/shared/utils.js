@@ -1,6 +1,32 @@
+'use strict';
+
+var assign = require('lodash/assign');
+var mapValues = require('lodash/mapValues');
+
+function bufferToBase64 (buf) {
+	return bufferToString(buf, 'base64');
+}
+
+function bufferToString(buf, encoding) {
+	encoding = encoding || 'utf8';
+	return buf.toString(encoding);
+}
+
+function base64ToBuffer (str) {
+	return stringToBuffer(str, 'base64');
+}
+
 function stringToBuffer(str, encoding) {
 	encoding = encoding || 'utf8';
 	return new Buffer(str, encoding);
+}
+
+function stringToBase64(str) {
+	return bufferToBase64(stringToBuffer(str));
+}
+
+function base64ToString(base64) {
+	return bufferToString(base64ToBuffer(base64));
 }
 
 function isEmpty(obj) {
@@ -19,43 +45,24 @@ function isNumber(obj) {
 	return typeof obj === 'number';
 }
 
+function isObject (obj) {
+	return typeof obj === 'object';
+}
+
 function isBuffer(obj) {
 	return Buffer.isBuffer(obj);
 }
 
 function assert(condition, errorMessage) {
 	if (!condition) {
-		throw new Error(errorMessage);
+		throwVirgilError(errorMessage);
 	}
 }
 
-function assign(target, firstSource) {
-	if (typeof Object.assign !== 'function') {
-		if (target === undefined || target === null) {
-			throw new TypeError('Cannot convert first argument to object');
-		}
-
-		var to = Object(target);
-		for (var i = 1; i < arguments.length; i++) {
-			var nextSource = arguments[i];
-			if (nextSource === undefined || nextSource === null) {
-				continue;
-			}
-
-			var keysArray = Object.keys(Object(nextSource));
-			for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
-				var nextKey = keysArray[nextIndex];
-				var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
-				if (desc !== undefined && desc.enumerable) {
-					to[nextKey] = nextSource[nextKey];
-				}
-			}
-		}
-		return to;
-	}
-
-	return Object.assign.apply(null, arguments);
+function throwVirgilError(message) {
+	throw new Error('Virgil Error: ' + message);
 }
+
 
 function inherits(ctor, superCtor) {
 	ctor.super_ = superCtor;
@@ -101,9 +108,16 @@ module.exports = {
 	isString: isString,
 	isNumber: isNumber,
 	isFunction: isFunction,
+	isObject: isObject,
 	isBuffer: isBuffer,
 	assign: assign,
+	mapValues: mapValues,
 	inherits: inherits,
 	abstractMethod: abstractMethod,
-	stringToBuffer: stringToBuffer
+	stringToBuffer: stringToBuffer,
+	base64ToBuffer: base64ToBuffer,
+	bufferToString: bufferToString,
+	bufferToBase64: bufferToBase64,
+	base64ToString: base64ToString,
+	stringToBase64: stringToBase64
 };
