@@ -2,6 +2,8 @@ var createReadCardsClient = require('../apis/cards-ro');
 var createCardsClient = require('../apis/cards');
 var createIdentityClient = require('../apis/identity');
 var Card = require('./card');
+var assert = require('../shared/utils').assert;
+var throwVirgilError = require('../shared/utils').throwVirgilError;
 
 /**
  * @typedef {Object} SearchCriteria
@@ -22,25 +24,13 @@ var Card = require('./card');
  * @returns {Object} - Virgil Client
  * */
 function createVirgilClient(accessToken, options) {
-	if (!accessToken) {
-		throw new Error('Access token is required.');
-	}
-
+	assert(Boolean(accessToken), 'Access token is required.');
 	options = options || {};
 
 	var cardsReadOnlyClient = createReadCardsClient(accessToken, options);
 	var cardsClient = createCardsClient(accessToken, options);
 
 	var cardValidator = null;
-	var validateCards = function (cards) {
-		cards = Array.isArray(cards) ? cards : [cards];
-		var invalidCards = cards.filter(function (card) { return !cardValidator.validate(card); });
-		if (invalidCards.length) {
-			var error = new Error('Card validation failed');
-			error.invalidCards = invalidCards;
-			throw error;
-		}
-	};
 
 	return {
 		/**
@@ -53,9 +43,7 @@ function createVirgilClient(accessToken, options) {
 			return cardsReadOnlyClient.get({ card_id: cardId })
 				.then(responseToCard)
 				.then(function (card) {
-					if (cardValidator) {
-						validateCards(card);
-					}
+					validateCards(card);
 					return card;
 				});
 		},
@@ -75,15 +63,13 @@ function createVirgilClient(accessToken, options) {
 					return results.map(responseToCard);
 				})
 				.then(function (cards) {
-					if (cardValidator) {
-						validateCards(cards);
-					}
+					validateCards(cards);
 					return cards;
 				});
 		},
 
 		/**
-		 * Publish a new Card to the Virgil Services.
+		 * Publish a new Card to the Virgil PKI Services.
 		 *
 		 * @param {PublishCardRequest} request - Request object containing
 		 * 		the data required for publishing.
@@ -93,17 +79,16 @@ function createVirgilClient(accessToken, options) {
 			return cardsClient.publish(request.getRequestBody())
 				.then(responseToCard)
 				.then(function (card) {
-					if (cardValidator) {
-						validateCards(card);
-					}
+					validateCards(card);
 					return card;
 				});
 		},
 
 		/**
-		 * Revoke a Virgil Card
+		 * Revoke the Virgil Card from Virgil PKI Services.
 		 *
-		 * @param {Object} request - Revoke Card Request
+		 * @param {RevokeCardRequest} request - Request object containing
+		 * 		the data required for revocation.
 		 * @returns {Promise}
 		 * */
 		revokeCard: function (request) {
@@ -121,13 +106,31 @@ function createVirgilClient(accessToken, options) {
 		 * @param {Object} validator - The validator object
 		 * */
 		setCardValidator: function (validator) {
-			if (!validator) {
-				throw new TypeError('Argument "validator" is required');
-			}
-
+			assert(Boolean(validator), 'Argument "validator" is required');
 			cardValidator = validator;
 		}
 	};
+
+	/**
+	 * Validates the cards returned from the server using the card validator.
+	 * Throws {VirgilError} if any of the cards is not valid.
+	 * */
+	function validateCards (cards) {
+		if (!cardValidator) {
+			return;
+		}
+
+		cards = Array.isArray(cards) ? cards : [cards];
+		var invalidCards = cards.filter(function (card) {
+			return !cardValidator.validate(card);
+		});
+
+		if (invalidCards.length) {
+			throwVirgilError('Card validation failed.', {
+				invalidCards: invalidCards
+			});
+		}
+	}
 }
 
 function responseToCard (res) {

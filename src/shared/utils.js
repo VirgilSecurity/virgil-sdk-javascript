@@ -2,6 +2,7 @@
 
 var assign = require('lodash/assign');
 var mapValues = require('lodash/mapValues');
+var VirgilError = require('../errors/virgil-error');
 
 function bufferToBase64 (buf) {
 	return bufferToString(buf, 'base64');
@@ -59,43 +60,12 @@ function assert(condition, errorMessage) {
 	}
 }
 
-function throwVirgilError(message) {
-	throw new Error('Virgil Error: ' + message);
-}
-
-
-function inherits(ctor, superCtor) {
-	ctor.super_ = superCtor;
-	ctor.prototype = Object.create(superCtor.prototype, {
-		constructor: {
-			value: ctor,
-			enumerable: false,
-			writable: true,
-			configurable: true
-		}
-	});
-
-	/**
-	 * Calls superclass constructor/method.
-	 *
-	 * This function is only available if you use {code: inherits} to
-	 * express inheritance relationships between classes.
-	 *
-	 * @param {!Object} me Should always be "this".
-	 * @param {string} methodName The method name to call. Calling
-	 *     superclass constructor can be done with the special string
-	 *     'constructor'.
-	 * @param {...*} var_args The arguments to pass to superclass
-	 *     method/constructor.
-	 * @return {*} The return value of the superclass method/constructor.
-	 */
-	ctor.base = function(me, methodName, var_args) {
-		var args = new Array(arguments.length - 2);
-		for (var i = 2; i < arguments.length; i++) {
-			args[i - 2] = arguments[i];
-		}
-		return superCtor.prototype[methodName].apply(me, args);
-	};
+function throwVirgilError(message, props) {
+	var error = new VirgilError('Virgil Error: ' + message);
+	if (isObject(props)) {
+		assign(error, props);
+	}
+	throw error;
 }
 
 function abstractMethod () {
@@ -104,6 +74,7 @@ function abstractMethod () {
 
 module.exports = {
 	assert: assert,
+	throwVirgilError: throwVirgilError,
 	isEmpty: isEmpty,
 	isString: isString,
 	isNumber: isNumber,
@@ -112,7 +83,6 @@ module.exports = {
 	isBuffer: isBuffer,
 	assign: assign,
 	mapValues: mapValues,
-	inherits: inherits,
 	abstractMethod: abstractMethod,
 	stringToBuffer: stringToBuffer,
 	base64ToBuffer: base64ToBuffer,

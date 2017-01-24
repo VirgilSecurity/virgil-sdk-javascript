@@ -1,11 +1,9 @@
 var VirgilCrypto = require('virgil-crypto');
-var cryptoAsyncPatch = require('../crypto-async-patch');
 var CryptoKeyHandle = require('./crypto-key-handle');
 var isBuffer = require('../shared/utils').isBuffer;
 var assert = require('../shared/utils').assert;
 var stringToBuffer = require('../shared/utils').stringToBuffer;
 
-cryptoAsyncPatch(VirgilCrypto);
 
 /**
  * Represents a pair of cryptographic keys generated with an
@@ -49,7 +47,7 @@ function virgilCrypto() {
 	 * 			owner of the key).
 	 * @param {Buffer} value: The key material.
 	 *
-	 * @retunrs {CryptoKeyHandle}: The handle representing the key
+	 * @returns {CryptoKeyHandle}: The handle representing the key
 	 *
 	 * @private
 	 * */
@@ -63,7 +61,7 @@ function virgilCrypto() {
 	 * Returns the key material corresponding to the key handle or
 	 * throws an Error if the key does not exist.
 	 *
-	 * @retunrs {Buffer} - The key bytes.
+	 * @returns {Buffer} - The key bytes.
 	 *
 	 * @private
 	 * */
@@ -188,21 +186,21 @@ function virgilCrypto() {
 	}
 
 	/**
-	 * Encrypts the data for recipient(s).
+	 * Encrypts the data for the recipient(s).
 	 *
 	 * @param {Buffer} data - The data to encrypt.
-	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} recipientKeys - A handle to
+	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} recipients - A handle to
 	 * 			the public key of the intended recipient or array of public
 	 * 			key handles of multiple recipients.
 	 *
 	 * @returns {Buffer} - Encrypted data.
 	 * */
-	function encrypt(data, recipientKeys) {
+	function encrypt(data, recipients) {
 		assert(isBuffer(data), 'Argument "data" must be a Buffer.');
 
-		recipientKeys = Array.isArray(recipientKeys) ? recipientKeys : [recipientKeys];
+		recipients = Array.isArray(recipients) ? recipients : [recipients];
 
-		var publicKeys = recipientKeys.map(function (recipientKey) {
+		var publicKeys = recipients.map(function (recipientKey) {
 			var keyData = getKeyBytesFromHandle(recipientKey);
 
 			return {
