@@ -4,6 +4,7 @@ var isBuffer = require('../shared/utils').isBuffer;
 var assert = require('../shared/utils').assert;
 var stringToBuffer = require('../shared/utils').stringToBuffer;
 
+VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
 /**
  * Represents a pair of cryptographic keys generated with an
