@@ -10,6 +10,14 @@ var importSignableRequest = require('./signable-request')
  * @classdesc Represents a request to revoke a Virgil Card from the
  * Virgil Cards Service.
  *
+ * <code>RevokeCardRequest</code> objects are not to be created directly using
+ * the <code>new</code> keyword. Use the <code>revokeCardRequest()</code>
+ * factory function to create an instance.
+ *
+ * @example
+ *
+ * var request = virgil.revokeCardRequest({ card_id: '123' });
+ *
  * @class
  * @name RevokeCardRequest
  * @augments SignableRequest
@@ -27,7 +35,7 @@ var importSignableRequest = require('./signable-request')
  * 			Optional reason for revoking the card.
  * 			Default is 'unspecified'.
  *
- * @returns {RevocationReason} - The newly created RevokeCardRequest.
+ * @returns {RevokeCardRequest} - The newly created RevokeCardRequest.
  * */
 function cardRevokeRequest(params) {
 	params = params || {};

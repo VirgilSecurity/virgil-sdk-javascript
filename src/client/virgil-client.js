@@ -13,15 +13,25 @@ var throwVirgilError = require('../shared/utils').throwVirgilError;
  * */
 
 /**
- * Creates and initializes Virgil API client
+ * Creates and initializes Virgil API client.
  *
- * @param {string} accessToken - A token passed with every request for authorization
+ * <code>VirgilClient</code> objects are not to be created directly using
+ * the <code>new</code> keyword. Use the <code>client()</code> factory
+ * function to create an instance.
+ *
+ * @example
+ *
+ * var request = virgil.client('access_token');
+ *
+ * @param {string} accessToken - A token passed with every request for
+ *			authorization
  * @param {Object} [options] - Initialization options
  * @param {string} [options.identityBaseUrl] - URL of Virgil Cards service
  * @param {string} [options.cardsBaseUrl] - URL of Virgil Cards service
- * @param {string} [options.cardsReadBaseUrl] - URL of Virgil Cards service for read-only access
+ * @param {string} [options.cardsReadBaseUrl] - URL of Virgil Cards service
+ * 			for read-only access
  *
- * @returns {Object} - Virgil Client
+ * @constructs VirgilClient
  * */
 function createVirgilClient(accessToken, options) {
 	assert(Boolean(accessToken), 'Access token is required.');
@@ -32,7 +42,9 @@ function createVirgilClient(accessToken, options) {
 
 	var cardValidator = null;
 
-	return {
+	return /** @lends VirgilClient */ {
+
+
 		/**
 		 * Get card by id.
 		 *
@@ -114,6 +126,7 @@ function createVirgilClient(accessToken, options) {
 	/**
 	 * Validates the cards returned from the server using the card validator.
 	 * Throws {VirgilError} if any of the cards is not valid.
+	 * @private
 	 * */
 	function validateCards (cards) {
 		if (!cardValidator) {

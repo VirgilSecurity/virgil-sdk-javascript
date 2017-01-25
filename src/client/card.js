@@ -6,29 +6,10 @@
 
 var utils = require('../shared/utils');
 
-/**
- * @classdesc Represents a Virgil Card.
- * @class
- * @name Card
- * @property {Buffer} publicKey - The public key material of the card.
- * @property {string} identity - The card's identity.
- * @property {string} identity_type - The card's identity type.
- * @property {string} scope - The card's scope.
- * @property {Object} [data] - Optional user data associated with the card.
- * @property {string} [device] - Optional identifier of the device associated
- * 			with the card.
- * @property {string} [deviceName] - Optional name of the device
- * 			associated with the card.
- * @property {Date} createdAt - The date and time the card was created on.
- * @property {string} version - Version of the Virgil Service that generated
- * 			the card.
- * @property {Object.<{string: Buffer}>} signatures - The card's signatures as
- * the mapping
- * 			of the signer ids to the signatures.
- * */
 
 /**
- * Creates a new Card instance from the given parameters.
+ * Creates a new Card instance with the given id, content snapshot
+ * and metadata.
  *
  * @param {Object} params - The Card parameters.
  * @param {string} params.id - Id of the card.
@@ -42,18 +23,55 @@ function Card(params) {
 	var meta = params.meta;
 	var props = JSON.parse(utils.bufferToString(snapshot));
 
+	/**
+	 * @type {string} - Id of the card.
+	 * */
 	this.id = params.id;
+	/**
+	 * @type {Buffer} - The card's immutable content snapshot.
+	 * */
 	this.snapshot = snapshot;
+	/**
+	 * @type {Buffer} - The card's public key material.
+	 * */
 	this.publicKey = utils.base64ToBuffer(props.public_key);
+	/**
+	 * @type {string} - The card's identity.
+	 * */
 	this.identity = props.identity;
+	/**
+	 * @type {string} - The card's identity type.
+	 * */
 	this.identityType = props.identity_type;
+	/**
+	 * @type {Buffer} - The card's scope.
+	 * */
 	this.scope = props.scope;
+	/**
+	 * @type {Object} - The user data associated with the card.
+	 * */
 	this.data = props.data;
+	/**
+	 * @type {Date} - The date the card was created at.
+	 * */
 	this.createdAt = new Date(meta.created_at);
+	/**
+	 * @type {string} - The version of Virgil Cards Service
+	 * 			that generated the card.
+	 * */
 	this.version = meta.card_version;
+	/**
+	 * @type {Object} - The card's signatures as a hash with signer's ids
+	 * 			as keys and the signatures as values.
+	 * */
 	this.signatures = meta.signs;
 	if (props.info) {
+		/**
+		 * @type {string} - Optional identifier of the card's
+		 * associated device.
+		 * */
 		this.device = props.info.device;
+		/** @type {string} - Optional name of the card's associated device. */
 		this.deviceName = props.info.device_name;
 	}
 }
@@ -78,7 +96,7 @@ Card.prototype.export = function () {
 /**
  * Restores a Card instance from the DTO representing a card.
  *
- * @param {Object} {exportedCard} - The DTO as returned by Card#export method.
+ * @param {Object} exportedCard - The DTO as returned by Card#export method.
  * returns {Card} - The imported Card.
  * */
 Card.import = function (exportedCard) {

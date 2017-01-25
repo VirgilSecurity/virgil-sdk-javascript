@@ -17,10 +17,13 @@ VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
  * @property {CryptoKeyHandle} publicKey - Public part of the key
  */
 
+/**
+ * @constructs VirgilCrypto
+ * */
 function virgilCrypto() {
 	var keyMaterialStore = new WeakMap();
 
-	return {
+	return /** @lends VirgilCrypto */ {
 		generateKeys: generateKeys,
 		importPrivateKey: importPrivateKey,
 		importPublicKey: importPublicKey,
@@ -37,7 +40,9 @@ function virgilCrypto() {
 		calculateFingerprint: calculateFingerprint,
 		signThenEncrypt: signThenEncrypt,
 		decryptThenVerify: decryptThenVerify,
+		/** @enum {object} */
 		HashAlgorithm: VirgilCrypto.HashAlgorithm,
+		/** @enum {string} */
 		KeyPairType: VirgilCrypto.KeyPairType
 	};
 
@@ -87,7 +92,7 @@ function virgilCrypto() {
 	 *
 	 * @param {KeyPairType} [keyPairType] - Optional type of the key pair.
 	 * 			See {code: virgil.crypto.KeyPairType} for available options.
-	 * @returns {Object.<{ publicKey: {CryptoKeyHandle}, privateKey: {CryptoKeyHandle}}>}:
+	 * @returns {KeyPair}:
 	 * 			The newly generated key pair.
 	 * */
 	function generateKeys(keyPairType) {
@@ -106,7 +111,8 @@ function virgilCrypto() {
 	 * Imports a private key from a Buffer or base64-encoded string
 	 * containing key material.
 	 *
-	 * @param {Buffer|string} privateKeyMaterial - The private key material.
+	 * @param {Buffer|string} privateKeyMaterial - The private key material
+	 * 			as a {Buffer} or base64-encoded string.
 	 * @param {string} [password] - Optional password the key is
 	 * 			encrypted with.
 	 *
@@ -137,7 +143,8 @@ function virgilCrypto() {
 	 * Imports a public key from a Buffer or base64-encoded string
 	 * containing key material.
 	 *
-	 * @param {Buffer|string} publicKeyMaterial - The public key material.
+	 * @param {Buffer|string} publicKeyMaterial - The public key material
+	 * 			as a {Buffer} or base64-encoded string.
 	 *
 	 * @returns {CryptoKeyHandle} - The imported key handle.
 	 * */
@@ -210,7 +217,8 @@ function virgilCrypto() {
 	/**
 	 * Encrypts the data for the recipient(s).
 	 *
-	 * @param {Buffer|string} data - A {Buffer} or a {string} in UTF8.
+	 * @param {Buffer|string} data - The data to be encrypted as a {Buffer}
+	 * 			or a {string} in UTF8.
 	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} recipients - A handle to
 	 * 			the public key of the intended recipient or an array of public
 	 * 			key handles of multiple recipients.
@@ -239,7 +247,8 @@ function virgilCrypto() {
 	/**
 	 * Decrypts the data with the private key.
 	 *
-	 * @param {Buffer|string} cipherData - A {Buffer} or a {string} in base64.
+	 * @param {Buffer|string} cipherData - The data to be decrypted as
+	 * 			a {Buffer} or a {string} in base64.
 	 * @param {CryptoKeyHandle} privateKey - A handle to the private key.
 	 *
 	 * @returns {Buffer} - Decrypted data
@@ -260,7 +269,8 @@ function virgilCrypto() {
 	/**
 	 * Calculates the signature on the data.
 	 *
-	 * @param {Buffer|string} data - A {Buffer} or a {string} in UTF-8.
+	 * @param {Buffer|string} data - The data to be signed as a {Buffer} or a
+	 * 			{string} in UTF-8.
 	 * @param {CryptoKeyHandle} privateKey - A handle to the private key.
 	 *
 	 * @returns {Buffer} - The signature.
@@ -278,12 +288,14 @@ function virgilCrypto() {
 	/**
 	 * Verifies the provided data using the given signature and public key.
 	 *
-	 * @param {Buffer|string} data - A {Buffer} or a {string} in UTF-8.
-	 * @param {Buffer|string} signature - A {Buffer} or a {string} in base64.
+	 * @param {Buffer|string} data - The data to be verified as a {Buffer}
+	 * 			or a {string} in UTF-8.
+	 * @param {Buffer|string} signature - The signature as a {Buffer} or a
+	 * 			{string} in base64.
 	 * @param {CryptoKeyHandle} publicKey - The public key handle.
 	 *
 	 * @returns {Boolean} - {code: true} or {code: false} depending on the
-	 * 			validity of the signature.
+	 * 			validity of the signature for the data and public key.
 	 * */
 	function verify(data, signature, publicKey) {
 		assert(isBuffer(data) || isString(data),
@@ -304,7 +316,8 @@ function virgilCrypto() {
 	 * Calculates the signature on the data using the private key,
 	 * 		then encrypts the data along with the signature using
 	 * 		the public key(s).
-	 * @param {Buffer|string} data - A {Buffer} or a {string} in UTF-8.
+	 * @param {Buffer|string} data - The data to sign and encrypt as a
+	 * 			{Buffer} or a {string} in UTF-8.
 	 * @param {CryptoKeyHandle} privateKey - The private key handle.
 	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} publicKeys - The handle
 	 * 		of a public key of the intended recipient or an array of
@@ -337,7 +350,8 @@ function virgilCrypto() {
 	 * Decrypts the data using the private key, then verifies decrypted data
 	 * 		using the attached signature and the given public key.
 	 *
-	 * 	@param {Buffer|string} cipherData - A {Buffer} or a {string} in base64.
+	 * 	@param {Buffer|string} cipherData - The data to be decrypted and
+	 * 			verified as a {Buffer} or a {string} in base64.
 	 * 	@param {CryptoKeyHandle} privateKey - The private key handle.
 	 * 	@param {CryptoKeyHandle} publicKey - The public key handle.
 	 *
@@ -365,7 +379,8 @@ function virgilCrypto() {
 	/**
 	 * Calculates the fingerprint of the given data.
 	 *
-	 * @param {Buffer|string} data - A {Buffer} or a {string} in UTF-8.
+	 * @param {Buffer|string} data - The data to calculate the fingerprint of
+	 * 			as a {Buffer} or a {string} in UTF-8.
 	 *
 	 * @returns {Buffer} - The fingerprint.
 	 * */
@@ -376,7 +391,8 @@ function virgilCrypto() {
 	/**
 	 * Calculates the hash of the given data.
 	 *
-	 * @param {Buffer|string} data - A {Buffer} or a {string} in UTF-8.
+	 * @param {Buffer|string} data - The data to calculate the hash of as a
+	 * 			{Buffer} or a {string} in UTF-8.
 	 * @param {string} [algorithm] - Optional name of the hash algorithm
 	 * 		to use. See { code: virgilCrypto.HashAlgorithm }
 	 * 		for available options.
@@ -394,7 +410,8 @@ function virgilCrypto() {
 	/**
 	 * Encrypts the data using the password to derive encryption key.
 	 *
-	 * @param {Buffer|string} data - A {Buffer} or a {string} in UTF-8.
+	 * @param {Buffer|string} data - The data to be encrypted as a {Buffer}
+	 * 			or a {string} in UTF-8.
 	 * @param {string} password - The password to use for key derivation.
 	 *
 	 * @returns {Buffer} Encrypted data.
@@ -411,7 +428,8 @@ function virgilCrypto() {
 	/**
 	 * Decrypts the encrypted data using the password to derive decryption key.
 	 *
-	 * @param {Buffer|string} cipherData - A {Buffer} or a {string} in base64.
+	 * @param {Buffer|string} cipherData - The data to be decrypted as a
+	 * 			{Buffer} or a {string} in base64.
 	 * @param {string} password - The password to use for key derivation.
 	 *
 	 * @returns {Buffer} Decrypted data.

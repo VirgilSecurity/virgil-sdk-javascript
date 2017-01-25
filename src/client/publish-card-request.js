@@ -10,6 +10,14 @@ var importSignableRequest = require('./signable-request')
  * @classdesc Represents a request to publish a Virgil Card to the
  * Virgil Cards Service.
  *
+ * <code>PublishCardRequest</code> objects are not to be created directly using
+ * the <code>new</code> keyword. Use the <code>publishCardRequest()</code>
+ * factory function to create an instance.
+ *
+ * @example
+ *
+ * var request = virgil.publishCardRequest({ identity: 'bob' });
+ *
  * @class
  * @name PublishCardRequest
  * @augments SignableRequest
@@ -19,9 +27,9 @@ var importSignableRequest = require('./signable-request')
  * @property {string} scope - The scope of the card to be published.
  * @property {string} public_key - The public key of the card to be published
  * 			as a base64-encoded string.
- * @property {Object.<*>} [data] - Optional user data associated with the card
+ * @property {Object} [data] - Optional user data associated with the card
  * 			to be published.
- * @property {Object} [info} - Optional information about the device the card
+ * @property {Object} [info] - Optional information about the device the card
  * 			is associated with.
  * @property {string} [info.device] - Optional type\model of the device
  * 			associated with the card.

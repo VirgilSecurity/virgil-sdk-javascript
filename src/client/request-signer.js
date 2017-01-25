@@ -1,11 +1,25 @@
+/**
+ * @fileoverview A factory function used to create objects capable of signing
+ * requests to Virgil Services.
+ *
+ * */
+
 'use strict';
 
 /**
- * Creates an object capable of signing requests to Virgil Services
+ * The factory function used to create <code>RequestSigner</code> instances.
+ * <code>RequestSigner</code> objects are not to be created directly using
+ * the <code>new</code> keyword.
+ *
+ * @example
+ *
+ * var signer = virgil.requestSigner(virgil.crypto);
+ *
+ * @constructs RequestSigner
  * */
 function requestSigner(crypto) {
 
-	return {
+	return /** @lends Request Signer */ {
 		selfSign: selfSign,
 		authoritySign: authoritySign
 	};

@@ -14,6 +14,9 @@ var privateData = new WeakMap();
  * Initializes a new request with the given snapshot,
  * signatures and parameters.
  *
+ * <code>SignableRequest</code> objects are not to be created directly using
+ * the <code>new</code> keyword.
+ *
  * @class
  *
  * @param {Buffer} snapshot - The snapshot of request.
@@ -92,6 +95,7 @@ SignableRequest.prototype.export = function () {
 /**
  * Creates a new request instance with the given parameters.
  *
+ * @private
  * returns {SignableRequest} - The newly created request.
  * */
 function createSignableRequest (params) {
@@ -106,6 +110,7 @@ function createSignableRequest (params) {
  * Creates a new request instance from the previously exported request.
  * The new request has the exact same snapshot as the exported one.
  *
+ * @private
  * returns {SignableRequest} - The imported request.
  * */
 function importSignableRequest (exportedRequest) {

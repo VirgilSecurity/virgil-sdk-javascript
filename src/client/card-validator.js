@@ -1,5 +1,5 @@
 /**
- * @fileoverview Factory function for Virgil Card validator objects.
+ * @fileoverview A factory function for Virgil Card validator objects.
  *
  * Card validator objects maintain a mapping of signer ids to public keys
  * internally to perform signatures verification. By default only the
@@ -25,12 +25,18 @@ var SERVICE_PUBLIC_KEY = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JR' +
 	'ytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=';
 
 /**
- * Creates a new card validator object using the given cryptographic
- * operations provider.
+ * The factory function used to create <code>CardValidator</code> instances.
+ * <code>CardValidator</code> objects are not to be created directly using
+ * the <code>new</code> keyword.
+ *
+ * @example
+ *
+ * var validator = virgil.cardValidator(virgil.crypto);
  *
  * @param {*} crypto - An object providing implementation of cryptographic
  * 			operations.
- * @return {Object} The card validator.
+ *
+ * @constructs CardValidator
  * */
 function cardValidator (crypto) {
 
@@ -38,7 +44,7 @@ function cardValidator (crypto) {
 
 	addVerifier(SERVICE_CARD_ID, base64ToBuffer(SERVICE_PUBLIC_KEY));
 
-	return {
+	return /** @lends CardValidator */ {
 		addVerifier: addVerifier,
 		validate: validate,
 		canValidate: canValidate
