@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "4.0.0-beta.5",
+  "version": "4.0.0",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
@@ -15,7 +15,7 @@
   "browser": "dist/virgil-sdk.min.js",
   "scripts": {
     "test": "node tests | faucet",
-    "build": "gulp build --debug && gulp build --production"
+    "build": "gulp build --development && gulp build --production"
   },
   "author": "Virgil Security Inc. <support@virgilsecurity.com>",
   "keywords": [
