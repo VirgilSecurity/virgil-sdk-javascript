@@ -63,14 +63,14 @@ function createVirgilClient(accessToken, options) {
 		/**
 		 * Search cards by identity.
 		 *
-		 * @param {SearchCriteria} params
+		 * @param {SearchCriteria} criteria
 		 * @returns {Promise.<Card[]>}
 		 * */
-		searchCards: function (params) {
-			params = params || {};
-			params.scope = params.scope || 'application';
+		searchCards: function (criteria) {
+			criteria = criteria || {};
+			criteria.scope = criteria.scope || 'application';
 
-			return cardsReadOnlyClient.search(params)
+			return cardsReadOnlyClient.search(criteria)
 				.then(function (results) {
 					return results.map(responseToCard);
 				})
