@@ -4,4 +4,4 @@ module.exports = function parseJSON (input) {
 	} catch (e) {
 		return input;
 	}
-}
+};

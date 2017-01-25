@@ -1,3 +1,4 @@
-require('./identity');
+require('./spec');
 require('./virgil-cards');
-require('./private-keys');
+require('./virgil-crypto');
+require('./compatibility/sdk-compatibility.test');

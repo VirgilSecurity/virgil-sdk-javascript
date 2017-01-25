@@ -1,43 +1,37 @@
 var VirgilCrypto = require('virgil-crypto');
-var cryptoAsyncPatch = require('./src/crypto-async-patch');
-var createVirgilCardsApi = require('./src/virgil-cards');
-var createPublicKeysApi = require('./src/public-keys');
-var createPrivateKeysApi = require('./src/private-keys');
-var createIdentityApi = require('./src/identity');
+var createVirgilCrypto = require('./src/crypto/virgil-crypto');
+var createVirgilClient = require('./src/client/virgil-client');
+var publishCardRequest = require('./src/client/publish-card-request');
+var revokeCardRequest = require('./src/client/revoke-card-request');
+var requestSigner = require('./src/client/request-signer');
+var cardValidator = require('./src/client/card-validator');
+var Card = require('./src/client/card');
+var IdentityType = require('./src/client/card-identity-type');
+var CardScope = require('./src/client/card-scope');
+var RevocationReason = require('./src/client/card-revocation-reason');
 
-function VirgilSDK (applicationToken, opts) {
-	if (!applicationToken) {
-		throw new Error('Application token is required');
-	}
-
-	opts = opts || {};
-	// trying to get crypto from opts, then checking the es6 module default,
-	// otherwise simply required crypto module
-	opts.crypto = cryptoAsyncPatch(opts.crypto || VirgilCrypto.VirgilCrypto || VirgilCrypto);
-
-	this.applicationToken = applicationToken;
-	this.crypto = opts.crypto;
-	this.cards = createVirgilCardsApi(applicationToken, opts);
-	this.privateKeys = createPrivateKeysApi(applicationToken, opts, this.cards);
-	this.publicKeys = createPublicKeysApi(applicationToken, opts, this.cards);
-	this.identity = createIdentityApi(opts, this.cards);
-}
-
-var Crypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
-
-// umd export support
-VirgilSDK.VirgilSDK = VirgilSDK;
-
-// Expose crypto
-VirgilSDK.Crypto = Crypto;
-
-// Expose some utils
-VirgilSDK.utils = {
-	obfuscate: Crypto.obfuscate,
-	generateValidationToken: Crypto.generateValidationToken
+var virgil = {
+	client: createVirgilClient,
+	crypto: createVirgilCrypto(),
+	publishCardRequest: publishCardRequest,
+	revokeCardRequest: revokeCardRequest,
+	requestSigner: requestSigner,
+	cardValidator: cardValidator,
+	IdentityType: IdentityType,
+	CardScope: CardScope,
+	RevocationReason: RevocationReason
 };
 
-// Expose idenity types enum
-VirgilSDK.IdentityTypes = Crypto.IdentityTypesEnum;
+// umd export support
+virgil.virgil = virgil;
 
-module.exports = VirgilSDK;
+// Expose Buffer
+virgil.Buffer = VirgilCrypto.Buffer;
+
+// Expose some utils
+virgil.utils = {
+	obfuscate: VirgilCrypto.obfuscate,
+	importCard: Card.import
+};
+
+module.exports = virgil;
