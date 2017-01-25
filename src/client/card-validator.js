@@ -14,6 +14,7 @@ var utils = require('../shared/utils.js');
 var assert = utils.assert;
 var base64ToBuffer = utils.base64ToBuffer;
 var isBuffer = utils.isBuffer;
+var isString = utils.isString;
 
 // Id of the Card of the Virgil Cards Service
 var SERVICE_CARD_ID = '3e29d43373348cfb373b7eae189214dc01d7237765e572d' +
@@ -56,13 +57,18 @@ function cardValidator (crypto) {
 	 *
 	 * @param {string} signerId - Id of the card the public key is
 	 * 			associated with.
-	 * @param {Buffer} publicKey - The public key to use to verify
-	 * 			cards' signatures corresponding to the given signer id.
+	 * @param {Buffer|string} publicKey - The public key to use to verify
+	 * 			cards' signatures corresponding to the given signer id as a
+	 * 			{Buffer} or a base64-encoded {string}.
 	 * */
 	function addVerifier (signerId, publicKey) {
-		assert(typeof signerId === 'string',
-			'Argument "signerId" must be a string.');
-		assert(isBuffer(publicKey), 'Argument "publicKey" must be a Buffer');
+		assert(isString(signerId), 'Argument "signerId" must be a string.');
+		assert(isBuffer(publicKey) || isString(publicKey),
+			'Argument "publicKey" must be a Buffer or a ' +
+			'base64-encoded string');
+
+		publicKey = isString(publicKey)
+			? base64ToBuffer(publicKey) : publicKey;
 
 		verifiers[signerId] = crypto.importPublicKey(publicKey);
 	}
