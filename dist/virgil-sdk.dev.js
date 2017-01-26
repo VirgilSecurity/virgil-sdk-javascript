@@ -32794,7 +32794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		function decrypt(cipherData, privateKey) {
 			assert(isBuffer(cipherData) || isString(cipherData), 'Argument "cipherData" must be a Buffer or a ' + 'base64-encoded string.');
 
-			cipherData = isString(cipherData) ? stringToBuffer(cipherData) : cipherData;
+			cipherData = isString(cipherData) ? base64ToBuffer(cipherData) : cipherData;
 
 			var keyData = getKeyBytesFromHandle(privateKey);
 			return VirgilCrypto.decrypt(cipherData, keyData.recipientId, keyData.value);
