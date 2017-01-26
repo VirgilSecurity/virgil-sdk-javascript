@@ -14,7 +14,7 @@
   "main": "index.js",
   "browser": "dist/virgil-sdk.min.js",
   "scripts": {
-    "test": "node -r dotenv/config tests dotenv_config_path=tests/.env | faucet",
+    "test": "tape -r dotenv/config tests dotenv_config_path=tests/.env | faucet",
     "build": "gulp build --development && gulp build --production"
   },
   "author": "Virgil Security Inc. <support@virgilsecurity.com>",
