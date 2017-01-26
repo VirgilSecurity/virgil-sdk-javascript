@@ -32836,7 +32836,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			assert(isBuffer(signature) || isString(data), 'Argument "signature" must be a Buffer or a ' + 'base64-encoded string.');
 
 			data = isString(data) ? stringToBuffer(data) : data;
-			signature = isString(signature) ? base64ToBuffer(data) : signature;
+			signature = isString(signature) ? base64ToBuffer(signature) : signature;
 
 			var keyData = getKeyBytesFromHandle(publicKey);
 			return VirgilCrypto.verify(data, signature, keyData.value);
@@ -32957,7 +32957,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		function decryptWithPassword(cipherData, password) {
 			assert(isBuffer(cipherData) || isString(cipherData), 'Argument "cipherData" must be  a Buffer or a ' + 'base64-encoded string');
 
-			cipherData = isString(cipherData) ? base64ToBuffer(cipherData) : data;
+			cipherData = isString(cipherData) ? base64ToBuffer(cipherData) : cipherData;
 			return VirgilCrypto.decrypt(cipherData, stringToBuffer(password));
 		}
 	}
