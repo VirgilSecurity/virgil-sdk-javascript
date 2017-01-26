@@ -259,7 +259,7 @@ function virgilCrypto() {
 			'base64-encoded string.');
 
 		cipherData = isString(cipherData)
-			? stringToBuffer(cipherData) : cipherData;
+			? base64ToBuffer(cipherData) : cipherData;
 
 		var keyData = getKeyBytesFromHandle(privateKey);
 		return VirgilCrypto.decrypt(
@@ -306,7 +306,7 @@ function virgilCrypto() {
 			'base64-encoded string.');
 
 		data = isString(data) ? stringToBuffer(data) : data;
-		signature = isString(signature) 
+		signature = isString(signature)
 			? base64ToBuffer(signature) : signature;
 
 		var keyData = getKeyBytesFromHandle(publicKey);

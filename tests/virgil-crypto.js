@@ -79,6 +79,31 @@ test('sign and verify strings', function (t) {
 	var signature = virgilCrypto.sign(data, senderPrivateKey)
 		.toString('base64');
 	var isValid = virgilCrypto.verify(data, signature, senderPublicKey);
-	t.ok(isValid, 'Validates date when passed string arguments');
+	t.ok(isValid, 'Validates data when passed string arguments');
+	t.end();
+});
+
+test('encrypt and decrypt strings', function (t) {
+	var data = JSON.stringify({ name: 'Default name' });
+	var recipientPrivateKey = 'LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVk' +
+		'tLS0tLQpNSUdoTUYwR0NTcUdTSWIzRFFFRkRUQlFNQzhHQ1NxR1NJYjNEUUVGRERB' +
+		'aUJCQk5sMXEzeHBMTEh6Q2E5ODBMClVlMXdBZ0lPNGpBS0JnZ3Foa2lHOXcwQ0NqQ' +
+		'WRCZ2xnaGtnQlpRTUVBU29FRU5XZGxvK1hnNnJqYmdIUEJPMXoKRG9nRVFBZDY3eC' +
+		'tBT2xrTzBYTDNKbUEvSU5wUXE4cmNtVzU0citSUTBRY0xaaGVUdU9QYXBnZEk4UGp' +
+		'Kb0ZuWQpTUVp0WjRYby9TRllOeFdUZzk3Zi94V05SZmc9Ci0tLS0tRU5EIEVOQ1JZ' +
+		'UFRFRCBQUklWQVRFIEtFWS0tLS0tCg==';
+	var recipientPublicKey = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JR' +
+		'WURLMlZ3QXlFQWNCTG1pZTFKam0rRC9BM0lQdVJVSUFsK0MvUlF0RWQ1cnhmb1BEM' +
+		'FlGbDQ9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=';
+
+	recipientPrivateKey = virgilCrypto.importPrivateKey(recipientPrivateKey, '4321');
+	recipientPublicKey = virgilCrypto.importPublicKey(recipientPublicKey);
+
+	var cipherData = virgilCrypto.encrypt(data, recipientPublicKey)
+		.toString('base64');
+	var decryptedData = virgilCrypto.decrypt(cipherData, recipientPrivateKey);
+
+	t.equal(decryptedData.toString(), data,
+		'Decrypts data when passed string arguments');
 	t.end();
 });
