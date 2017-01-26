@@ -60,3 +60,25 @@ test('calculate fingerprint', function (t) {
 		'Calculates same fingerprint for the same data');
 	t.end();
 });
+
+test('sign and verify strings', function (t) {
+	var data = JSON.stringify({ name: 'Default name' });
+	var senderPrivateKey = 'LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVktLS' +
+		'0tLQpNSUdoTUYwR0NTcUdTSWIzRFFFRkRUQlFNQzhHQ1NxR1NJYjNEUUVGRERBaUJ' +
+		'CQlVZWXNvUWVvTm9YSWQxVzZHCjJxN2xBZ0lUN3pBS0JnZ3Foa2lHOXcwQ0NqQWRC' +
+		'Z2xnaGtnQlpRTUVBU29FRUpQSnJPZEtCdHNFZWdjTzc3dTEKTzZNRVFFVWlKTWtGT' +
+		'npNck1sUjh6N0ZDVVZieDdaRkhENjJYdHI3bm5sU05VaG04V1U0L1ZqTHAwTk5xdE' +
+		'RLTApPMjROaEcwa05iZUZaOXFlaFlUcU1sUXp3ejQ9Ci0tLS0tRU5EIEVOQ1JZUFR' +
+		'FRCBQUklWQVRFIEtFWS0tLS0tCg==';
+	var senderPublicKey = 'MCowBQYDK2VwAyEAmBZSnO/w/xhO8bb+NV/xykZp42pyty+' +
+		'dbsphBKdEYqA=';
+
+	senderPrivateKey = virgilCrypto.importPrivateKey(senderPrivateKey, '1234');
+	senderPublicKey = virgilCrypto.importPublicKey(senderPublicKey);
+
+	var signature = virgilCrypto.sign(data, senderPrivateKey)
+		.toString('base64');
+	var isValid = virgilCrypto.verify(data, signature, senderPublicKey);
+	t.ok(isValid, 'Validates date when passed string arguments');
+	t.end();
+});
