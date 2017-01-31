@@ -1,32 +1,29 @@
 var VirgilCrypto = require('virgil-crypto');
-var cryptoAsyncPatch = require('../crypto-async-patch');
+var CryptoKeyHandle = require('./crypto-key-handle');
+var isBuffer = require('../shared/utils').isBuffer;
+var isString = require('../shared/utils').isString;
+var assert = require('../shared/utils').assert;
+var stringToBuffer = require('../shared/utils').stringToBuffer;
+var base64ToBuffer = require('../shared/utils').base64ToBuffer;
 
 VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
-cryptoAsyncPatch(VirgilCrypto);
-
 /**
- * Private key handle.
- * @typedef {Object} PrivateKeyHandle
- */
-
-/**
- * Public key handle.
- * @typedef {Object} PublicKeyHandle
- */
-
-/**
- * Represents key pair.
+ * Represents a pair of cryptographic keys generated with an
+ * asymmetric algorithm.
+ *
  * @typedef {Object} KeyPair
- * @property {PrivateKeyHandle} privateKey - Private part of the key
- * @property {PublicKeyHandle} publicKey - Public part of the key
+ * @property {CryptoKeyHandle} privateKey - Private part of the key
+ * @property {CryptoKeyHandle} publicKey - Public part of the key
  */
 
-var keyValueStore = new WeakMap();
-
+/**
+ * @constructs VirgilCrypto
+ * */
 function virgilCrypto() {
+	var keyMaterialStore = new WeakMap();
 
-	return {
+	return /** @lends VirgilCrypto */ {
 		generateKeys: generateKeys,
 		importPrivateKey: importPrivateKey,
 		importPublicKey: importPublicKey,
@@ -43,27 +40,60 @@ function virgilCrypto() {
 		calculateFingerprint: calculateFingerprint,
 		signThenEncrypt: signThenEncrypt,
 		decryptThenVerify: decryptThenVerify,
+		/** @enum {object} */
 		HashAlgorithm: VirgilCrypto.HashAlgorithm,
-		KeyPairType: VirgilCrypto.KeysTypesEnum
+		/** @enum {string} */
+		KeyPairType: VirgilCrypto.KeyPairType
 	};
 
-	function createPrivateKey(recipientId, value) {
-		var privateKey = {};
-		keyValueStore.set(privateKey, { recipientId: recipientId, value: value });
-		return privateKey;
-	}
-
-	function createPublicKey(recipientId, value) {
-		var publicKey = {};
-		keyValueStore.set(publicKey, { recipientId: recipientId, value: value });
-		return publicKey;
+	/**
+	 * Puts the key into internal storage, creates and returns a handle
+	 * to the stored key.
+	 *
+	 * @param {string} type: The type of key (public or private)
+	 * @param {Buffer} recipientId: Id of the intended recipient (i.e.
+	 * 			owner of the key).
+	 * @param {Buffer} value: The key material.
+	 *
+	 * @returns {CryptoKeyHandle}: The handle representing the key
+	 *
+	 * @private
+	 * */
+	function createKeyHandle (type, recipientId, value) {
+		var key = new CryptoKeyHandle(type);
+		keyMaterialStore.set(key, { recipientId: recipientId, value: value });
+		return key;
 	}
 
 	/**
-	 * Generates new key pair.
+	 * Returns the key material corresponding to the key handle or
+	 * throws an Error if the key does not exist.
 	 *
-	 * @param {string} [keyPairType] - Type of key pair. See virgilCrypto.KeyPairType for available options
-	 * @returns {object}
+	 * @returns {Buffer} - The key bytes.
+	 *
+	 * @private
+	 * */
+	function getKeyBytesFromHandle (keyHandle) {
+		var key = keyMaterialStore.get(keyHandle);
+		assert(Boolean(key), 'Object provided is not a valid key handle.');
+		return key;
+	}
+
+	function createPrivateKeyHandle(recipientId, value) {
+		return createKeyHandle('private', recipientId, value);
+	}
+
+	function createPublicKeyHandle(recipientId, value) {
+		return createKeyHandle('public', recipientId, value);
+	}
+
+	/**
+	 * Generates a new key pair.
+	 *
+	 * @param {KeyPairType} [keyPairType] - Optional type of the key pair.
+	 * 			See {code: virgil.crypto.KeyPairType} for available options.
+	 * @returns {KeyPair}:
+	 * 			The newly generated key pair.
 	 * */
 	function generateKeys(keyPairType) {
 		var keyPair = VirgilCrypto.generateKeyPair({ type: keyPairType });
@@ -72,131 +102,138 @@ function virgilCrypto() {
 		var keyPairId = VirgilCrypto.hash(publicKeyDER);
 
 		return {
-			privateKey: createPrivateKey(keyPairId, privateKeyDER),
-			publicKey: createPublicKey(keyPairId, publicKeyDER)
+			privateKey: createPrivateKeyHandle(keyPairId, privateKeyDER),
+			publicKey: createPublicKeyHandle(keyPairId, publicKeyDER)
 		};
 	}
 
 	/**
-	 * Imports private key from material representation.
+	 * Imports a private key from a Buffer or base64-encoded string
+	 * containing key material.
 	 *
-	 * @param {Buffer} rawPrivateKey - Private key bytes
-	 * @param {string} [password] - Password the key is encrypted with
+	 * @param {Buffer|string} privateKeyMaterial - The private key material
+	 * 			as a {Buffer} or base64-encoded string.
+	 * @param {string} [password] - Optional password the key is
+	 * 			encrypted with.
 	 *
-	 * @returns {PrivateKey}
+	 * @returns {CryptoKeyHandle} - The imported key handle.
 	 * */
-	function importPrivateKey(rawPrivateKey, password) {
-		if (!Buffer.isBuffer(rawPrivateKey)) {
-			throw new TypeError('Unexpected type of "rawPrivateKey", use Buffer.');
+	function importPrivateKey(privateKeyMaterial, password) {
+		assert(isBuffer(privateKeyMaterial) || isString(privateKeyMaterial),
+			'Argument "privateKeyMaterial" must be a Buffer or a ' +
+			'base64-encoded string');
+
+		var privateKeyBytes = isString(privateKeyMaterial)
+			? base64ToBuffer(privateKeyMaterial) : privateKeyMaterial;
+
+		if (password) {
+			privateKeyBytes = VirgilCrypto.decryptPrivateKey(
+				privateKeyBytes, stringToBuffer(password));
 		}
 
-		if (arguments.length === 2) {
-			rawPrivateKey = VirgilCrypto.decryptPrivateKey(rawPrivateKey, new Buffer(password));
-		}
-
-		var privateKeyDER = VirgilCrypto.privateKeyToDER(rawPrivateKey);
+		var privateKeyDER = VirgilCrypto.privateKeyToDER(privateKeyBytes);
 		var publicKey = VirgilCrypto.extractPublicKey(privateKeyDER);
 		var publicKeyDER = VirgilCrypto.publicKeyToDER(publicKey);
 
-		return createPrivateKey(VirgilCrypto.hash(publicKeyDER), privateKeyDER);
+		return createPrivateKeyHandle(
+			VirgilCrypto.hash(publicKeyDER), privateKeyDER);
 	}
 
 	/**
-	 * Imports public key from material representation.
+	 * Imports a public key from a Buffer or base64-encoded string
+	 * containing key material.
 	 *
-	 * @param {Buffer} rawPublicKey - Public key bytes
+	 * @param {Buffer|string} publicKeyMaterial - The public key material
+	 * 			as a {Buffer} or base64-encoded string.
 	 *
-	 * @returns {PublicKey}
+	 * @returns {CryptoKeyHandle} - The imported key handle.
 	 * */
-	function importPublicKey(rawPublicKey) {
-		if (!Buffer.isBuffer(rawPublicKey)) {
-			throw new TypeError('Unexpected type of "rawPublicKey", use Buffer.');
-		}
+	function importPublicKey(publicKeyMaterial) {
+		assert(isBuffer(publicKeyMaterial) || isString(publicKeyMaterial),
+			'Argument "publicKeyMaterial" must be a Buffer or a string');
 
-		var publicKeyDER = VirgilCrypto.publicKeyToDER(rawPublicKey);
+		var publicKeyBytes = isString(publicKeyMaterial)
+			? base64ToBuffer(publicKeyMaterial) : publicKeyMaterial;
 
-		return createPublicKey(VirgilCrypto.hash(publicKeyDER), publicKeyDER);
+		var publicKeyDER = VirgilCrypto.publicKeyToDER(publicKeyBytes);
+		return createPublicKeyHandle(
+			VirgilCrypto.hash(publicKeyDER), publicKeyDER);
 	}
 
 	/**
-	 * Exports private key into material representation.
+	 * Exports the private key handle into a Buffer containing the key bytes.
 	 *
-	 * @param {PrivateKey} privateKey - Private key to export
-	 * @param {string} [password] - Password to encrypt the key with
+	 * @param {CryptoKeyHandle} privateKey - The private key handle.
+	 * @param {string} [password] - Optional password to encrypt the key with.
 	 *
-	 * @returns {Buffer}
+	 * @returns {Buffer} - The private key bytes.
 	 * */
 	function exportPrivateKey(privateKey, password) {
-		var keyData = keyValueStore.get(privateKey);
-		if (!keyData) {
-			throw new Error('Cannot export private key. Object passed is not a valid private key.');
-		}
+		var keyData = getKeyBytesFromHandle(privateKey);
 
 		if (!password) {
 			return VirgilCrypto.privateKeyToDER(keyData.value);
 		}
 
-		var passwordBuffer = new Buffer(password);
-		var encryptedKey = VirgilCrypto.encryptPrivateKey(keyData.value, passwordBuffer);
+		var passwordBuffer = stringToBuffer(password);
+		var encryptedKey = VirgilCrypto.encryptPrivateKey(
+			keyData.value, passwordBuffer);
 		return VirgilCrypto.privateKeyToDER(encryptedKey, passwordBuffer);
 	}
 
 	/**
-	 * Exports public key into material representation.
+	 * Exports the public key handle into a Buffer containing the key bytes.
 	 *
-	 * @param {PublicKey} publicKey - Public key to export
+	 * @param {CryptoKeyHandle} publicKey - The public key handle.
 	 *
-	 * @returns {Buffer}
+	 * @returns {Buffer} - The public key bytes.
 	 * */
 	function exportPublicKey(publicKey) {
-		var keyData = keyValueStore.get(publicKey);
-		if (!keyData) {
-			throw new Error('Cannot export public key. Object passed is not a valid public key.');
-		}
-
+		var keyData = getKeyBytesFromHandle(publicKey);
 		return VirgilCrypto.publicKeyToDER(keyData.value);
 	}
 
 	/**
-	 * Extracts public key from private key.
+	 * Extracts a public key from the private key handle.
 	 *
-	 * @param {PrivateKey} privateKey
-	 * @param {string} [password=''] - Password the private key is encrypted with
+	 * @param {CryptoKeyHandle} privateKey - The private key handle.
+	 * 			to extract from.
+	 * @param {string} [password=''] - Optional password the private key
+	 * 			is encrypted with.
 	 *
-	 * @returns {PublicKey}
+	 * @returns {CryptoKeyHandle} - The handle to the extracted public key.
 	 * */
 	function extractPublicKey(privateKey, password) {
-		var keyData = keyValueStore.get(privateKey);
-		if (!keyData) {
-			throw new Error('Cannot extract public key. Object passed is not a valid private key.');
-		}
+		var keyData = getKeyBytesFromHandle(privateKey);
 
 		password = password || '';
 
-		var publicKey = VirgilCrypto.extractPublicKey(keyData.value, new Buffer(password));
-		return createPublicKey(keyData.recipientId, VirgilCrypto.publicKeyToDER(publicKey));
+		var publicKey = VirgilCrypto.extractPublicKey(
+			keyData.value, stringToBuffer(password));
+		return createPublicKeyHandle(
+			keyData.recipientId, VirgilCrypto.publicKeyToDER(publicKey));
 	}
 
 	/**
-	 * Encrypts the data for recipients.
+	 * Encrypts the data for the recipient(s).
 	 *
-	 * @param {Buffer} data - Data to encrypt
-	 * @param {PublicKeyHandle|PublicKeyHandle[]} recipients - Public keys to encrypt the data with.
+	 * @param {Buffer|string} data - The data to be encrypted as a {Buffer}
+	 * 			or a {string} in UTF8.
+	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} recipients - A handle to
+	 * 			the public key of the intended recipient or an array of public
+	 * 			key handles of multiple recipients.
 	 *
-	 * @returns {Buffer} - Encrypted data
+	 * @returns {Buffer} - Encrypted data.
 	 * */
 	function encrypt(data, recipients) {
-		if (!Buffer.isBuffer(data)) {
-			throw new TypeError('Cannot encrypt the given data. Argument "data" must be a Buffer.');
-		}
+		assert(isBuffer(data) || isString(data),
+			'Argument "data" must be a Buffer or a string.');
 
+		data = isString(data) ? stringToBuffer(data) : data;
 		recipients = Array.isArray(recipients) ? recipients : [recipients];
 
-		var publicKeys = recipients.map(function (recipient) {
-			var keyData = keyValueStore.get(recipient);
-			if (!keyData) {
-				throw new Error('Cannot encrypt data. Object passed is not a valid public key.');
-			}
+		var publicKeys = recipients.map(function (recipientKey) {
+			var keyData = getKeyBytesFromHandle(recipientKey);
 
 			return {
 				recipientId: keyData.recipientId,
@@ -208,96 +245,98 @@ function virgilCrypto() {
 	}
 
 	/**
-	 * Decrypts the data with private key.
+	 * Decrypts the data with the private key.
 	 *
-	 * @param {Buffer} cipherData - Encrypted data
-	 * @param {PrivateKeyHandle} privateKey - Private key to decrypt with
+	 * @param {Buffer|string} cipherData - The data to be decrypted as
+	 * 			a {Buffer} or a {string} in base64.
+	 * @param {CryptoKeyHandle} privateKey - A handle to the private key.
 	 *
 	 * @returns {Buffer} - Decrypted data
 	 * */
 	function decrypt(cipherData, privateKey) {
-		if (!Buffer.isBuffer(cipherData)) {
-			throw new TypeError('Cannot decrypt the given data. Argument "cipherData" must be a Buffer.');
-		}
+		assert(isBuffer(cipherData) || isString(cipherData),
+			'Argument "cipherData" must be a Buffer or a ' +
+			'base64-encoded string.');
 
-		var keyData = keyValueStore.get(privateKey);
-		if (!keyData) {
-			throw new Error('Cannot decrypt with given key. Object passed is not a valid private key.');
-		}
+		cipherData = isString(cipherData)
+			? base64ToBuffer(cipherData) : cipherData;
 
-		return VirgilCrypto.decrypt(cipherData, keyData.recipientId, keyData.value);
+		var keyData = getKeyBytesFromHandle(privateKey);
+		return VirgilCrypto.decrypt(
+			cipherData, keyData.recipientId, keyData.value);
 	}
 
 	/**
-	 * Signs the data with private key.
+	 * Calculates the signature on the data.
 	 *
-	 * @param {Buffer} data - Data to sign
-	 * @param {PrivateKeyHandle} privateKey - Private key to sign with
+	 * @param {Buffer|string} data - The data to be signed as a {Buffer} or a
+	 * 			{string} in UTF-8.
+	 * @param {CryptoKeyHandle} privateKey - A handle to the private key.
+	 *
+	 * @returns {Buffer} - The signature.
 	 * */
 	function sign(data, privateKey) {
-		if (!Buffer.isBuffer(data)) {
-			throw new TypeError('Cannot sign the given data. Argument "data" must be a Buffer.');
-		}
+		assert(isBuffer(data) || isString(data),
+			'Argument "data" must be a Buffer or a string.');
 
-		var keyData = keyValueStore.get(privateKey);
-		if (!keyData) {
-			throw new Error('Cannot sign with given key. Object passed is not a valid private key');
-		}
+		data = isString(data) ? stringToBuffer(data) : data;
 
+		var keyData = getKeyBytesFromHandle(privateKey);
 		return VirgilCrypto.sign(data, keyData.value);
 	}
 
 	/**
-	 * Verifies the signature using public key.
+	 * Verifies the provided data using the given signature and public key.
 	 *
-	 * @param {Buffer} data - The data to verify signature of
-	 * @param {Buffer} signature - The signature to verify
-	 * @param {PublicKeyHandle} publicKey - Public key to verify with
+	 * @param {Buffer|string} data - The data to be verified as a {Buffer}
+	 * 			or a {string} in UTF-8.
+	 * @param {Buffer|string} signature - The signature as a {Buffer} or a
+	 * 			{string} in base64.
+	 * @param {CryptoKeyHandle} publicKey - The public key handle.
 	 *
-	 * @returns {Boolean}
+	 * @returns {Boolean} - {code: true} or {code: false} depending on the
+	 * 			validity of the signature for the data and public key.
 	 * */
 	function verify(data, signature, publicKey) {
-		if (!Buffer.isBuffer(data)) {
-			throw new TypeError('Cannot verify the signature. Argument "data" must be a Buffer.');
-		}
+		assert(isBuffer(data) || isString(data),
+			'Argument "data" must be a Buffer or a string.');
 
-		if (!Buffer.isBuffer(signature)) {
-			throw new TypeError('Cannot verify the signature. Argument "signature" must be a Buffer.');
-		}
+		assert(isBuffer(signature) || isString(data),
+			'Argument "signature" must be a Buffer or a ' +
+			'base64-encoded string.');
 
-		var keyData = keyValueStore.get(publicKey);
-		if (!keyData) {
-			throw new Error('Cannot verify the signature. Object provided is not a valid public key.');
-		}
+		data = isString(data) ? stringToBuffer(data) : data;
+		signature = isString(signature)
+			? base64ToBuffer(signature) : signature;
 
+		var keyData = getKeyBytesFromHandle(publicKey);
 		return VirgilCrypto.verify(data, signature, keyData.value);
 	}
 
 	/**
-	 * Signs the data with private key, then encrypts the data with attached
-	 * 		signature with public keys.
-	 * @param {Buffer} data
-	 * @param {PrivateKeyHandle} privateKey
-	 * @param {PublicKeyHandle|PublicKeyHandle[]} publicKeys Recipient's
-	 * 		public key or array of recipients' public keys.
+	 * Calculates the signature on the data using the private key,
+	 * 		then encrypts the data along with the signature using
+	 * 		the public key(s).
+	 * @param {Buffer|string} data - The data to sign and encrypt as a
+	 * 			{Buffer} or a {string} in UTF-8.
+	 * @param {CryptoKeyHandle} privateKey - The private key handle.
+	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} publicKeys - The handle
+	 * 		of a public key of the intended recipient or an array of
+	 * 		public key handles of multiple recipients.
+	 *
 	 * 	@returns {Buffer} Encrypted data with attached signature.
 	 * */
 	function signThenEncrypt(data, privateKey, publicKeys) {
-		if (!Buffer.isBuffer(data)) {
-			throw new TypeError('Cannot sign and encrypt. Argument "data" must be a Buffer.');
-		}
+		assert(isBuffer(data) || isString(data),
+			'Argument "data" must be a Buffer or a string.');
 
-		var privateKeyData = keyValueStore.get(privateKey);
-		if (!privateKeyData) {
-			throw new Error('Object provided is not a valid private key');
-		}
+		data = isString(data) ? stringToBuffer(data) : data;
+
+		var privateKeyData = getKeyBytesFromHandle(privateKey);
 
 		publicKeys = Array.isArray(publicKeys) ? publicKeys : [publicKeys];
 		var recipients = publicKeys.map(function (publicKey) {
-			var pubKeyData = keyValueStore.get(publicKey);
-			if (!pubKeyData) {
-				throw new Error('Object provided is not a valid public key');
-			}
+			var pubKeyData = getKeyBytesFromHandle(publicKey);
 
 			return {
 				recipientId: pubKeyData.recipientId,
@@ -309,28 +348,27 @@ function virgilCrypto() {
 	}
 
 	/**
-	 * Decrypts the cipher data with private key, then verifies the signature
-	 * 		with public key.
-	 * 	@param {Buffer} cipherData
-	 * 	@param {PrivateKeyHandle} privateKey
-	 * 	@param {PublicKeyHandle} publicKey
-	 * 	@returns {Buffer} Decrypted data iff verification is successful,
-	 * 			otherwise throws {!VirgilCryptoError}.
+	 * Decrypts the data using the private key, then verifies decrypted data
+	 * 		using the attached signature and the given public key.
+	 *
+	 * 	@param {Buffer|string} cipherData - The data to be decrypted and
+	 * 			verified as a {Buffer} or a {string} in base64.
+	 * 	@param {CryptoKeyHandle} privateKey - The private key handle.
+	 * 	@param {CryptoKeyHandle} publicKey - The public key handle.
+	 *
+	 * 	@returns {Buffer} - Decrypted data iff verification is successful,
+	 * 			otherwise throws {code: VirgilCryptoError}.
 	 * */
 	function decryptThenVerify(cipherData, privateKey, publicKey) {
-		if (!Buffer.isBuffer(cipherData)) {
-			throw new TypeError('Argument "cipherData" must be a Buffer.');
-		}
+		assert(isBuffer(cipherData) || isString(cipherData),
+			'Argument "cipherData" must be a Buffer or a ' +
+			'base64-encoded string.');
 
-		var privateKeyData = keyValueStore.get(privateKey);
-		if (!privateKeyData) {
-			throw new Error('Object provided is not a valid private key');
-		}
+		cipherData = isString(cipherData)
+			? base64ToBuffer(cipherData) : cipherData;
 
-		var publicKeyData = keyValueStore.get(publicKey);
-		if (!publicKeyData) {
-			throw new Error('Object provided is not a valid public key');
-		}
+		var privateKeyData = getKeyBytesFromHandle(privateKey);
+		var publicKeyData = getKeyBytesFromHandle(publicKey);
 
 		return VirgilCrypto.decryptThenVerify(
 			cipherData,
@@ -340,54 +378,70 @@ function virgilCrypto() {
 	}
 
 	/**
-	 * Calculates the fingerprint of given data
+	 * Calculates the fingerprint of the given data.
 	 *
-	 * @param {Buffer} data
+	 * @param {Buffer|string} data - The data to calculate the fingerprint of
+	 * 			as a {Buffer} or a {string} in UTF-8.
 	 *
-	 * @returns {Buffer} - Fingerprint
+	 * @returns {Buffer} - The fingerprint.
 	 * */
 	function calculateFingerprint(data) {
-		if (!Buffer.isBuffer(data)) {
-			throw new TypeError('Cannot calculate fingerprint. Argument "data" must be a Buffer.')
-		}
-
-		return VirgilCrypto.hash(data, VirgilCrypto.HashAlgorithm.SHA256);
+		return hash(data, VirgilCrypto.HashAlgorithm.SHA256);
 	}
 
 	/**
-	 * Calculates the hash of given data
+	 * Calculates the hash of the given data.
 	 *
-	 * @param {Buffer} data
-	 * @param {string} [algorithm] - Hash algorithm to use. See virgilCrypto.HashAlgorithm for available options
+	 * @param {Buffer|string} data - The data to calculate the hash of as a
+	 * 			{Buffer} or a {string} in UTF-8.
+	 * @param {string} [algorithm] - Optional name of the hash algorithm
+	 * 		to use. See { code: virgilCrypto.HashAlgorithm }
+	 * 		for available options.
 	 *
-	 * @returns {Buffer} - Hash
+	 * @returns {Buffer} - The hash.
 	 * */
 	function hash(data, algorithm) {
-		if (!Buffer.isBuffer(data)) {
-			throw new TypeError('Cannot hash data. Argument "data" must be a Buffer.')
-		}
+		assert(isBuffer(data) || isString(data),
+			'Argument "data" must be a Buffer or a string.');
 
+		data = isString(data) ? stringToBuffer(data) : data;
 		return VirgilCrypto.hash(data, algorithm);
 	}
 
 	/**
-	 * Encrypts the data using password to derive encryption key.
-	 * @param {Buffer} data
-	 * @param {string} password
+	 * Encrypts the data using the password to derive encryption key.
+	 *
+	 * @param {Buffer|string} data - The data to be encrypted as a {Buffer}
+	 * 			or a {string} in UTF-8.
+	 * @param {string} password - The password to use for key derivation.
+	 *
 	 * @returns {Buffer} Encrypted data.
 	 * */
 	function encryptWithPassword (data, password) {
-		return VirgilCrypto.encrypt(data, new Buffer(password));
+		assert(isBuffer(data) || isString(data),
+			'Argument "data" must be  a Buffer or a string');
+
+		data = isString(data) ? stringToBuffer(data) : data;
+
+		return VirgilCrypto.encrypt(data, stringToBuffer(password));
 	}
 
 	/**
-	 * Decrypts the cipher data using password to derive decryption key.
-	 * @param {Buffer} cipherData
-	 * @param {string} password
+	 * Decrypts the encrypted data using the password to derive decryption key.
+	 *
+	 * @param {Buffer|string} cipherData - The data to be decrypted as a
+	 * 			{Buffer} or a {string} in base64.
+	 * @param {string} password - The password to use for key derivation.
+	 *
 	 * @returns {Buffer} Decrypted data.
 	 * */
 	function decryptWithPassword (cipherData, password) {
-		return VirgilCrypto.decrypt(cipherData, new Buffer(password));
+		assert(isBuffer(cipherData) || isString(cipherData),
+			'Argument "cipherData" must be  a Buffer or a ' +
+			'base64-encoded string');
+
+		cipherData = isString(cipherData) ? base64ToBuffer(cipherData) : cipherData;
+		return VirgilCrypto.decrypt(cipherData, stringToBuffer(password));
 	}
 }
 

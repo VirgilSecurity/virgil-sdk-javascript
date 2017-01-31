@@ -1,21 +1,25 @@
 var VirgilCrypto = require('virgil-crypto');
-var initVirgilCrypto = require('./src/crypto/virgil-crypto');
+var createVirgilCrypto = require('./src/crypto/virgil-crypto');
 var createVirgilClient = require('./src/client/virgil-client');
-var cardRequest = require('./src/client/create-card-request');
-var cardRevokeRequest = require('./src/client/revoke-card-request');
+var publishCardRequest = require('./src/client/publish-card-request');
+var revokeCardRequest = require('./src/client/revoke-card-request');
 var requestSigner = require('./src/client/request-signer');
 var cardValidator = require('./src/client/card-validator');
-
-VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
-
+var Card = require('./src/client/card');
+var IdentityType = require('./src/client/card-identity-type');
+var CardScope = require('./src/client/card-scope');
+var RevocationReason = require('./src/client/card-revocation-reason');
 
 var virgil = {
 	client: createVirgilClient,
-	crypto: initVirgilCrypto(),
-	createCardRequest: cardRequest,
-	revokeCardRequest: cardRevokeRequest,
+	crypto: createVirgilCrypto(),
+	publishCardRequest: publishCardRequest,
+	revokeCardRequest: revokeCardRequest,
 	requestSigner: requestSigner,
-	cardValidator: cardValidator
+	cardValidator: cardValidator,
+	IdentityType: IdentityType,
+	CardScope: CardScope,
+	RevocationReason: RevocationReason
 };
 
 // umd export support
@@ -27,7 +31,7 @@ virgil.Buffer = VirgilCrypto.Buffer;
 // Expose some utils
 virgil.utils = {
 	obfuscate: VirgilCrypto.obfuscate,
-	generateValidationToken: VirgilCrypto.generateValidationToken
+	importCard: Card.import
 };
 
 module.exports = virgil;

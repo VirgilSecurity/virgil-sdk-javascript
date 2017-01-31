@@ -4,7 +4,7 @@ var virgil = require('../');
 
 var appCardId = virgilConfig.appCardId;
 var appPrivateKey = virgil.crypto.importPrivateKey(
-	new Buffer(virgilConfig.appPrivateKey, 'base64'),
+	virgilConfig.appPrivateKey,
 	virgilConfig.appPrivateKeyPassword);
 
 var client = virgil.client(virgilConfig.accessToken, virgilConfig);
@@ -31,17 +31,17 @@ test('virgil cards flow', function testVerify (t) {
 		var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
 		var username = 'testjssdk' + Math.random();
 
-		var createCardRequest = virgil.createCardRequest({
+		var publishCardRequest = virgil.publishCardRequest({
 			identity: username,
 			identity_type: 'username',
-			public_key: rawPublicKey
+			public_key: rawPublicKey.toString('base64')
 		});
 
 		var requestSigner = virgil.requestSigner(virgil.crypto);
-		requestSigner.selfSign(createCardRequest, keyPair.privateKey);
-		requestSigner.authoritySign(createCardRequest, appCardId, appPrivateKey);
+		requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
+		requestSigner.authoritySign(publishCardRequest, appCardId, appPrivateKey);
 
-		return client.createCard(createCardRequest)
+		return client.publishCard(publishCardRequest)
 			.then(function (card) {
 				createdCard = card;
 				return card;
@@ -49,7 +49,7 @@ test('virgil cards flow', function testVerify (t) {
 	}
 
 	function assertPublishResponse (res) {
-		logResponse('client#createCard', res);
+		logResponse('client#publishCard', res);
 		t.ok(res, 'card is published');
 		t.ok(Object.keys(res.signatures).length === 3, 'service signature appended');
 	}
@@ -111,17 +111,17 @@ test('setup alice', function (t) {
 	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
 	var username = 'alice_test_sdk';
 
-	var createCardRequest = virgil.createCardRequest({
+	var publishCardRequest = virgil.publishCardRequest({
 		identity: username,
 		identity_type: 'username',
-		public_key: rawPublicKey
+		public_key: rawPublicKey.toString('base64')
 	});
 
 	var requestSigner = virgil.requestSigner(virgil.crypto);
-	requestSigner.selfSign(createCardRequest, keyPair.privateKey);
-	requestSigner.authoritySign(createCardRequest, appCardId, appPrivateKey);
+	requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
+	requestSigner.authoritySign(publishCardRequest, appCardId, appPrivateKey);
 
-	client.createCard(createCardRequest)
+	client.publishCard(publishCardRequest)
 		.then(function (card) {
 			t.ok(card, 'Alice\'s card has been created');
 			alicePrivateKey = virgil.crypto.exportPrivateKey(keyPair.privateKey);
@@ -137,17 +137,17 @@ test('setup bob', function (t) {
 	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
 	var username = 'bob_test_sdk';
 
-	var createCardRequest = virgil.createCardRequest({
+	var publishCardRequest = virgil.publishCardRequest({
 		identity: username,
 		identity_type: 'username',
-		public_key: rawPublicKey
+		public_key: rawPublicKey.toString('base64')
 	});
 
 	var requestSigner = virgil.requestSigner(virgil.crypto);
-	requestSigner.selfSign(createCardRequest, keyPair.privateKey);
-	requestSigner.authoritySign(createCardRequest, appCardId, appPrivateKey);
+	requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
+	requestSigner.authoritySign(publishCardRequest, appCardId, appPrivateKey);
 
-	client.createCard(createCardRequest)
+	client.publishCard(publishCardRequest)
 		.then(function (card) {
 			t.ok(card, 'Bob\'s card has been created');
 			bobPrivateKey = virgil.crypto.exportPrivateKey(keyPair.privateKey);
@@ -188,14 +188,14 @@ test('alice encrypt message for bob', function (t) {
 			}
 
 			cards.sort(function (a, b) {
-				return Date.parse(a.createdAt) - Date.parse(b.createdAt);
+				return a.createdAt - b.createdAt;
 			});
 			return cards[cards.length - 1];
 		});
 	}
 
 	function encryptMessageForBob(bobCard) {
-		var plainText = new Buffer('hello Bob! This is my secret message.');
+		var plainText = 'hello Bob! This is my secret message.';
 		var pubkey = virgil.crypto.importPublicKey(bobCard.publicKey);
 		var cipherText = virgil.crypto.encrypt(plainText, pubkey);
 		return cipherText;
@@ -205,14 +205,16 @@ test('alice encrypt message for bob', function (t) {
 test('bob decrypt', function (t) {
 	var privateKey = virgil.crypto.importPrivateKey(bobPrivateKey);
 	var plainText = virgil.crypto.decrypt(messageToBob, privateKey);
-	t.equal(plainText.toString('utf8'), 'hello Bob! This is my secret message.', 'decrypted and plain texts are the same.');
+	t.equal(plainText.toString('utf8'),
+		'hello Bob! This is my secret message.',
+		'decrypted and plain texts are the same.');
 	t.end();
 });
 
 var aliceSignature;
 test('alice sign', function (t) {
 	var privateKey = virgil.crypto.importPrivateKey(alicePrivateKey);
-	var signedData = new Buffer('Sign me, please');
+	var signedData = 'Sign me, please';
 	aliceSignature = virgil.crypto.sign(signedData, privateKey);
 	t.ok(Buffer.isBuffer(aliceSignature), 'Signature returned as Buffer.');
 	t.end();
@@ -225,7 +227,7 @@ test('bob verify', function (t) {
 		})
 		.then(verifyAliceSignature)
 		.tap(function (isVerified) {
-			t.ok(isVerified, 'Singature verified.');
+			t.ok(isVerified, 'Data verified.');
 			t.end();
 		}).catch(function (err) {
 			t.fail(err.message);
@@ -242,7 +244,7 @@ test('bob verify', function (t) {
 			}
 
 			cards.sort(function (a, b) {
-				return Date.parse(a.createdAt) - Date.parse(b.createdAt);
+				return a.createdAt - b.createdAt;
 			});
 			return cards[cards.length - 1];
 		});
@@ -250,7 +252,7 @@ test('bob verify', function (t) {
 
 	function verifyAliceSignature(aliceCard) {
 		var pubkey = virgil.crypto.importPublicKey(aliceCard.publicKey);
-		var signedData = new Buffer('Sign me, please');
+		var signedData = 'Sign me, please';
 		return virgil.crypto.verify(signedData, aliceSignature, pubkey);
 	}
 });

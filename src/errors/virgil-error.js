@@ -1,9 +1,12 @@
 'use strict';
 
-var utils = require('../shared/utils');
-
-function VirgilError (msg) {
-
+/**
+ * Creates a new error object.
+ *
+ * @param {string} [message] - Optional error message.
+ * @constructor
+ * */
+function VirgilError (message) {
 	// Try to make sure there is stack trace.
 	if (Error.captureStackTrace) {
 		Error.captureStackTrace(this, VirgilError);
@@ -14,13 +17,19 @@ function VirgilError (msg) {
 		}
 	}
 
-	if (msg) {
-		this.message = String(msg);
+	if (message) {
+		this.message = String(message);
 	}
 }
 
-utils.inherits(VirgilError, Error);
-
+VirgilError.prototype = Object.create(Error.prototype, {
+	constructor: {
+		value: VirgilError,
+		enumerable: false,
+		writable: true,
+		configurable: true
+	}
+});
 VirgilError.prototype.name = 'VirgilError';
 
 module.exports = VirgilError;
