@@ -14,7 +14,7 @@ function createIdentityClient (opts) {
 			validate: 'post /validate'
 		},
 
-		transformRequest: {
+		body: {
 			verify: ['type', 'value'],
 			confirm: ['confirmation_code', 'action_id', 'token'],
 			validate: ['type', 'value', 'validation_token']
@@ -22,7 +22,7 @@ function createIdentityClient (opts) {
 
 		required: {
 			verify: ['type', 'value'],
-			confirm: ['confirmation_code', 'action_id', 'token'],
+			confirm: ['confirmation_code', 'action_id'],
 			validate: ['type', 'value', 'validation_token']
 		},
 

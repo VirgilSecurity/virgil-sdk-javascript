@@ -1,17 +1,21 @@
-var Promise = require('bluebird');
 var test = require('tape');
-var virgil = require('./helpers/virgil');
+var virgilConfig = require('./helpers/virgil-config');
 var mailinator = require('./helpers/mailinator');
+var virgil = require('../');
 
 var username = 'testjssdk' + Math.random();
 
-test('identity verify flow', function testVerify (t) {
-	var requestParams = {
-		"type": "email",
-		"value": username + "@mailinator.com"
-	}
+function setup () {
+	return virgil.client(virgilConfig.accessToken, virgilConfig);
+}
 
-	virgil.identity.verify(requestParams)
+test('identity verify flow', function testVerify (t) {
+	var client = setup();
+
+	var identity = username + "@mailinator.com";
+	var identityType = virgil.IdentityType.EMAIL;
+
+	client.verifyIdentity(identity, identityType)
 		.tap(assertVerifyResponse)
 		.then(getConfirmationToken)
 		.spread(confirm)
@@ -22,77 +26,47 @@ test('identity verify flow', function testVerify (t) {
 
 
 	function assertVerifyResponse (res) {
-		t.ok(typeof res.action_id === 'string', 'there is action_id in verify response');
+		t.ok(typeof res === 'string', 'returns action id as string');
 	}
 
-	function getConfirmationToken (res) {
-		logResponse('identity.verify', res);
-		return new Promise(function (resolve, reject) {
-			setTimeout(function () {
-				mailinator.getMessagesAsync(username)
-					.then(function (messages) {
-
-						t.ok(messages, 'got mailinator messages');
-						t.ok(messages.length > 0, 'ok with mailinator messages');
-
-						return mailinator.readMessageAsync(messages[messages.length - 1].id)
-							.then(function (message) {
-								var matches = message.data.parts[0].body.match(/\>(.+)\<\/b\>/);
-								return [matches[1], res.action_id];
-							});
-					})
-					.then(resolve)
-					.catch(reject);
-			}, 30000);
-		});
+	function getConfirmationToken (actionId) {
+		return mailinator.getConfirmationCode(username)
+			.then(function (code) {
+				return [code, actionId];
+			});
 	}
 
 	function confirm (confirmationCode, actionId) {
-		t.ok(typeof confirmationCode === 'string' && confirmationCode.length === 6, 'confirmation code exists');
+		t.ok(typeof confirmationCode === 'string' &&
+			confirmationCode.length === 6, 'confirmation code exists');
 
-		return virgil.identity.confirm({
-			action_id: actionId,
-			confirmation_code: confirmationCode,
-			token: {
-				time_to_live: 3600,
-				count_to_live: 1
-			}
-		});
+		return client.confirmIdentity(actionId, confirmationCode);
 	}
 
-	function assertConfirmResponse (res) {
-		logResponse('identity.confirm', res);
-
-		t.equal(res.type, 'email', 'confirm response type is email');
-		t.equal(res.value, requestParams.value, 'confirm response value matches');
-		t.ok(typeof res.validation_token === 'string', 'validation token is string');
+	function assertConfirmResponse (validationToken) {
+		t.ok(typeof validationToken === 'string',
+			'validation token is string');
 	}
 
-	function validateToken (res) {
-		return virgil.identity.validate(res);
+	function validateToken (token) {
+		return client.validateIdentity(identity, identityType, token);
 	}
 
 	function assertTokenValidation (res) {
-		logResponse('identity.validate', res);
+		t.ok(res, 'token is valid');
 		t.end();
 	}
 });
 
 test('identity server error', function test (t) {
-	var requestParams = {
-		"type": "not email",
-		"value": username + "@mailinator.com"
-	}
+	var client = setup();
 
-	virgil.identity.verify(requestParams)
+	var identity = username + "@mailinator.com";
+	var identityType = 'invalid';
+
+	client.verifyIdentity(identity, identityType)
 		.catch(function (e) {
 			t.equal(e.code, 40100, 'error code match');
 			t.end();
 		});
 });
-
-function logResponse (label, res) {
-	console.log('\n%s:\n', label);
-	console.log(res);
-	console.log('\n');
-}

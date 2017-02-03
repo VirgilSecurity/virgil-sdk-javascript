@@ -39,11 +39,11 @@ function createVirgilClient(accessToken, options) {
 
 	var cardsReadOnlyClient = createReadCardsClient(accessToken, options);
 	var cardsClient = createCardsClient(accessToken, options);
+	var identityClient = createIdentityClient(options);
 
 	var cardValidator = null;
 
 	return /** @lends VirgilClient */ {
-
 
 		/**
 		 * Get card by id.
@@ -109,6 +109,84 @@ function createVirgilClient(accessToken, options) {
 				card_id: request.card_id,
 				content_snapshot: requestData.content_snapshot,
 				meta: requestData.meta
+			});
+		},
+
+		/**
+		 * Initiates a process of identity verification. Used when creating
+		 * Virgil Cards with *global* scope and *email* identity type.
+		 * Returns an action id that must be then passed to
+		 * {@link VirgilClient#confirmIdentity} method along with the
+		 * confirmation code sent to the given email address (identity),
+		 * to conclude the verification process.
+		 *
+		 * @param {string} identity - The identity to verify (i.e. email
+		 * 		address).
+		 * @param {string} identityType - The type of identity to verify.
+		 * @param {Object} [extraFields] - Optional hash with custom
+		 * 		parameters that will be passed in confirmation message.
+		 * 		E.g. in a hidden form inside of the confirmation email
+		 * 		message in case of *email* identity type.
+		 *
+		 * @returns {Promise.<string>} A Promise that will be resolved with
+		 * 		the action id.
+		 * */
+		verifyIdentity: function (identity, identityType, extraFields) {
+			return identityClient.verify({
+				type: identityType,
+				value: identity,
+				extra_fields: extraFields
+			}).then(function (data) {
+				return data.action_id;
+			});
+		},
+
+		/**
+		 * Concludes the identity ownership verification process corresponding
+		 * to the given action id. Returns the confirmation token if the given
+		 * code matches the one sent in the confirmation message.
+		 *
+		 * @param {string} actionId - The action id returned by the
+		 * 		{@link VirgilClient#verifyIdentity} method.
+		 * @param {string} code - The code sent in the confirmation message to
+		 * 		the identity being verified.
+		 * @param {Object} [tokenParams] - Optional parameters of the
+		 * 		validation token to be returned.
+		 * @param {number} [tokenParams.time_to_live=3600] - Lifetime of the
+		 * 		generated token in seconds. Default is 3600.
+		 * @param {number} [tokenParams.count_to_live=1] - Number of times
+		 * 		the generated token can be used. Default is 1.
+		 *
+		 * @return {Promise.<string>} - A Promise that will be resolved with
+		 * 		the generated validation token.
+		 * */
+		confirmIdentity: function (actionId, code, tokenParams) {
+			return identityClient.confirm({
+				action_id: actionId,
+				confirmation_code: code,
+				token: tokenParams
+			}).then(function (data) {
+				return data.validation_token;
+			});
+		},
+
+		/**
+		 * Checks if the given validation token is valid for the given
+		 * identity. Returns a Promise that is resolved with
+		 * <code>true</code> if validation token is valid, or
+		 * <code>false</code> otherwise.
+		 *
+		 * @param {string} identity - The identity.
+		 * @param {string} identityType - The identity type.
+		 * @param {string} validationToken - The token to check.
+		 *
+		 * @returns {Promise.<boolean>}
+		 * */
+		validateIdentity: function (identity, identityType, validationToken) {
+			return identityClient.validate({
+				type: identityType,
+				value: identity,
+				validation_token: validationToken
 			});
 		},
 
