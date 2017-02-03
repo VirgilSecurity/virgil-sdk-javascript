@@ -3,7 +3,8 @@ var throwVirgilError = require('./utils').throwVirgilError;
 
 module.exports = function createErrorHandler (errors) {
 	return function handleError (res) {
-		var data = typeof res.data === 'object'? res.data : parseJSON(res.data);
+		var data = res.response ? res.response.data :
+			(typeof res.data === 'object'? res.data : parseJSON(res.data));
 
 		if (data && data.code) {
 			throwVirgilError(errors[data.code], {

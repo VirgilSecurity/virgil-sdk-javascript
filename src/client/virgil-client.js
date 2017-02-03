@@ -1,8 +1,11 @@
 var createReadCardsClient = require('../apis/cards-ro');
 var createCardsClient = require('../apis/cards');
 var createIdentityClient = require('../apis/identity');
+var createRAClient = require('../apis/ra');
 var Card = require('./card');
 var assert = require('../shared/utils').assert;
+var isString = require('../shared/utils').isString;
+var isEmpty = require('../shared/utils').isEmpty;
 var throwVirgilError = require('../shared/utils').throwVirgilError;
 
 /**
@@ -40,6 +43,7 @@ function createVirgilClient(accessToken, options) {
 	var cardsReadOnlyClient = createReadCardsClient(accessToken, options);
 	var cardsClient = createCardsClient(accessToken, options);
 	var identityClient = createIdentityClient(options);
+	var raClient = createRAClient(options);
 
 	var cardValidator = null;
 
@@ -81,7 +85,7 @@ function createVirgilClient(accessToken, options) {
 		},
 
 		/**
-		 * Publish a new Card to the Virgil PKI Services.
+		 * Publish a new Application Virgil Card in the Virgil PKI Services.
 		 *
 		 * @param {PublishCardRequest} request - Request object containing
 		 * 		the data required for publishing.
@@ -97,7 +101,7 @@ function createVirgilClient(accessToken, options) {
 		},
 
 		/**
-		 * Revoke the Virgil Card from Virgil PKI Services.
+		 * Revoke the Application Virgil Card in Virgil PKI Services.
 		 *
 		 * @param {RevokeCardRequest} request - Request object containing
 		 * 		the data required for revocation.
@@ -110,6 +114,56 @@ function createVirgilClient(accessToken, options) {
 				content_snapshot: requestData.content_snapshot,
 				meta: requestData.meta
 			});
+		},
+
+		/**
+		 * Publish a new Global Virgil Card in the Virgil PKI Services.
+		 *
+		 * @param {PublishCardRequest} request - Request object containing
+		 * 		the data required for publishing.
+		 * @param {string} validationToken - The card's identity validation
+		 * 		token returned by {@link VirgilClient#confirmIdentity} method.
+		 *
+		 * @returns {Promise.<Card>} A Promise that will be resolved with
+		 * 		the published card.
+		 * */
+		publishGlobalCard: function (request, validationToken) {
+			assert(isString(validationToken) && !isEmpty(validationToken),
+				'The "validationToken" must be a non-empty string.');
+
+			var requestBody = request.getRequestBody();
+			requestBody.meta.validation = {
+				token: validationToken
+			};
+
+			return raClient.publish(requestBody)
+				.then(responseToCard)
+				.then(function (card) {
+					validateCards(card);
+					return card;
+				});
+		},
+
+		/**
+		 * Revoke the Global Virgil Card in the Virgil PKI Services.
+		 *
+		 * @param {RevokeCardRequest} request - Request object containing
+		 * 		the data required for revocation.
+		 * @param {string} validationToken - The card's identity validation
+		 * 		token returned by {@link VirgilClient#confirmIdentity} method.
+		 *
+		 * @returns {Promise}
+		 * */
+		revokeGlobalCard: function (request, validationToken) {
+			assert(isString(validationToken) && !isEmpty(validationToken),
+				'The "validationToken" argument must be a non-empty string.');
+
+			var requestBody = request.getRequestBody();
+			requestBody.meta.validation = {
+				token: validationToken
+			};
+
+			return raClient.revoke(request.card_id, requestBody);
 		},
 
 		/**
@@ -225,7 +279,8 @@ function createVirgilClient(accessToken, options) {
 }
 
 function responseToCard (res) {
-	return Card.import(res);
+	var data = res.data || res;
+	return Card.import(data);
 }
 
 module.exports = createVirgilClient;

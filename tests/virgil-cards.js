@@ -1,296 +1,290 @@
 var test = require('tape');
 var virgilConfig = require('./helpers/virgil-config');
 var virgil = require('../');
+var mailinator = require('./helpers/mailinator');
 
-var appCardId = virgilConfig.appCardId;
-var appPrivateKey = virgil.crypto.importPrivateKey(
-	virgilConfig.appPrivateKey,
-	virgilConfig.appPrivateKeyPassword);
+var localCardIdentity = 'js_sdk_test_' + String(Math.random()).slice(2);
 
-var client = virgil.client(virgilConfig.accessToken, virgilConfig);
+var globalCardIdentity = 'js_sdk_test_' + String(Math.random()).slice(2) +
+	'@mailinator.com';
+var globalCardPrivateKey = 'MC4CAQAwBQYDK2VwBCIEII4ETcxRAM/zjJhY3bbijJw' +
+	'GZKx20EL1WvR/yvP4y2+x';
+var globalCardPublicKey = 'MCowBQYDK2VwAyEA0RFvefYOfVGfkiFGthdHQXoN1k/G' +
+	'wh6J9IDkPREQRro=';
 
-var alicePrivateKey, bobPrivateKey, aliceCardId, bobCardId;
+function setup() {
+	var appCardId = virgilConfig.appCardId;
+	var appPrivateKey = virgil.crypto.importPrivateKey(
+		virgilConfig.appPrivateKey,
+		virgilConfig.appPrivateKeyPassword);
 
-test('virgil cards flow', function testVerify (t) {
-	var createdCard;
+	var client = virgil.client(virgilConfig.accessToken, virgilConfig);
+	var globalCardKeys = {
+		privateKey: virgil.crypto.importPrivateKey(globalCardPrivateKey),
+		publicKey: virgil.crypto.importPublicKey(globalCardPublicKey)
+	};
+
+	return {
+		appCardId: appCardId,
+		appPrivateKey: appPrivateKey,
+		client: client,
+		globalCardKeys: globalCardKeys
+	};
+}
+
+// Application scope cards
+
+test('publish application virgil card', function (t) {
+	var fixture = setup();
+	var appCardId = fixture.appCardId;
+	var appPrivateKey = fixture.appPrivateKey;
+	var client = fixture.client;
+
 	var keyPair = virgil.crypto.generateKeys();
+	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
 
-	createCard()
-		.tap(assertPublishResponse)
-		.then(get)
-		.tap(assertGet)
-		.then(search)
-		.tap(assertSearch)
-		.then(searchGlobal)
-		.tap(assertSearchGlobal)
-		.then(revokeCard)
-		.tap(assertRevokeCard)
-		.catch(console.error);
+	var publishCardRequest = virgil.publishCardRequest({
+		identity: localCardIdentity,
+		identity_type: 'username',
+		scope: virgil.CardScope.APPLICATION,
+		public_key: rawPublicKey.toString('base64')
+	});
 
-	function createCard() {
-		var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
-		var username = 'testjssdk' + Math.random();
+	var requestSigner = virgil.requestSigner(virgil.crypto);
+	requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
+	requestSigner.authoritySign(publishCardRequest, appCardId, appPrivateKey);
 
-		var publishCardRequest = virgil.publishCardRequest({
-			identity: username,
-			identity_type: 'username',
-			public_key: rawPublicKey.toString('base64')
+	return client.publishCard(publishCardRequest)
+		.then(function (card) {
+			t.ok(card, 'Application card is published');
+			t.ok(Object.keys(card.signatures).length === 3,
+				'service signature appended');
+			t.end();
+		})
+		.catch(function (err) {
+			t.fail('Failed to publish application virgil card. ' +
+				err.message);
 		});
+});
 
-		var requestSigner = virgil.requestSigner(virgil.crypto);
-		requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
-		requestSigner.authoritySign(publishCardRequest, appCardId, appPrivateKey);
+test('search application virgil card', function (t) {
+	var fixture = setup();
+	var client = fixture.client;
 
-		return client.publishCard(publishCardRequest)
+	client.searchCards({
+		identities: [localCardIdentity],
+		identity_type: 'username'
+	}).then(function (cards) {
+		t.ok(cards.length > 0, 'Application card is found.');
+		t.ok(cards.every(function (card) {
+			return card.identity === localCardIdentity;
+		}), 'Fetched cards identities match the searched one.');
+		t.end();
+	});
+});
+
+test('get application card by id', function (t) {
+	var fixture = setup();
+	var client = fixture.client;
+
+	client.searchCards({
+		identities: [localCardIdentity]
+	}).then(function (cards) {
+		if (cards.length === 0) {
+			t.fail('Search for application card failed.');
+		}
+		var lastFound = cards[cards.length - 1];
+		var id = lastFound.id;
+		client.getCard(id)
 			.then(function (card) {
-				createdCard = card;
-				return card;
+				t.ok(card, 'Got card by id.');
+				t.equal(card.identity, localCardIdentity, 'Fetched card identity matches');
+				t.end();
+			})
+			.catch(function (err) {
+				t.fail(err.message);
 			});
-	}
+	});
+});
 
-	function assertPublishResponse (res) {
-		logResponse('client#publishCard', res);
-		t.ok(res, 'card is published');
-		t.ok(Object.keys(res.signatures).length === 3, 'service signature appended');
-	}
+test('revoke application card', function (t) {
+	var fixture = setup();
+	var appCardId = fixture.appCardId;
+	var appPrivateKey = fixture.appPrivateKey;
+	var client = fixture.client;
 
-	function get(card) {
-		return client.getCard(card.id);
-	}
+	client.searchCards({
+		identities: [localCardIdentity]
+	}).then(function (cards) {
+		if (cards.length === 0) {
+			t.fail('Search for application card failed.');
+		}
 
-	function assertGet(res) {
-		logResponse('client#getCard', res);
-		t.ok(res, 'returns single card');
-	}
+		var cardToRevoke = cards[cards.length - 1];
 
-	function search (card) {
-		return client.searchCards({
-			identities: [card.identity],
-			identity_type: card.identityType
-		});
-	}
-
-	function assertSearch (res) {
-		logResponse('client#searchCards', res);
-		t.ok(res.length > 0, 'card is found');
-	}
-
-	function searchGlobal () {
-		return client.searchCards({
-			identities: [ 'com.virgil-test.integration-tests' ],
-			identity_type: 'application',
-			scope: 'global'
-		});
-	}
-
-	function assertSearchGlobal (res) {
-		logResponse('client#searchCards (scope: "global")', res);
-		t.ok(res.length > 0, 'global cards found');
-	}
-
-	function revokeCard () {
 		var revokeRequest = virgil.revokeCardRequest({
-			card_id: createdCard.id,
-			revocation_reason: 'unspecified'
+			card_id: cardToRevoke.id,
+			revocation_reason: virgil.RevocationReason.UNSPECIFIED
 		});
 
 		var requestSigner = virgil.requestSigner(virgil.crypto);
 		requestSigner.authoritySign(revokeRequest, appCardId, appPrivateKey);
 
 		return client.revokeCard(revokeRequest);
-	}
-
-	function assertRevokeCard (res) {
-		logResponse('client#revokeCard', res);
+	}).then(function () {
+		t.pass('Application card revoked.');
 		t.end();
-	}
-});
-
-test('setup alice', function (t) {
-	var keyPair = virgil.crypto.generateKeys();
-	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
-	var username = 'alice_test_sdk';
-
-	var publishCardRequest = virgil.publishCardRequest({
-		identity: username,
-		identity_type: 'username',
-		public_key: rawPublicKey.toString('base64')
+	}).catch(function (err) {
+		t.fail('Failed to revoke application card. ' + err.message);
 	});
+});
 
-	var requestSigner = virgil.requestSigner(virgil.crypto);
-	requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
-	requestSigner.authoritySign(publishCardRequest, appCardId, appPrivateKey);
 
-	client.publishCard(publishCardRequest)
+// Global scope cards
+
+test('publish global virgil card', function (t) {
+	var fixture = setup();
+	var client = fixture.client;
+	var keyPair = fixture.globalCardKeys;
+
+	var identity = globalCardIdentity;
+	var identityType = virgil.IdentityType.EMAIL;
+
+	client.verifyIdentity(identity, identityType)
+		.then(function (actionId) {
+			return mailinator.getConfirmationCode(identity)
+				.then(function (code) {
+					return [actionId, code];
+				});
+		})
+		.spread(function (actionId, code) {
+			return client.confirmIdentity(actionId, code);
+		})
+		.then(function (validationToken) {
+			var rawPublicKey = virgil.crypto
+				.exportPublicKey(keyPair.publicKey);
+
+			var publishCardRequest = virgil.publishCardRequest({
+				identity: identity,
+				identity_type: identityType,
+				scope: virgil.CardScope.GLOBAL,
+				public_key: rawPublicKey.toString('base64')
+			});
+
+			var requestSigner = virgil.requestSigner(virgil.crypto);
+			requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
+
+			return client.publishGlobalCard(
+				publishCardRequest, validationToken);
+		})
 		.then(function (card) {
-			t.ok(card, 'Alice\'s card has been created');
-			alicePrivateKey = virgil.crypto.exportPrivateKey(keyPair.privateKey);
-			aliceCardId = card.id;
+			t.ok(card, 'Global card is published');
+			t.ok(Object.keys(card.signatures).length === 3,
+				'Virgil Cards and VRA signatures appended');
 			t.end();
-		}).catch(function (err) {
-			t.fail(err.message);
+		})
+		.catch(function (err) {
+			t.fail('Failed to publish global virgil card. ' +
+				err.message);
 		});
 });
 
-test('setup bob', function (t) {
-	var keyPair = virgil.crypto.generateKeys();
-	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
-	var username = 'bob_test_sdk';
+test('search global virgil card', function (t) {
+	var fixture = setup();
+	var client = fixture.client;
 
-	var publishCardRequest = virgil.publishCardRequest({
-		identity: username,
-		identity_type: 'username',
-		public_key: rawPublicKey.toString('base64')
+	client.searchCards({
+		identities: [globalCardIdentity],
+		identity_type: virgil.IdentityType.EMAIL,
+		scope: virgil.CardScope.GLOBAL
+	}).then(function (cards) {
+		t.ok(cards.length > 0, 'Global card is found.');
+		t.ok(cards.every(function (card) {
+			return card.identity === globalCardIdentity;
+		}), 'Fetched cards identities match the searched one.');
+		t.end();
 	});
-
-	var requestSigner = virgil.requestSigner(virgil.crypto);
-	requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
-	requestSigner.authoritySign(publishCardRequest, appCardId, appPrivateKey);
-
-	client.publishCard(publishCardRequest)
-		.then(function (card) {
-			t.ok(card, 'Bob\'s card has been created');
-			bobPrivateKey = virgil.crypto.exportPrivateKey(keyPair.privateKey);
-			bobCardId = card.id;
-			t.end();
-		}).catch(function (err) {
-			t.fail(err.message);
-		});
 });
 
-var messageToBob;
+test('get global virgil card by id', function (t) {
+	var fixture = setup();
+	var client = fixture.client;
 
-test('alice encrypt message for bob', function (t) {
+	client.searchCards({
+		identities: [globalCardIdentity],
+		scope: virgil.CardScope.GLOBAL
+	}).then(function (cards) {
+		if (cards.length === 0) {
+			t.fail('Search for global card failed.');
+		}
+		var lastFound = cards[cards.length - 1];
+		var id = lastFound.id;
+		client.getCard(id)
+			.then(function (card) {
+				t.ok(card, 'Got global card by id.');
+				t.equal(card.identity, globalCardIdentity, 'Fetched card identity matches');
+				t.end();
+			})
+			.catch(function (err) {
+				t.fail(err.message);
+			});
+	});
+});
 
-	findBob()
-		.tap(function assertBobIsFound(card) {
-			t.ok(card !== null, 'Bob\'s card was found.');
-		})
-		.then(encryptMessageForBob)
-		.tap(function assertMessageEncrypted(msg) {
-			t.ok(Buffer.isBuffer(msg), 'Encrypted message is a Buffer.');
-		})
-		.then(function (msg) {
-			messageToBob = msg;
-			t.end();
-		}).catch(function (err) {
-			t.fail(err.message);
-		});
+test('revoke global virgil card', function (t) {
+	var fixture = setup();
+	var client = fixture.client;
+	var keyPair = fixture.globalCardKeys;
 
-	function findBob() {
+	var identity = globalCardIdentity;
+	var identityType = virgil.IdentityType.EMAIL;
+
+	client.verifyIdentity(identity, identityType)
+	.then(function (actionId) {
+		return mailinator.getConfirmationCode(identity)
+			.then(function (code) {
+				return [actionId, code];
+			});
+	})
+	.spread(function (actionId, code) {
+		return client.confirmIdentity(actionId, code);
+	})
+	.then(function (validationToken) {
 		return client.searchCards({
-			identities: [ 'bob_test_sdk' ],
-			identity_type: 'username',
-			scope: 'application'
+			identities: [identity],
+			scope: virgil.CardScope.GLOBAL
 		}).then(function (cards) {
 			if (cards.length === 0) {
-				return null;
+				t.fail('Search for global card failed.');
 			}
 
-			cards.sort(function (a, b) {
-				return a.createdAt - b.createdAt;
-			});
-			return cards[cards.length - 1];
+			var cardToRevoke = cards[cards.length - 1];
+			return [cardToRevoke.id, validationToken];
 		});
-	}
-
-	function encryptMessageForBob(bobCard) {
-		var plainText = 'hello Bob! This is my secret message.';
-		var pubkey = virgil.crypto.importPublicKey(bobCard.publicKey);
-		var cipherText = virgil.crypto.encrypt(plainText, pubkey);
-		return cipherText;
-	}
-});
-
-test('bob decrypt', function (t) {
-	var privateKey = virgil.crypto.importPrivateKey(bobPrivateKey);
-	var plainText = virgil.crypto.decrypt(messageToBob, privateKey);
-	t.equal(plainText.toString('utf8'),
-		'hello Bob! This is my secret message.',
-		'decrypted and plain texts are the same.');
-	t.end();
-});
-
-var aliceSignature;
-test('alice sign', function (t) {
-	var privateKey = virgil.crypto.importPrivateKey(alicePrivateKey);
-	var signedData = 'Sign me, please';
-	aliceSignature = virgil.crypto.sign(signedData, privateKey);
-	t.ok(Buffer.isBuffer(aliceSignature), 'Signature returned as Buffer.');
-	t.end();
-});
-
-test('bob verify', function (t) {
-	findAlice()
-		.tap(function (card) {
-			t.ok(card !== null, 'Alice\'s card was found.');
-		})
-		.then(verifyAliceSignature)
-		.tap(function (isVerified) {
-			t.ok(isVerified, 'Data verified.');
-			t.end();
-		}).catch(function (err) {
-			t.fail(err.message);
+	})
+	.spread(function (cardId, validationToken) {
+		var revokeRequest = virgil.revokeCardRequest({
+			card_id: cardId,
+			revocation_reason: virgil.RevocationReason.UNSPECIFIED
 		});
 
-	function findAlice() {
-		return client.searchCards({
-			identities: [ 'alice_test_sdk' ],
-			identity_type: 'username',
-			scope: 'application'
-		}).then(function (cards) {
-			if (cards.length === 0) {
-				return null;
-			}
+		revokeRequest.appendSignature(
+			cardId,
+			virgil.crypto.sign(
+				virgil.crypto.calculateFingerprint(revokeRequest.getSnapshot()),
+				keyPair.privateKey)
+		);
 
-			cards.sort(function (a, b) {
-				return a.createdAt - b.createdAt;
-			});
-			return cards[cards.length - 1];
-		});
-	}
+		var requestSigner = virgil.requestSigner(virgil.crypto);
+		requestSigner.selfSign(revokeRequest, keyPair.privateKey);
 
-	function verifyAliceSignature(aliceCard) {
-		var pubkey = virgil.crypto.importPublicKey(aliceCard.publicKey);
-		var signedData = 'Sign me, please';
-		return virgil.crypto.verify(signedData, aliceSignature, pubkey);
-	}
-});
-
-test('cleanup alice', function (t) {
-	var cardRevokeRequest = virgil.revokeCardRequest({
-		card_id: aliceCardId
+		return client.revokeGlobalCard(revokeRequest, validationToken);
+	})
+	.then(function () {
+		t.pass('Global card revoked.');
+		t.end();
+	})
+	.catch(function (err) {
+		t.fail('Failed to revoke global card. ' + err.message);
 	});
-	var signer = virgil.requestSigner(virgil.crypto);
-
-	signer.authoritySign(cardRevokeRequest, appCardId, appPrivateKey);
-	client.revokeCard(cardRevokeRequest)
-		.then(function (res) {
-			t.ok(res, 'Card revoked');
-			t.end();
-		}).catch(function (err) {
-			t.fail(err.message);
-		});
 });
-
-test('cleanup bob', function (t) {
-	var cardRevokeRequest = virgil.revokeCardRequest({
-		card_id: bobCardId
-	});
-	var signer = virgil.requestSigner(virgil.crypto);
-
-	signer.authoritySign(cardRevokeRequest, appCardId, appPrivateKey);
-	client.revokeCard(cardRevokeRequest)
-		.then(function (res) {
-			t.ok(res, 'Card revoked');
-			t.end();
-		}).catch(function (err) {
-			t.fail(err.message);
-		});
-});
-
-function logResponse (label, res) {
-	console.log('\n%s:\n', label);
-	console.log(res);
-	console.log('\n');
-}
