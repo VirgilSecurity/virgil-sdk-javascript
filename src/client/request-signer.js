@@ -32,8 +32,10 @@ function requestSigner(crypto) {
 	 * */
 	function selfSign(request, privateKey) {
 		var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
-		var id = fingerprint.toString('hex');
-		request.appendSignature(id, crypto.sign(fingerprint, privateKey));
+		var signerId = request.card_id ?
+			request.card_id : fingerprint.toString('hex');
+
+		request.appendSignature(signerId, crypto.sign(fingerprint, privateKey));
 	}
 
 	/**
