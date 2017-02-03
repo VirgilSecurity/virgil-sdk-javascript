@@ -2,6 +2,7 @@
 
 var assign = require('lodash/assign');
 var mapValues = require('lodash/mapValues');
+var isEmpty = require('lodash/isEmpty');
 var VirgilError = require('../errors/virgil-error');
 
 function bufferToBase64 (buf) {
@@ -28,10 +29,6 @@ function stringToBase64(str) {
 
 function base64ToString(base64) {
 	return bufferToString(base64ToBuffer(base64));
-}
-
-function isEmpty(obj) {
-	return Object.keys(obj).length === 0;
 }
 
 function isString(obj) {
