@@ -241,6 +241,7 @@ test('revoke global virgil card', function (t) {
 	var identity = globalCardIdentity;
 	var identityType = virgil.IdentityType.EMAIL;
 
+	console.log('Verifying identity: ' + identity);
 	client.verifyIdentity(identity, identityType)
 	.tap(function (actionId) {
 		console.log('Action id: ' + actionId);
