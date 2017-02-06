@@ -246,6 +246,9 @@ test('revoke global virgil card', function (t) {
 	.tap(function (actionId) {
 		console.log('Action id: ' + actionId);
 	})
+	// add 10 second delay to give the service the time to deliver the
+	// confirmation message
+	.delay(10000)
 	.then(function (actionId) {
 		return mailinator.getConfirmationCode(identity)
 			.then(function (code) {
