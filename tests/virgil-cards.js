@@ -3,6 +3,8 @@ var virgilConfig = require('./helpers/virgil-config');
 var virgil = require('../');
 var mailinator = require('./helpers/mailinator');
 
+global.Promise = require('bluebird');
+
 var localCardIdentity = 'js_sdk_test_' + String(Math.random()).slice(2);
 
 var globalCardIdentity = 'js_sdk_test_' + String(Math.random()).slice(2) +
@@ -240,14 +242,23 @@ test('revoke global virgil card', function (t) {
 	var identityType = virgil.IdentityType.EMAIL;
 
 	client.verifyIdentity(identity, identityType)
+	.tap(function (actionId) {
+		console.log('Action id: ' + actionId);
+	})
 	.then(function (actionId) {
 		return mailinator.getConfirmationCode(identity)
 			.then(function (code) {
 				return [actionId, code];
 			});
 	})
+	.tap(function (arr) {
+		console.log('Confirmation code: ' + arr[1]);
+	})
 	.spread(function (actionId, code) {
 		return client.confirmIdentity(actionId, code);
+	})
+	.tap(function (validationToken) {
+		console.log('Validation token: ' + validationToken);
 	})
 	.then(function (validationToken) {
 		return client.searchCards({
@@ -267,13 +278,6 @@ test('revoke global virgil card', function (t) {
 			card_id: cardId,
 			revocation_reason: virgil.RevocationReason.UNSPECIFIED
 		});
-
-		revokeRequest.appendSignature(
-			cardId,
-			virgil.crypto.sign(
-				virgil.crypto.calculateFingerprint(revokeRequest.getSnapshot()),
-				keyPair.privateKey)
-		);
 
 		var requestSigner = virgil.requestSigner(virgil.crypto);
 		requestSigner.selfSign(revokeRequest, keyPair.privateKey);
