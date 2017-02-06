@@ -1,17 +1,19 @@
 var parseJSON = require('./parse-json');
-var throwVirgilError = require('./utils').throwVirgilError;
+var createError = require('./utils').createError;
 
 module.exports = function createErrorHandler (errors) {
-	return function handleError (res) {
-		var data = res.response ? res.response.data :
-			(typeof res.data === 'object'? res.data : parseJSON(res.data));
+	return function handleError (error) {
+		var data = error.response ? error.response.data : error.data;
+		if (typeof data === 'string') {
+			data = parseJSON(data);
+		}
 
 		if (data && data.code) {
-			throwVirgilError(errors[data.code], {
+			throw createError(errors[data.code], {
 				code: data.code
 			});
 		}
 
-		throw res;
+		throw error;
 	};
 };

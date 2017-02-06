@@ -6,7 +6,7 @@ var Card = require('./card');
 var assert = require('../shared/utils').assert;
 var isString = require('../shared/utils').isString;
 var isEmpty = require('../shared/utils').isEmpty;
-var throwVirgilError = require('../shared/utils').throwVirgilError;
+var createError = require('../shared/utils').createError;
 
 /**
  * @typedef {Object} SearchCriteria
@@ -177,8 +177,8 @@ function createVirgilClient(accessToken, options) {
 		 * @param {string} identity - The identity to verify (i.e. email
 		 * 		address).
 		 * @param {string} identityType - The type of identity to verify.
-		 * @param {Object} [extraFields] - Optional hash with custom
-		 * 		parameters that will be passed in confirmation message.
+		 * @param {Object.<string, string>} [extraFields] - Optional hash with
+		 * 		custom parameters that will be passed in confirmation message.
 		 * 		E.g. in a hidden form inside of the confirmation email
 		 * 		message in case of *email* identity type.
 		 *
@@ -186,12 +186,18 @@ function createVirgilClient(accessToken, options) {
 		 * 		the action id.
 		 * */
 		verifyIdentity: function (identity, identityType, extraFields) {
+			assert(isString(identity) && !isEmpty(identity),
+				'Identity to verify must be a non-empty string.');
+			assert(isString(identityType) && !isEmpty(identityType),
+				'Identity type to verify must be a non-empty string.');
+
+
 			return identityClient.verify({
 				type: identityType,
 				value: identity,
 				extra_fields: extraFields
-			}).then(function (data) {
-				return data.action_id;
+			}).then(function (res) {
+				return res.data.action_id;
 			});
 		},
 
@@ -215,12 +221,17 @@ function createVirgilClient(accessToken, options) {
 		 * 		the generated validation token.
 		 * */
 		confirmIdentity: function (actionId, code, tokenParams) {
+			assert(isString(actionId) && !isEmpty(actionId),
+				'Action id to confirm must be a non-empty string.');
+			assert(isString(code) && !isEmpty(code),
+				'Confirmation code must be a non-empty string.');
+
 			return identityClient.confirm({
 				action_id: actionId,
 				confirmation_code: code,
 				token: tokenParams
-			}).then(function (data) {
-				return data.validation_token;
+			}).then(function (res) {
+				return res.data.validation_token;
 			});
 		},
 
@@ -234,9 +245,16 @@ function createVirgilClient(accessToken, options) {
 		 * @param {string} identityType - The identity type.
 		 * @param {string} validationToken - The token to check.
 		 *
-		 * @returns {Promise.<boolean>}
+		 * @returns {Promise.<IdentityValidationResult>}
 		 * */
 		validateIdentity: function (identity, identityType, validationToken) {
+			assert(isString(identity) && !isEmpty(identity),
+				'Identity to validate must be a non-empty string.');
+			assert(isString(identityType) && !isEmpty(identityType),
+				'Identity type to validate must be a non-empty string.');
+			assert(isString(validationToken) && !isEmpty(validationToken),
+				'Validation token must be a non-empty string.');
+
 			return identityClient.validate({
 				type: identityType,
 				value: identity,
@@ -271,7 +289,7 @@ function createVirgilClient(accessToken, options) {
 		});
 
 		if (invalidCards.length) {
-			throwVirgilError('Card validation failed.', {
+			throw createError('Card validation failed.', {
 				invalidCards: invalidCards
 			});
 		}

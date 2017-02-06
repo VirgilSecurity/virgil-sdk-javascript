@@ -53,16 +53,17 @@ function isBuffer(obj) {
 
 function assert(condition, errorMessage) {
 	if (!condition) {
-		throwVirgilError(errorMessage);
+		throw createError(errorMessage);
 	}
 }
 
-function throwVirgilError(message, props) {
-	var error = new VirgilError('Virgil Error: ' + message);
+function createError(message, props) {
+	var error = new VirgilError(message);
 	if (isObject(props)) {
 		assign(error, props);
 	}
-	throw error;
+
+	return error;
 }
 
 function abstractMethod () {
@@ -71,7 +72,7 @@ function abstractMethod () {
 
 module.exports = {
 	assert: assert,
-	throwVirgilError: throwVirgilError,
+	createError: createError,
 	isEmpty: isEmpty,
 	isString: isString,
 	isNumber: isNumber,

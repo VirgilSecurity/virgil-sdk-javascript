@@ -3,6 +3,8 @@ var virgilConfig = require('./helpers/virgil-config');
 var mailinator = require('./helpers/mailinator');
 var virgil = require('../');
 
+global.Promise = require('bluebird');
+
 var username = 'testjssdk' + Math.random();
 
 function setup () {
@@ -53,12 +55,13 @@ test('identity verify flow', function testVerify (t) {
 	}
 
 	function assertTokenValidation (res) {
-		t.ok(res, 'token is valid');
+		t.ok(res.isValid, 'token is valid');
+		t.ok(res.error === null, 'error is null');
 		t.end();
 	}
 });
 
-test('identity server error', function test (t) {
+test('identity verification error', function test (t) {
 	var client = setup();
 
 	var identity = username + "@mailinator.com";
@@ -67,6 +70,23 @@ test('identity server error', function test (t) {
 	client.verifyIdentity(identity, identityType)
 		.catch(function (e) {
 			t.equal(e.code, 40100, 'error code match');
+			t.end();
+		});
+});
+
+test('identity validation error', function (t) {
+	var client = setup();
+
+	var identity = 'valid_identity@mailinator.com';
+	var identityType = virgil.IdentityType.EMAIL;
+	var validationToken = 'fake_token';
+
+	client.validateIdentity(identity, identityType, validationToken)
+		.then(function (data) {
+			t.notOk(data.isValid, 'identity should not be valid');
+			t.ok(typeof data.error === 'string',
+				'error reason should be defined');
+			console.log(data.error);
 			t.end();
 		});
 });
