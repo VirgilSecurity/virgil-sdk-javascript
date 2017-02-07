@@ -1,8 +1,7 @@
 var test = require('tape');
 
 var CardScope = require('../../src/client/card-scope');
-var createSignableRequest = require('../../src/client/signable-request').createSignableRequest;
-var importSignableRequest = require('../../src/client/signable-request').importSignableRequest;
+var SignableRequest = require('../../src/client/signable-request');
 
 function setup() {
 	var pubkey = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlHYk1CUUdCeXFHU000' +
@@ -26,7 +25,7 @@ function setup() {
 		}
 	};
 
-	var request = createSignableRequest(parameters);
+	var request = SignableRequest.create(parameters);
 
 	return {
 		parameters: parameters,
@@ -148,7 +147,7 @@ test('import signable request', function (t) {
 
 	request.appendSignature(expectedSignerId, expectedSignature);
 
-	var importedRequest = importSignableRequest(request.export());
+	var importedRequest = SignableRequest.import(request.export());
 	t.ok(importedRequest, 'Signable request imported.');
 
 	t.equal(importedRequest.identity, parameters.identity,

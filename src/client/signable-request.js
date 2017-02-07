@@ -4,6 +4,14 @@
  *
  * */
 
+/**
+ * @typedef {Object} SignedRequestBody
+ * @property {string} data.content_snapshot - The request's content snapshot.
+ * @property {Object} data.meta - The request's metadata.
+ * @property {Object.<string, string>} data.meta.signs - The request's
+ * 		signatures.
+ * */
+
 'use strict';
 
 var utils = require('../shared/utils');
@@ -69,7 +77,7 @@ SignableRequest.prototype.getSignature = function (signerId) {
 /**
  * Returns serializable representation of the request.
  *
- * @returns {Object}
+ * @returns {SignedRequestBody}
  * */
 SignableRequest.prototype.getRequestBody = function () {
 	var privateFields = privateData.get(this);
@@ -95,25 +103,23 @@ SignableRequest.prototype.export = function () {
 /**
  * Creates a new request instance with the given parameters.
  *
- * @private
- * returns {SignableRequest} - The newly created request.
+ * @returns {SignableRequest} - The newly created request.
  * */
-function createSignableRequest (params) {
+SignableRequest.create = function createSignableRequest (params) {
 	var json = JSON.stringify(params);
 	var snapshot = utils.stringToBuffer(json);
 	var signatures = Object.create(null);
 
 	return new SignableRequest(snapshot, signatures, params);
-}
+};
 
 /**
  * Creates a new request instance from the previously exported request.
  * The new request has the exact same snapshot as the exported one.
  *
- * @private
  * returns {SignableRequest} - The imported request.
  * */
-function importSignableRequest (exportedRequest) {
+SignableRequest.import = function importSignableRequest (exportedRequest) {
 	var requestJSON = utils.base64ToString(exportedRequest);
 	var requestModel = JSON.parse(requestJSON);
 	var snapshot = utils.base64ToBuffer(requestModel.content_snapshot);
@@ -121,9 +127,6 @@ function importSignableRequest (exportedRequest) {
 	var params = JSON.parse(snapshot.toString('utf8'));
 
 	return new SignableRequest(snapshot, signatures, params);
-}
-
-module.exports = {
-	createSignableRequest: createSignableRequest,
-	importSignableRequest: importSignableRequest
 };
+
+module.exports = SignableRequest;
