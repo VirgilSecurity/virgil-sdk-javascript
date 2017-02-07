@@ -4,3 +4,4 @@ require('./revoke-card-request');
 require('./request-signer');
 require('./card');
 require('./card-validator');
+require('./identity-client');

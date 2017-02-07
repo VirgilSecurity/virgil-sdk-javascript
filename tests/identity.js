@@ -86,7 +86,6 @@ test('identity validation error', function (t) {
 			t.notOk(data.isValid, 'identity should not be valid');
 			t.ok(typeof data.error === 'string',
 				'error reason should be defined');
-			console.log(data.error);
 			t.end();
 		});
 });
