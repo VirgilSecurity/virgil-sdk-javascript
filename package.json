@@ -30,7 +30,6 @@
   ],
   "license": "BSD-3-Clause",
   "dependencies": {
-    "apiapi": "^1.7.1",
     "axios": "^0.15.3",
     "lodash": "^4.17.4",
     "virgil-crypto": "^2.0.1"

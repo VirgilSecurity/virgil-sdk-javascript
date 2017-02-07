@@ -3,10 +3,14 @@ var createCardsClient = require('../apis/cards');
 var createIdentityClient = require('../apis/identity');
 var createRAClient = require('../apis/ra');
 var Card = require('./card');
-var assert = require('../shared/utils').assert;
-var isString = require('../shared/utils').isString;
-var isEmpty = require('../shared/utils').isEmpty;
-var createError = require('../shared/utils').createError;
+var CardScope = require('./card-scope');
+var utils = require('../shared/utils');
+var assert = utils.assert;
+var isString = utils.isString;
+var isEmpty = utils.isEmpty;
+var isObject = utils.isObject;
+var isFunction = utils.isFunction;
+var createError = utils.createError;
 
 /**
  * @typedef {Object} SearchCriteria
@@ -37,7 +41,10 @@ var createError = require('../shared/utils').createError;
  * @constructs VirgilClient
  * */
 function createVirgilClient(accessToken, options) {
-	assert(Boolean(accessToken), 'Access token is required.');
+	assert(isString(accessToken) && !isEmpty(accessToken),
+		'createVirgilClient expects access token to be passed as a ' +
+		'string. Got ' + typeof  accessToken);
+
 	options = options || {};
 
 	var cardsReadOnlyClient = createReadCardsClient(accessToken, options);
@@ -56,7 +63,11 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise.<Card>}
 		 * */
 		getCard: function (cardId) {
-			return cardsReadOnlyClient.get({ card_id: cardId })
+			assert(isString(cardId) && !isEmpty(cardId),
+				'getCard expects card id to be passed as a string. Got ' +
+				typeof cardId);
+
+			return cardsReadOnlyClient.get(cardId)
 				.then(responseToCard)
 				.then(function (card) {
 					validateCards(card);
@@ -65,18 +76,33 @@ function createVirgilClient(accessToken, options) {
 		},
 
 		/**
-		 * Search cards by identity.
+		 * Search cards by search criteria or a single identity.
 		 *
-		 * @param {SearchCriteria} criteria
+		 * @param {(SearchCriteria|string)} criteria - The search criteria.
+		 * 		If criteria is a string, represents a single identity to
+		 * 		search for in the 'application' scope.
 		 * @returns {Promise.<Card[]>}
 		 * */
 		searchCards: function (criteria) {
-			criteria = criteria || {};
-			criteria.scope = criteria.scope || 'application';
+			assert(isObject(criteria) || isString(criteria),
+				'searchCards expects search criteria to be passed as an object ' +
+				'or a string. Got ' + typeof criteria);
+
+			assert(!isEmpty(criteria),
+				'searchCards expects search criteria to not be empty.');
+
+			if (isString(criteria)) {
+				criteria = {
+					identities: [criteria],
+					scope: CardScope.APPLICATION
+				};
+			}
+
+			criteria.scope = criteria.scope || CardScope.APPLICATION;
 
 			return cardsReadOnlyClient.search(criteria)
-				.then(function (results) {
-					return results.map(responseToCard);
+				.then(function (response) {
+					return response.data.map(Card.import);
 				})
 				.then(function (cards) {
 					validateCards(cards);
@@ -92,6 +118,10 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise.<Card>} The published card.
 		 * */
 		publishCard: function (request) {
+			assert(isObject(request),
+				'publishCard expects a request to be passed as an object. ' +
+				'Got ' + typeof request);
+
 			return cardsClient.publish(request.getRequestBody())
 				.then(responseToCard)
 				.then(function (card) {
@@ -108,12 +138,12 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise}
 		 * */
 		revokeCard: function (request) {
-			var requestData = request.getRequestBody();
-			return cardsClient.revoke({
-				card_id: request.card_id,
-				content_snapshot: requestData.content_snapshot,
-				meta: requestData.meta
-			});
+			assert(isObject(request),
+				'revokeCard expects a request to be passed as an object. ' +
+				'Got ' + typeof request);
+
+			return cardsClient
+				.revoke(request.card_id, request.getRequestBody());
 		},
 
 		/**
@@ -128,8 +158,13 @@ function createVirgilClient(accessToken, options) {
 		 * 		the published card.
 		 * */
 		publishGlobalCard: function (request, validationToken) {
+			assert(isObject(request),
+				'publishGlobalCard expects a request to be passed as an ' +
+				'object. Got ' + typeof request);
+
 			assert(isString(validationToken) && !isEmpty(validationToken),
-				'The "validationToken" must be a non-empty string.');
+				'publishGlobalCard expects a validationToken to be passed ' +
+				'as a string. Got ' + typeof validationToken);
 
 			var requestBody = request.getRequestBody();
 			requestBody.meta.validation = {
@@ -155,8 +190,13 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise}
 		 * */
 		revokeGlobalCard: function (request, validationToken) {
+			assert(isObject(request),
+				'revokeGlobalCard expects a request to be passed as an ' +
+				'object. Got ' + typeof request);
+
 			assert(isString(validationToken) && !isEmpty(validationToken),
-				'The "validationToken" argument must be a non-empty string.');
+				'revokeGlobalCard expects a validationToken to be passed ' +
+				'as a string. Got ' + typeof validationToken);
 
 			var requestBody = request.getRequestBody();
 			requestBody.meta.validation = {
@@ -187,9 +227,12 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		verifyIdentity: function (identity, identityType, extraFields) {
 			assert(isString(identity) && !isEmpty(identity),
-				'Identity to verify must be a non-empty string.');
+				'verifyIdentity expects an identity to be passed as a ' +
+				'string. Got ' + typeof  identity);
+
 			assert(isString(identityType) && !isEmpty(identityType),
-				'Identity type to verify must be a non-empty string.');
+				'verifyIdentity expects an identity type to be passed as a ' +
+				'string. Got ' + typeof  identityType);
 
 
 			return identityClient.verify({
@@ -222,9 +265,11 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		confirmIdentity: function (actionId, code, tokenParams) {
 			assert(isString(actionId) && !isEmpty(actionId),
-				'Action id to confirm must be a non-empty string.');
+				'confirmIdentity expects action id to be passed as a ' +
+				'string. Got ' + typeof  actionId);
 			assert(isString(code) && !isEmpty(code),
-				'Confirmation code must be a non-empty string.');
+				'confirmIdentity expects confirmation code to be passed as ' +
+				'a string. Got ' + typeof  code);
 
 			return identityClient.confirm({
 				action_id: actionId,
@@ -249,11 +294,16 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		validateIdentity: function (identity, identityType, validationToken) {
 			assert(isString(identity) && !isEmpty(identity),
-				'Identity to validate must be a non-empty string.');
+				'validateIdentity expects an identity to be passed as a ' +
+				'string. Got ' + typeof identity);
+
 			assert(isString(identityType) && !isEmpty(identityType),
-				'Identity type to validate must be a non-empty string.');
+				'validateIdentity expects an identity type to be passed as a ' +
+				'string. Got ' + typeof  identityType);
+
 			assert(isString(validationToken) && !isEmpty(validationToken),
-				'Validation token must be a non-empty string.');
+				'validateIdentity expects a validation token to be passed as ' +
+				'a string. Got ' + typeof  validationToken);
 
 			return identityClient.validate({
 				type: identityType,
@@ -268,7 +318,14 @@ function createVirgilClient(accessToken, options) {
 		 * @param {Object} validator - The validator object
 		 * */
 		setCardValidator: function (validator) {
-			assert(Boolean(validator), 'Argument "validator" is required');
+			assert(isObject(validator),
+				'setCardValidator expects a validator to be passed as an ' +
+				'object. Got ' + typeof validator);
+
+			assert(isFunction(validator.validate),
+				'setCardValidator expects the "validate" method to be ' +
+				'defined on the validator object.');
+
 			cardValidator = validator;
 		}
 	};
@@ -297,8 +354,7 @@ function createVirgilClient(accessToken, options) {
 }
 
 function responseToCard (res) {
-	var data = res.data || res;
-	return Card.import(data);
+	return Card.import(res.data);
 }
 
 module.exports = createVirgilClient;

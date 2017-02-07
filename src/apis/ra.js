@@ -2,9 +2,11 @@
 
 var axios = require('axios');
 var errors = require('./ra-errors');
-var errorHandler = require('../shared/error-handler')(errors);
+var handleError = require('../shared/error-handler')(errors);
 
 module.exports = function createRegistrationAuthorityClient (options) {
+	options = typeof options === 'object' ? options : {};
+
 	var baseURL = options.registrationAuthorityBaseUrl ||
 		'https://ra.virgilsecurity.com/v1';
 
@@ -13,8 +15,18 @@ module.exports = function createRegistrationAuthorityClient (options) {
 	});
 
 	return {
+		/**
+		 * Publish a new Global Virgil Card in the Virgil PKI Services.
+		 *
+		 * @param {SignedRequestBody} data - The card's data.
+		 * @param {string} validationToken - The card's identity validation
+		 * 		token returned by {@link VirgilClient#confirmIdentity} method.
+		 *
+		 * @returns {Promise.<Card>} A Promise that will be resolved with
+		 * 		the published card.
+		 * */
 		publish: function publish (data) {
-			return client.post('/card', data).catch(errorHandler);
+			return client.post('/card', data).catch(handleError);
 		},
 
 		revoke: function revoke (cardId, data) {
@@ -28,7 +40,7 @@ module.exports = function createRegistrationAuthorityClient (options) {
 						'Content-Type': 'application/json;charset=utf-8'
 					}
 				})
-				.catch(errorHandler);
+				.catch(handleError);
 		}
 	};
 };

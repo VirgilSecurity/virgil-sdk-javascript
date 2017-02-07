@@ -89,9 +89,7 @@ test('get application card by id', function (t) {
 	var fixture = setup();
 	var client = fixture.client;
 
-	client.searchCards({
-		identities: [localCardIdentity]
-	}).then(function (cards) {
+	client.searchCards(localCardIdentity).then(function (cards) {
 		if (cards.length === 0) {
 			t.fail('Search for application card failed.');
 		}
@@ -241,11 +239,7 @@ test('revoke global virgil card', function (t) {
 	var identity = globalCardIdentity;
 	var identityType = virgil.IdentityType.EMAIL;
 
-	console.log('Verifying identity: ' + identity);
 	client.verifyIdentity(identity, identityType)
-	.tap(function (actionId) {
-		console.log('Action id: ' + actionId);
-	})
 	// add 10 second delay to give the service the time to deliver the
 	// confirmation message
 	.delay(10000)
@@ -255,14 +249,8 @@ test('revoke global virgil card', function (t) {
 				return [actionId, code];
 			});
 	})
-	.tap(function (arr) {
-		console.log('Confirmation code: ' + arr[1]);
-	})
 	.spread(function (actionId, code) {
 		return client.confirmIdentity(actionId, code);
-	})
-	.tap(function (validationToken) {
-		console.log('Validation token: ' + validationToken);
 	})
 	.then(function (validationToken) {
 		return client.searchCards({

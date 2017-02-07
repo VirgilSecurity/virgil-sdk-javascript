@@ -13,7 +13,7 @@ var handleError = require('../shared/error-handler')(errors);
  * */
 
 /**
- * @typedef {Object} HTTPServerResponse
+ * @typedef {Object} HTTPResponse
  * @property {any} data - Response data provided by server.
  * @property {number} status - HTTP status code from the response.
  * @property {string} statusText - Textual HTTP status message from the
@@ -42,7 +42,7 @@ module.exports = function createIdentityClient (options) {
 		 * 		hash with custom parameters that will be passed in
 		 * 		confirmation message.
 		 *
-		 * @returns {Promise.<HTTPServerResponse>}
+		 * @returns {Promise.<HTTPResponse>}
 		 * */
 		verify: function (data) {
 			return client.post('/verify', data).catch(handleError);
@@ -64,7 +64,7 @@ module.exports = function createIdentityClient (options) {
 		 * @param {number} [data.token.count_to_live=1] - Number of times
 		 * 		the generated token can be used. Default is 1.
 		 *
-		 * @returns {Promise.<HTTPServerResponse>}
+		 * @returns {Promise.<HTTPResponse>}
 		 * */
 		confirm: function (data) {
 			return client.post('/confirm', data).catch(handleError);
