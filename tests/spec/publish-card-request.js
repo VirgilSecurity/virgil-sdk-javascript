@@ -79,6 +79,17 @@ test('publish request parameters validation', function (t) {
 		return publishCardRequest(parameters);
 	}
 
+	function tryCreateWithGloblaScopeAndNoValidationToken () {
+		var parameters = {
+			identity: 'username@example.com',
+			identity_type: 'username',
+			scope: CardScope.GLOBAL,
+			public_key: 'xxx'
+		};
+
+		return publishCardRequest(parameters);
+	}
+
 	t.throws(tryCreateWithoutIdentity, VirgilError,
 		'throws when not passed an identity');
 	t.throws(tryCreateWithoutIdentityType, VirgilError,
@@ -89,8 +100,12 @@ test('publish request parameters validation', function (t) {
 		'throws when passed an invalid scope');
 	t.throws(tryCreateWithEmptyIdentity, VirgilError,
 		'throws when passed an empty identity');
+	t.throws(tryCreateWithEmptyIdentityType, VirgilError,
+		'throws when passed an empty identity type');
 	t.throws(tryCreateWithEmptyPublicKey, VirgilError,
 		'throws when passed an empty public key');
+	t.throws(tryCreateWithGloblaScopeAndNoValidationToken, VirgilError,
+		'throws when passed "global" scope an no validation token');
 	t.end();
 });
 

@@ -53,6 +53,15 @@ test('create signable request', function (t) {
 	t.end();
 });
 
+test('create signable request with validation token', function (t) {
+	var fixture = setup();
+	var token = 'the_validation_token';
+
+	var request = SignableRequest.create(fixture.parameters, token);
+	t.equal(request.getValidationToken(), token, 'Validation token is set');
+	t.end();
+});
+
 test('get singable request snapshot', function (t) {
 	var fixture = setup();
 
@@ -92,7 +101,17 @@ test('sign request and get signature', function (t) {
 	t.end();
 });
 
-test('get signable request body', function (t) {
+test('set validation token', function (t) {
+	var fixture = setup();
+	var token = 'the_validation_token';
+
+	var request = SignableRequest.create(fixture.parameters);
+	request.setValidationToken(token);
+	t.equal(request.getValidationToken(), token, 'Validation token is set');
+	t.end();
+});
+
+test('get request body', function (t) {
 	var fixture = setup();
 
 	var request = fixture.request;
@@ -114,6 +133,20 @@ test('get signable request body', function (t) {
 	t.deepEqual(requestBody, expectedBody, 'Returns response body correctly');
 	t.end();
 
+});
+
+test('get request body with validation token', function (t) {
+	var fixture = setup();
+	var token = 'the_validation_token';
+	var expectedMeta = {
+		signs: {},
+		validation: { token: token }
+	};
+
+	var request = SignableRequest.create(fixture.parameters, token);
+	var requestBody = request.getRequestBody();
+	t.deepEqual(requestBody.meta, expectedMeta, 'Validation token is set');
+	t.end();
 });
 
 test('export signable request', function (t) {
@@ -164,5 +197,18 @@ test('import signable request', function (t) {
 	t.ok(importedRequest
 		.getSignature(expectedSignerId)
 		.equals(expectedSignature), 'Signature does not change after import');
+	t.end();
+});
+
+test('import request with validation token', function (t) {
+	var fixture = setup();
+	var token = 'the_validation_token';
+	var parameters = fixture.parameters;
+	var request = SignableRequest.create(parameters, token);
+
+	var importedRequest = SignableRequest.import(request.export());
+	t.ok(importedRequest, 'Signable request with token exported');
+	t.equal(importedRequest.getValidationToken(), token,
+		'Validation token imported correctly');
 	t.end();
 });

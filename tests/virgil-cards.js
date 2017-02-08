@@ -169,13 +169,12 @@ test('publish global virgil card', function (t) {
 				identity_type: identityType,
 				scope: virgil.CardScope.GLOBAL,
 				public_key: rawPublicKey.toString('base64')
-			});
+			}, validationToken);
 
 			var requestSigner = virgil.requestSigner(virgil.crypto);
 			requestSigner.selfSign(publishCardRequest, keyPair.privateKey);
 
-			return client.publishGlobalCard(
-				publishCardRequest, validationToken);
+			return client.publishGlobalCard(publishCardRequest);
 		})
 		.then(function (card) {
 			t.ok(card, 'Global card is published');
@@ -269,12 +268,12 @@ test('revoke global virgil card', function (t) {
 		var revokeRequest = virgil.revokeCardRequest({
 			card_id: cardId,
 			revocation_reason: virgil.RevocationReason.UNSPECIFIED
-		});
+		}, validationToken);
 
 		var requestSigner = virgil.requestSigner(virgil.crypto);
 		requestSigner.selfSign(revokeRequest, keyPair.privateKey);
 
-		return client.revokeGlobalCard(revokeRequest, validationToken);
+		return client.revokeGlobalCard(revokeRequest);
 	})
 	.then(function () {
 		t.pass('Global card revoked.');

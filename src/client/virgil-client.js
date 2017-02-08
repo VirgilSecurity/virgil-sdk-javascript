@@ -151,25 +151,16 @@ function createVirgilClient(accessToken, options) {
 		 *
 		 * @param {PublishCardRequest} request - Request object containing
 		 * 		the data required for publishing.
-		 * @param {string} validationToken - The card's identity validation
-		 * 		token returned by {@link VirgilClient#confirmIdentity} method.
 		 *
 		 * @returns {Promise.<Card>} A Promise that will be resolved with
 		 * 		the published card.
 		 * */
-		publishGlobalCard: function (request, validationToken) {
+		publishGlobalCard: function (request) {
 			assert(isObject(request),
 				'publishGlobalCard expects a request to be passed as an ' +
 				'object. Got ' + typeof request);
 
-			assert(isString(validationToken) && !isEmpty(validationToken),
-				'publishGlobalCard expects a validationToken to be passed ' +
-				'as a string. Got ' + typeof validationToken);
-
 			var requestBody = request.getRequestBody();
-			requestBody.meta.validation = {
-				token: validationToken
-			};
 
 			return raClient.publish(requestBody)
 				.then(responseToCard)
@@ -184,24 +175,15 @@ function createVirgilClient(accessToken, options) {
 		 *
 		 * @param {RevokeCardRequest} request - Request object containing
 		 * 		the data required for revocation.
-		 * @param {string} validationToken - The card's identity validation
-		 * 		token returned by {@link VirgilClient#confirmIdentity} method.
 		 *
 		 * @returns {Promise}
 		 * */
-		revokeGlobalCard: function (request, validationToken) {
+		revokeGlobalCard: function (request) {
 			assert(isObject(request),
 				'revokeGlobalCard expects a request to be passed as an ' +
 				'object. Got ' + typeof request);
 
-			assert(isString(validationToken) && !isEmpty(validationToken),
-				'revokeGlobalCard expects a validationToken to be passed ' +
-				'as a string. Got ' + typeof validationToken);
-
 			var requestBody = request.getRequestBody();
-			requestBody.meta.validation = {
-				token: validationToken
-			};
 
 			return raClient.revoke(request.card_id, requestBody);
 		},

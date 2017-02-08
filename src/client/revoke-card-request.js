@@ -41,9 +41,11 @@ var RevocationReason = require('./card-revocation-reason');
  *
  * @param {(RevokeCardRequestParameters|string)} params - Request parameters
  * 		object or the card id as a string.
+ * @param {string} [validationToken] - Optional card's identity validation
+ * 		token. Required when revoking cards with 'global' scope.
  * @returns {RevokeCardRequest}
  * */
-function revokeCardRequest(params) {
+function revokeCardRequest(params, validationToken) {
 	assert(isObject(params) || isString(params),
 		'revokeCardRequest expects request params to be passed as an object ' +
 		'or a string. Got ' + typeof params);
@@ -70,7 +72,7 @@ function revokeCardRequest(params) {
 	return /** @type {RevokeCardRequest} */ SignableRequest.create({
 		card_id: card_id,
 		revocation_reason: revocation_reason
-	});
+	}, validationToken);
 }
 
 /**

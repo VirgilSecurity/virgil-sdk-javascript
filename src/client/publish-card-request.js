@@ -65,9 +65,11 @@ var CardScope = require('./card-scope');
  * Creates and initializes a request to create Card.
  *
  * @param {PublishCardRequestParams} params - Request parameters.
+ * @param {string} [validationToken] - Optional card's identity validation
+ *		token. Required when publishing cards with 'global' scope.
  * @returns {PublishCardRequest}
  * */
-function publishCardRequest (params) {
+function publishCardRequest (params, validationToken) {
 	assert(isObject(params),
 		'publishCardRequest expects request params to be passed as an ' +
 		'object. Got ' + typeof params);
@@ -92,6 +94,12 @@ function publishCardRequest (params) {
 		'publishCardRequest expects scope parameter to be either "global" ' +
 		'or "application".');
 
+	if (scope === CardScope.GLOBAL) {
+		assert(isString(validationToken) && !isEmpty(validationToken),
+			'publishCardRequest expects validation token to be passed if the ' +
+			'scope parameter is "global"');
+	}
+
 	var requestData = {
 		identity: identity,
 		identity_type: identity_type,
@@ -101,7 +109,8 @@ function publishCardRequest (params) {
 		data: data
 	};
 
-	return /** @type {PublishCardRequest} */ SignableRequest.create(requestData);
+	return /** @type {PublishCardRequest} */ SignableRequest.create(
+		requestData, validationToken);
 }
 
 /**
