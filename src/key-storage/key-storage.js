@@ -1,33 +1,43 @@
-'use strict';
-
-var abstractMethod = require('../shared/utils').abstractMethod;
-
 /**
- *	Interface for cryptographic keys storage containers.
- * */
-function KeyStorage () {}
+ * Interface for classes that represent a cryptographic keys storage
+ * containers.
+ *
+ * @interface KeyStorage
+ */
 
 /**
  * Persists the private key encrypted with password under a name.
- * @param {PrivateKeyHandle} key Key to store.
- * @param {string} name Name of key.
- * @param {string} password Password to use for encryption.
+ *
+ * @function
+ * @name KeyStorage#store
+ * @param {string} name - Name of key.
+ * @param {CryptoKeyHandle} privateKey - Key to store.
+ * @param {string} password - Password to use for encryption.
+ *
+ * @returns {Promise} - A Promise that will be resolved when the key
+ * has been persisted.
  * */
-KeyStorage.prototype.save = abstractMethod;
 
 /**
- * Gets the private key stored under name decrypting it with password.
+ * Gets the private key stored under name decrypting it using the
+ * password.
+ *
+ * @function
+ * @name KeyStorage#load
  * @param {string} name Name of key.
  * @param {string} password Password to use for decryption.
- * @return {PrivateKeyHandle} The stored key.
+ *
+ * @return {Promise.<CryptoKeyHandle>} Promise that will be resolved
+ * with the stored key.
  * */
-KeyStorage.prototype.load = abstractMethod;
 
 /**
  * Removes the private key stored under name from persistent storage.
+ *
+ * @function
+ * @name KeyStorage#remove
  * @param {string} name Name of key to remove.
+ *
+ * @returns {Promise} - A Promise that will be resolved when the key
+ * has been removed.
  * */
-KeyStorage.prototype.remove = abstractMethod;
-
-module.exports = KeyStorage;
-

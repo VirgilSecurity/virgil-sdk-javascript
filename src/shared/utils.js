@@ -3,6 +3,7 @@
 var assign = require('lodash/assign');
 var mapValues = require('lodash/mapValues');
 var isEmpty = require('lodash/isEmpty');
+var isArrayBuffer = require('lodash/isArrayBuffer');
 var VirgilError = require('../errors/virgil-error');
 
 function bufferToBase64 (buf) {
@@ -43,7 +44,7 @@ function isNumber(obj) {
 	return typeof obj === 'number';
 }
 
-function isObject (obj) {
+function isObject(obj) {
 	return typeof obj === 'object';
 }
 
@@ -70,6 +71,10 @@ function abstractMethod () {
 	throw new Error('This method should be overridden by derived class.');
 }
 
+function arrayBufferToBuffer(arrayBuf) {
+	return new Buffer(new Uint8Array(arrayBuf));
+}
+
 module.exports = {
 	assert: assert,
 	createError: createError,
@@ -79,6 +84,7 @@ module.exports = {
 	isFunction: isFunction,
 	isObject: isObject,
 	isBuffer: isBuffer,
+	isArrayBuffer: isArrayBuffer,
 	assign: assign,
 	mapValues: mapValues,
 	abstractMethod: abstractMethod,
@@ -87,5 +93,6 @@ module.exports = {
 	bufferToString: bufferToString,
 	bufferToBase64: bufferToBase64,
 	base64ToString: base64ToString,
-	stringToBase64: stringToBase64
+	stringToBase64: stringToBase64,
+	arrayBufferToBuffer: arrayBufferToBuffer
 };

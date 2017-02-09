@@ -12,7 +12,11 @@
     "url": "https://github.com/VirgilSecurity/virgil-sdk-javascript"
   },
   "main": "index.js",
-  "browser": "dist/virgil-sdk.min.js",
+  "browser": {
+    "./": "./dist/virgil-sdk.dev.js",
+    "./src/key-storage/adapters/file-system-storage.js": "./src/key-storage/adapters/browser-storage.js",
+    "./tests/spec/node/file-system-storage.js": "./tests/spec/browser/local-storage.js"
+  },
   "scripts": {
     "test": "tape -r dotenv/config tests dotenv_config_path=tests/.env",
     "build": "gulp build --development && gulp build --production"
@@ -31,8 +35,11 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "axios": "^0.15.3",
+    "localforage": "^1.4.3",
     "lodash": "^4.17.4",
-    "virgil-crypto": "^2.0.1"
+    "mkdirp": "^0.5.1",
+    "virgil-crypto": "^2.0.1",
+    "to-arraybuffer": "^1.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
@@ -40,7 +47,6 @@
     "babel-plugin-transform-runtime": "^6.22.0",
     "babel-preset-es2015": "^6.22.0",
     "bluebird": "^3.4.6",
-    "bowser": "^1.0.0",
     "del": "^1.2.1",
     "dotenv": "^4.0.0",
     "faucet": "0.0.1",
@@ -49,8 +55,8 @@
     "gulp-notify": "^2.2.0",
     "gulp-plumber": "^1.0.1",
     "mailinator": "^1.0.2",
-    "operative": "^0.4.4",
     "raw-loader": "^0.5.1",
+    "rimraf": "^2.5.4",
     "script-loader": "^0.6.1",
     "sinon": "^1.17.7",
     "tape": "^4.4.0",

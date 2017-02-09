@@ -86,6 +86,7 @@ export const WEBPACK_CONFIG = {
 	},
 
 	module: {
+		noParse: /node_modules\/localforage\/dist\/localforage.js/,
 		loaders: [
 			{
 				test: /\.js$/,
