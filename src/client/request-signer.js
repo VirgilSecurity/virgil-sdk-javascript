@@ -26,14 +26,16 @@ function requestSigner(crypto) {
 
 	/**
 	 * Appends an owner's signature to the request.
+	 * Important! This should only be used to sign publishing requests, as the
+	 * signer's card id is calculated from the request. To self-sign
+	 * revocation request use the {@link authoritySign} method.
 	 *
 	 * @param {SignableRequest} request - The request to sign.
 	 * @param {CryptoKeyHandle} privateKey - The owner's private key.
 	 * */
 	function selfSign(request, privateKey) {
 		var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
-		var signerId = request.card_id ?
-			request.card_id : fingerprint.toString('hex');
+		var signerId = fingerprint.toString('hex');
 
 		request.appendSignature(signerId, crypto.sign(fingerprint, privateKey));
 	}

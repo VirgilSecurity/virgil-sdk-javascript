@@ -271,7 +271,7 @@ test('revoke global virgil card', function (t) {
 		}, validationToken);
 
 		var requestSigner = virgil.requestSigner(virgil.crypto);
-		requestSigner.selfSign(revokeRequest, keyPair.privateKey);
+		requestSigner.authoritySign(revokeRequest, cardId, keyPair.privateKey);
 
 		return client.revokeGlobalCard(revokeRequest);
 	})
