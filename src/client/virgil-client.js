@@ -30,7 +30,7 @@ var createError = utils.createError;
  *
  * var request = virgil.client('access_token');
  *
- * @param {string} accessToken - A token passed with every request for
+ * @param {string} [accessToken] - A token passed with every request for
  *			authorization
  * @param {Object} [options] - Initialization options
  * @param {string} [options.identityBaseUrl] - URL of Virgil Cards service
@@ -41,16 +41,23 @@ var createError = utils.createError;
  * @constructs VirgilClient
  * */
 function createVirgilClient(accessToken, options) {
-	assert(isString(accessToken) && !isEmpty(accessToken),
-		'createVirgilClient expects access token to be passed as a ' +
-		'string. Got ' + typeof  accessToken);
+	var opts;
 
-	options = options || {};
+	if (isString(accessToken)) {
+		assert(!isEmpty(accessToken),
+			'virgil client factory expects access token to be a ' +
+			'non-empty string');
+		opts = utils.assign({}, options || {}, { accessToken: accessToken });
+	} else if (isObject(accessToken)) {
+		opts = accessToken;
+	} else {
+		opts = utils.assign({}, options || {});
+	}
 
-	var cardsReadOnlyClient = createReadCardsClient(accessToken, options);
-	var cardsClient = createCardsClient(accessToken, options);
-	var identityClient = createIdentityClient(options);
-	var raClient = createRAClient(options);
+	var cardsReadOnlyClient = createReadCardsClient(opts);
+	var cardsClient = createCardsClient(opts);
+	var identityClient = createIdentityClient(opts);
+	var raClient = createRAClient(opts);
 
 	var cardValidator = null;
 

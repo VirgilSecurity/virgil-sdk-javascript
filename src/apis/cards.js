@@ -3,15 +3,19 @@
 var axios = require('axios');
 var errors = require('./cards-errors');
 var handleError = require('../shared/error-handler')(errors);
+var utils = require('../shared/utils');
 
-module.exports = function createCardsClient (accessToken, options) {
-	options = typeof options === 'object' ? options : {};
+var BASE_URL = 'https://cards.virgilsecurity.com/v4';
+
+module.exports = function createCardsClient (options) {
+	options = utils.isObject(options) ? options : {};
+
+	var headers = options.accessToken ?
+		{ 'Authorization': 'VIRGIL ' + options.accessToken } : {};
 
 	var client = axios.create({
-		baseURL: options.cardsBaseUrl || 'https://cards.virgilsecurity.com/v4',
-		headers: {
-			'Authorization': 'VIRGIL ' + accessToken
-		}
+		baseURL: options.cardsBaseUrl || BASE_URL,
+		headers: headers
 	});
 
 	return {
