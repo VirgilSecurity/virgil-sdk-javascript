@@ -12,7 +12,7 @@
 
 var utils = require('../shared/utils.js');
 var assert = utils.assert;
-var base64ToBuffer = utils.base64ToBuffer;
+var base64Decode = utils.base64Decode;
 var isBuffer = utils.isBuffer;
 var isString = utils.isString;
 
@@ -43,7 +43,7 @@ function cardValidator (crypto) {
 
 	var verifiers = Object.create(null);
 
-	addVerifier(SERVICE_CARD_ID, base64ToBuffer(SERVICE_PUBLIC_KEY));
+	addVerifier(SERVICE_CARD_ID, base64Decode(SERVICE_PUBLIC_KEY));
 
 	return /** @lends CardValidator */ {
 		addVerifier: addVerifier,
@@ -68,7 +68,7 @@ function cardValidator (crypto) {
 			'base64-encoded string');
 
 		publicKey = isString(publicKey)
-			? base64ToBuffer(publicKey) : publicKey;
+			? base64Decode(publicKey) : publicKey;
 
 		verifiers[signerId] = crypto.importPublicKey(publicKey);
 	}

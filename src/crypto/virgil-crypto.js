@@ -4,7 +4,7 @@ var isBuffer = require('../shared/utils').isBuffer;
 var isString = require('../shared/utils').isString;
 var assert = require('../shared/utils').assert;
 var stringToBuffer = require('../shared/utils').stringToBuffer;
-var base64ToBuffer = require('../shared/utils').base64ToBuffer;
+var base64Decode = require('../shared/utils').base64Decode;
 
 VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
@@ -111,27 +111,27 @@ function virgilCrypto() {
 	 * Imports a private key from a Buffer or base64-encoded string
 	 * containing key material.
 	 *
-	 * @param {Buffer|string} privateKeyMaterial - The private key material
+	 * @param {Buffer|string} keyMaterial - The private key material
 	 * 			as a {Buffer} or base64-encoded string.
 	 * @param {string} [password] - Optional password the key is
 	 * 			encrypted with.
 	 *
 	 * @returns {CryptoKeyHandle} - The imported key handle.
 	 * */
-	function importPrivateKey(privateKeyMaterial, password) {
-		assert(isBuffer(privateKeyMaterial) || isString(privateKeyMaterial),
-			'Argument "privateKeyMaterial" must be a Buffer or a ' +
-			'base64-encoded string');
+	function importPrivateKey(keyMaterial, password) {
+		assert(isBuffer(keyMaterial) || isString(keyMaterial),
+			'importPrivateKey expects key material to be a Buffer or a ' +
+			'base64-encoded string. Got ' + Object.prototype.toString.call(keyMaterial));
 
-		var privateKeyBytes = isString(privateKeyMaterial)
-			? base64ToBuffer(privateKeyMaterial) : privateKeyMaterial;
+		var keyBytes = isString(keyMaterial)
+			? base64Decode(keyMaterial) : keyMaterial;
 
 		if (password) {
-			privateKeyBytes = VirgilCrypto.decryptPrivateKey(
-				privateKeyBytes, stringToBuffer(password));
+			keyBytes = VirgilCrypto.decryptPrivateKey(
+				keyBytes, stringToBuffer(password));
 		}
 
-		var privateKeyDER = VirgilCrypto.privateKeyToDER(privateKeyBytes);
+		var privateKeyDER = VirgilCrypto.privateKeyToDER(keyBytes);
 		var publicKey = VirgilCrypto.extractPublicKey(privateKeyDER);
 		var publicKeyDER = VirgilCrypto.publicKeyToDER(publicKey);
 
@@ -153,7 +153,7 @@ function virgilCrypto() {
 			'Argument "publicKeyMaterial" must be a Buffer or a string');
 
 		var publicKeyBytes = isString(publicKeyMaterial)
-			? base64ToBuffer(publicKeyMaterial) : publicKeyMaterial;
+			? base64Decode(publicKeyMaterial) : publicKeyMaterial;
 
 		var publicKeyDER = VirgilCrypto.publicKeyToDER(publicKeyBytes);
 		return createPublicKeyHandle(
@@ -259,7 +259,7 @@ function virgilCrypto() {
 			'base64-encoded string.');
 
 		cipherData = isString(cipherData)
-			? base64ToBuffer(cipherData) : cipherData;
+			? base64Decode(cipherData) : cipherData;
 
 		var keyData = getKeyBytesFromHandle(privateKey);
 		return VirgilCrypto.decrypt(
@@ -307,7 +307,7 @@ function virgilCrypto() {
 
 		data = isString(data) ? stringToBuffer(data) : data;
 		signature = isString(signature)
-			? base64ToBuffer(signature) : signature;
+			? base64Decode(signature) : signature;
 
 		var keyData = getKeyBytesFromHandle(publicKey);
 		return VirgilCrypto.verify(data, signature, keyData.value);
@@ -365,7 +365,7 @@ function virgilCrypto() {
 			'base64-encoded string.');
 
 		cipherData = isString(cipherData)
-			? base64ToBuffer(cipherData) : cipherData;
+			? base64Decode(cipherData) : cipherData;
 
 		var privateKeyData = getKeyBytesFromHandle(privateKey);
 		var publicKeyData = getKeyBytesFromHandle(publicKey);
@@ -440,7 +440,7 @@ function virgilCrypto() {
 			'Argument "cipherData" must be  a Buffer or a ' +
 			'base64-encoded string');
 
-		cipherData = isString(cipherData) ? base64ToBuffer(cipherData) : cipherData;
+		cipherData = isString(cipherData) ? base64Decode(cipherData) : cipherData;
 		return VirgilCrypto.decrypt(cipherData, stringToBuffer(password));
 	}
 }

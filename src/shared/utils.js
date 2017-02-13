@@ -6,32 +6,6 @@ var isEmpty = require('lodash/isEmpty');
 var isArrayBuffer = require('lodash/isArrayBuffer');
 var VirgilError = require('../errors/virgil-error');
 
-function bufferToBase64 (buf) {
-	return bufferToString(buf, 'base64');
-}
-
-function bufferToString(buf, encoding) {
-	encoding = encoding || 'utf8';
-	return buf.toString(encoding);
-}
-
-function base64ToBuffer (str) {
-	return stringToBuffer(str, 'base64');
-}
-
-function stringToBuffer(str, encoding) {
-	encoding = encoding || 'utf8';
-	return new Buffer(str, encoding);
-}
-
-function stringToBase64(str) {
-	return bufferToBase64(stringToBuffer(str));
-}
-
-function base64ToString(base64) {
-	return bufferToString(base64ToBuffer(base64));
-}
-
 function isString(obj) {
 	return typeof obj === 'string';
 }
@@ -71,6 +45,39 @@ function abstractMethod () {
 	throw new Error('This method should be overridden by derived class.');
 }
 
+function base64Encode (input, inputEncoding) {
+	if (!(isString(input) || isBuffer(input))) {
+		throw createError('Cannot encode ' + typeof input +
+			'. Value must be a string or Buffer.');
+	}
+
+	var buffer = isBuffer(input) ? input
+		: (Buffer.isEncoding(inputEncoding) ? new Buffer(input, inputEncoding)
+			: new Buffer(input));
+
+	return buffer.toString('base64');
+}
+
+function base64Decode (input, outputEncoding) {
+	if (!isString(input)) {
+		throw createError('Cannot decode ' + typeof input +
+			'. Value must be a string.')
+	}
+
+	var buffer = new Buffer(input, 'base64');
+	return Buffer.isEncoding(outputEncoding) ?
+		buffer.toString(outputEncoding) : buffer;
+}
+
+function toArray(obj) {
+	return Array.isArray(obj) ? obj : (obj ? [obj] : obj);
+}
+
+function stringToBuffer(str, encoding) {
+	encoding = encoding || 'utf8';
+	return new Buffer(str, encoding);
+}
+
 function arrayBufferToBuffer(arrayBuf) {
 	return new Buffer(new Uint8Array(arrayBuf));
 }
@@ -89,10 +96,8 @@ module.exports = {
 	mapValues: mapValues,
 	abstractMethod: abstractMethod,
 	stringToBuffer: stringToBuffer,
-	base64ToBuffer: base64ToBuffer,
-	bufferToString: bufferToString,
-	bufferToBase64: bufferToBase64,
-	base64ToString: base64ToString,
-	stringToBase64: stringToBase64,
-	arrayBufferToBuffer: arrayBufferToBuffer
+	base64Encode: base64Encode,
+	base64Decode: base64Decode,
+	arrayBufferToBuffer: arrayBufferToBuffer,
+	toArray: toArray
 };

@@ -6,15 +6,18 @@
 
 /**
  * @typedef {Object} SignedRequestBody
- * @property {string} data.content_snapshot - The request's content snapshot.
- * @property {Object} data.meta - The request's metadata.
- * @property {Object.<string, string>} data.meta.signs - The request's
+ * @property {string} content_snapshot - The request's content snapshot.
+ * @property {Object} meta - The request's metadata.
+ * @property {Object.<string, string>} meta.signs - The request's
  * 		signatures.
+ * @property {{token: string}} [meta.validation] - Optional identity
+ * 		validation token.
  * */
 
 'use strict';
 
 var utils = require('../shared/utils');
+var takeSnapshot = require('../helpers/take-snapshot');
 
 var privateData = new WeakMap();
 
@@ -85,10 +88,10 @@ SignableRequest.prototype.getSignature = function (signerId) {
 SignableRequest.prototype.getRequestBody = function () {
 	var privateFields = privateData.get(this);
 	var body = {
-		content_snapshot: utils.bufferToBase64(privateFields.snapshot),
+		content_snapshot: utils.base64Encode(privateFields.snapshot),
 		meta: {
 			signs: utils.mapValues(privateFields.signatures,
-									utils.bufferToBase64)
+									utils.base64Encode)
 		}
 	};
 
@@ -128,7 +131,7 @@ SignableRequest.prototype.setValidationToken = function (validationToken) {
  * */
 SignableRequest.prototype.export = function () {
 	var json = JSON.stringify(this.getRequestBody());
-	return utils.stringToBase64(json);
+	return utils.base64Encode(json, 'utf8');
 };
 
 /**
@@ -140,8 +143,7 @@ SignableRequest.prototype.export = function () {
  * */
 SignableRequest.create = function createSignableRequest (
 	params, validationToken) {
-	var json = JSON.stringify(params);
-	var snapshot = utils.stringToBuffer(json);
+	var snapshot = takeSnapshot(params);
 	var signatures = Object.create(null);
 
 	return new SignableRequest(snapshot, signatures, params, validationToken);
@@ -154,12 +156,12 @@ SignableRequest.create = function createSignableRequest (
  * returns {SignableRequest} - The imported request.
  * */
 SignableRequest.import = function importSignableRequest (exportedRequest) {
-	var requestJSON = utils.base64ToString(exportedRequest);
+	var requestJSON = utils.base64Decode(exportedRequest, 'utf8');
 	var requestModel = JSON.parse(requestJSON);
-	var snapshot = utils.base64ToBuffer(requestModel.content_snapshot);
+	var snapshot = utils.base64Decode(requestModel.content_snapshot);
 	var signatures = utils.mapValues(
 		requestModel.meta.signs,
-		utils.base64ToBuffer);
+		utils.base64Decode);
 	var params = JSON.parse(snapshot.toString('utf8'));
 	var token = requestModel.meta.validation &&
 		requestModel.meta.validation.token;
