@@ -14,7 +14,7 @@
   "main": "index.js",
   "browser": {
     "./": "./dist/virgil-sdk.dev.js",
-    "./src/key-storage/adapters/file-system-storage.js": "./src/key-storage/adapters/browser-storage.js",
+    "./src/key-storage/adapters/index.js": "./src/key-storage/adapters/browser.js",
     "./tests/spec/node/file-system-storage.js": "./tests/spec/browser/local-storage.js"
   },
   "scripts": {
