@@ -78,7 +78,7 @@ function cardValidator (crypto) {
 	 * of the signatures that this validator checks are valid, otherwise
 	 * returns {code: false}.
 	 *
-	 * @param {Card} card - The card to verify the signatures of.
+	 * @param {CardModel} card - The card to verify the signatures of.
 	 * @return {boolean}
 	 * */
 	function validate (card) {
@@ -96,7 +96,7 @@ function cardValidator (crypto) {
 	 * Returns a boolean indicating whether the given card can be validated
 	 * by this validator.
 	 *
-	 * @param {Card} card - The card to check.
+	 * @param {CardModel} card - The card to check.
 	 * @reutrn {boolean} - True if the card can be validated, otherwise False.
 	 * */
 	function canValidate (card) {
@@ -111,7 +111,7 @@ function cardValidator (crypto) {
 	 * @private
 	 *
 	 * @param {Buffer} fingerprint - The fingerprint
-	 * @param {Card} card - The card.
+	 * @param {CardModel} card - The card.
 	 *
 	 * @return {boolean}
 	 * */
@@ -125,7 +125,7 @@ function cardValidator (crypto) {
 	 * @private
 	 *
 	 * @param {Buffer} fingerprint - The fingerprint
-	 * @param {Card} card - The card.
+	 * @param {CardModel} card - The card.
 	 *
 	 * @return {boolean}
 	 * */
@@ -144,7 +144,7 @@ function cardValidator (crypto) {
 	 * @private
 	 *
 	 * @param {Buffer} fingerprint - The fingerprint
-	 * @param {Card} card - The card.
+	 * @param {CardModel} card - The card.
 	 *
 	 * @return {boolean}
 	 * */

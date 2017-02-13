@@ -22,7 +22,7 @@ module.exports = function createRegistrationAuthorityClient (options) {
 		 * @param {string} validationToken - The card's identity validation
 		 * 		token returned by {@link VirgilClient#confirmIdentity} method.
 		 *
-		 * @returns {Promise.<Card>} A Promise that will be resolved with
+		 * @returns {Promise.<CardModel>} A Promise that will be resolved with
 		 * 		the published card.
 		 * */
 		publish: function publish (data) {

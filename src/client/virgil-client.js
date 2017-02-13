@@ -2,7 +2,7 @@ var createReadCardsClient = require('../apis/cards-ro');
 var createCardsClient = require('../apis/cards');
 var createIdentityClient = require('../apis/identity');
 var createRAClient = require('../apis/ra');
-var Card = require('./card');
+var CardModel = require('./card-model');
 var CardScope = require('./card-scope');
 var utils = require('../shared/utils');
 var assert = utils.assert;
@@ -60,7 +60,7 @@ function createVirgilClient(accessToken, options) {
 		 * Get card by id.
 		 *
 		 * @param {string} cardId - Id of card to get
-		 * @returns {Promise.<Card>}
+		 * @returns {Promise.<CardModel>}
 		 * */
 		getCard: function (cardId) {
 			assert(isString(cardId) && !isEmpty(cardId),
@@ -81,7 +81,7 @@ function createVirgilClient(accessToken, options) {
 		 * @param {(SearchCriteria|string)} criteria - The search criteria.
 		 * 		If criteria is a string, represents a single identity to
 		 * 		search for in the 'application' scope.
-		 * @returns {Promise.<Card[]>}
+		 * @returns {Promise.<CardModel[]>}
 		 * */
 		searchCards: function (criteria) {
 			assert(isObject(criteria) || isString(criteria),
@@ -102,7 +102,7 @@ function createVirgilClient(accessToken, options) {
 
 			return cardsReadOnlyClient.search(criteria)
 				.then(function (response) {
-					return response.data.map(Card.import);
+					return response.data.map(CardModel.import);
 				})
 				.then(function (cards) {
 					validateCards(cards);
@@ -115,7 +115,7 @@ function createVirgilClient(accessToken, options) {
 		 *
 		 * @param {PublishCardRequest} request - Request object containing
 		 * 		the data required for publishing.
-		 * @returns {Promise.<Card>} The published card.
+		 * @returns {Promise.<CardModel>} The published card.
 		 * */
 		publishCard: function (request) {
 			assert(isObject(request),
@@ -152,7 +152,7 @@ function createVirgilClient(accessToken, options) {
 		 * @param {PublishCardRequest} request - Request object containing
 		 * 		the data required for publishing.
 		 *
-		 * @returns {Promise.<Card>} A Promise that will be resolved with
+		 * @returns {Promise.<CardModel>} A Promise that will be resolved with
 		 * 		the published card.
 		 * */
 		publishGlobalCard: function (request) {
@@ -336,7 +336,7 @@ function createVirgilClient(accessToken, options) {
 }
 
 function responseToCard (res) {
-	return Card.import(res.data);
+	return CardModel.import(res.data);
 }
 
 module.exports = createVirgilClient;
