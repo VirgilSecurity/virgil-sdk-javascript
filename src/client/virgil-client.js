@@ -20,6 +20,14 @@ var createError = utils.createError;
  * */
 
 /**
+ * @typedef {Object} VirgilClientParams
+ * @property {string} identityBaseUrl - URL of Virgil Cards service.
+ * @property {string} cardsBaseUrl - URL of Virgil Cards service.
+ * @property {string} cardsReadBaseUrl - URL of Virgil Cards service for
+ * 		read-only access.
+ * */
+
+/**
  * Creates and initializes Virgil API client.
  *
  * <code>VirgilClient</code> objects are not to be created directly using
@@ -32,11 +40,8 @@ var createError = utils.createError;
  *
  * @param {string} [accessToken] - A token passed with every request for
  *			authorization
- * @param {Object} [options] - Initialization options
- * @param {string} [options.identityBaseUrl] - URL of Virgil Cards service
- * @param {string} [options.cardsBaseUrl] - URL of Virgil Cards service
- * @param {string} [options.cardsReadBaseUrl] - URL of Virgil Cards service
- * 			for read-only access
+ * @param {VirgilClientParams} [options] - Initialization options.
+ *
  *
  * @constructs VirgilClient
  * */

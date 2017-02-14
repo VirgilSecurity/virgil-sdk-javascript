@@ -19,6 +19,7 @@ VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
 /**
  * @constructs VirgilCrypto
+ * @implements {Crypto}
  * */
 function virgilCrypto() {
 	var keyMaterialStore = new WeakMap();
