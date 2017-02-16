@@ -1,5 +1,6 @@
 'use strict';
 
+var utils = require('./shared/utils');
 var virgilKey = require('./virgil-key');
 
 /**
@@ -32,6 +33,14 @@ function keyManager(context) {
 		 * @returns {Promise.<VirgilKey>}
          */
 		load: function (name, password) {
+			utils.assert(utils.isString(name),
+				'load expects name argument to be passed as a string. ' +
+				'Got ' + typeof  name);
+
+			utils.assert(utils.isString(password),
+				'load expects password argument to be passed as a string. ' +
+				'Got ' + typeof  password);
+
 			return storage.load(name, password)
 				.then(function (privateKey) {
 					return virgilKey(context, privateKey);
@@ -44,6 +53,10 @@ function keyManager(context) {
          * @returns {Promise}
          */
 		destroy: function (name) {
+			utils.assert(utils.isString(name),
+				'destroy expects name argument to be passed as a string. ' +
+				'Got ' + typeof name);
+
 			return storage.remove(name);
 		}
 	}

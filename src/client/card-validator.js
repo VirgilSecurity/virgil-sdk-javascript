@@ -62,10 +62,13 @@ function cardValidator (crypto) {
 	 * 			{Buffer} or a base64-encoded {string}.
 	 * */
 	function addVerifier (signerId, publicKey) {
-		assert(isString(signerId), 'Argument "signerId" must be a string.');
+		assert(isString(signerId),
+			'addVerifier expects signerId argument to be passed as ' +
+			'a string. Got ' + typeof signerId);
+
 		assert(isBuffer(publicKey) || isString(publicKey),
-			'Argument "publicKey" must be a Buffer or a ' +
-			'base64-encoded string');
+			'addVerifier expects publicKey argument to be passed as a Buffer' +
+			' or a base64-encoded string. Got ' + typeof publicKey);
 
 		publicKey = isString(publicKey)
 			? base64Decode(publicKey) : publicKey;
@@ -97,9 +100,13 @@ function cardValidator (crypto) {
 	 * by this validator.
 	 *
 	 * @param {CardModel} card - The card to check.
-	 * @reutrn {boolean} - True if the card can be validated, otherwise False.
+	 * @returns {boolean} - True if the card can be validated, otherwise False.
 	 * */
 	function canValidate (card) {
+		if (!card) {
+			return false;
+		}
+
 		// ignore legacy cards
 		return card.version !== '3.0';
 	}

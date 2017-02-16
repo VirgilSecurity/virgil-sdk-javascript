@@ -5,6 +5,7 @@ var isString = require('../shared/utils').isString;
 var assert = require('../shared/utils').assert;
 var stringToBuffer = require('../shared/utils').stringToBuffer;
 var base64Decode = require('../shared/utils').base64Decode;
+var toArray = require('../shared/utils').toArray;
 
 VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
@@ -19,12 +20,12 @@ VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
 /**
  * @constructs VirgilCrypto
- * @implements {Crypto}
  * */
 function virgilCrypto() {
+
 	var keyMaterialStore = new WeakMap();
 
-	return /** @lends VirgilCrypto */ {
+	return /** @lends {VirgilCrypto} @implements {Crypto} */ {
 		generateKeys: generateKeys,
 		importPrivateKey: importPrivateKey,
 		importPublicKey: importPublicKey,
@@ -66,26 +67,23 @@ function virgilCrypto() {
 		return key;
 	}
 
-	/**
-	 * Returns the key material corresponding to the key handle or
-	 * throws an Error if the key does not exist.
-	 *
-	 * @returns {Buffer} - The key bytes.
-	 *
-	 * @private
-	 * */
-	function getKeyBytesFromHandle (keyHandle) {
-		var key = keyMaterialStore.get(keyHandle);
-		assert(Boolean(key), 'Object provided is not a valid key handle.');
-		return key;
-	}
-
 	function createPrivateKeyHandle(recipientId, value) {
 		return createKeyHandle('private', recipientId, value);
 	}
 
 	function createPublicKeyHandle(recipientId, value) {
 		return createKeyHandle('public', recipientId, value);
+	}
+
+	/**
+	 * Returns the key material corresponding to the key handle.
+	 *
+	 * @returns {{recipientId: Buffer, value: Buffer}} - The key data.
+	 *
+	 * @private
+	 * */
+	function getKeyBytesFromHandle (keyHandle) {
+		return keyMaterialStore.get(keyHandle);
 	}
 
 	/**
@@ -121,8 +119,8 @@ function virgilCrypto() {
 	 * */
 	function importPrivateKey(keyMaterial, password) {
 		assert(isBuffer(keyMaterial) || isString(keyMaterial),
-			'importPrivateKey expects key material to be a Buffer or a ' +
-			'base64-encoded string. Got ' + Object.prototype.toString.call(keyMaterial));
+			'importPrivateKey expects keyMaterial argument to be a Buffer ' +
+			'or a base64-encoded string. Got ' + typeof keyMaterial);
 
 		var keyBytes = isString(keyMaterial)
 			? base64Decode(keyMaterial) : keyMaterial;
@@ -151,7 +149,9 @@ function virgilCrypto() {
 	 * */
 	function importPublicKey(publicKeyMaterial) {
 		assert(isBuffer(publicKeyMaterial) || isString(publicKeyMaterial),
-			'Argument "publicKeyMaterial" must be a Buffer or a string');
+			'importPublicKey expects publicKeyMaterial argument to be a ' +
+			'Buffer or a base64-encoded string. ' +
+			'Got ' + typeof publicKeyMaterial);
 
 		var publicKeyBytes = isString(publicKeyMaterial)
 			? base64Decode(publicKeyMaterial) : publicKeyMaterial;
@@ -171,8 +171,10 @@ function virgilCrypto() {
 	 * */
 	function exportPrivateKey(privateKey, password) {
 		var keyData = getKeyBytesFromHandle(privateKey);
+		assert(keyData, 'exportPrivateKey expects privateKey argument to be ' +
+			'a valid private key handle.');
 
-		if (!password) {
+		if (!isString(password)) {
 			return VirgilCrypto.privateKeyToDER(keyData.value);
 		}
 
@@ -191,6 +193,10 @@ function virgilCrypto() {
 	 * */
 	function exportPublicKey(publicKey) {
 		var keyData = getKeyBytesFromHandle(publicKey);
+
+		assert(keyData, 'exportPublicKey expects publicKey argument to be ' +
+			'a valid public key handle.');
+
 		return VirgilCrypto.publicKeyToDER(keyData.value);
 	}
 
@@ -207,7 +213,10 @@ function virgilCrypto() {
 	function extractPublicKey(privateKey, password) {
 		var keyData = getKeyBytesFromHandle(privateKey);
 
-		password = password || '';
+		assert(keyData, 'extractPublicKey expects privateKey argument to be ' +
+			'a valid private key handle.');
+
+		password = isString(password) || '';
 
 		var publicKey = VirgilCrypto.extractPublicKey(
 			keyData.value, stringToBuffer(password));
@@ -228,13 +237,17 @@ function virgilCrypto() {
 	 * */
 	function encrypt(data, recipients) {
 		assert(isBuffer(data) || isString(data),
-			'Argument "data" must be a Buffer or a string.');
+			'encrypt expects data argument to be passed as a Buffer or ' +
+			'a string. Got ' + typeof data);
 
 		data = isString(data) ? stringToBuffer(data) : data;
-		recipients = Array.isArray(recipients) ? recipients : [recipients];
+		recipients = toArray(recipients);
 
 		var publicKeys = recipients.map(function (recipientKey) {
 			var keyData = getKeyBytesFromHandle(recipientKey);
+
+			assert(keyData, 'encrypt expects recipients argument to be a valid' +
+				' public key handle or an array of valid public key handles.');
 
 			return {
 				recipientId: keyData.recipientId,
@@ -256,13 +269,18 @@ function virgilCrypto() {
 	 * */
 	function decrypt(cipherData, privateKey) {
 		assert(isBuffer(cipherData) || isString(cipherData),
-			'Argument "cipherData" must be a Buffer or a ' +
-			'base64-encoded string.');
+			'decrypt expects cipherData argument to be passed as a Buffer ' +
+			'or a base64-encoded string. Got ' + typeof cipherData);
+
+		var keyData = getKeyBytesFromHandle(privateKey);
+
+		assert(keyData, 'decrypt expects privateKey argument to be a valid ' +
+			'key handle.');
 
 		cipherData = isString(cipherData)
 			? base64Decode(cipherData) : cipherData;
 
-		var keyData = getKeyBytesFromHandle(privateKey);
+
 		return VirgilCrypto.decrypt(
 			cipherData, keyData.recipientId, keyData.value);
 	}
@@ -278,11 +296,16 @@ function virgilCrypto() {
 	 * */
 	function sign(data, privateKey) {
 		assert(isBuffer(data) || isString(data),
-			'Argument "data" must be a Buffer or a string.');
+			'sign expects data argument to be passed as a Buffer or ' +
+			'a string. Got ' + typeof data);
+
+		var keyData = getKeyBytesFromHandle(privateKey);
+
+		assert(keyData, 'sign expects privateKey argument to be a valid ' +
+			'key handle.');
 
 		data = isString(data) ? stringToBuffer(data) : data;
 
-		var keyData = getKeyBytesFromHandle(privateKey);
 		return VirgilCrypto.sign(data, keyData.value);
 	}
 
@@ -300,17 +323,23 @@ function virgilCrypto() {
 	 * */
 	function verify(data, signature, publicKey) {
 		assert(isBuffer(data) || isString(data),
-			'Argument "data" must be a Buffer or a string.');
+			'verify expects data argument to be passed as a Buffer or ' +
+			'a string. Got ' + typeof data);
 
 		assert(isBuffer(signature) || isString(data),
-			'Argument "signature" must be a Buffer or a ' +
-			'base64-encoded string.');
+			'verify expects signature argument to be passed as a Buffer ' +
+			'or a base64-encoded string. Got ' + typeof data);
+
+		var keyData = getKeyBytesFromHandle(publicKey);
+
+		assert(keyData, 'verify expects publicKey argument to be a valid ' +
+			'key handle.');
 
 		data = isString(data) ? stringToBuffer(data) : data;
 		signature = isString(signature)
 			? base64Decode(signature) : signature;
 
-		var keyData = getKeyBytesFromHandle(publicKey);
+
 		return VirgilCrypto.verify(data, signature, keyData.value);
 	}
 
@@ -321,23 +350,30 @@ function virgilCrypto() {
 	 * @param {Buffer|string} data - The data to sign and encrypt as a
 	 * 			{Buffer} or a {string} in UTF-8.
 	 * @param {CryptoKeyHandle} privateKey - The private key handle.
-	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} publicKeys - The handle
+	 * @param {CryptoKeyHandle|CryptoKeyHandle[]} recipients - The handle
 	 * 		of a public key of the intended recipient or an array of
 	 * 		public key handles of multiple recipients.
 	 *
 	 * 	@returns {Buffer} Encrypted data with attached signature.
 	 * */
-	function signThenEncrypt(data, privateKey, publicKeys) {
+	function signThenEncrypt(data, privateKey, recipients) {
 		assert(isBuffer(data) || isString(data),
-			'Argument "data" must be a Buffer or a string.');
-
-		data = isString(data) ? stringToBuffer(data) : data;
+			'signThenEncrypt expects data argument to be passed as a Buffer ' +
+			'or a string. Got ' + typeof data);
 
 		var privateKeyData = getKeyBytesFromHandle(privateKey);
 
-		publicKeys = Array.isArray(publicKeys) ? publicKeys : [publicKeys];
-		var recipients = publicKeys.map(function (publicKey) {
-			var pubKeyData = getKeyBytesFromHandle(publicKey);
+		assert(privateKeyData, 'signThenEncrypt expects privateKey argument ' +
+			' to be a valid key handle.');
+
+		data = isString(data) ? stringToBuffer(data) : data;
+		recipients = toArray(recipients);
+
+		var publicKeys = recipients.map(function (recipient) {
+			var pubKeyData = getKeyBytesFromHandle(recipient);
+
+			assert(pubKeyData, 'signThenEncrypt expects recipients argument ' +
+				'to be a valid key handle or an array of valid key handles.');
 
 			return {
 				recipientId: pubKeyData.recipientId,
@@ -345,7 +381,8 @@ function virgilCrypto() {
 			};
 		});
 
-		return VirgilCrypto.signThenEncrypt(data, privateKeyData.value, recipients);
+		return VirgilCrypto.signThenEncrypt(
+			data, privateKeyData.value, publicKeys);
 	}
 
 	/**
@@ -362,14 +399,19 @@ function virgilCrypto() {
 	 * */
 	function decryptThenVerify(cipherData, privateKey, publicKey) {
 		assert(isBuffer(cipherData) || isString(cipherData),
-			'Argument "cipherData" must be a Buffer or a ' +
-			'base64-encoded string.');
-
-		cipherData = isString(cipherData)
-			? base64Decode(cipherData) : cipherData;
+			'decryptThenVerify expects cipherData argument to be passed as ' +
+			'a Buffer or a base64-encoded string. Got ' + typeof cipherData);
 
 		var privateKeyData = getKeyBytesFromHandle(privateKey);
 		var publicKeyData = getKeyBytesFromHandle(publicKey);
+
+		assert(privateKeyData, 'decryptThenVerify expects privateKey argument' +
+			' to be a valid key handle.');
+		assert(publicKeyData, 'decryptThenVerify expects publicKey argument ' +
+			'to be a valid key handle.');
+
+		cipherData = isString(cipherData)
+			? base64Decode(cipherData) : cipherData;
 
 		return VirgilCrypto.decryptThenVerify(
 			cipherData,
@@ -403,7 +445,8 @@ function virgilCrypto() {
 	 * */
 	function hash(data, algorithm) {
 		assert(isBuffer(data) || isString(data),
-			'Argument "data" must be a Buffer or a string.');
+			'hash expects data argument to be passed as a Buffer or ' +
+			'a string. Got ' + typeof data);
 
 		data = isString(data) ? stringToBuffer(data) : data;
 		return VirgilCrypto.hash(data, algorithm);
@@ -420,7 +463,11 @@ function virgilCrypto() {
 	 * */
 	function encryptWithPassword (data, password) {
 		assert(isBuffer(data) || isString(data),
-			'Argument "data" must be  a Buffer or a string');
+			'encryptWithPassword expects data argument to be passed as ' +
+			'a Buffer or a string. Got ' + typeof data);
+
+		assert(isString(password), 'encryptWithPassword expects password ' +
+			'argument to be passed as a string. Got ' + typeof password);
 
 		data = isString(data) ? stringToBuffer(data) : data;
 
@@ -438,10 +485,14 @@ function virgilCrypto() {
 	 * */
 	function decryptWithPassword (cipherData, password) {
 		assert(isBuffer(cipherData) || isString(cipherData),
-			'Argument "cipherData" must be  a Buffer or a ' +
-			'base64-encoded string');
+			'decryptWithPassword expects cipherData argument to be passed as' +
+			' a Buffer or a base64-encoded string. Got ' + typeof cipherData);
+
+		assert(isString(password), 'decryptWithPassword expects password ' +
+			'argument to be passed as a string. Got ' + typeof password);
 
 		cipherData = isString(cipherData) ? base64Decode(cipherData) : cipherData;
+
 		return VirgilCrypto.decrypt(cipherData, stringToBuffer(password));
 	}
 }

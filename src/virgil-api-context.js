@@ -41,7 +41,7 @@ var utils = require('./shared/utils');
  *
  * @example
  *
- * var context = virgil.virgilAPIContext({
+ * var context = virgilAPIContext({
  * 		accessToken: 'access_token',
  * 		appCredentials: {
  * 			appId: 'appId',
@@ -59,15 +59,11 @@ var utils = require('./shared/utils');
  * @constructs VirgilAPIContext
  * */
 function virgilAPIContext (config) {
-	utils.assert(utils.isObject(config),
-		'virgilAPIContext expects a configuration object to be passed.');
-
-
 	var crypto = config.crypto || createVirgilCrypto();
 	var keyStorage = config.keyStorage ||
 		defaultKeyStorage(defaultStorageAdapter({
-			dir: 'VirgilSecurityKeys',
-			name: 'VirgilSecurityKeys'
+			dir: 'VirgilSecurityKeys', // node.js
+			name: 'VirgilSecurityKeys' // browser
 		}), crypto);
 
 	var client = createVirgilClient(config.accessToken, config.clientParams);

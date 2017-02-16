@@ -44,6 +44,14 @@ function cardManager (context) {
 		 * @returns {VirgilCard}
          */
 		create: function (identity, ownerKey, identityType, customFields) {
+			utils.assert(utils.isString(identity),
+				'create expects identity argument to be passed as a string. ' +
+				'Got ' + typeof identity);
+
+			utils.assert(utils.isObject(ownerKey),
+				'create expects ownerKey argument to be passed as a ' +
+				'VirgilKey object. Got ' + typeof ownerKey);
+
 			var params = {
 				identity: identity,
 				identity_type: identityType || 'unknown',
@@ -60,12 +68,28 @@ function cardManager (context) {
 		 * Services.
 		 * @param {string} identity - Identity of the card.
 		 * @param {VirgilKey} ownerKey - The card's owner key.
-		 * @param {string} [identityType] - Optional identity type of the card.
+		 * @param {IdentityType} [identityType] - Optional identity type of
+		 * 		the card. Default is email.
 		 * @param {Object.<string, string>} [customFields] - Optional custom
 		 * 		attributes of the card.
 		 * @returns {VirgilCard}
          */
-		createGlobal: function (identity, ownerKey, identityType, customFields) {
+		createGlobal: function (
+			identity, ownerKey, identityType, customFields) {
+			utils.assert(utils.isString(identity),
+				'createGlobal expects identity argument to be passed as ' +
+				'a string. Got ' + typeof identity);
+
+			utils.assert(utils.isObject(ownerKey),
+				'createGlobal expects ownerKey argument to be passed as ' +
+				'a VirgilKey object. Got ' + typeof ownerKey);
+
+			if (identityType) {
+				utils.assert(IdentityType.APPLICATION !== identityType,
+					'creating global cards with "application" identity type ' +
+					'is not supported.');
+			}
+
 			var params = {
 				identity: identity,
 				identity_type: identityType || IdentityType.EMAIL,
@@ -83,11 +107,15 @@ function cardManager (context) {
 		 *
 		 * @param {string|string[]} identity - The identity or an array of
 		 * 		identities to search for.
-		 * @param {string} [identityType] - The identity type to search for.
+		 * @param {string} [identityType] - Optional identity type to search for.
 		 *
          * @returns {Promise.<VirgilCard>}
          */
 		find: function (identity, identityType) {
+			utils.assert(utils.isString(identity),
+				'find expects identity argument to be passed as a string. ' +
+				'Got ' + typeof identity);
+
 			return findCards(identity, identityType, CardScope.APPLICATION);
 		},
 
@@ -102,6 +130,10 @@ function cardManager (context) {
 		 * @returns {Promise.<VirgilCard>}
 		 */
 		findGlobal: function (identity, identityType) {
+			utils.assert(utils.isString(identity),
+				'findGlobal expects identity argument to be passed as ' +
+				'a string. Got ' + typeof identity);
+
 			return findCards(identity, identityType, CardScope.GLOBAL);
 		},
 
@@ -112,6 +144,9 @@ function cardManager (context) {
 		 * @returns {Promise}
          */
 		publish: function (card) {
+			utils.assert(utils.isObject(card),
+				'publish expects card argument to be passed as a VirgilCard' +
+				' object. Got ' + typeof card);
 			return card.publish();
 		},
 
@@ -123,6 +158,13 @@ function cardManager (context) {
          * @returns {Promise}
          */
 		publishGlobal: function (card, validationToken) {
+			utils.assert(utils.isObject(card),
+				'publishGlobal expects card argument to be passed as a ' +
+				'VirgilCard object.' );
+			utils.assert(utils.isString(validationToken),
+				'publishGlobal expects validationToken argument to be ' +
+				'passed as a string. Got ' + typeof validationToken);
+
 			return card.publishAsGlobal(validationToken);
 		},
 
@@ -132,6 +174,10 @@ function cardManager (context) {
 		 * @returns {Promise}
          */
 		revoke: function (card) {
+			utils.assert(utils.isObject(card),
+				'revoke expects card argument to be passed as a VirgilCard ' +
+				'object. Got ' + typeof card);
+
 			utils.assert(context.credentials,
 				'Cannot revoke card in application scope. ' +
 				'App credentials are required but missing.');
@@ -160,6 +206,16 @@ function cardManager (context) {
 		 * @returns {Promise}
 		 */
 		revokeGlobal: function (card, key, validationToken) {
+			utils.assert(utils.isObject(card),
+				'revokeGlobal expects card argument to be passed as a ' +
+				'VirgilCard object. Got ' + typeof card);
+			utils.assert(utils.isObject(key),
+				'revokeGlobal expects key argument to be passed as a ' +
+				'VirgilKey object. Got ' + typeof key);
+			utils.assert(utils.isString(validationToken),
+				'revokeGlobal expects validationToken argument to be ' +
+				'passed as a string. Got ' + typeof validationToken);
+
 			var request = revokeCardRequest({
 				card_id: card.id,
 				revocation_reason: RevocationReason.UNSPECIFIED
@@ -192,6 +248,10 @@ function cardManager (context) {
 		 * @returns {VirgilCard}
          */
 		import: function (exportedCard) {
+			utils.assert(utils.isString(exportedCard),
+				'import expects exportedCard argument to be passed as ' +
+				'a string. Got ' + typeof exportedCard);
+
 			var json = utils.base64Decode(exportedCard, 'utf8');
 			var model = CardModel.import(json);
 			return virgilCard(context, model);

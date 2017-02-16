@@ -50,8 +50,8 @@ function createVirgilClient(accessToken, options) {
 
 	if (isString(accessToken)) {
 		assert(!isEmpty(accessToken),
-			'virgil client factory expects access token to be a ' +
-			'non-empty string');
+			'virgil client factory expects accessToken to not be empty');
+
 		opts = utils.assign({}, options || {}, { accessToken: accessToken });
 	} else if (isObject(accessToken)) {
 		opts = accessToken;
@@ -75,9 +75,9 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise.<CardModel>}
 		 * */
 		getCard: function (cardId) {
-			assert(isString(cardId) && !isEmpty(cardId),
-				'getCard expects card id to be passed as a string. Got ' +
-				typeof cardId);
+			assert(isString(cardId),
+				'getCard expects cardId argument to be passed as a string. ' +
+				'Got ' + typeof cardId);
 
 			return cardsReadOnlyClient.get(cardId)
 				.then(responseToCard)
@@ -97,11 +97,8 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		searchCards: function (criteria) {
 			assert(isObject(criteria) || isString(criteria),
-				'searchCards expects search criteria to be passed as an object ' +
-				'or a string. Got ' + typeof criteria);
-
-			assert(!isEmpty(criteria),
-				'searchCards expects search criteria to not be empty.');
+				'searchCards expects criteria argument to be passed as an ' +
+				'object or a string. Got ' + typeof criteria);
 
 			if (isString(criteria)) {
 				criteria = {
@@ -131,7 +128,7 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		publishCard: function (request) {
 			assert(isObject(request),
-				'publishCard expects a request to be passed as an object. ' +
+				'publishCard expects a request object to be passed. ' +
 				'Got ' + typeof request);
 
 			return cardsClient.publish(request.getRequestBody())
@@ -151,7 +148,7 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		revokeCard: function (request) {
 			assert(isObject(request),
-				'revokeCard expects a request to be passed as an object. ' +
+				'revokeCard expects a request object to be passed. ' +
 				'Got ' + typeof request);
 
 			return cardsClient
@@ -169,8 +166,8 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		publishGlobalCard: function (request) {
 			assert(isObject(request),
-				'publishGlobalCard expects a request to be passed as an ' +
-				'object. Got ' + typeof request);
+				'publishGlobalCard expects a request object to be passed. ' +
+				'Got ' + typeof request);
 
 			var requestBody = request.getRequestBody();
 
@@ -192,8 +189,8 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		revokeGlobalCard: function (request) {
 			assert(isObject(request),
-				'revokeGlobalCard expects a request to be passed as an ' +
-				'object. Got ' + typeof request);
+				'revokeGlobalCard expects a request object to be passed. ' +
+				'Got ' + typeof request);
 
 			var requestBody = request.getRequestBody();
 
@@ -220,13 +217,13 @@ function createVirgilClient(accessToken, options) {
 		 * 		the action id.
 		 * */
 		verifyIdentity: function (identity, identityType, extraFields) {
-			assert(isString(identity) && !isEmpty(identity),
-				'verifyIdentity expects an identity to be passed as a ' +
-				'string. Got ' + typeof  identity);
+			assert(isString(identity),
+				'verifyIdentity expects an identity argument to be passed ' +
+				'as a string. Got ' + typeof  identity);
 
-			assert(isString(identityType) && !isEmpty(identityType),
-				'verifyIdentity expects an identity type to be passed as a ' +
-				'string. Got ' + typeof  identityType);
+			assert(isString(identityType),
+				'verifyIdentity expects an identityType argument to be ' +
+				'passed as a string. Got ' + typeof  identityType);
 
 
 			return identityClient.verify({
@@ -258,11 +255,11 @@ function createVirgilClient(accessToken, options) {
 		 * 		the generated validation token.
 		 * */
 		confirmIdentity: function (actionId, code, tokenParams) {
-			assert(isString(actionId) && !isEmpty(actionId),
-				'confirmIdentity expects action id to be passed as a ' +
-				'string. Got ' + typeof  actionId);
-			assert(isString(code) && !isEmpty(code),
-				'confirmIdentity expects confirmation code to be passed as ' +
+			assert(isString(actionId),
+				'confirmIdentity expects actionId argument to be passed ' +
+				'as a string. Got ' + typeof  actionId);
+			assert(isString(code),
+				'confirmIdentity expects code argument to be passed as ' +
 				'a string. Got ' + typeof  code);
 
 			return identityClient.confirm({
@@ -287,17 +284,17 @@ function createVirgilClient(accessToken, options) {
 		 * @returns {Promise.<IdentityValidationResult>}
 		 * */
 		validateIdentity: function (identity, identityType, validationToken) {
-			assert(isString(identity) && !isEmpty(identity),
-				'validateIdentity expects an identity to be passed as a ' +
-				'string. Got ' + typeof identity);
+			assert(isString(identity),
+				'validateIdentity expects identity argument to be passed ' +
+				'as a string. Got ' + typeof identity);
 
-			assert(isString(identityType) && !isEmpty(identityType),
-				'validateIdentity expects an identity type to be passed as a ' +
-				'string. Got ' + typeof  identityType);
+			assert(isString(identityType),
+				'validateIdentity expects identityType argument to be ' +
+				'passed as a string. Got ' + typeof  identityType);
 
-			assert(isString(validationToken) && !isEmpty(validationToken),
-				'validateIdentity expects a validation token to be passed as ' +
-				'a string. Got ' + typeof  validationToken);
+			assert(isString(validationToken),
+				'validateIdentity expects a validationToken argument to be ' +
+				'passed as a string. Got ' + typeof  validationToken);
 
 			return identityClient.validate({
 				type: identityType,
@@ -313,8 +310,8 @@ function createVirgilClient(accessToken, options) {
 		 * */
 		setCardValidator: function (validator) {
 			assert(isObject(validator),
-				'setCardValidator expects a validator to be passed as an ' +
-				'object. Got ' + typeof validator);
+				'setCardValidator expects validator argument to be passed ' +
+				'as an object. Got ' + typeof validator);
 
 			assert(isFunction(validator.validate),
 				'setCardValidator expects the "validate" method to be ' +

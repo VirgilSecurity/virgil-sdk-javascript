@@ -6,6 +6,8 @@
 
 'use strict';
 
+var utils = require('../shared/utils');
+
 /**
  * The factory function used to create <code>RequestSigner</code> instances.
  * <code>RequestSigner</code> objects are not to be created directly using
@@ -34,10 +36,16 @@ function requestSigner(crypto) {
 	 * @param {CryptoKeyHandle} privateKey - The owner's private key.
 	 * */
 	function selfSign(request, privateKey) {
+		utils.assert(request,
+			'selfSign expects request argument to be passed.');
+		utils.assert(privateKey,
+			'selfSign expects privateKey argument to be passed.');
+
 		var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
 		var signerId = fingerprint.toString('hex');
 
-		request.appendSignature(signerId, crypto.sign(fingerprint, privateKey));
+		request.appendSignature(
+			signerId, crypto.sign(fingerprint, privateKey));
 	}
 
 	/**
@@ -49,6 +57,13 @@ function requestSigner(crypto) {
 	 * @param {CryptoKeyHandle} privateKey - Authority's private key.
 	 * */
 	function authoritySign(request, signerId, privateKey) {
+		utils.assert(request,
+			'authoritySign expects request argument to be passed.');
+		utils.assert(signerId,
+			'authoritySign expects signerId argument to be passed.');
+		utils.assert(privateKey,
+			'authoritySign expects privateKey argument to be passed.');
+
 		var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
 		request.appendSignature(signerId,
 			crypto.sign(fingerprint, privateKey));

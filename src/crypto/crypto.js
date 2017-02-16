@@ -190,29 +190,3 @@
  *
  * @returns {Buffer} - The hash.
  * */
-
-/**
- * Encrypts the data using the password to derive encryption key.
- *
- * @function
- * @name Crypto#encryptWithPassword
- *
- * @param {Buffer|string} data - The data to be encrypted as a {Buffer}
- * 			or a {string} in UTF-8.
- * @param {string} password - The password to use for key derivation.
- *
- * @returns {Buffer} Encrypted data.
- * */
-
-/**
- * Decrypts the encrypted data using the password to derive decryption key.
- *
- * @function
- * @name Crypto#decryptWithPassword
- *
- * @param {Buffer|string} cipherData - The data to be decrypted as a
- * 			{Buffer} or a {string} in base64.
- * @param {string} password - The password to use for key derivation.
- *
- * @returns {Buffer} Decrypted data.
- * */

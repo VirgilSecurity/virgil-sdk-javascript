@@ -26,6 +26,14 @@ function virgilKey (context, privateKey) {
          * @returns {Promise}
          */
 		save: function (name, password) {
+			utils.assert(utils.isString(name),
+				'save expects name argument to be passed as a string. ' +
+				'Got ' + typeof  name);
+
+			utils.assert(utils.isString(password),
+				'save expects password argument to be passed as a string. ' +
+				'Got ' + typeof  password);
+
 			return storage.store(name, privateKey, password);
 		},
 

@@ -10,6 +10,8 @@
  * 		encrypted with (if applies).
  * */
 
+var utils = require('./shared/utils');
+
 /**
  * Creates and initializes the application credentials container objects.
  *
@@ -33,6 +35,17 @@ function appCredentials (params) {
 	var appId = params.appId;
 	var appKeyMaterial = params.appKeyMaterial;
 	var appKeyPassword = params.appKeyPassword;
+
+	utils.assert(utils.isString(appId),
+		'appCredentials expects appId config parameter to be passed as ' +
+		'a string. Got ' + typeof appId);
+
+	utils.assert(
+		utils.isBuffer(appKeyMaterial) || utils.isString(appKeyMaterial),
+		'appCredentials expects appKeyMaterial config parameter to be passed' +
+		' as a Buffer or a base64-encoded string. ' +
+		'Got ' + typeof appKeyMaterial);
+
 
 	return /** @lends {AppCredentials} */ {
 		/**
