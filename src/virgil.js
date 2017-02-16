@@ -11,16 +11,15 @@ var CardModel = require('./client/card-model');
 var IdentityType = require('./client/card-identity-type');
 var CardScope = require('./client/card-scope');
 var RevocationReason = require('./client/card-revocation-reason');
-var cardManager = require('./card-manager');
-var keyManager = require('./key-manager');
 var virgilAPIContext = require('./virgil-api-context');
+var VirgilAPI = require('./virgil-api');
 var utils = require('./shared/utils');
 
 /**
  *
  * @param {(string|VirgilAPIConfig)} config - Virgil access token or Virgil
  * 		API configuration object.
- * @constructs {VirgilAPI}
+ * @returns {VirgilAPI}
  */
 function virgil (config) {
 	utils.assert(utils.isString(config) || utils.isObject(config),
@@ -33,12 +32,7 @@ function virgil (config) {
 
 	var context = virgilAPIContext(config);
 
-	return /** @lends {VirgilAPI} */ {
-		/** @type {KeyManager} */
-		keys: keyManager(context),
-		/** @type {CardManager} */
-		cards: cardManager(context)
-	};
+	return new VirgilAPI(context);
 }
 
 virgil.client = createVirgilClient;
