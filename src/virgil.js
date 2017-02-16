@@ -1,7 +1,7 @@
 'use strict';
 
 var VirgilCrypto = require('virgil-crypto');
-var createVirgilCrypto = require('./crypto/virgil-crypto');
+var virgilCrypto = require('./crypto/virgil-crypto');
 var createVirgilClient = require('./client/virgil-client');
 var publishCardRequest = require('./client/publish-card-request');
 var revokeCardRequest = require('./client/revoke-card-request');
@@ -42,7 +42,7 @@ function virgil (config) {
 }
 
 virgil.client = createVirgilClient;
-virgil.crypto = createVirgilCrypto();
+virgil.crypto = virgilCrypto;
 virgil.publishCardRequest = publishCardRequest;
 virgil.revokeCardRequest = revokeCardRequest;
 virgil.requestSigner = requestSigner;

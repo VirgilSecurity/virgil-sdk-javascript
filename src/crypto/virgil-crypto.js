@@ -497,4 +497,4 @@ function virgilCrypto() {
 	}
 }
 
-module.exports = virgilCrypto;
+module.exports = virgilCrypto();

@@ -1,6 +1,6 @@
 'use strict';
 
-var createVirgilCrypto = require('./crypto/virgil-crypto');
+var virgilCrypto = require('./crypto/virgil-crypto');
 var createVirgilClient = require('./client/virgil-client');
 var cardValidator = require('./client/card-validator');
 var defaultKeyStorage = require('./key-storage/default-key-storage');
@@ -59,7 +59,7 @@ var utils = require('./shared/utils');
  * @constructs VirgilAPIContext
  * */
 function virgilAPIContext (config) {
-	var crypto = config.crypto || createVirgilCrypto();
+	var crypto = config.crypto || virgilCrypto;
 	var keyStorage = config.keyStorage ||
 		defaultKeyStorage(defaultStorageAdapter({
 			dir: 'VirgilSecurityKeys', // node.js
