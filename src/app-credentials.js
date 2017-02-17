@@ -4,7 +4,7 @@
  * @typedef {Object} AppCredentialsInfo
  *
  * @property {string} appId - The application id from Developer portal.
- * @property {(Buffer|string)} appKeyMaterial - The application's private key
+ * @property {(Buffer|string)} appKeyData - The application's private key
  * 		material. If it's a string, an encoding of base64 is assumed.
  * @property {string} [appKeyPassword] - Optional password the app key is
  * 		encrypted with (if applies).
@@ -23,7 +23,7 @@ var utils = require('./shared/utils');
  *
  * var credentials = virgil.appCredentials({
  * 		appId: 'appId',
- * 		appKeyMaterial: 'app_key_material_base64',
+ * 		appKeyData: 'app_key_material_base64',
  * 		appKeyPassword: 'app_key_password'
  * });
  *
@@ -33,7 +33,7 @@ var utils = require('./shared/utils');
  * */
 function appCredentials (params) {
 	var appId = params.appId;
-	var appKeyMaterial = params.appKeyMaterial;
+	var appKeyData = params.appKeyData;
 	var appKeyPassword = params.appKeyPassword;
 
 	utils.assert(utils.isString(appId),
@@ -41,10 +41,10 @@ function appCredentials (params) {
 		'a string. Got ' + typeof appId);
 
 	utils.assert(
-		utils.isBuffer(appKeyMaterial) || utils.isString(appKeyMaterial),
-		'appCredentials expects appKeyMaterial config parameter to be passed' +
+		utils.isBuffer(appKeyData) || utils.isString(appKeyData),
+		'appCredentials expects appKeyData config parameter to be passed' +
 		' as a Buffer or a base64-encoded string. ' +
-		'Got ' + typeof appKeyMaterial);
+		'Got ' + typeof appKeyData);
 
 
 	return /** @lends {AppCredentials} */ {
@@ -62,7 +62,7 @@ function appCredentials (params) {
 		 * @returns {CryptoKeyHandle}
          */
 		getAppKey: function (crypto) {
-			return crypto.importPrivateKey(appKeyMaterial, appKeyPassword);
+			return crypto.importPrivateKey(appKeyData, appKeyPassword);
 		}
 	}
 }

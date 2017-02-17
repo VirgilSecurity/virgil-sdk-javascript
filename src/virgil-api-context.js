@@ -12,7 +12,7 @@ var utils = require('./shared/utils');
  * @typedef {Object} CardVerifierInfo
  * @property {string} cardId - Id of the card whose signature is to be
  * 		verified.
- * @property {(Buffer|string)} publicKeyMaterial - The public key to use
+ * @property {(Buffer|string)} publicKeyData - The public key to use
  * 		for signature verification.
  * */
 
@@ -50,7 +50,7 @@ var utils = require('./shared/utils');
  * 		},
  * 		cardVerifiers: [{
  *			cardId: 'id_of_card_whose_signature_needs_to_be_verified',
- *		 	publicKeyMaterial: 'public_key_bytes_in_base64'
+ *		 	publicKeyData: 'public_key_bytes_in_base64'
  * 		}]
  * });
  *
@@ -72,7 +72,7 @@ function virgilAPIContext (config) {
 	if (config.cardVerifiers) {
 		var verifiers = utils.toArray(config.cardVerifiers);
 		verifiers.forEach(function (verifier) {
-			validator.addVerifier(verifier.cardId, verifier.publicKeyMaterial);
+			validator.addVerifier(verifier.cardId, verifier.publicKeyData);
 		});
 	}
 

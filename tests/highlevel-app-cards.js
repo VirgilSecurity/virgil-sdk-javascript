@@ -11,7 +11,7 @@ var KEY_PASSWORD = 'q1w2e3$';
 function setup() {
 	var appCredentials = {
 		appId: virgilConfig.appCardId,
-		appKeyMaterial: virgilConfig.appPrivateKey,
+		appKeyData: virgilConfig.appPrivateKey,
 		appKeyPassword: virgilConfig.appPrivateKeyPassword
 	};
 
