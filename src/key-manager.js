@@ -1,7 +1,7 @@
 'use strict';
 
 var utils = require('./shared/utils');
-var virgilKey = require('./virgil-key');
+var VirgilKey = require('./virgil-key');
 
 /**
  * Constructs and initializes objects that implement cryptographic key
@@ -22,7 +22,7 @@ function keyManager(context) {
          */
 		generate: function () {
 			var keyPair = crypto.generateKeys();
-			return virgilKey(context, keyPair.privateKey);
+			return new VirgilKey(context, keyPair.privateKey);
 		},
 
 		/**
@@ -43,7 +43,7 @@ function keyManager(context) {
 
 			return storage.load(name, password)
 				.then(function (privateKey) {
-					return virgilKey(context, privateKey);
+					return new VirgilKey(context, privateKey);
 				});
 		},
 

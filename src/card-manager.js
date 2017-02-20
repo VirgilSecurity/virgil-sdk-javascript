@@ -3,7 +3,7 @@
 
 var utils = require('./shared/utils');
 var takeSnapshot = require('./helpers/take-snapshot');
-var virgilCard = require('./virgil-card');
+var VirgilCard = require('./virgil-card');
 var CardScope = require('./client/card-scope');
 var IdentityType = require('./client/card-identity-type');
 var RevocationReason = require('./client/card-revocation-reason');
@@ -60,7 +60,7 @@ function cardManager (context) {
 			};
 
 			var card = createCardModel(params, ownerKey);
-			return virgilCard(context, card);
+			return new VirgilCard(context, card);
 		},
 
 		/**
@@ -98,7 +98,7 @@ function cardManager (context) {
 			};
 
 			var card = createCardModel(params, ownerKey);
-			return virgilCard(context, card);
+			return new VirgilCard(context, card);
 		},
 
 		/**
@@ -237,7 +237,7 @@ function cardManager (context) {
 		get: function (cardId) {
 			return client.getCard(cardId)
 				.then(function (card) {
-					return virgilCard(context, card);
+					return new VirgilCard(context, card);
 				});
 		},
 
@@ -254,7 +254,7 @@ function cardManager (context) {
 
 			var json = utils.base64Decode(exportedCard, 'utf8');
 			var model = CardModel.import(json);
-			return virgilCard(context, model);
+			return new VirgilCard(context, model);
 		}
 	};
 
@@ -308,7 +308,7 @@ function cardManager (context) {
 		return client.searchCards(criteria)
 			.then(function (cards) {
 				return cards.map(function (card) {
-					return virgilCard(context, card);
+					return new VirgilCard(context, card);
 				});
 			});
 	}
