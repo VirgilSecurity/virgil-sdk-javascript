@@ -2,11 +2,11 @@
 [![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](npmjs)
 [![Contact Support](https://img.shields.io/badge/contact-support-yellow.svg)][support]
 
-[Installation](#installation) | [Get Started](#get-started) | [Initialization](#initialization)
+[Installation](#installation) | [Get Started](#get-started) | [Initialization](#initialization) | [Documentation](#documentation)
 
-VirgilSecurity provides a set of APIs for adding security to your applications. With a few simple API calls you can send encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
+[Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
 
-For more details see the Javascript documentation on [virgilsecurity.com/docs/javascript](js_getstarted)
+For more details, have a look at the [Javascript documentation](js_getstarted).
 
 ## Installation
 
@@ -44,7 +44,7 @@ __Next:__ [Get Started with the JS SDK](js_getstarted).
 
 ## Getting Started
 
-Virgil Security makes encryption super easy to add to any application. With our SDK you create a public __Virgil Card__ for each user. With these in place you can easily encrypt any data in the client.
+Virgil Security makes it super easy to add encryption to any application. With our SDK you create a public [__Virgil Card__](#link_to_virgil_cards_guide) for every one of your users and devices. With these in place you can easily encrypt any data in the client.
 
 ```js
 // find Alice's card(s)
@@ -58,7 +58,7 @@ virgil.cards.find(["alice"])
   });
 ```
 
-On the receiving client decryption can be achieved with that user's stored key.
+The receiving user uses their stored private key to decrypt the message.
 
 
 ```js
@@ -70,27 +70,28 @@ virgil.keys.load("alices_key_1", "mypassword")
   });
 ```
 
-__Next:__ Learn more about [encryption](js_getstarted_encryption), [storage](js_getstarted_storage), [data integrity](js_getstarted_data_integrity) and [passwordless login](js_getstarted_passwordless_login).
+__Next:__ [Encrypted communication](js_getstarted_encryption) is just one of the few things Virgil Security is capable of. Have a look at our guides on  [Encrypted Storage](js_getstarted_storage), [Data Integrity](js_getstarted_data_integrity) and [Passwordless Login](js_getstarted_passwordless_login) for more information.
 
 
 ## Initialization
 
-To use this SDK you first need to [sign up for an account ](https://developer.virgilsecurity.com/account/signup) and create your first __application__. Make sure to save your __private key__ for your application.
+To use this SDK you first need to [sign up for an account](https://developer.virgilsecurity.com/account/signup) and create your first __application__. Make sure to save the __private key__ for your application.
 
 After the application is ready, create an __application token__. Your app will use this to make authenticated requests from your clients. A final thing to note down is your application's __app id__.
 
 #### Browser Initialization
 
-To initialize the SDK in a web browser we will only need the __access token__ we created.
+To initialize the SDK in a web browser you will only need the __access token__ you created.
 
-```javascript
+```js
 var client = virgil.client("[ACCESS_TOKEN]");
 ```
 
-> __Note:__ this client will have limited capabilities. For example, it will be able to generate new __Cards__ but it will need a server side client to transmit these to Virgil.
+> __Note:__ this client will have [limited capabilities](#guide_on_client_access_permissions). For example, it will be able to generate new __Cards__ but it will need a server-side client to transmit these to Virgil.
 
 #### Server-Side Initialization
 
+To initialize the SDK on the server side we will need the __access token__, __app id__ and the __App Key__ you created on the [Developer Dashboard](#link_to_dashboard).
 
 ```javascript
 var Virgil = require("virgil-sdk");
@@ -105,11 +106,11 @@ var virgil = Virgil({
 });
 ```
 
-Next: [Learn more about our initializing the Javascript SDK](js_guide_initialization) in our documentation.
+Next: [Learn more about our the different ways of initializing the Javascript SDK](js_guide_initialization) in our documentation.
 
 ## Documentation
 
-Virgil Security has a powerful set of APIs and our documentation is here to get you started today.
+Virgil Security has a powerful set of APIs, and the documentation is there to get you started today.
 
 * [Get Started](#get_started_root) documentation
   * [Initialize the SDK](#initialize_root)
@@ -117,6 +118,10 @@ Virgil Security has a powerful set of APIs and our documentation is here to get 
   * [Encrypted communication](#encrypted_comms)
   * [Data integrity](#data_integrity)
   * [Passwordless login](#passwordless_login)
+* [Guides](#guides_link)
+  * [Virgil Cards](#guide_cards)
+  * [Virgil Keys](#guide_keys)
+* [Tutorials](#tutorials_link)
 
 Alternatively, head over to our [Reference documentaton](#reference_docs) for in-depth information about every SDK method, it's arguments and return types.
 
@@ -127,7 +132,6 @@ This library is released under the [3-clause BSD License](LICENSE).
 ## Help
 
 Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) and [email](support).
-
 
 [support]: mailto:support@virgilsecurity.com
 [js_getstarted]: https://virgilsecurity.com/docs/js/get_started
