@@ -11,8 +11,6 @@ var VirgilKey = require('./virgil-key');
  * @constructs {KeyManager}
  */
 function keyManager(context) {
-	var crypto = context.crypto;
-	var storage = context.keyStorage;
 
 	return /** @lends {KeyManager} */ {
 
@@ -21,7 +19,7 @@ function keyManager(context) {
 		 * @returns {VirgilKey}
          */
 		generate: function () {
-			var keyPair = crypto.generateKeys();
+			var keyPair = context.crypto.generateKeys();
 			return new VirgilKey(context, keyPair.privateKey);
 		},
 
@@ -41,10 +39,10 @@ function keyManager(context) {
 				'load expects password argument to be passed as a string. ' +
 				'Got ' + typeof  password);
 
-			return storage.load(name)
+			return context.keyStorage.load(name)
 				.then(function (privateKeyData) {
-					var privateKey = crypto.importPrivateKey(
-						privateKeyData, 
+					var privateKey = context.crypto.importPrivateKey(
+						privateKeyData,
 						password);
 					return new VirgilKey(context, privateKey);
 				});
@@ -60,7 +58,7 @@ function keyManager(context) {
 				'destroy expects name argument to be passed as a string. ' +
 				'Got ' + typeof name);
 
-			return storage.remove(name);
+			return context.keyStorage.remove(name);
 		}
 	}
 }

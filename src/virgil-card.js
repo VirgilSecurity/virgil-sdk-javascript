@@ -14,22 +14,10 @@ var requestSigner = require('./client/request-signer');
  */
 function VirgilCard (context, card) {
 	/**
-	 * @type {Crypto}
+	 * @type {VirgilAPIContext}
 	 * @private
-	 * */
-	this._crypto = context.crypto;
-
-	/**
-	 * @type {VirgilClient}
-	 * @private
-	 * */
-	this._client = context.client;
-
-	/**
-	 * @type {AppCredentials}
-	 * @private
-	 * */
-	this._credentials = context.credentials;
+     */
+	this._context = context;
 
 	/**
 	 * @type {CardModel}
@@ -43,7 +31,7 @@ function VirgilCard (context, card) {
 	 * @type {CryptoKeyHandle}
 	 * @private
 	 * */
-	this._publicKey = this._crypto.importPublicKey(card.publicKey);
+	this._publicKey = context.crypto.importPublicKey(card.publicKey);
 }
 
 VirgilCard.prototype = {
@@ -103,7 +91,7 @@ VirgilCard.prototype = {
  * @returns {Buffer}
  */
 VirgilCard.prototype.encrypt = function (data) {
-	return this._crypto.encrypt(data, this._publicKey);
+	return this._context.crypto.encrypt(data, this._publicKey);
 };
 
 /**
@@ -115,7 +103,7 @@ VirgilCard.prototype.encrypt = function (data) {
  * 		and public key, otherwise False.
  */
 VirgilCard.prototype.verify = function (data, signature) {
-	return this._crypto.verify(data, signature, this._publicKey);
+	return this._context.crypto.verify(data, signature, this._publicKey);
 };
 
 /**
@@ -137,7 +125,7 @@ VirgilCard.prototype.verify = function (data, signature) {
  * @returns {Promise.<confirmIdentityCallback>}
  */
 VirgilCard.prototype.checkIdentity = function (extraFields) {
-	var client = this._client;
+	var client = this._context.client;
 	var card = this._card;
 	extraFields = utils.isObject(extraFields) ? extraFields : {};
 	return client.verifyIdentity(card.identity, card.identityType, extraFields)
@@ -156,7 +144,7 @@ VirgilCard.prototype.checkIdentity = function (extraFields) {
  * @returns {Promise}
  */
 VirgilCard.prototype.publish = function () {
-	utils.assert(this._credentials,
+	utils.assert(this._context.credentials,
 		'Cannot publish card in application scope. ' +
 		'App credentials are required but missing.');
 
@@ -169,13 +157,13 @@ VirgilCard.prototype.publish = function () {
 		card.signatures,
 		params);
 
-	var appId = this._credentials.getAppId();
-	var appKey = this._credentials.getAppKey(this._crypto);
-	var signer = requestSigner(this._crypto);
+	var appId = this._context.credentials.getAppId();
+	var appKey = this._context.credentials.getAppKey(this._context.crypto);
+	var signer = requestSigner(this._context.crypto);
 
 	signer.authoritySign(request, appId, appKey);
 
-	return this._client.publishCard(request)
+	return this._context.client.publishCard(request)
 		.then(function (publishedCard) {
 			that._card = publishedCard;
 		});
@@ -198,7 +186,7 @@ VirgilCard.prototype.publishAsGlobal = function (validationToken) {
 		validationToken
 	);
 
-	return this._client.publishGlobalCard(request)
+	return this._context.client.publishGlobalCard(request)
 		.then(function (publishedCard) {
 			that._card = publishedCard;
 		});

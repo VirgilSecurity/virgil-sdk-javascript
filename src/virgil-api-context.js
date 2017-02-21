@@ -1,10 +1,9 @@
 'use strict';
 
 var virgilCrypto = require('./crypto/virgil-crypto');
-var createVirgilClient = require('./client/virgil-client');
+var virgilClient = require('./client/virgil-client');
 var cardValidator = require('./client/card-validator');
-var defaultKeyStorage = require('./key-storage/default-key-storage');
-var defaultStorageAdapter = require('./key-storage/adapters');
+var defaultKeyStorage = require('./key-storage');
 var appCredentials = require('./app-credentials');
 var utils = require('./shared/utils');
 
@@ -17,7 +16,7 @@ var utils = require('./shared/utils');
  * */
 
 /**
- * @typedef {Object} VirgilAPIConfig
+ * @typedef {Object} VirgilAPIConfiguration
  * @property {string} [accessToken] - The access token required by Virgil Cards
  * 		service to read and write application-level cards.
  * @property {AppCredentialsInfo} [appCredentials] - The application's
@@ -25,49 +24,63 @@ var utils = require('./shared/utils');
  * @property {(CardVerifierInfo|CardVerifierInfo[])} [cardVerifiers] - Object
  * 		(or an array of objects) specifying the ids of Virgil Cards whose
  * 		signatures will be verified on other cards returned by API methods.
- * @property {KeyStorage} [keyStorage] - Custom implementation of private keys storage.
- * @property {Crypto} [crypto] - Custom implementation of crypto operations provider.
- * @property {VirgilClientParams} [clientParams] - Virgil services client initialization
- * 		options.
+ * @property {KeyStorage} [keyStorage] - Custom implementation of private keys
+ * 		storage.
+ * @property {string} [keyStoragePath] - File system path to the folder where
+ * 		private keys will be stored by default. Node.js only.
+ * @property {string} [keyStorageName] - Name of the store where private keys
+ * 		will be stored by default. Browsers only.
+ * @property {Crypto} [crypto] - Custom implementation of crypto operations
+ * 		provider.
+ * @property {VirgilClientParams} [clientParams] - Virgil services client
+ * 		initialization options.
  *
  * */
+
+var DEFAULTS = {
+	crypto: virgilCrypto,
+	keyStoragePath: './VirgilSecurityKeys',
+	keyStorageName: 'VirgilSecurityKeys'
+};
 
 /**
- * Creates and initializes the VirgilAPIContext objects.
+ * A class representing Virgil API Client execution context.
  *
- * <code>VirgilAPIContext</code> objects are not to be created directly using
- * the <code>new</code> keyword. Use the <code>virgilAPIContext()</code>
- * factory function to create an instance.
- *
- * @example
- *
- * var context = virgilAPIContext({
- * 		accessToken: 'access_token',
- * 		appCredentials: {
- * 			appId: 'appId',
- * 			appKeyMaterial: 'app_key_material_base64',
- * 			appKeyPassword: 'app_key_password'
- * 		},
- * 		cardVerifiers: [{
- *			cardId: 'id_of_card_whose_signature_needs_to_be_verified',
- *		 	publicKeyData: 'public_key_bytes_in_base64'
- * 		}]
- * });
- *
- * @param {VirgilAPIConfig} config - The Virgil API configuration object.
- *
- * @constructs VirgilAPIContext
- * */
-function virgilAPIContext (config) {
-	var crypto = config.crypto || virgilCrypto;
-	var keyStorage = config.keyStorage ||
-		defaultKeyStorage(defaultStorageAdapter({
-			dir: 'VirgilSecurityKeys', // node.js
-			name: 'VirgilSecurityKeys' // browser
-		}), crypto);
+ * @param {VirgilAPIConfiguration} config - - The Virgil API configuration
+ * 		object.
+ * @constructor
+ */
+function VirgilAPIContext (config) {
+	/** @type {VirgilAPIConfiguration} */
+	this._config = utils.assign({}, DEFAULTS, config);
+}
 
-	var client = createVirgilClient(config.accessToken, config.clientParams);
-	var validator = cardValidator(crypto);
+VirgilAPIContext.prototype = {
+	get client () {
+		return this._client || (this._client = getClient(this._config));
+	},
+
+	get credentials () {
+		return this._credentials ||
+			(this._credentials = getAppCredentials(this._config));
+	},
+
+	get crypto () {
+		return this._config.crypto;
+	},
+
+	get keyStorage () {
+		return this._keyStorage ||
+			(this._keyStorage = getKeyStorage(this._config));
+	}
+};
+
+function getClient (config) {
+	var client = virgilClient(
+		config.accessToken,
+		config.clientParams);
+
+	var validator = cardValidator(config.crypto);
 
 	if (config.cardVerifiers) {
 		var verifiers = utils.toArray(config.cardVerifiers);
@@ -77,20 +90,22 @@ function virgilAPIContext (config) {
 	}
 
 	client.setCardValidator(validator);
-
-	var credentials = config.appCredentials
-		? appCredentials(config.appCredentials) : null;
-
-	return /** @lends {VirgilAPIContext} */ {
-		/** @type {Crypto} */
-		crypto: crypto,
-		/** @type {KeyStorage} */
-		keyStorage: keyStorage,
-		/** @type {AppCredentials} */
-		credentials: credentials,
-		/** @type {VirgilClient} */
-		client: client
-	};
+	return client;
 }
 
-module.exports = virgilAPIContext;
+function getKeyStorage (config) {
+	return config.keyStorage ||
+		defaultKeyStorage({
+			dir: config.keyStoragePath,
+			name: config.keyStorageName
+		});
+}
+
+function getAppCredentials (config) {
+	return config.appCredentials
+		? appCredentials(config.appCredentials) : null;
+}
+
+
+
+module.exports = VirgilAPIContext;

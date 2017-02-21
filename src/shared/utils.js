@@ -26,6 +26,10 @@ function isBuffer(obj) {
 	return Buffer.isBuffer(obj);
 }
 
+function isUndefined(obj) {
+	return typeof obj === 'undefined';
+}
+
 function assert(condition, errorMessage) {
 	if (!condition) {
 		throw createError(errorMessage);
@@ -90,6 +94,7 @@ module.exports = {
 	isNumber: isNumber,
 	isFunction: isFunction,
 	isObject: isObject,
+	isUndefined: isUndefined,
 	isBuffer: isBuffer,
 	isArrayBuffer: isArrayBuffer,
 	assign: assign,

@@ -26,9 +26,6 @@ var revokeCardRequest = require('./client/revoke-card-request');
  * @constructs {CardManager}
  */
 function cardManager (context) {
-	var crypto = context.crypto;
-	var client = context.client;
-
 	return /** @lends {CardManager} */ {
 
 		/**
@@ -188,13 +185,13 @@ function cardManager (context) {
 			});
 
 			var appId = context.credentials.getAppId();
-			var appKey = context.credentials.getAppKey(crypto);
-			var fingerprint = crypto.calculateFingerprint(
+			var appKey = context.credentials.getAppKey(context.crypto);
+			var fingerprint = context.crypto.calculateFingerprint(
 				request.getSnapshot());
-			var signature = crypto.sign(fingerprint, appKey);
+			var signature = context.crypto.sign(fingerprint, appKey);
 
 			request.appendSignature(appId, signature);
-			return client.revokeCard(request);
+			return context.client.revokeCard(request);
 		},
 
 		/**
@@ -221,12 +218,12 @@ function cardManager (context) {
 				revocation_reason: RevocationReason.UNSPECIFIED
 			}, validationToken);
 
-			var fingerprint = crypto.calculateFingerprint(
+			var fingerprint = context.crypto.calculateFingerprint(
 				request.getSnapshot());
 			var signature = key.sign(fingerprint);
 
 			request.appendSignature(card.id, signature);
-			return client.revokeGlobalCard(request);
+			return context.client.revokeGlobalCard(request);
 		},
 
 		/**
@@ -235,7 +232,7 @@ function cardManager (context) {
 		 * @returns {Promise.<VirgilCard>}
          */
 		get: function (cardId) {
-			return client.getCard(cardId)
+			return context.client.getCard(cardId)
 				.then(function (card) {
 					return new VirgilCard(context, card);
 				});
@@ -266,6 +263,7 @@ function cardManager (context) {
 	 * @private
      */
 	function createCardModel (params, ownerKey) {
+
 		var cardProps = {
 			identity: params.identity,
 			identity_type: params.identity_type,
@@ -275,7 +273,7 @@ function cardManager (context) {
 		};
 
 		var snapshot = takeSnapshot(cardProps);
-		var cardFingerprint = crypto.calculateFingerprint(snapshot);
+		var cardFingerprint = context.crypto.calculateFingerprint(snapshot);
 		var cardId = cardFingerprint.toString('hex');
 		var cardSignature = ownerKey.sign(cardFingerprint);
 		var meta = { signs: {} };
@@ -305,7 +303,7 @@ function cardManager (context) {
 			scope: scope
 		};
 
-		return client.searchCards(criteria)
+		return context.client.searchCards(criteria)
 			.then(function (cards) {
 				return cards.map(function (card) {
 					return new VirgilCard(context, card);

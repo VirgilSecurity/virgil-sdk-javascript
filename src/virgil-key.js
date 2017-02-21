@@ -13,16 +13,10 @@ var utils = require('./shared/utils');
  */
 function VirgilKey (context, privateKey) {
 	/**
-	 * @type {KeyStorage}
+	 * @type {VirgilAPIContext}
 	 * @private
      */
-	this._storage = context.keyStorage;
-
-	/**
-	 * @type {Crypto}
-	 * @private
-     */
-	this._crypto = context.crypto;
+	this._context = context;
 
 	/**
 	 * @type {CryptoKeyHandle}
@@ -46,11 +40,11 @@ VirgilKey.prototype.save = function (name, password) {
 		'save expects password argument to be passed as a string. ' +
 		'Got ' + typeof  password);
 
-	var privateKeyData = this._crypto.exportPrivateKey(
+	var privateKeyData = this._context.crypto.exportPrivateKey(
 		this._privateKey,
 		password);
 
-	return this._storage.save(name, privateKeyData);
+	return this._context.keyStorage.save(name, privateKeyData);
 };
 
 /**
@@ -60,7 +54,7 @@ VirgilKey.prototype.save = function (name, password) {
  * @returns {Buffer} - The signature.
  */
 VirgilKey.prototype.sign = function (data) {
-	return this._crypto.sign(data, this._privateKey);
+	return this._context.crypto.sign(data, this._privateKey);
 };
 
 /**
@@ -70,7 +64,7 @@ VirgilKey.prototype.sign = function (data) {
  * @returns {Buffer}
  */
 VirgilKey.prototype.decrypt = function (cipherData) {
-	return this._crypto.decrypt(cipherData, this._privateKey);
+	return this._context.crypto.decrypt(cipherData, this._privateKey);
 };
 
 /**
@@ -87,7 +81,8 @@ VirgilKey.prototype.signThenEncrypt = function (data, recipientCards) {
 		.map(function (card) {
 			return card.publicKey;
 		});
-	return this._crypto.signThenEncrypt(data, this._privateKey, publicKeys);
+	return this._context.crypto.signThenEncrypt(
+		data, this._privateKey, publicKeys);
 };
 
 /**
@@ -101,7 +96,7 @@ VirgilKey.prototype.signThenEncrypt = function (data, recipientCards) {
  * @returns {*}
  */
 VirgilKey.prototype.decryptThenVerify = function (cipherData, signerCard) {
-	return this._crypto.decryptThenVerify(
+	return this._context.crypto.decryptThenVerify(
 		cipherData, this._privateKey, signerCard.publicKey);
 };
 
@@ -112,7 +107,7 @@ VirgilKey.prototype.decryptThenVerify = function (cipherData, signerCard) {
  * @returns {Buffer} - The raw key material.
  */
 VirgilKey.prototype.export = function (password) {
-	return this._crypto.exportPrivateKey(this._privateKey, password);
+	return this._context.crypto.exportPrivateKey(this._privateKey, password);
 };
 
 /**
@@ -120,8 +115,9 @@ VirgilKey.prototype.export = function (password) {
  * @returns {Buffer} - The raw key material.
  */
 VirgilKey.prototype.exportPublicKey = function () {
-	var publicKeyHandle = this._crypto.extractPublicKey(this._privateKey);
-	return this._crypto.exportPublicKey(publicKeyHandle);
+	var publicKeyHandle = this._context.crypto.extractPublicKey(
+		this._privateKey);
+	return this._context.crypto.exportPublicKey(publicKeyHandle);
 };
 
 module.exports = VirgilKey;

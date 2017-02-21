@@ -11,28 +11,31 @@ var CardModel = require('./client/card-model');
 var IdentityType = require('./client/card-identity-type');
 var CardScope = require('./client/card-scope');
 var RevocationReason = require('./client/card-revocation-reason');
-var virgilAPIContext = require('./virgil-api-context');
 var VirgilAPI = require('./virgil-api');
 var utils = require('./shared/utils');
 
 /**
  *
- * @param {(string|VirgilAPIConfig)} config - Virgil access token or Virgil
- * 		API configuration object.
+ * @param {(string|VirgilAPIConfiguration)} config - Virgil access token or
+ * 		Virgil API configuration object.
  * @returns {VirgilAPI}
  */
 function virgil (config) {
-	utils.assert(utils.isString(config) || utils.isObject(config),
-		'Virgil API requires a configuration object or an access token ' +
-		'string.');
 
-	if (utils.isString(config)) {
+	utils.assert(
+		utils.isUndefined(config) ||
+		utils.isString(config) ||
+		utils.isObject(config),
+		'Virgil API expects "config" argument to be an object or a string ' +
+		'if provided.');
+
+	if (utils.isUndefined(config)) {
+		config = {};
+	} else if (utils.isString(config)) {
 		config = { accessToken: config };
 	}
 
-	var context = virgilAPIContext(config);
-
-	return new VirgilAPI(context);
+	return new VirgilAPI(config);
 }
 
 virgil.client = createVirgilClient;
