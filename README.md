@@ -2,17 +2,17 @@
 [![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](npmjs)
 [![Contact Support](https://img.shields.io/badge/contact-support-yellow.svg)][support]
 
-[Installation](#installation) | [Get Started](#get-started) | [Initialization](#initialization) | [Documentation](#documentation)
+[Installation](#installation) | [Get Started](#get-started) | [Initialization](#initialization) | [Documentation](#documentation) | [Support](#support)
 
 [Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
 
-For more details, have a look at the [Javascript documentation](js_getstarted).
+For a full overview head over to our Javascript [Get Started](js_getstarted) guides.
 
 ## Installation
 
-This client can be used both server-side in a Node application, and client-side in a web browser. Initialization for each side is slightly different.
+This client can be used both __server-side__ in a Node application, and __client-side__ in a web browser.
 
-#### Server-side
+### On a server
 
 This module requires Node 0.12+ and can be installed via NPM.
 
@@ -22,7 +22,7 @@ npm install virgil-sdk --save
 
 __Next:__ [Get Started with the JS SDK](js_getstarted).
 
-#### Client-side
+### In the browser
 
 The client-side SDK targets ECMAScript5+ compatible browsers.
 
@@ -32,7 +32,7 @@ src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.0.0/virgil-sdk.min
 crossorigin="anonymous"></script>
 ```
 
-Alternatively [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases)
+Alternatively [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases) into your application.
 
 > __Warning:__
 > Please note that in the browser environment we use Web Workers
@@ -42,7 +42,7 @@ to invoke some cryptographic operations. As a result, Chrome and Opera will rais
 
 __Next:__ [Get Started with the JS SDK](js_getstarted).
 
-## Getting Started
+## Getting Started: Encryption
 
 Virgil Security makes it super easy to add encryption to any application. With our SDK you create a public [__Virgil Card__](#link_to_virgil_cards_guide) for every one of your users and devices. With these in place you can easily encrypt any data in the client.
 
@@ -58,7 +58,7 @@ virgil.cards.find(["alice"])
   });
 ```
 
-The receiving user uses their stored private key to decrypt the message.
+The receiving user then uses their stored __private key__ to decrypt the message.
 
 
 ```js
@@ -70,16 +70,14 @@ virgil.keys.load("alices_key_1", "mypassword")
   });
 ```
 
-__Next:__ [Encrypted communication](js_getstarted_encryption) is just one of the few things Virgil Security is capable of. Have a look at our guides on  [Encrypted Storage](js_getstarted_storage), [Data Integrity](js_getstarted_data_integrity) and [Passwordless Login](js_getstarted_passwordless_login) for more information.
+__Next:__ [Encrypted communication](js_getstarted_encryption) is just one of the few things our SDK can do. Have a look at our guides on  [Encrypted Storage](js_getstarted_storage), [Data Integrity](js_getstarted_data_integrity) and [Passwordless Login](js_getstarted_passwordless_login) for more information.
 
 
 ## Initialization
 
-To use this SDK you first need to [sign up for an account](https://developer.virgilsecurity.com/account/signup) and create your first __application__. Make sure to save the __private key__ for your application.
+To use this SDK you need to [sign up for an account](https://developer.virgilsecurity.com/account/signup) and create your first __application__. Make sure to save the __app id__, __private key__ and it's __password__. After this, create an __application token__ for your application to make authenticated requests from your clients.
 
-After the application is ready, create an __application token__. Your app will use this to make authenticated requests from your clients. A final thing to note down is your application's __app id__.
-
-#### Browser Initialization
+### In the browser
 
 To initialize the SDK in a web browser you will only need the __access token__ you created.
 
@@ -89,7 +87,7 @@ var client = virgil.client("[ACCESS_TOKEN]");
 
 > __Note:__ this client will have [limited capabilities](#guide_on_client_access_permissions). For example, it will be able to generate new __Cards__ but it will need a server-side client to transmit these to Virgil.
 
-#### Server-Side Initialization
+### On a server
 
 To initialize the SDK on the server side we will need the __access token__, __app id__ and the __App Key__ you created on the [Developer Dashboard](#link_to_dashboard).
 
@@ -129,7 +127,7 @@ Alternatively, head over to our [Reference documentaton](#reference_docs) for in
 
 This library is released under the [3-clause BSD License](LICENSE).
 
-## Help
+## Support
 
 Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) and [email](support).
 
