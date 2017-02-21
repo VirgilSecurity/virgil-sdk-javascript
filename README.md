@@ -6,7 +6,7 @@
 
 [Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
 
-For a full overview head over to our Javascript [Get Started](js_getstarted) guides.
+For a full overview head over to our Javascript [Get Started](#js_getstarted) guides.
 
 ## Installation
 
@@ -14,13 +14,13 @@ This client can be used both __server-side__ in a Node application, and __client
 
 ### On a server
 
-This module requires Node 0.12+ and can be installed via NPM.
+This module requires Node 4.0+ and can be installed via NPM.
 
 ```sh
 npm install virgil-sdk --save
 ```
 
-__Next:__ [Get Started with the JS SDK](js_getstarted).
+__Next:__ [Get Started with the JS SDK](#js_getstarted).
 
 ### In the browser
 
@@ -28,7 +28,7 @@ The client-side SDK targets ECMAScript5+ compatible browsers.
 
 ```html
 <script
-src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.0.0/virgil-sdk.min.js"
+src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.0.2/virgil-sdk.min.js"
 crossorigin="anonymous"></script>
 ```
 
@@ -40,7 +40,7 @@ to invoke some cryptographic operations. As a result, Chrome and Opera will rais
 >
 > `"Uncaught SecurityError: Script at '[blob url here]' cannot be accessed from origin 'null'."`
 
-__Next:__ [Get Started with the JS SDK](js_getstarted).
+__Next:__ [Get Started with the JS SDK](#js_getstarted).
 
 ## Encryption Example
 
@@ -48,11 +48,11 @@ Virgil Security makes it super easy to add encryption to any application. With o
 
 ```js
 // find Alice's card(s)
-virgil.cards.find(["alice"])
+virgilClient.cards.find(["alice"])
   .then(function (cards) {
     // encrypt the message using Alice's cards
     var message = "Hello Alice!";
-    var encryptedMessage = virgil.encryptFor(message, cards);
+    var encryptedMessage = virgilClient.encryptFor(message, cards);
     // transmit the message with your preferred technology
     transmitMessage(encryptedMessage.toString("base64"));
   });
@@ -63,7 +63,7 @@ The receiving user then uses their stored __private key__ to decrypt the message
 
 ```js
 // load Alice's Key from storage.
-virgil.keys.load("alices_key_1", "mypassword")
+virgilClient.keys.load("alices_key_1", "mypassword")
   .then(function (key) {
     // decrypt the message using the key
     var data = key.decrypt(transferData).toString();
@@ -72,7 +72,7 @@ virgil.keys.load("alices_key_1", "mypassword")
 
 __Next:__ To [get you properly started](#js_encryption_get_started_guide) you'll need to know how to create and store Virgil Cards. Our [Get Started guide](#js_encryption_get_started_guide) will get you there all the way.
 
-__Also:__ [Encrypted communication](js_getstarted_encryption) is just one of the few things our SDK can do. Have a look at our guides on  [Encrypted Storage](js_getstarted_storage), [Data Integrity](js_getstarted_data_integrity) and [Passwordless Login](js_getstarted_passwordless_login) for more information.
+__Also:__ [Encrypted communication](#js_getstarted_encryption) is just one of the few things our SDK can do. Have a look at our guides on  [Encrypted Storage](#js_getstarted_storage), [Data Integrity](#js_getstarted_data_integrity) and [Passwordless Login](#js_getstarted_passwordless_login) for more information.
 
 
 ## Initialization
@@ -84,19 +84,19 @@ To use this SDK you need to [sign up for an account](https://developer.virgilsec
 To initialize the SDK in a web browser you will only need the __access token__ you created.
 
 ```js
-var client = virgil.client("[ACCESS_TOKEN]");
+var virgilClient = virgil("[ACCESS_TOKEN]");
 ```
 
 > __Note:__ this client will have [limited capabilities](#guide_on_client_access_permissions). For example, it will be able to generate new __Cards__ but it will need a server-side client to transmit these to Virgil.
 
 ### On a server
 
-To initialize the SDK on the server side we will need the __access token__, __app id__ and the __App Key__ you created on the [Developer Dashboard](#link_to_dashboard).
+To initialize the SDK on the server side we will need the __access token__, __app id__ and the __App Key__ you created on the [Developer Dashboard](https://developer.virgilsecurity.com/).
 
 ```javascript
-var Virgil = require("virgil-sdk");
+var virgil = require("virgil-sdk");
 var appKey = require("fs").readFileSync("/path/to/app/key");
-var virgil = Virgil({
+var virgilClient = virgil({
     accessToken: "[ACCESS_TOKEN]",
     appCredentials: {
         appId: "[APP_ID]",
@@ -106,7 +106,7 @@ var virgil = Virgil({
 });
 ```
 
-Next: [Learn more about our the different ways of initializing the Javascript SDK](js_guide_initialization) in our documentation.
+Next: [Learn more about our the different ways of initializing the Javascript SDK](#js_guide_initialization) in our documentation.
 
 ## Documentation
 
