@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
 var mkdirp = require('mkdirp');
-var utils = require('../../shared/utils');
+var utils = require('../shared/utils');
 
 var defaults = {
 	dir: process.cwd(),
@@ -32,7 +32,7 @@ function fileSystemStorage (config) {
 
 	init();
 
-	return /** @implements {StorageAdapter} */ {
+	return /** @implements {KeyStorage} */ {
 		save: save,
 		load: load,
 		remove: remove

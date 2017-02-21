@@ -14,8 +14,8 @@
   "main": "index.js",
   "browser": {
     "./": "./dist/virgil-sdk.dev.js",
-    "./src/key-storage/adapters/index.js": "./src/key-storage/adapters/browser.js",
-    "./tests/spec/node/file-system-storage.js": "./tests/spec/browser/local-storage.js"
+    "./src/key-storage/index.js": "./src/key-storage/browser.js",
+    "./tests/spec/node/file-system-storage.js": "./tests/spec/browser/localforage-storage.js"
   },
   "scripts": {
     "test": "tape -r dotenv/config tests dotenv_config_path=tests/.env",

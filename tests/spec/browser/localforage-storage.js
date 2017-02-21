@@ -1,14 +1,14 @@
 'use strict';
 
 var localforage = require('localforage');
-var localStorage = require('../../../src/key-storage/adapters/local-storage');
+var browserStorage = require('../../../src/key-storage/localforage-storage');
 var runStorageAdapterTestSuite =
 	require('../common/storage-adapter-test-runner');
 
 var TEST_KEY = 'Virgil.TestKeyStorage';
 
 function setup () {
-	return localStorage({
+	return browserStorage({
 		name: TEST_KEY
 	});
 }

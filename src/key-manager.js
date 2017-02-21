@@ -41,8 +41,11 @@ function keyManager(context) {
 				'load expects password argument to be passed as a string. ' +
 				'Got ' + typeof  password);
 
-			return storage.load(name, password)
-				.then(function (privateKey) {
+			return storage.load(name)
+				.then(function (privateKeyData) {
+					var privateKey = crypto.importPrivateKey(
+						privateKeyData, 
+						password);
 					return new VirgilKey(context, privateKey);
 				});
 		},

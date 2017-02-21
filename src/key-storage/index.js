@@ -6,29 +6,26 @@
  */
 
 /**
- * Persists the private key encrypted with password under a name.
+ * Persists the private key material under a name.
  *
  * @function
- * @name KeyStorage#store
+ * @name KeyStorage#save
  * @param {string} name - Name of key.
- * @param {CryptoKeyHandle} privateKey - Key to store.
- * @param {string} password - Password to use for encryption.
+ * @param {Buffer} privateKeyData - The key material to store.
  *
  * @returns {Promise} - A Promise that will be resolved when the key
  * has been persisted.
  * */
 
 /**
- * Gets the private key stored under name decrypting it using the
- * password.
+ * Gets the private key stored under name.
  *
  * @function
  * @name KeyStorage#load
  * @param {string} name Name of key.
- * @param {string} password Password to use for decryption.
  *
- * @return {Promise.<CryptoKeyHandle>} Promise that will be resolved
- * with the stored key.
+ * @return {Promise.<Buffer>} Promise that will be resolved
+ * with the stored key material.
  * */
 
 /**
@@ -41,3 +38,6 @@
  * @returns {Promise} - A Promise that will be resolved when the key
  * has been removed.
  * */
+
+
+module.exports = require('./file-system-storage');

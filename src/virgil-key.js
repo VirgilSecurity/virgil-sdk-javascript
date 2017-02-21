@@ -46,7 +46,11 @@ VirgilKey.prototype.save = function (name, password) {
 		'save expects password argument to be passed as a string. ' +
 		'Got ' + typeof  password);
 
-	return this._storage.store(name, this._privateKey, password);
+	var privateKeyData = this._crypto.exportPrivateKey(
+		this._privateKey,
+		password);
+
+	return this._storage.save(name, privateKeyData);
 };
 
 /**

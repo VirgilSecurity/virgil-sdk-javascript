@@ -2,29 +2,23 @@
 
 var localforage = require('localforage');
 var toArrayBuffer = require('to-arraybuffer');
-var utils = require('../../shared/utils');
+var utils = require('../shared/utils');
 
 var defaults = {
 	driver: localforage.INDEXEDDB
 };
 
 /**
- *  Creates a storage backend that uses file system for persistence.
+ *  Creates a storage backend that uses "localforage" for persistence.
  *  @param {(Object|string)} config - The storage configuration options.
- *  		If config is a string, then it specifies the storage folder path.
- *  @param {string} [config.dir='.'] - Storage directory path. Can be relative
- *  		path, in which case it is considered relative to current working
- *  		directory.
- *  @param {string} [config.encoding] - The encoding that the data read and
- *  		written to file system is encoded with. If not specified - raw
- *  		Buffers will be read and written.
+ *  @param {string} [config.name='VirgilSecurityKeys'] - The storage name.
  * */
-function browserStorage (config) {
+function localforageStorage (config) {
 	config = utils.assign({}, defaults, config || {});
 
 	var store = localforage.createInstance(config);
 
-	return /** @implements {StorageAdapter} */ {
+	return /** @implements {KeyStorage} */ {
 
 		/**
 		 * Persist the value under the key.
@@ -68,4 +62,4 @@ function browserStorage (config) {
 	};
 }
 
-module.exports = browserStorage;
+module.exports = localforageStorage;
