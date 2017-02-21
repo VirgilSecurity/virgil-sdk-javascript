@@ -109,9 +109,9 @@ function cardManager (context) {
          * @returns {Promise.<VirgilCard>}
          */
 		find: function (identity, identityType) {
-			utils.assert(utils.isString(identity),
-				'find expects identity argument to be passed as a string. ' +
-				'Got ' + typeof identity);
+			utils.assert(utils.isArray(identity) || utils.isString(identity),
+				'find expects identity argument to be passed as a string ' +
+				'or an array of strings. Got ' + typeof identity);
 
 			return findCards(identity, identityType, CardScope.APPLICATION);
 		},
@@ -127,9 +127,9 @@ function cardManager (context) {
 		 * @returns {Promise.<VirgilCard>}
 		 */
 		findGlobal: function (identity, identityType) {
-			utils.assert(utils.isString(identity),
-				'findGlobal expects identity argument to be passed as ' +
-				'a string. Got ' + typeof identity);
+			utils.assert(utils.isArray(identity) || utils.isString(identity),
+				'findGlobal expects identity argument to be passed as a ' +
+				'string or an array of strings. Got ' + typeof identity);
 
 			return findCards(identity, identityType, CardScope.GLOBAL);
 		},
