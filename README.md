@@ -2,7 +2,7 @@
 [![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](npmjs)
 [![Contact Support](https://img.shields.io/badge/contact-support-yellow.svg)][support]
 
-[Installation](#installation) | [Get Started](#get-started) | [Initialization](#initialization) | [Documentation](#documentation) | [Support](#support)
+[Installation](#installation) | [Encryption Example](#encryption-example) | [Initialization](#initialization) | [Documentation](#documentation) | [Support](#support)
 
 [Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
 
@@ -42,7 +42,7 @@ to invoke some cryptographic operations. As a result, Chrome and Opera will rais
 
 __Next:__ [Get Started with the JS SDK](js_getstarted).
 
-## Getting Started: Encryption
+## Encryption Example
 
 Virgil Security makes it super easy to add encryption to any application. With our SDK you create a public [__Virgil Card__](#link_to_virgil_cards_guide) for every one of your users and devices. With these in place you can easily encrypt any data in the client.
 
@@ -70,7 +70,9 @@ virgil.keys.load("alices_key_1", "mypassword")
   });
 ```
 
-__Next:__ [Encrypted communication](js_getstarted_encryption) is just one of the few things our SDK can do. Have a look at our guides on  [Encrypted Storage](js_getstarted_storage), [Data Integrity](js_getstarted_data_integrity) and [Passwordless Login](js_getstarted_passwordless_login) for more information.
+__Next:__ To [get you properly started](#js_encryption_get_started_guide) you'll need to know how to create and store Virgil Cards. Our [Get Started guide](#js_encryption_get_started_guide) will get you there all the way.
+
+__Also:__ [Encrypted communication](js_getstarted_encryption) is just one of the few things our SDK can do. Have a look at our guides on  [Encrypted Storage](js_getstarted_storage), [Data Integrity](js_getstarted_data_integrity) and [Passwordless Login](js_getstarted_passwordless_login) for more information.
 
 
 ## Initialization
