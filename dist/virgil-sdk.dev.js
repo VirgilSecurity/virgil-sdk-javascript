@@ -56,7 +56,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = __webpack_require__(159);
+	module.exports = __webpack_require__(160);
 
 /***/ },
 /* 1 */
@@ -64,16 +64,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* WEBPACK VAR INJECTION */(function(Buffer) {'use strict';
 
-	var _typeof2 = __webpack_require__(17);
+	var _typeof2 = __webpack_require__(2);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	var assign = __webpack_require__(285);
-	var mapValues = __webpack_require__(291);
-	var isEmpty = __webpack_require__(290);
-	var isArrayBuffer = __webpack_require__(289);
+	var assign = __webpack_require__(286);
+	var mapValues = __webpack_require__(292);
+	var isEmpty = __webpack_require__(291);
+	var isArrayBuffer = __webpack_require__(290);
 	var VirgilError = __webpack_require__(149);
 
 	function isString(obj) {
@@ -94,6 +94,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function isBuffer(obj) {
 		return Buffer.isBuffer(obj);
+	}
+
+	function isUndefined(obj) {
+		return typeof obj === 'undefined';
 	}
 
 	function assert(condition, errorMessage) {
@@ -155,6 +159,7 @@ return /******/ (function(modules) { // webpackBootstrap
 		isNumber: isNumber,
 		isFunction: isFunction,
 		isObject: isObject,
+		isUndefined: isUndefined,
 		isBuffer: isBuffer,
 		isArrayBuffer: isArrayBuffer,
 		assign: assign,
@@ -170,6 +175,32 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _iterator = __webpack_require__(163);
+
+	var _iterator2 = _interopRequireDefault(_iterator);
+
+	var _symbol = __webpack_require__(162);
+
+	var _symbol2 = _interopRequireDefault(_symbol);
+
+	var _typeof = typeof _symbol2.default === "function" && typeof _iterator2.default === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default && obj !== _symbol2.default.prototype ? "symbol" : typeof obj; };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.default) === "symbol" ? function (obj) {
+	  return typeof obj === "undefined" ? "undefined" : _typeof(obj);
+	} : function (obj) {
+	  return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default && obj !== _symbol2.default.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof(obj);
+	};
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -474,12 +505,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var store      = __webpack_require__(61)('wks')
 	  , uid        = __webpack_require__(32)
-	  , Symbol     = __webpack_require__(5).Symbol
+	  , Symbol     = __webpack_require__(6).Symbol
 	  , USE_SYMBOL = typeof Symbol == 'function';
 
 	var $exports = module.exports = function(name){
@@ -490,14 +521,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	$exports.store = store;
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports) {
 
 	var core = module.exports = {version: '2.4.0'};
 	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 	// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
@@ -506,7 +537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var freeGlobal = __webpack_require__(112);
@@ -521,7 +552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	/**
@@ -553,7 +584,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	var hasOwnProperty = {}.hasOwnProperty;
@@ -562,12 +593,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dP         = __webpack_require__(14)
+	var dP         = __webpack_require__(15)
 	  , createDesc = __webpack_require__(29);
-	module.exports = __webpack_require__(12) ? function(object, key, value){
+	module.exports = __webpack_require__(13) ? function(object, key, value){
 	  return dP.f(object, key, createDesc(1, value));
 	} : function(object, key, value){
 	  object[key] = value;
@@ -575,7 +606,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	module.exports = function(it){
@@ -583,26 +614,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(10);
+	var isObject = __webpack_require__(11);
 	module.exports = function(it){
 	  if(!isObject(it))throw TypeError(it + ' is not an object!');
 	  return it;
 	};
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Thank's IE8 for his funny defineProperty
-	module.exports = !__webpack_require__(13)(function(){
+	module.exports = !__webpack_require__(14)(function(){
 	  return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 	});
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = function(exec){
@@ -614,15 +645,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var anObject       = __webpack_require__(11)
+	var anObject       = __webpack_require__(12)
 	  , IE8_DOM_DEFINE = __webpack_require__(95)
 	  , toPrimitive    = __webpack_require__(64)
 	  , dP             = Object.defineProperty;
 
-	exports.f = __webpack_require__(12) ? Object.defineProperty : function defineProperty(O, P, Attributes){
+	exports.f = __webpack_require__(13) ? Object.defineProperty : function defineProperty(O, P, Attributes){
 	  anObject(O);
 	  P = toPrimitive(P, true);
 	  anObject(Attributes);
@@ -635,7 +666,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// to indexed object, toObject with fallback for non-array-like ES3 strings
@@ -646,11 +677,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsNative = __webpack_require__(226),
-	    getValue = __webpack_require__(248);
+	var baseIsNative = __webpack_require__(227),
+	    getValue = __webpack_require__(249);
 
 	/**
 	 * Gets the native function at `key` of `object`.
@@ -669,32 +700,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports.__esModule = true;
-
-	var _iterator = __webpack_require__(162);
-
-	var _iterator2 = _interopRequireDefault(_iterator);
-
-	var _symbol = __webpack_require__(161);
-
-	var _symbol2 = _interopRequireDefault(_symbol);
-
-	var _typeof = typeof _symbol2.default === "function" && typeof _iterator2.default === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default && obj !== _symbol2.default.prototype ? "symbol" : typeof obj; };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = typeof _symbol2.default === "function" && _typeof(_iterator2.default) === "symbol" ? function (obj) {
-	  return typeof obj === "undefined" ? "undefined" : _typeof(obj);
-	} : function (obj) {
-	  return obj && typeof _symbol2.default === "function" && obj.constructor === _symbol2.default && obj !== _symbol2.default.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof(obj);
-	};
-
-/***/ },
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -711,8 +716,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(34),
-	    getRawTag = __webpack_require__(246),
-	    objectToString = __webpack_require__(271);
+	    getRawTag = __webpack_require__(247),
+	    objectToString = __webpack_require__(272);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -779,16 +784,16 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(165), __esModule: true };
+	module.exports = { "default": __webpack_require__(166), __esModule: true };
 
 /***/ },
 /* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global    = __webpack_require__(5)
-	  , core      = __webpack_require__(4)
+	var global    = __webpack_require__(6)
+	  , core      = __webpack_require__(5)
 	  , ctx       = __webpack_require__(52)
-	  , hide      = __webpack_require__(9)
+	  , hide      = __webpack_require__(10)
 	  , PROTOTYPE = 'prototype';
 
 	var $export = function(type, name, source){
@@ -909,14 +914,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var META     = __webpack_require__(32)('meta')
-	  , isObject = __webpack_require__(10)
-	  , has      = __webpack_require__(8)
-	  , setDesc  = __webpack_require__(14).f
+	  , isObject = __webpack_require__(11)
+	  , has      = __webpack_require__(9)
+	  , setDesc  = __webpack_require__(15).f
 	  , id       = 0;
 	var isExtensible = Object.isExtensible || function(){
 	  return true;
 	};
-	var FREEZE = !__webpack_require__(13)(function(){
+	var FREEZE = !__webpack_require__(14)(function(){
 	  return isExtensible(Object.preventExtensions({}));
 	});
 	var setMeta = function(it){
@@ -985,9 +990,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var def = __webpack_require__(14).f
-	  , has = __webpack_require__(8)
-	  , TAG = __webpack_require__(3)('toStringTag');
+	var def = __webpack_require__(15).f
+	  , has = __webpack_require__(9)
+	  , TAG = __webpack_require__(4)('toStringTag');
 
 	module.exports = function(it, tag, stat){
 	  if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
@@ -1017,11 +1022,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var listCacheClear = __webpack_require__(258),
-	    listCacheDelete = __webpack_require__(259),
-	    listCacheGet = __webpack_require__(260),
-	    listCacheHas = __webpack_require__(261),
-	    listCacheSet = __webpack_require__(262);
+	var listCacheClear = __webpack_require__(259),
+	    listCacheDelete = __webpack_require__(260),
+	    listCacheGet = __webpack_require__(261),
+	    listCacheHas = __webpack_require__(262),
+	    listCacheSet = __webpack_require__(263);
 
 	/**
 	 * Creates an list cache object.
@@ -1055,7 +1060,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(6);
+	var root = __webpack_require__(7);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -1094,7 +1099,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isKeyable = __webpack_require__(256);
+	var isKeyable = __webpack_require__(257);
 
 	/**
 	 * Gets the data for `map`.
@@ -1118,7 +1123,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(16);
+	var getNative = __webpack_require__(17);
 
 	/* Built-in method references that are verified to be native. */
 	var nativeCreate = getNative(Object, 'create');
@@ -1276,7 +1281,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayLikeKeys = __webpack_require__(214),
+	var arrayLikeKeys = __webpack_require__(215),
 	    baseKeys = __webpack_require__(107),
 	    isArrayLike = __webpack_require__(40);
 
@@ -1321,7 +1326,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 	var normalizeHeaderName = __webpack_require__(136);
 
 	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
@@ -1786,7 +1791,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(166), __esModule: true };
+	module.exports = { "default": __webpack_require__(167), __esModule: true };
 
 /***/ },
 /* 49 */
@@ -1802,9 +1807,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict'
 
-	var base64 = __webpack_require__(163)
-	var ieee754 = __webpack_require__(203)
-	var isArray = __webpack_require__(164)
+	var base64 = __webpack_require__(164)
+	var ieee754 = __webpack_require__(204)
+	var isArray = __webpack_require__(165)
 
 	exports.Buffer = Buffer
 	exports.SlowBuffer = SlowBuffer
@@ -3599,7 +3604,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  , IObject  = __webpack_require__(55)
 	  , toObject = __webpack_require__(31)
 	  , toLength = __webpack_require__(63)
-	  , asc      = __webpack_require__(175);
+	  , asc      = __webpack_require__(176);
 	module.exports = function(TYPE, $create){
 	  var IS_MAP        = TYPE == 1
 	    , IS_FILTER     = TYPE == 2
@@ -3648,7 +3653,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	// optional / simple context binding
-	var aFunction = __webpack_require__(171);
+	var aFunction = __webpack_require__(172);
 	module.exports = function(fn, that, length){
 	  aFunction(fn);
 	  if(that === undefined)return fn;
@@ -3708,8 +3713,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-	var anObject    = __webpack_require__(11)
-	  , dPs         = __webpack_require__(187)
+	var anObject    = __webpack_require__(12)
+	  , dPs         = __webpack_require__(188)
 	  , enumBugKeys = __webpack_require__(54)
 	  , IE_PROTO    = __webpack_require__(60)('IE_PROTO')
 	  , Empty       = function(){ /* empty */ }
@@ -3724,7 +3729,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    , gt     = '>'
 	    , iframeDocument;
 	  iframe.style.display = 'none';
-	  __webpack_require__(180).appendChild(iframe);
+	  __webpack_require__(181).appendChild(iframe);
 	  iframe.src = 'javascript:'; // eslint-disable-line no-script-url
 	  // createDict = iframe.contentWindow.Object;
 	  // html.removeChild(iframe);
@@ -3760,7 +3765,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(9);
+	module.exports = __webpack_require__(10);
 
 /***/ },
 /* 60 */
@@ -3776,7 +3781,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global = __webpack_require__(5)
+	var global = __webpack_require__(6)
 	  , SHARED = '__core-js_shared__'
 	  , store  = global[SHARED] || (global[SHARED] = {});
 	module.exports = function(key){
@@ -3810,7 +3815,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.1.1 ToPrimitive(input [, PreferredType])
-	var isObject = __webpack_require__(10);
+	var isObject = __webpack_require__(11);
 	// instead of the ES6 spec version, we didn't implement @@toPrimitive case
 	// and the second argument - flag - preferred type is a string
 	module.exports = function(it, S){
@@ -3826,11 +3831,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var global         = __webpack_require__(5)
-	  , core           = __webpack_require__(4)
+	var global         = __webpack_require__(6)
+	  , core           = __webpack_require__(5)
 	  , LIBRARY        = __webpack_require__(56)
 	  , wksExt         = __webpack_require__(66)
-	  , defineProperty = __webpack_require__(14).f;
+	  , defineProperty = __webpack_require__(15).f;
 	module.exports = function(name){
 	  var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
 	  if(name.charAt(0) != '_' && !(name in $Symbol))defineProperty($Symbol, name, {value: wksExt.f(name)});
@@ -3840,14 +3845,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports.f = __webpack_require__(3);
+	exports.f = __webpack_require__(4);
 
 /***/ },
 /* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(16),
-	    root = __webpack_require__(6);
+	var getNative = __webpack_require__(17),
+	    root = __webpack_require__(7);
 
 	/* Built-in method references that are verified to be native. */
 	var Map = getNative(root, 'Map');
@@ -3859,11 +3864,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var mapCacheClear = __webpack_require__(263),
-	    mapCacheDelete = __webpack_require__(264),
-	    mapCacheGet = __webpack_require__(265),
-	    mapCacheHas = __webpack_require__(266),
-	    mapCacheSet = __webpack_require__(267);
+	var mapCacheClear = __webpack_require__(264),
+	    mapCacheDelete = __webpack_require__(265),
+	    mapCacheGet = __webpack_require__(266),
+	    mapCacheHas = __webpack_require__(267),
+	    mapCacheSet = __webpack_require__(268);
 
 	/**
 	 * Creates a map cache object to store key-value pairs.
@@ -3956,7 +3961,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(7),
+	var isArray = __webpack_require__(8),
 	    isSymbol = __webpack_require__(77);
 
 	/** Used to match property names within property paths. */
@@ -4042,7 +4047,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsArguments = __webpack_require__(222),
+	var baseIsArguments = __webpack_require__(223),
 	    isObjectLike = __webpack_require__(20);
 
 	/** Used for built-in method references. */
@@ -4084,8 +4089,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(6),
-	    stubFalse = __webpack_require__(295);
+	/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(7),
+	    stubFalse = __webpack_require__(296);
 
 	/** Detect free variable `exports`. */
 	var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -4205,7 +4210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsTypedArray = __webpack_require__(227),
+	var baseIsTypedArray = __webpack_require__(228),
 	    baseUnary = __webpack_require__(108),
 	    nodeUtil = __webpack_require__(116);
 
@@ -4240,7 +4245,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 	var settle = __webpack_require__(128);
 	var buildURL = __webpack_require__(131);
 	var parseHeaders = __webpack_require__(137);
@@ -4529,9 +4534,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _keys = __webpack_require__(160);
+	var _keys = __webpack_require__(161);
 
 	var _keys2 = _interopRequireDefault(_keys);
+
+	var _typeof2 = __webpack_require__(2);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
 
 	var _create = __webpack_require__(48);
 
@@ -4589,8 +4598,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * 			{Buffer} or a base64-encoded {string}.
 	  * */
 		function addVerifier(signerId, publicKey) {
-			assert(isString(signerId), 'Argument "signerId" must be a string.');
-			assert(isBuffer(publicKey) || isString(publicKey), 'Argument "publicKey" must be a Buffer or a ' + 'base64-encoded string');
+			assert(isString(signerId), 'addVerifier expects signerId argument to be passed as ' + 'a string. Got ' + (typeof signerId === 'undefined' ? 'undefined' : (0, _typeof3.default)(signerId)));
+
+			assert(isBuffer(publicKey) || isString(publicKey), 'addVerifier expects publicKey argument to be passed as a Buffer' + ' or a base64-encoded string. Got ' + (typeof publicKey === 'undefined' ? 'undefined' : (0, _typeof3.default)(publicKey)));
 
 			publicKey = isString(publicKey) ? base64Decode(publicKey) : publicKey;
 
@@ -4619,9 +4629,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * by this validator.
 	  *
 	  * @param {CardModel} card - The card to check.
-	  * @reutrn {boolean} - True if the card can be validated, otherwise False.
+	  * @returns {boolean} - True if the card can be validated, otherwise False.
 	  * */
 		function canValidate(card) {
+			if (!card) {
+				return false;
+			}
+
 			// ignore legacy cards
 			return card.version !== '3.0';
 		}
@@ -4686,7 +4700,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 86 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	/**
 	 * @fileoverview A factory function used to create objects capable of signing
@@ -4695,6 +4709,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * */
 
 	'use strict';
+
+	var utils = __webpack_require__(1);
 
 	/**
 	 * The factory function used to create <code>RequestSigner</code> instances.
@@ -4707,7 +4723,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @constructs RequestSigner
 	 * */
-
 	function requestSigner(crypto) {
 
 		return (/** @lends Request Signer */{
@@ -4726,6 +4741,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @param {CryptoKeyHandle} privateKey - The owner's private key.
 	  * */
 		function selfSign(request, privateKey) {
+			utils.assert(request, 'selfSign expects request argument to be passed.');
+			utils.assert(privateKey, 'selfSign expects privateKey argument to be passed.');
+
 			var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
 			var signerId = fingerprint.toString('hex');
 
@@ -4741,6 +4759,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @param {CryptoKeyHandle} privateKey - Authority's private key.
 	  * */
 		function authoritySign(request, signerId, privateKey) {
+			utils.assert(request, 'authoritySign expects request argument to be passed.');
+			utils.assert(signerId, 'authoritySign expects signerId argument to be passed.');
+			utils.assert(privateKey, 'authoritySign expects privateKey argument to be passed.');
+
 			var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
 			request.appendSignature(signerId, crypto.sign(fingerprint, privateKey));
 		}
@@ -4754,7 +4776,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _typeof2 = __webpack_require__(17);
+	var _typeof2 = __webpack_require__(2);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -4842,7 +4864,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _typeof2 = __webpack_require__(17);
+	var _typeof2 = __webpack_require__(2);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -4899,7 +4921,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		var opts;
 
 		if (isString(accessToken)) {
-			assert(!isEmpty(accessToken), 'virgil client factory expects access token to be a ' + 'non-empty string');
+			assert(!isEmpty(accessToken), 'virgil client factory expects accessToken to not be empty');
+
 			opts = utils.assign({}, options || {}, { accessToken: accessToken });
 		} else if (isObject(accessToken)) {
 			opts = accessToken;
@@ -4923,7 +4946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise.<CardModel>}
 	    * */
 				getCard: function getCard(cardId) {
-					assert(isString(cardId) && !isEmpty(cardId), 'getCard expects card id to be passed as a string. Got ' + (typeof cardId === 'undefined' ? 'undefined' : (0, _typeof3.default)(cardId)));
+					assert(isString(cardId), 'getCard expects cardId argument to be passed as a string. ' + 'Got ' + (typeof cardId === 'undefined' ? 'undefined' : (0, _typeof3.default)(cardId)));
 
 					return cardsReadOnlyClient.get(cardId).then(responseToCard).then(function (card) {
 						validateCards(card);
@@ -4940,9 +4963,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise.<CardModel[]>}
 	    * */
 				searchCards: function searchCards(criteria) {
-					assert(isObject(criteria) || isString(criteria), 'searchCards expects search criteria to be passed as an object ' + 'or a string. Got ' + (typeof criteria === 'undefined' ? 'undefined' : (0, _typeof3.default)(criteria)));
-
-					assert(!isEmpty(criteria), 'searchCards expects search criteria to not be empty.');
+					assert(isObject(criteria) || isString(criteria), 'searchCards expects criteria argument to be passed as an ' + 'object or a string. Got ' + (typeof criteria === 'undefined' ? 'undefined' : (0, _typeof3.default)(criteria)));
 
 					if (isString(criteria)) {
 						criteria = {
@@ -4969,7 +4990,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise.<CardModel>} The published card.
 	    * */
 				publishCard: function publishCard(request) {
-					assert(isObject(request), 'publishCard expects a request to be passed as an object. ' + 'Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
+					assert(isObject(request), 'publishCard expects a request object to be passed. ' + 'Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
 
 					return cardsClient.publish(request.getRequestBody()).then(responseToCard).then(function (card) {
 						validateCards(card);
@@ -4985,7 +5006,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise}
 	    * */
 				revokeCard: function revokeCard(request) {
-					assert(isObject(request), 'revokeCard expects a request to be passed as an object. ' + 'Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
+					assert(isObject(request), 'revokeCard expects a request object to be passed. ' + 'Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
 
 					return cardsClient.revoke(request.card_id, request.getRequestBody());
 				},
@@ -5000,7 +5021,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * 		the published card.
 	    * */
 				publishGlobalCard: function publishGlobalCard(request) {
-					assert(isObject(request), 'publishGlobalCard expects a request to be passed as an ' + 'object. Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
+					assert(isObject(request), 'publishGlobalCard expects a request object to be passed. ' + 'Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
 
 					var requestBody = request.getRequestBody();
 
@@ -5019,7 +5040,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise}
 	    * */
 				revokeGlobalCard: function revokeGlobalCard(request) {
-					assert(isObject(request), 'revokeGlobalCard expects a request to be passed as an ' + 'object. Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
+					assert(isObject(request), 'revokeGlobalCard expects a request object to be passed. ' + 'Got ' + (typeof request === 'undefined' ? 'undefined' : (0, _typeof3.default)(request)));
 
 					var requestBody = request.getRequestBody();
 
@@ -5046,9 +5067,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * 		the action id.
 	    * */
 				verifyIdentity: function verifyIdentity(identity, identityType, extraFields) {
-					assert(isString(identity) && !isEmpty(identity), 'verifyIdentity expects an identity to be passed as a ' + 'string. Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
+					assert(isString(identity), 'verifyIdentity expects an identity argument to be passed ' + 'as a string. Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
 
-					assert(isString(identityType) && !isEmpty(identityType), 'verifyIdentity expects an identity type to be passed as a ' + 'string. Got ' + (typeof identityType === 'undefined' ? 'undefined' : (0, _typeof3.default)(identityType)));
+					assert(isString(identityType), 'verifyIdentity expects an identityType argument to be ' + 'passed as a string. Got ' + (typeof identityType === 'undefined' ? 'undefined' : (0, _typeof3.default)(identityType)));
 
 					return identityClient.verify({
 						type: identityType,
@@ -5079,8 +5100,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * 		the generated validation token.
 	    * */
 				confirmIdentity: function confirmIdentity(actionId, code, tokenParams) {
-					assert(isString(actionId) && !isEmpty(actionId), 'confirmIdentity expects action id to be passed as a ' + 'string. Got ' + (typeof actionId === 'undefined' ? 'undefined' : (0, _typeof3.default)(actionId)));
-					assert(isString(code) && !isEmpty(code), 'confirmIdentity expects confirmation code to be passed as ' + 'a string. Got ' + (typeof code === 'undefined' ? 'undefined' : (0, _typeof3.default)(code)));
+					assert(isString(actionId), 'confirmIdentity expects actionId argument to be passed ' + 'as a string. Got ' + (typeof actionId === 'undefined' ? 'undefined' : (0, _typeof3.default)(actionId)));
+					assert(isString(code), 'confirmIdentity expects code argument to be passed as ' + 'a string. Got ' + (typeof code === 'undefined' ? 'undefined' : (0, _typeof3.default)(code)));
 
 					return identityClient.confirm({
 						action_id: actionId,
@@ -5104,11 +5125,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise.<IdentityValidationResult>}
 	    * */
 				validateIdentity: function validateIdentity(identity, identityType, validationToken) {
-					assert(isString(identity) && !isEmpty(identity), 'validateIdentity expects an identity to be passed as a ' + 'string. Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
+					assert(isString(identity), 'validateIdentity expects identity argument to be passed ' + 'as a string. Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
 
-					assert(isString(identityType) && !isEmpty(identityType), 'validateIdentity expects an identity type to be passed as a ' + 'string. Got ' + (typeof identityType === 'undefined' ? 'undefined' : (0, _typeof3.default)(identityType)));
+					assert(isString(identityType), 'validateIdentity expects identityType argument to be ' + 'passed as a string. Got ' + (typeof identityType === 'undefined' ? 'undefined' : (0, _typeof3.default)(identityType)));
 
-					assert(isString(validationToken) && !isEmpty(validationToken), 'validateIdentity expects a validation token to be passed as ' + 'a string. Got ' + (typeof validationToken === 'undefined' ? 'undefined' : (0, _typeof3.default)(validationToken)));
+					assert(isString(validationToken), 'validateIdentity expects a validationToken argument to be ' + 'passed as a string. Got ' + (typeof validationToken === 'undefined' ? 'undefined' : (0, _typeof3.default)(validationToken)));
 
 					return identityClient.validate({
 						type: identityType,
@@ -5123,7 +5144,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @param {Object} validator - The validator object
 	    * */
 				setCardValidator: function setCardValidator(validator) {
-					assert(isObject(validator), 'setCardValidator expects a validator to be passed as an ' + 'object. Got ' + (typeof validator === 'undefined' ? 'undefined' : (0, _typeof3.default)(validator)));
+					assert(isObject(validator), 'setCardValidator expects validator argument to be passed ' + 'as an object. Got ' + (typeof validator === 'undefined' ? 'undefined' : (0, _typeof3.default)(validator)));
 
 					assert(isFunction(validator.validate), 'setCardValidator expects the "validate" method to be ' + 'defined on the validator object.');
 
@@ -5167,6 +5188,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var _typeof2 = __webpack_require__(2);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
 	var _weakMap = __webpack_require__(91);
 
 	var _weakMap2 = _interopRequireDefault(_weakMap);
@@ -5180,6 +5205,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var assert = __webpack_require__(1).assert;
 	var stringToBuffer = __webpack_require__(1).stringToBuffer;
 	var base64Decode = __webpack_require__(1).base64Decode;
+	var toArray = __webpack_require__(1).toArray;
 
 	VirgilCrypto = VirgilCrypto.VirgilCrypto || VirgilCrypto;
 
@@ -5194,12 +5220,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	/**
 	 * @constructs VirgilCrypto
-	 * @implements {Crypto}
 	 * */
 	function virgilCrypto() {
+
 		var keyMaterialStore = new _weakMap2.default();
 
-		return (/** @lends VirgilCrypto */{
+		return (/** @lends {VirgilCrypto} @implements {Crypto} */{
 				generateKeys: generateKeys,
 				importPrivateKey: importPrivateKey,
 				importPublicKey: importPublicKey,
@@ -5242,26 +5268,23 @@ return /******/ (function(modules) { // webpackBootstrap
 			return key;
 		}
 
-		/**
-	  * Returns the key material corresponding to the key handle or
-	  * throws an Error if the key does not exist.
-	  *
-	  * @returns {Buffer} - The key bytes.
-	  *
-	  * @private
-	  * */
-		function getKeyBytesFromHandle(keyHandle) {
-			var key = keyMaterialStore.get(keyHandle);
-			assert(Boolean(key), 'Object provided is not a valid key handle.');
-			return key;
-		}
-
 		function createPrivateKeyHandle(recipientId, value) {
 			return createKeyHandle('private', recipientId, value);
 		}
 
 		function createPublicKeyHandle(recipientId, value) {
 			return createKeyHandle('public', recipientId, value);
+		}
+
+		/**
+	  * Returns the key material corresponding to the key handle.
+	  *
+	  * @returns {{recipientId: Buffer, value: Buffer}} - The key data.
+	  *
+	  * @private
+	  * */
+		function getKeyBytesFromHandle(keyHandle) {
+			return keyMaterialStore.get(keyHandle);
 		}
 
 		/**
@@ -5296,7 +5319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {CryptoKeyHandle} - The imported key handle.
 	  * */
 		function importPrivateKey(keyMaterial, password) {
-			assert(isBuffer(keyMaterial) || isString(keyMaterial), 'importPrivateKey expects key material to be a Buffer or a ' + 'base64-encoded string. Got ' + Object.prototype.toString.call(keyMaterial));
+			assert(isBuffer(keyMaterial) || isString(keyMaterial), 'importPrivateKey expects keyMaterial argument to be a Buffer ' + 'or a base64-encoded string. Got ' + (typeof keyMaterial === 'undefined' ? 'undefined' : (0, _typeof3.default)(keyMaterial)));
 
 			var keyBytes = isString(keyMaterial) ? base64Decode(keyMaterial) : keyMaterial;
 
@@ -5321,7 +5344,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {CryptoKeyHandle} - The imported key handle.
 	  * */
 		function importPublicKey(publicKeyMaterial) {
-			assert(isBuffer(publicKeyMaterial) || isString(publicKeyMaterial), 'Argument "publicKeyMaterial" must be a Buffer or a string');
+			assert(isBuffer(publicKeyMaterial) || isString(publicKeyMaterial), 'importPublicKey expects publicKeyMaterial argument to be a ' + 'Buffer or a base64-encoded string. ' + 'Got ' + (typeof publicKeyMaterial === 'undefined' ? 'undefined' : (0, _typeof3.default)(publicKeyMaterial)));
 
 			var publicKeyBytes = isString(publicKeyMaterial) ? base64Decode(publicKeyMaterial) : publicKeyMaterial;
 
@@ -5339,8 +5362,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * */
 		function exportPrivateKey(privateKey, password) {
 			var keyData = getKeyBytesFromHandle(privateKey);
+			assert(keyData, 'exportPrivateKey expects privateKey argument to be ' + 'a valid private key handle.');
 
-			if (!password) {
+			if (!isString(password)) {
 				return VirgilCrypto.privateKeyToDER(keyData.value);
 			}
 
@@ -5358,6 +5382,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * */
 		function exportPublicKey(publicKey) {
 			var keyData = getKeyBytesFromHandle(publicKey);
+
+			assert(keyData, 'exportPublicKey expects publicKey argument to be ' + 'a valid public key handle.');
+
 			return VirgilCrypto.publicKeyToDER(keyData.value);
 		}
 
@@ -5374,7 +5401,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		function extractPublicKey(privateKey, password) {
 			var keyData = getKeyBytesFromHandle(privateKey);
 
-			password = password || '';
+			assert(keyData, 'extractPublicKey expects privateKey argument to be ' + 'a valid private key handle.');
+
+			password = isString(password) || '';
 
 			var publicKey = VirgilCrypto.extractPublicKey(keyData.value, stringToBuffer(password));
 			return createPublicKeyHandle(keyData.recipientId, VirgilCrypto.publicKeyToDER(publicKey));
@@ -5392,13 +5421,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {Buffer} - Encrypted data.
 	  * */
 		function encrypt(data, recipients) {
-			assert(isBuffer(data) || isString(data), 'Argument "data" must be a Buffer or a string.');
+			assert(isBuffer(data) || isString(data), 'encrypt expects data argument to be passed as a Buffer or ' + 'a string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
 
 			data = isString(data) ? stringToBuffer(data) : data;
-			recipients = Array.isArray(recipients) ? recipients : [recipients];
+			recipients = toArray(recipients);
 
 			var publicKeys = recipients.map(function (recipientKey) {
 				var keyData = getKeyBytesFromHandle(recipientKey);
+
+				assert(keyData, 'encrypt expects recipients argument to be a valid' + ' public key handle or an array of valid public key handles.');
 
 				return {
 					recipientId: keyData.recipientId,
@@ -5419,11 +5450,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {Buffer} - Decrypted data
 	  * */
 		function decrypt(cipherData, privateKey) {
-			assert(isBuffer(cipherData) || isString(cipherData), 'Argument "cipherData" must be a Buffer or a ' + 'base64-encoded string.');
+			assert(isBuffer(cipherData) || isString(cipherData), 'decrypt expects cipherData argument to be passed as a Buffer ' + 'or a base64-encoded string. Got ' + (typeof cipherData === 'undefined' ? 'undefined' : (0, _typeof3.default)(cipherData)));
+
+			var keyData = getKeyBytesFromHandle(privateKey);
+
+			assert(keyData, 'decrypt expects privateKey argument to be a valid ' + 'key handle.');
 
 			cipherData = isString(cipherData) ? base64Decode(cipherData) : cipherData;
 
-			var keyData = getKeyBytesFromHandle(privateKey);
 			return VirgilCrypto.decrypt(cipherData, keyData.recipientId, keyData.value);
 		}
 
@@ -5437,11 +5471,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {Buffer} - The signature.
 	  * */
 		function sign(data, privateKey) {
-			assert(isBuffer(data) || isString(data), 'Argument "data" must be a Buffer or a string.');
+			assert(isBuffer(data) || isString(data), 'sign expects data argument to be passed as a Buffer or ' + 'a string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
+
+			var keyData = getKeyBytesFromHandle(privateKey);
+
+			assert(keyData, 'sign expects privateKey argument to be a valid ' + 'key handle.');
 
 			data = isString(data) ? stringToBuffer(data) : data;
 
-			var keyData = getKeyBytesFromHandle(privateKey);
 			return VirgilCrypto.sign(data, keyData.value);
 		}
 
@@ -5458,14 +5495,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * 			validity of the signature for the data and public key.
 	  * */
 		function verify(data, signature, publicKey) {
-			assert(isBuffer(data) || isString(data), 'Argument "data" must be a Buffer or a string.');
+			assert(isBuffer(data) || isString(data), 'verify expects data argument to be passed as a Buffer or ' + 'a string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
 
-			assert(isBuffer(signature) || isString(data), 'Argument "signature" must be a Buffer or a ' + 'base64-encoded string.');
+			assert(isBuffer(signature) || isString(data), 'verify expects signature argument to be passed as a Buffer ' + 'or a base64-encoded string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
+
+			var keyData = getKeyBytesFromHandle(publicKey);
+
+			assert(keyData, 'verify expects publicKey argument to be a valid ' + 'key handle.');
 
 			data = isString(data) ? stringToBuffer(data) : data;
 			signature = isString(signature) ? base64Decode(signature) : signature;
 
-			var keyData = getKeyBytesFromHandle(publicKey);
 			return VirgilCrypto.verify(data, signature, keyData.value);
 		}
 
@@ -5476,22 +5516,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @param {Buffer|string} data - The data to sign and encrypt as a
 	  * 			{Buffer} or a {string} in UTF-8.
 	  * @param {CryptoKeyHandle} privateKey - The private key handle.
-	  * @param {CryptoKeyHandle|CryptoKeyHandle[]} publicKeys - The handle
+	  * @param {CryptoKeyHandle|CryptoKeyHandle[]} recipients - The handle
 	  * 		of a public key of the intended recipient or an array of
 	  * 		public key handles of multiple recipients.
 	  *
 	  * 	@returns {Buffer} Encrypted data with attached signature.
 	  * */
-		function signThenEncrypt(data, privateKey, publicKeys) {
-			assert(isBuffer(data) || isString(data), 'Argument "data" must be a Buffer or a string.');
-
-			data = isString(data) ? stringToBuffer(data) : data;
+		function signThenEncrypt(data, privateKey, recipients) {
+			assert(isBuffer(data) || isString(data), 'signThenEncrypt expects data argument to be passed as a Buffer ' + 'or a string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
 
 			var privateKeyData = getKeyBytesFromHandle(privateKey);
 
-			publicKeys = Array.isArray(publicKeys) ? publicKeys : [publicKeys];
-			var recipients = publicKeys.map(function (publicKey) {
-				var pubKeyData = getKeyBytesFromHandle(publicKey);
+			assert(privateKeyData, 'signThenEncrypt expects privateKey argument ' + ' to be a valid key handle.');
+
+			data = isString(data) ? stringToBuffer(data) : data;
+			recipients = toArray(recipients);
+
+			var publicKeys = recipients.map(function (recipient) {
+				var pubKeyData = getKeyBytesFromHandle(recipient);
+
+				assert(pubKeyData, 'signThenEncrypt expects recipients argument ' + 'to be a valid key handle or an array of valid key handles.');
 
 				return {
 					recipientId: pubKeyData.recipientId,
@@ -5499,7 +5543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				};
 			});
 
-			return VirgilCrypto.signThenEncrypt(data, privateKeyData.value, recipients);
+			return VirgilCrypto.signThenEncrypt(data, privateKeyData.value, publicKeys);
 		}
 
 		/**
@@ -5515,12 +5559,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * 			otherwise throws {code: VirgilCryptoError}.
 	  * */
 		function decryptThenVerify(cipherData, privateKey, publicKey) {
-			assert(isBuffer(cipherData) || isString(cipherData), 'Argument "cipherData" must be a Buffer or a ' + 'base64-encoded string.');
-
-			cipherData = isString(cipherData) ? base64Decode(cipherData) : cipherData;
+			assert(isBuffer(cipherData) || isString(cipherData), 'decryptThenVerify expects cipherData argument to be passed as ' + 'a Buffer or a base64-encoded string. Got ' + (typeof cipherData === 'undefined' ? 'undefined' : (0, _typeof3.default)(cipherData)));
 
 			var privateKeyData = getKeyBytesFromHandle(privateKey);
 			var publicKeyData = getKeyBytesFromHandle(publicKey);
+
+			assert(privateKeyData, 'decryptThenVerify expects privateKey argument' + ' to be a valid key handle.');
+			assert(publicKeyData, 'decryptThenVerify expects publicKey argument ' + 'to be a valid key handle.');
+
+			cipherData = isString(cipherData) ? base64Decode(cipherData) : cipherData;
 
 			return VirgilCrypto.decryptThenVerify(cipherData, privateKeyData.recipientId, privateKeyData.value, publicKeyData.value);
 		}
@@ -5549,7 +5596,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {Buffer} - The hash.
 	  * */
 		function hash(data, algorithm) {
-			assert(isBuffer(data) || isString(data), 'Argument "data" must be a Buffer or a string.');
+			assert(isBuffer(data) || isString(data), 'hash expects data argument to be passed as a Buffer or ' + 'a string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
 
 			data = isString(data) ? stringToBuffer(data) : data;
 			return VirgilCrypto.hash(data, algorithm);
@@ -5565,7 +5612,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {Buffer} Encrypted data.
 	  * */
 		function encryptWithPassword(data, password) {
-			assert(isBuffer(data) || isString(data), 'Argument "data" must be  a Buffer or a string');
+			assert(isBuffer(data) || isString(data), 'encryptWithPassword expects data argument to be passed as ' + 'a Buffer or a string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
+
+			assert(isString(password), 'encryptWithPassword expects password ' + 'argument to be passed as a string. Got ' + (typeof password === 'undefined' ? 'undefined' : (0, _typeof3.default)(password)));
 
 			data = isString(data) ? stringToBuffer(data) : data;
 
@@ -5582,14 +5631,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @returns {Buffer} Decrypted data.
 	  * */
 		function decryptWithPassword(cipherData, password) {
-			assert(isBuffer(cipherData) || isString(cipherData), 'Argument "cipherData" must be  a Buffer or a ' + 'base64-encoded string');
+			assert(isBuffer(cipherData) || isString(cipherData), 'decryptWithPassword expects cipherData argument to be passed as' + ' a Buffer or a base64-encoded string. Got ' + (typeof cipherData === 'undefined' ? 'undefined' : (0, _typeof3.default)(cipherData)));
+
+			assert(isString(password), 'decryptWithPassword expects password ' + 'argument to be passed as a string. Got ' + (typeof password === 'undefined' ? 'undefined' : (0, _typeof3.default)(password)));
 
 			cipherData = isString(cipherData) ? base64Decode(cipherData) : cipherData;
+
 			return VirgilCrypto.decrypt(cipherData, stringToBuffer(password));
 		}
 	}
 
-	module.exports = virgilCrypto;
+	module.exports = virgilCrypto();
 
 /***/ },
 /* 90 */
@@ -5619,7 +5671,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(170), __esModule: true };
+	module.exports = { "default": __webpack_require__(171), __esModule: true };
 
 /***/ },
 /* 92 */
@@ -5635,8 +5687,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(10)
-	  , document = __webpack_require__(5).document
+	var isObject = __webpack_require__(11)
+	  , document = __webpack_require__(6).document
 	  // in old IE typeof document.createElement is 'object'
 	  , is = isObject(document) && isObject(document.createElement);
 	module.exports = function(it){
@@ -5648,11 +5700,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ctx         = __webpack_require__(52)
-	  , call        = __webpack_require__(182)
-	  , isArrayIter = __webpack_require__(181)
-	  , anObject    = __webpack_require__(11)
+	  , call        = __webpack_require__(183)
+	  , isArrayIter = __webpack_require__(182)
+	  , anObject    = __webpack_require__(12)
 	  , toLength    = __webpack_require__(63)
-	  , getIterFn   = __webpack_require__(194)
+	  , getIterFn   = __webpack_require__(195)
 	  , BREAK       = {}
 	  , RETURN      = {};
 	var exports = module.exports = function(iterable, entries, fn, that, ITERATOR){
@@ -5677,7 +5729,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = !__webpack_require__(12) && !__webpack_require__(13)(function(){
+	module.exports = !__webpack_require__(13) && !__webpack_require__(14)(function(){
 	  return Object.defineProperty(__webpack_require__(93)('div'), 'a', {get: function(){ return 7; }}).a != 7;
 	});
 
@@ -5699,13 +5751,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	var LIBRARY        = __webpack_require__(56)
 	  , $export        = __webpack_require__(22)
 	  , redefine       = __webpack_require__(59)
-	  , hide           = __webpack_require__(9)
-	  , has            = __webpack_require__(8)
+	  , hide           = __webpack_require__(10)
+	  , has            = __webpack_require__(9)
 	  , Iterators      = __webpack_require__(23)
-	  , $iterCreate    = __webpack_require__(183)
+	  , $iterCreate    = __webpack_require__(184)
 	  , setToStringTag = __webpack_require__(30)
-	  , getPrototypeOf = __webpack_require__(190)
-	  , ITERATOR       = __webpack_require__(3)('iterator')
+	  , getPrototypeOf = __webpack_require__(191)
+	  , ITERATOR       = __webpack_require__(4)('iterator')
 	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR    = '@@iterator'
 	  , KEYS           = 'keys'
@@ -5782,9 +5834,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var has          = __webpack_require__(8)
-	  , toIObject    = __webpack_require__(15)
-	  , arrayIndexOf = __webpack_require__(173)(false)
+	var has          = __webpack_require__(9)
+	  , toIObject    = __webpack_require__(16)
+	  , arrayIndexOf = __webpack_require__(174)(false)
 	  , IE_PROTO     = __webpack_require__(60)('IE_PROTO');
 
 	module.exports = function(object, names){
@@ -5804,7 +5856,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hide = __webpack_require__(9);
+	var hide = __webpack_require__(10);
 	module.exports = function(target, src, safe){
 	  for(var key in src){
 	    if(safe && target[key])target[key] = src[key];
@@ -5822,11 +5874,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(195);
-	var global        = __webpack_require__(5)
-	  , hide          = __webpack_require__(9)
+	__webpack_require__(196);
+	var global        = __webpack_require__(6)
+	  , hide          = __webpack_require__(10)
 	  , Iterators     = __webpack_require__(23)
-	  , TO_STRING_TAG = __webpack_require__(3)('toStringTag');
+	  , TO_STRING_TAG = __webpack_require__(4)('toStringTag');
 
 	for(var collections = ['NodeList', 'DOMTokenList', 'MediaList', 'StyleSheetList', 'CSSRuleList'], i = 0; i < 5; i++){
 	  var NAME       = collections[i]
@@ -5841,11 +5893,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(33),
-	    stackClear = __webpack_require__(279),
-	    stackDelete = __webpack_require__(280),
-	    stackGet = __webpack_require__(281),
-	    stackHas = __webpack_require__(282),
-	    stackSet = __webpack_require__(283);
+	    stackClear = __webpack_require__(280),
+	    stackDelete = __webpack_require__(281),
+	    stackGet = __webpack_require__(282),
+	    stackHas = __webpack_require__(283),
+	    stackSet = __webpack_require__(284);
 
 	/**
 	 * Creates a stack cache object to store key-value pairs.
@@ -5937,7 +5989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsEqualDeep = __webpack_require__(224),
+	var baseIsEqualDeep = __webpack_require__(225),
 	    isObjectLike = __webpack_require__(20);
 
 	/**
@@ -5972,7 +6024,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var isPrototype = __webpack_require__(72),
-	    nativeKeys = __webpack_require__(270);
+	    nativeKeys = __webpack_require__(271);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -6027,10 +6079,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isArray = __webpack_require__(7),
+	var isArray = __webpack_require__(8),
 	    isKey = __webpack_require__(71),
-	    stringToPath = __webpack_require__(284),
-	    toString = __webpack_require__(296);
+	    stringToPath = __webpack_require__(285),
+	    toString = __webpack_require__(297);
 
 	/**
 	 * Casts `value` to a path array if it's not one.
@@ -6054,7 +6106,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(16);
+	var getNative = __webpack_require__(17);
 
 	var defineProperty = (function() {
 	  try {
@@ -6071,9 +6123,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var SetCache = __webpack_require__(209),
-	    arraySome = __webpack_require__(217),
-	    cacheHas = __webpack_require__(237);
+	var SetCache = __webpack_require__(210),
+	    arraySome = __webpack_require__(218),
+	    cacheHas = __webpack_require__(238);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -6171,11 +6223,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var DataView = __webpack_require__(205),
+	var DataView = __webpack_require__(206),
 	    Map = __webpack_require__(67),
-	    Promise = __webpack_require__(207),
-	    Set = __webpack_require__(208),
-	    WeakMap = __webpack_require__(211),
+	    Promise = __webpack_require__(208),
+	    Set = __webpack_require__(209),
+	    WeakMap = __webpack_require__(212),
 	    baseGetTag = __webpack_require__(19),
 	    toSource = __webpack_require__(117);
 
@@ -14471,7 +14523,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 	var bind = __webpack_require__(83);
 	var Axios = __webpack_require__(124);
 	var defaults = __webpack_require__(43);
@@ -14593,7 +14645,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var defaults = __webpack_require__(43);
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 	var InterceptorManager = __webpack_require__(125);
 	var dispatchRequest = __webpack_require__(126);
 	var isAbsoluteURL = __webpack_require__(134);
@@ -14683,7 +14735,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -14741,7 +14793,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 	var transformData = __webpack_require__(129);
 	var isCancel = __webpack_require__(81);
 	var defaults = __webpack_require__(43);
@@ -14882,7 +14934,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 
 	/**
 	 * Transform the data for a request or a response
@@ -14950,7 +15002,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -15042,7 +15094,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -15121,7 +15173,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -15195,7 +15247,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -15213,7 +15265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var utils = __webpack_require__(2);
+	var utils = __webpack_require__(3);
 
 	/**
 	 * Parse headers into an object
@@ -15424,7 +15476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _typeof2 = __webpack_require__(17);
+	var _typeof2 = __webpack_require__(2);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -15560,7 +15612,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _stringify2 = _interopRequireDefault(_stringify);
 
-	var _typeof2 = __webpack_require__(17);
+	var _typeof2 = __webpack_require__(2);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -15610,7 +15662,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 145 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
@@ -15618,11 +15670,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @typedef {Object} AppCredentialsInfo
 	 *
 	 * @property {string} appId - The application id from Developer portal.
-	 * @property {(Buffer|string)} appKeyMaterial - The application's private key
+	 * @property {(Buffer|string)} appKeyData - The application's private key
 	 * 		material. If it's a string, an encoding of base64 is assumed.
 	 * @property {string} [appKeyPassword] - Optional password the app key is
 	 * 		encrypted with (if applies).
 	 * */
+
+	var _typeof2 = __webpack_require__(2);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var utils = __webpack_require__(1);
 
 	/**
 	 * Creates and initializes the application credentials container objects.
@@ -15635,7 +15695,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * var credentials = virgil.appCredentials({
 	 * 		appId: 'appId',
-	 * 		appKeyMaterial: 'app_key_material_base64',
+	 * 		appKeyData: 'app_key_material_base64',
 	 * 		appKeyPassword: 'app_key_password'
 	 * });
 	 *
@@ -15643,11 +15703,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 *
 	 * @constructs AppCredentials
 	 * */
-
 	function appCredentials(params) {
 	  var appId = params.appId;
-	  var appKeyMaterial = params.appKeyMaterial;
+	  var appKeyData = params.appKeyData;
 	  var appKeyPassword = params.appKeyPassword;
+
+	  utils.assert(utils.isString(appId), 'appCredentials expects appId config parameter to be passed as ' + 'a string. Got ' + (typeof appId === 'undefined' ? 'undefined' : (0, _typeof3.default)(appId)));
+
+	  utils.assert(utils.isBuffer(appKeyData) || utils.isString(appKeyData), 'appCredentials expects appKeyData config parameter to be passed' + ' as a Buffer or a base64-encoded string. ' + 'Got ' + (typeof appKeyData === 'undefined' ? 'undefined' : (0, _typeof3.default)(appKeyData)));
 
 	  return (/** @lends {AppCredentials} */{
 	      /**
@@ -15664,7 +15727,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	       * @returns {CryptoKeyHandle}
 	             */
 	      getAppKey: function getAppKey(crypto) {
-	        return crypto.importPrivateKey(appKeyMaterial, appKeyPassword);
+	        return crypto.importPrivateKey(appKeyData, appKeyPassword);
 	      }
 	    }
 	  );
@@ -15679,9 +15742,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	'use strict';
 
+	var _typeof2 = __webpack_require__(2);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	var utils = __webpack_require__(1);
 	var takeSnapshot = __webpack_require__(90);
-	var virgilCard = __webpack_require__(157);
+	var VirgilCard = __webpack_require__(158);
 	var CardScope = __webpack_require__(25);
 	var IdentityType = __webpack_require__(84);
 	var RevocationReason = __webpack_require__(46);
@@ -15704,9 +15773,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @constructs {CardManager}
 	 */
 	function cardManager(context) {
-		var crypto = context.crypto;
-		var client = context.client;
-
 		return (/** @lends {CardManager} */{
 
 				/**
@@ -15722,6 +15788,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {VirgilCard}
 	          */
 				create: function create(identity, ownerKey, identityType, customFields) {
+					utils.assert(utils.isString(identity), 'create expects identity argument to be passed as a string. ' + 'Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
+
+					utils.assert(utils.isObject(ownerKey), 'create expects ownerKey argument to be passed as a ' + 'VirgilKey object. Got ' + (typeof ownerKey === 'undefined' ? 'undefined' : (0, _typeof3.default)(ownerKey)));
+
 					var params = {
 						identity: identity,
 						identity_type: identityType || 'unknown',
@@ -15730,7 +15800,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					};
 
 					var card = createCardModel(params, ownerKey);
-					return virgilCard(context, card);
+					return new VirgilCard(context, card);
 				},
 
 				/**
@@ -15738,12 +15808,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * Services.
 	    * @param {string} identity - Identity of the card.
 	    * @param {VirgilKey} ownerKey - The card's owner key.
-	    * @param {string} [identityType] - Optional identity type of the card.
+	    * @param {IdentityType} [identityType] - Optional identity type of
+	    * 		the card. Default is email.
 	    * @param {Object.<string, string>} [customFields] - Optional custom
 	    * 		attributes of the card.
 	    * @returns {VirgilCard}
 	          */
 				createGlobal: function createGlobal(identity, ownerKey, identityType, customFields) {
+					utils.assert(utils.isString(identity), 'createGlobal expects identity argument to be passed as ' + 'a string. Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
+
+					utils.assert(utils.isObject(ownerKey), 'createGlobal expects ownerKey argument to be passed as ' + 'a VirgilKey object. Got ' + (typeof ownerKey === 'undefined' ? 'undefined' : (0, _typeof3.default)(ownerKey)));
+
+					if (identityType) {
+						utils.assert(IdentityType.APPLICATION !== identityType, 'creating global cards with "application" identity type ' + 'is not supported.');
+					}
+
 					var params = {
 						identity: identity,
 						identity_type: identityType || IdentityType.EMAIL,
@@ -15752,7 +15831,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					};
 
 					var card = createCardModel(params, ownerKey);
-					return virgilCard(context, card);
+					return new VirgilCard(context, card);
 				},
 
 				/**
@@ -15761,11 +15840,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    *
 	    * @param {string|string[]} identity - The identity or an array of
 	    * 		identities to search for.
-	    * @param {string} [identityType] - The identity type to search for.
+	    * @param {string} [identityType] - Optional identity type to search for.
 	    *
 	          * @returns {Promise.<VirgilCard>}
 	          */
 				find: function find(identity, identityType) {
+					utils.assert(utils.isArray(identity) || utils.isString(identity), 'find expects identity argument to be passed as a string ' + 'or an array of strings. Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
+
 					return findCards(identity, identityType, CardScope.APPLICATION);
 				},
 
@@ -15780,6 +15861,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise.<VirgilCard>}
 	    */
 				findGlobal: function findGlobal(identity, identityType) {
+					utils.assert(utils.isArray(identity) || utils.isString(identity), 'findGlobal expects identity argument to be passed as a ' + 'string or an array of strings. Got ' + (typeof identity === 'undefined' ? 'undefined' : (0, _typeof3.default)(identity)));
+
 					return findCards(identity, identityType, CardScope.GLOBAL);
 				},
 
@@ -15790,6 +15873,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise}
 	          */
 				publish: function publish(card) {
+					utils.assert(utils.isObject(card), 'publish expects card argument to be passed as a VirgilCard' + ' object. Got ' + (typeof card === 'undefined' ? 'undefined' : (0, _typeof3.default)(card)));
 					return card.publish();
 				},
 
@@ -15801,6 +15885,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	          * @returns {Promise}
 	          */
 				publishGlobal: function publishGlobal(card, validationToken) {
+					utils.assert(utils.isObject(card), 'publishGlobal expects card argument to be passed as a ' + 'VirgilCard object.');
+					utils.assert(utils.isString(validationToken), 'publishGlobal expects validationToken argument to be ' + 'passed as a string. Got ' + (typeof validationToken === 'undefined' ? 'undefined' : (0, _typeof3.default)(validationToken)));
+
 					return card.publishAsGlobal(validationToken);
 				},
 
@@ -15810,6 +15897,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise}
 	          */
 				revoke: function revoke(card) {
+					utils.assert(utils.isObject(card), 'revoke expects card argument to be passed as a VirgilCard ' + 'object. Got ' + (typeof card === 'undefined' ? 'undefined' : (0, _typeof3.default)(card)));
+
 					utils.assert(context.credentials, 'Cannot revoke card in application scope. ' + 'App credentials are required but missing.');
 
 					var request = revokeCardRequest({
@@ -15818,12 +15907,12 @@ return /******/ (function(modules) { // webpackBootstrap
 					});
 
 					var appId = context.credentials.getAppId();
-					var appKey = context.credentials.getAppKey(crypto);
-					var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
-					var signature = crypto.sign(fingerprint, appKey);
+					var appKey = context.credentials.getAppKey(context.crypto);
+					var fingerprint = context.crypto.calculateFingerprint(request.getSnapshot());
+					var signature = context.crypto.sign(fingerprint, appKey);
 
 					request.appendSignature(appId, signature);
-					return client.revokeCard(request);
+					return context.client.revokeCard(request);
 				},
 
 				/**
@@ -15835,16 +15924,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise}
 	    */
 				revokeGlobal: function revokeGlobal(card, key, validationToken) {
+					utils.assert(utils.isObject(card), 'revokeGlobal expects card argument to be passed as a ' + 'VirgilCard object. Got ' + (typeof card === 'undefined' ? 'undefined' : (0, _typeof3.default)(card)));
+					utils.assert(utils.isObject(key), 'revokeGlobal expects key argument to be passed as a ' + 'VirgilKey object. Got ' + (typeof key === 'undefined' ? 'undefined' : (0, _typeof3.default)(key)));
+					utils.assert(utils.isString(validationToken), 'revokeGlobal expects validationToken argument to be ' + 'passed as a string. Got ' + (typeof validationToken === 'undefined' ? 'undefined' : (0, _typeof3.default)(validationToken)));
+
 					var request = revokeCardRequest({
 						card_id: card.id,
 						revocation_reason: RevocationReason.UNSPECIFIED
 					}, validationToken);
 
-					var fingerprint = crypto.calculateFingerprint(request.getSnapshot());
+					var fingerprint = context.crypto.calculateFingerprint(request.getSnapshot());
 					var signature = key.sign(fingerprint);
 
 					request.appendSignature(card.id, signature);
-					return client.revokeGlobalCard(request);
+					return context.client.revokeGlobalCard(request);
 				},
 
 				/**
@@ -15853,8 +15946,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise.<VirgilCard>}
 	          */
 				get: function get(cardId) {
-					return client.getCard(cardId).then(function (card) {
-						return virgilCard(context, card);
+					return context.client.getCard(cardId).then(function (card) {
+						return new VirgilCard(context, card);
 					});
 				},
 
@@ -15865,9 +15958,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {VirgilCard}
 	          */
 				import: function _import(exportedCard) {
+					utils.assert(utils.isString(exportedCard), 'import expects exportedCard argument to be passed as ' + 'a string. Got ' + (typeof exportedCard === 'undefined' ? 'undefined' : (0, _typeof3.default)(exportedCard)));
+
 					var json = utils.base64Decode(exportedCard, 'utf8');
 					var model = CardModel.import(json);
-					return virgilCard(context, model);
+					return new VirgilCard(context, model);
 				}
 			}
 		);
@@ -15880,6 +15975,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  * @private
 	     */
 		function createCardModel(params, ownerKey) {
+
 			var cardProps = {
 				identity: params.identity,
 				identity_type: params.identity_type,
@@ -15889,7 +15985,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 
 			var snapshot = takeSnapshot(cardProps);
-			var cardFingerprint = crypto.calculateFingerprint(snapshot);
+			var cardFingerprint = context.crypto.calculateFingerprint(snapshot);
 			var cardId = cardFingerprint.toString('hex');
 			var cardSignature = ownerKey.sign(cardFingerprint);
 			var meta = { signs: {} };
@@ -15919,9 +16015,9 @@ return /******/ (function(modules) { // webpackBootstrap
 				scope: scope
 			};
 
-			return client.searchCards(criteria).then(function (cards) {
+			return context.client.searchCards(criteria).then(function (cards) {
 				return cards.map(function (card) {
-					return virgilCard(context, card);
+					return new VirgilCard(context, card);
 				});
 			});
 		}
@@ -15935,7 +16031,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var _typeof2 = __webpack_require__(17);
+	var _typeof2 = __webpack_require__(2);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -16146,7 +16242,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var virgilKey = __webpack_require__(158);
+	var _typeof2 = __webpack_require__(2);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var utils = __webpack_require__(1);
+	var VirgilKey = __webpack_require__(159);
 
 	/**
 	 * Constructs and initializes objects that implement cryptographic key
@@ -16156,8 +16259,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @constructs {KeyManager}
 	 */
 	function keyManager(context) {
-		var crypto = context.crypto;
-		var storage = context.keyStorage;
 
 		return (/** @lends {KeyManager} */{
 
@@ -16166,8 +16267,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {VirgilKey}
 	          */
 				generate: function generate() {
-					var keyPair = crypto.generateKeys();
-					return virgilKey(context, keyPair.privateKey);
+					var keyPair = context.crypto.generateKeys();
+					return new VirgilKey(context, keyPair.privateKey);
 				},
 
 				/**
@@ -16178,8 +16279,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    * @returns {Promise.<VirgilKey>}
 	          */
 				load: function load(name, password) {
-					return storage.load(name, password).then(function (privateKey) {
-						return virgilKey(context, privateKey);
+					utils.assert(utils.isString(name), 'load expects name argument to be passed as a string. ' + 'Got ' + (typeof name === 'undefined' ? 'undefined' : (0, _typeof3.default)(name)));
+
+					utils.assert(utils.isString(password), 'load expects password argument to be passed as a string. ' + 'Got ' + (typeof password === 'undefined' ? 'undefined' : (0, _typeof3.default)(password)));
+
+					return context.keyStorage.load(name).then(function (privateKeyData) {
+						var privateKey = context.crypto.importPrivateKey(privateKeyData, password);
+						return new VirgilKey(context, privateKey);
 					});
 				},
 
@@ -16189,7 +16295,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	          * @returns {Promise}
 	          */
 				destroy: function destroy(name) {
-					return storage.remove(name);
+					utils.assert(utils.isString(name), 'destroy expects name argument to be passed as a string. ' + 'Got ' + (typeof name === 'undefined' ? 'undefined' : (0, _typeof3.default)(name)));
+
+					return context.keyStorage.delete(name);
+				},
+
+				/**
+	    * Creates a VirgilKey from a base64-encoded string or Buffer
+	    * representing key material.
+	    *
+	    * @param {(Buffer|string)} keyData - The key material.
+	    * @param {string} [password] - Optional password used to encrypt the
+	    * 		key material.
+	          * @returns {VirgilKey}
+	          */
+				import: function _import(keyData, password) {
+					utils.assert(utils.isBuffer(keyData) || utils.isString(keyData), 'import expects "keyData" argument to be passed as a ' + 'string in base64 or a Buffer. Got ' + (typeof keyData === 'undefined' ? 'undefined' : (0, _typeof3.default)(keyData)));
+
+					var privateKey = context.crypto.importPrivateKey(keyData, password);
+					return new VirgilKey(context, privateKey);
 				}
 			}
 		);
@@ -16203,16 +16327,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = __webpack_require__(153);
-
-/***/ },
-/* 153 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var localforage = __webpack_require__(204);
-	var toArrayBuffer = __webpack_require__(297);
+	var localforage = __webpack_require__(205);
+	var toArrayBuffer = __webpack_require__(298);
 	var utils = __webpack_require__(1);
 
 	var defaults = {
@@ -16220,151 +16336,141 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	/**
-	 *  Creates a storage backend that uses file system for persistence.
+	 *  Creates a storage adapter that uses "localforage" for persistence.
 	 *  @param {(Object|string)} config - The storage configuration options.
-	 *  		If config is a string, then it specifies the storage folder path.
-	 *  @param {string} [config.dir='.'] - Storage directory path. Can be relative
-	 *  		path, in which case it is considered relative to current working
-	 *  		directory.
-	 *  @param {string} [config.encoding] - The encoding that the data read and
-	 *  		written to file system is encoded with. If not specified - raw
-	 *  		Buffers will be read and written.
+	 *  @param {string} [config.name='VirgilSecurityKeys'] - The storage name.
+	 *  @returns {StorageAdapter}
 	 * */
-	function browserStorage(config) {
+	function localforageStorage(config) {
 		config = utils.assign({}, defaults, config || {});
 
 		var store = localforage.createInstance(config);
 
-		return (/** @implements {StorageAdapter} */{
+		return {
 
-				/**
-	    * Persist the value under the key.
-	    * @param {string} key - The key.
-	    * @param {*} value - The value.
-	          * @returns {Promise}
-	          */
-				save: function save(key, value) {
-					if (utils.isBuffer(value)) {
-						// localforage serializes Buffer as Uint8Array which cannot
-						// be converted back to Buffer upon deserialization, so we
-						// store is as ArrayBuffer and do the conversion manually
-						value = toArrayBuffer(value);
-					}
-					return store.setItem(key, value);
-				},
-
-				/**
-	    * Retrieve the value stored under the key.
-	    * @param {string} key - The key.
-	    * @returns {Promise.<*>}
-	          */
-				load: function load(key) {
-					return store.getItem(key).then(function (value) {
-						if (utils.isArrayBuffer(value)) {
-							return utils.arrayBufferToBuffer(value);
-						}
-
-						return value;
-					});
-				},
-
-				/**
-	    * Remove a value stored under the key.
-	    * @param key - The key.
-	          * @returns {Promise}
-	          */
-				remove: function remove(key) {
-					return store.removeItem(key);
+			/**
+	   * Persist the value under the key.
+	   * @param {string} key - The key.
+	   * @param {*} value - The value.
+	         * @returns {Promise}
+	         */
+			save: function save(key, value) {
+				if (utils.isBuffer(value)) {
+					// localforage serializes Buffer as Uint8Array which cannot
+					// be converted back to Buffer upon deserialization, so we
+					// store is as ArrayBuffer and do the conversion manually
+					value = toArrayBuffer(value);
 				}
+				return store.setItem(key, value);
+			},
+
+			/**
+	   * Retrieve the value stored under the key.
+	   * @param {string} key - The key.
+	   * @returns {Promise.<*>}
+	         */
+			load: function load(key) {
+				return store.getItem(key).then(function (value) {
+					if (utils.isArrayBuffer(value)) {
+						return utils.arrayBufferToBuffer(value);
+					}
+
+					return value;
+				});
+			},
+
+			/**
+	   * Checks whether a there is a value for the given key in store.
+	   * @param {string} key
+	   * @returns {Promise.<Boolean>}
+	         */
+			exists: function exists(key) {
+				return store.getItem(key).then(function (value) {
+					return value !== null;
+				});
+			},
+
+			/**
+	   * Remove a value stored under the key.
+	   * @param key - The key.
+	         * @returns {Promise}
+	         */
+			remove: function remove(key) {
+				return store.removeItem(key);
 			}
-		);
+		};
 	}
 
-	module.exports = browserStorage;
+	module.exports = localforageStorage;
 
 /***/ },
-/* 154 */
-/***/ function(module, exports) {
+/* 153 */
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
+	var localforageStorageAdapter = __webpack_require__(152);
+	var DefaultKeyStorage = __webpack_require__(154);
+
+	module.exports = function initDefaultKeyStorage(options) {
+		return new DefaultKeyStorage(localforageStorageAdapter(options));
+	};
+
+/***/ },
+/* 154 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var utils = __webpack_require__(1);
+
 	/**
-	 *	Factory function to construct encrypted cryptographic keys storage
-	 *	containers.
-	 *	@param {StorageAdapter} storageBackend - Persistent storage backend.
-	 *	@param {Object} crypto - Cryptographic operations provider.
-	 * */
-
-	function defaultKeyStorage(storageBackend, crypto) {
-
-		return (/** @implements {KeyStorage} */{
-				/**
-	    * Persists the private key encrypted with password under a name.
-	    * @param {string} name - Name of key.
-	    * @param {CryptoKeyHandle} privateKey - Key to store.
-	    * @param {string} password - Password to use for encryption.
-	    *
-	    * @returns {Promise} - A Promise that will be resolved when the key
-	    * has been persisted.
-	    * */
-				store: function store(name, privateKey, password) {
-					return storageBackend.save(name, encryptKey(privateKey, password));
-				},
-
-				/**
-	    * Gets the private key stored under name decrypting it using the
-	    * password.
-	    * @param {string} name Name of key.
-	    * @param {string} password Password to use for decryption.
-	    *
-	    * @returns {Promise.<CryptoKeyHandle>} Promise that will be resolved
-	    * with the stored key.
-	    * */
-				load: function load(name, password) {
-					return storageBackend.load(name).then(function (encryptedKey) {
-						return decryptKey(encryptedKey, password);
-					});
-				},
-
-				/**
-	    * Removes the private key stored under name from persistent storage.
-	    * @param {string} name Name of key to remove.
-	    *
-	    * @returns {Promise} - A Promise that will be resolved when the key
-	    * has been removed.
-	    * */
-				remove: function remove(name) {
-					return storageBackend.remove(name);
-				}
-			}
-		);
-
-		/**
-	  * Encrypts the key with password.
-	  * @param {CryptoKeyHandle} key - Key to encrypt
-	  * @param {string} password - Password to use for encryption.
-	  *
-	  * @returns {Buffer}
-	  * @private
-	  * */
-		function encryptKey(key, password) {
-			return crypto.exportPrivateKey(key, password);
-		}
-
-		/**
-	  * Decrypts the data with password.
-	  * @param {Buffer} encryptedKey - Encrypted key.
-	  * @param {string} password - Password to use for decryption.
-	  *
-	  * @returns {CryptoKeyHandle}
-	  * @private
-	  * */
-		function decryptKey(encryptedKey, password) {
-			return crypto.importPrivateKey(encryptedKey, password);
-		}
+	 * A class providing default implementation of cryptographic key storage
+	 * container.
+	 *
+	 * @param {StorageAdapter} adapter
+	 * @implements {KeyStorage}
+	 * @constructor
+	 */
+	function DefaultKeyStorage(adapter) {
+		this.adapter = adapter;
 	}
 
-	module.exports = defaultKeyStorage;
+	DefaultKeyStorage.prototype.store = function (name, privateKeyData) {
+		return this.exists(name).then(function (exists) {
+			if (exists) {
+				throw utils.createError('Private key named "' + name + '" already exists in storage.');
+			}
+
+			return this.adapter.save(name, privateKeyData);
+		}.bind(this));
+	};
+
+	DefaultKeyStorage.prototype.load = function (name) {
+		return this.exists(name).then(function (exists) {
+			if (!exists) {
+				throw utils.createError('Private key named "' + name + '" does not exist in storage.');
+			}
+
+			return this.adapter.load(name);
+		}.bind(this));
+	};
+
+	DefaultKeyStorage.prototype.exists = function (name) {
+		return this.adapter.exists(name);
+	};
+
+	DefaultKeyStorage.prototype.delete = function (name) {
+		return this.exists(name).then(function (exists) {
+			if (!exists) {
+				throw utils.createError('Private key named "' + name + '" does not exist in storage.');
+			}
+
+			return this.adapter.remove(name);
+		}.bind(this));
+	};
+
+	module.exports = DefaultKeyStorage;
 
 /***/ },
 /* 155 */
@@ -16386,24 +16492,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var createVirgilCrypto = __webpack_require__(89);
-	var createVirgilClient = __webpack_require__(88);
+	var virgilCrypto = __webpack_require__(89);
+	var virgilClient = __webpack_require__(88);
 	var cardValidator = __webpack_require__(85);
-	var defaultKeyStorage = __webpack_require__(154);
-	var defaultStorageAdapter = __webpack_require__(152);
 	var appCredentials = __webpack_require__(145);
+	var initDefaultKeyStorage = __webpack_require__(153);
 	var utils = __webpack_require__(1);
 
 	/**
 	 * @typedef {Object} CardVerifierInfo
 	 * @property {string} cardId - Id of the card whose signature is to be
 	 * 		verified.
-	 * @property {(Buffer|string)} publicKeyMaterial - The public key to use
+	 * @property {(Buffer|string)} publicKeyData - The public key to use
 	 * 		for signature verification.
 	 * */
 
 	/**
-	 * @typedef {Object} VirgilAPIConfig
+	 * @typedef {Object} VirgilAPIConfiguration
 	 * @property {string} [accessToken] - The access token required by Virgil Cards
 	 * 		service to read and write application-level cards.
 	 * @property {AppCredentialsInfo} [appCredentials] - The application's
@@ -16411,79 +16516,160 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @property {(CardVerifierInfo|CardVerifierInfo[])} [cardVerifiers] - Object
 	 * 		(or an array of objects) specifying the ids of Virgil Cards whose
 	 * 		signatures will be verified on other cards returned by API methods.
-	 * @property {KeyStorage} [keyStorage] - Custom implementation of private keys storage.
-	 * @property {Crypto} [crypto] - Custom implementation of crypto operations provider.
-	 * @property {VirgilClientParams} [clientParams] - Virgil services client initialization
-	 * 		options.
+	 * @property {KeyStorage} [keyStorage] - Custom implementation of private keys
+	 * 		storage.
+	 * @property {string} [keyStoragePath] - File system path to the folder where
+	 * 		private keys will be stored by default. Node.js only.
+	 * @property {string} [keyStorageName] - Name of the store where private keys
+	 * 		will be stored by default. Browsers only.
+	 * @property {Crypto} [crypto] - Custom implementation of crypto operations
+	 * 		provider.
+	 * @property {VirgilClientParams} [clientParams] - Virgil services client
+	 * 		initialization options.
 	 *
 	 * */
+
+	var DEFAULTS = {
+		crypto: virgilCrypto,
+		keyStoragePath: './VirgilSecurityKeys',
+		keyStorageName: 'VirgilSecurityKeys'
+	};
 
 	/**
-	 * Creates and initializes the VirgilAPIContext objects.
+	 * A class representing Virgil API Client execution context.
 	 *
-	 * <code>VirgilAPIContext</code> objects are not to be created directly using
-	 * the <code>new</code> keyword. Use the <code>virgilAPIContext()</code>
-	 * factory function to create an instance.
-	 *
-	 * @example
-	 *
-	 * var context = virgil.virgilAPIContext({
-	 * 		accessToken: 'access_token',
-	 * 		appCredentials: {
-	 * 			appId: 'appId',
-	 * 			appKeyMaterial: 'app_key_material_base64',
-	 * 			appKeyPassword: 'app_key_password'
-	 * 		},
-	 * 		cardVerifiers: [{
-	 *			cardId: 'id_of_card_whose_signature_needs_to_be_verified',
-	 *		 	publicKeyMaterial: 'public_key_bytes_in_base64'
-	 * 		}]
-	 * });
-	 *
-	 * @param {VirgilAPIConfig} config - The Virgil API configuration object.
-	 *
-	 * @constructs VirgilAPIContext
-	 * */
-	function virgilAPIContext(config) {
-	  utils.assert(utils.isObject(config), 'virgilAPIContext expects a configuration object to be passed.');
-
-	  var crypto = config.crypto || createVirgilCrypto();
-	  var keyStorage = config.keyStorage || defaultKeyStorage(defaultStorageAdapter({
-	    dir: 'VirgilSecurityKeys',
-	    name: 'VirgilSecurityKeys'
-	  }), crypto);
-
-	  var client = createVirgilClient(config.accessToken, config.clientParams);
-	  var validator = cardValidator(crypto);
-
-	  if (config.cardVerifiers) {
-	    var verifiers = utils.toArray(config.cardVerifiers);
-	    verifiers.forEach(function (verifier) {
-	      validator.addVerifier(verifier.cardId, verifier.publicKeyMaterial);
-	    });
-	  }
-
-	  client.setCardValidator(validator);
-
-	  var credentials = config.appCredentials ? appCredentials(config.appCredentials) : null;
-
-	  return (/** @lends {VirgilAPIContext} */{
-	      /** @type {Crypto} */
-	      crypto: crypto,
-	      /** @type {KeyStorage} */
-	      keyStorage: keyStorage,
-	      /** @type {AppCredentials} */
-	      credentials: credentials,
-	      /** @type {VirgilClient} */
-	      client: client
-	    }
-	  );
+	 * @param {VirgilAPIConfiguration} config - - The Virgil API configuration
+	 * 		object.
+	 * @constructor
+	 */
+	function VirgilAPIContext(config) {
+		/** @type {VirgilAPIConfiguration} */
+		this._config = utils.assign({}, DEFAULTS, config);
 	}
 
-	module.exports = virgilAPIContext;
+	VirgilAPIContext.prototype = {
+		get client() {
+			return this._client || (this._client = getClient(this._config));
+		},
+
+		get credentials() {
+			return this._credentials || (this._credentials = getAppCredentials(this._config));
+		},
+
+		get crypto() {
+			return this._config.crypto;
+		},
+
+		get keyStorage() {
+			return this._keyStorage || (this._keyStorage = getKeyStorage(this._config));
+		}
+	};
+
+	function getClient(config) {
+		var client = virgilClient(config.accessToken, config.clientParams);
+
+		var validator = cardValidator(config.crypto);
+
+		if (config.cardVerifiers) {
+			var verifiers = utils.toArray(config.cardVerifiers);
+			verifiers.forEach(function (verifier) {
+				validator.addVerifier(verifier.cardId, verifier.publicKeyData);
+			});
+		}
+
+		client.setCardValidator(validator);
+		return client;
+	}
+
+	function getKeyStorage(config) {
+		return config.keyStorage || initDefaultKeyStorage({
+			dir: config.keyStoragePath,
+			name: config.keyStorageName
+		});
+	}
+
+	function getAppCredentials(config) {
+		return config.appCredentials ? appCredentials(config.appCredentials) : null;
+	}
+
+	module.exports = VirgilAPIContext;
 
 /***/ },
 /* 157 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _typeof2 = __webpack_require__(2);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var utils = __webpack_require__(1);
+	var cardManager = __webpack_require__(146);
+	var keyManager = __webpack_require__(151);
+	var virgilAPIContext = __webpack_require__(156);
+
+	/**
+	 * A class representing a high-level wrapper for the Virgil SDK API.
+	 *
+	 * @param {(string|VirgilAPIConfiguration)} config - Virgil access token or
+	 * 		Virgil API configuration object.
+	 * @constructor
+	 */
+	function VirgilAPI(config) {
+		utils.assert(utils.isUndefined(config) || utils.isString(config) || utils.isObject(config), 'Virgil API expects "config" argument to be an object or a string ' + 'if provided.');
+
+		if (utils.isUndefined(config)) {
+			config = {};
+		} else if (utils.isString(config)) {
+			config = { accessToken: config };
+		}
+
+		/**
+	  * @type {VirgilAPIContext}
+	  * @private
+	  */
+		this._context = virgilAPIContext(config);
+
+		/**
+	  * @type {CardManager}
+	     */
+		this.cards = cardManager(this._context);
+
+		/**
+	  * @type {KeyManager}
+	     */
+		this.keys = keyManager(this._context);
+	}
+
+	/**
+	 * Encrypts the given data for the given recipient card(s).
+	 *
+	 * @param {(Buffer|string)} data - The data to encrypt.
+	 * @param {VirgilCard[]} cards - The recipient cards.
+	 *
+	 * @returns {Buffer} - Encrypted data.
+	 */
+	VirgilAPI.prototype.encryptFor = function (data, cards) {
+		utils.assert(utils.isString(data) || utils.isBuffer(data), 'encryptFor expects data argument to be passed as a Buffer or ' + 'a string. Got ' + (typeof data === 'undefined' ? 'undefined' : (0, _typeof3.default)(data)));
+
+		utils.assert(utils.isObject(cards) || utils.isArray(cards), 'encryptFor expects cards argument to be passed as a VirgilCard ' + 'or an array of VirgilCard objects.');
+
+		cards = toArray(cards);
+
+		var publicKeys = cards.map(function (card) {
+			return card.publicKey;
+		});
+
+		return this._context.crypto.encrypt(data, publicKeys);
+	};
+
+	module.exports = VirgilAPI;
+
+/***/ },
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -16499,301 +16685,213 @@ return /******/ (function(modules) { // webpackBootstrap
 	var requestSigner = __webpack_require__(86);
 
 	/**
-	 * Creates and initializes the VirgilCard objects, a wrapper on CardModel
-	 * objects providing easier access to common operations performed on cards
-	 * (e.g. encrypt and verify data, publish cards, etc.)
+	 * A wrapper on CardModel objects providing easier access to common operations
+	 * performed with cards (e.g. encrypt and verify data, publish cards, etc.)
 	 *
 	 * @param {VirgilAPIContext} context - Virgil API context.
 	 * @param {CardModel} card - The card model to wrap.
-	 * @constructs {VirgilCard}
+	 * @constructor
 	 */
-	function virgilCard(context, card) {
-		var crypto = context.crypto;
-		var client = context.client;
-		var publicKey = crypto.importPublicKey(card.publicKey);
-
-		return (/** @lends {VirgilCard} */{
-				/**
-	    * Gets the Id of the card.
-	    * @returns {string}
-	          */
-				get id() {
-					return card.id;
-				},
-
-				/**
-	    * Gets the identity of the card.
-	    * @returns {string}
-	    */
-				get identity() {
-					return card.identity;
-				},
-
-				/**
-	    * Gets the identity type of the card.
-	    * @returns {string}
-	    */
-				get identityType() {
-					return card.identityType;
-				},
-
-				/**
-	    * Gets the custom fields of the card.
-	    * @returns {Object.<string, string>}
-	    */
-				get customFields() {
-					return card.data;
-				},
-
-				/**
-	    * Gets the date the card was created at.
-	    * @returns {Date}
-	    */
-				get createdAt() {
-					return card.createdAt;
-				},
-
-				/**
-	    * Gets the handle to the public key of the card.
-	    * @returns {CryptoKeyHandle}
-	    */
-				get publicKey() {
-					return publicKey;
-				},
-
-				/**
-	    * Encrypts the data with the card's public key.
-	    * @param {(string|Buffer)} data - The data to encrypt. If data is a
-	    * 		string, an encoding of UTF-8 is assumed.
-	    * @returns {Buffer}
-	          */
-				encrypt: function encrypt(data) {
-					return crypto.encrypt(data, publicKey);
-				},
-
-				/**
-	    * Verifies the data using the signature and the card's public key.
-	    * @param {(string|Buffer)} data - The data to verify. If data is a
-	    * 		string, an encoding of UTF-8 is assumed.
-	    * @param {Buffer} signature - The signature.
-	          * @returns {boolean} - True if the signature is valid for the data
-	    * 		and public key, otherwise False.
-	          */
-				verify: function verify(data, signature) {
-					return crypto.verify(data, signature, publicKey);
-				},
-
-				/**
-	    * Function to call to confirm the identity ownership and get the
-	    * validation token.
-	    * @name confirmIdentityCallback
-	    * @function
-	    * @param {string} confirmationCode - The identity confirmation code.
-	    * @param {{ time_to_live: number, count_to_live_number}} [tokenParams]
-	    * 		Desired parameters of the generated validation token. Optional.
-	    */
-
-				/**
-	    * Initiates a process of confirming the ownership of the card's
-	    * identity.
-	    * @param {Object.<string, string>} [extraFields] - Optional hash with
-	    * 		custom parameters that will be passed in confirmation message.
-	    *
-	    * @returns {Promise.<confirmIdentityCallback>}
-	          */
-				checkIdentity: function checkIdentity(extraFields) {
-					extraFields = utils.isObject(extraFields) ? extraFields : {};
-					return client.verifyIdentity(card.identity, card.identityType, extraFields).then(function (actionId) {
-						return function confirmIdentityCallback(confirmationCode, tokenParams) {
-							return client.confirmIdentity(actionId, confirmationCode, tokenParams);
-						};
-					});
-				},
-
-				/**
-	    * Publishes the card on Virgil Services in application scope.
-	    * @returns {Promise}
-	          */
-				publish: function publish() {
-					utils.assert(context.credentials, 'Cannot publish card in application scope. ' + 'App credentials are required but missing.');
-
-					var params = toRequestParams(card);
-					var request = new SignableRequest(card.snapshot, card.signatures, params);
-
-					var appId = context.credentials.getAppId();
-					var appKey = context.credentials.getAppKey(crypto);
-					var signer = requestSigner(crypto);
-
-					signer.authoritySign(request, appId, appKey);
-
-					return client.publishCard(request).then(function (publishedCard) {
-						card = publishedCard;
-					});
-				},
-
-				/**
-	    * Publishes the card on Virgil Services in global scope.
-	    * @param {string} validationToken - The card's identity validation
-	    * 		token.
-	    * @returns {Promise}
-	          */
-				publishAsGlobal: function publishAsGlobal(validationToken) {
-					var params = toRequestParams(card);
-					var request = new SignableRequest(card.snapshot, card.signatures, params, validationToken);
-
-					return client.publishGlobalCard(request).then(function (publishedCard) {
-						card = publishedCard;
-					});
-				},
-
-				/**
-	    * Exports the card into a string representation suitable for transfer.
-	    * @returns {string} - Base64 encoded string.
-	          */
-				export: function _export() {
-					var model = (0, _stringify2.default)(card.export());
-					return utils.base64Encode(model, 'utf8');
-				}
-			}
-		);
-
+	function VirgilCard(context, card) {
 		/**
-	  * Constructs the publish card request parameters from the card model.
-	  * @param {CardModel} card - The card model.
-	  * @returns {Object}
-	  *
+	  * @type {VirgilAPIContext}
 	  * @private
 	     */
-		function toRequestParams(card) {
-			var params = {
-				identity: card.identity,
-				identity_type: card.identityType,
-				scope: card.scope,
-				public_key: utils.base64Encode(card.publicKey),
-				data: card.data
-			};
+		this._context = context;
 
-			if (card.device || card.deviceName) {
-				params.info = {
-					device: card.device,
-					device_name: card.deviceName
-				};
-			}
+		/**
+	  * @type {CardModel}
+	  * @private
+	  * */
+		this._card = card;
 
-			return params;
-		}
+		// card.publicKey is a Buffer containing key material, which has to be
+		// imported in order to be usable for cryptographic operations
+		/**
+	  * @type {CryptoKeyHandle}
+	  * @private
+	  * */
+		this._publicKey = context.crypto.importPublicKey(card.publicKey);
 	}
 
-	module.exports = virgilCard;
+	VirgilCard.prototype = {
+		/**
+	  * Gets the Id of the card.
+	  * @returns {string}
+	  */
+		get id() {
+			return this._card.id;
+		},
 
-/***/ },
-/* 158 */
-/***/ function(module, exports, __webpack_require__) {
+		/**
+	  * Gets the identity of the card.
+	  * @returns {string}
+	  */
+		get identity() {
+			return this._card.identity;
+		},
 
-	'use strict';
+		/**
+	  * Gets the identity type of the card.
+	  * @returns {string}
+	  */
+		get identityType() {
+			return this._card.identityType;
+		},
 
-	var utils = __webpack_require__(1);
+		/**
+	  * Gets the custom fields of the card.
+	  * @returns {Object.<string, string>}
+	  */
+		get customFields() {
+			return this._card.data;
+		},
+
+		/**
+	  * Gets the date the card was created at.
+	  * @returns {Date}
+	  */
+		get createdAt() {
+			return this._card.createdAt;
+		},
+
+		/**
+	  * Gets the handle to the public key of the card.
+	  * @returns {CryptoKeyHandle}
+	  */
+		get publicKey() {
+			return this._publicKey;
+		}
+	};
 
 	/**
-	 * Creates and initializes the VirgilKey objects, a wrapper on CryptoKeyHandle
-	 * objects providing easier access to common operations performed on keys
-	 * (e.g. decrypt and sign data, save key to storage etc.)
-	 *
-	 * <code>VirgilKey</code> object are not to be created directly. Use the
-	 * <code>virgilKey</code> factory function to create an instance.
-	 *
-	 * @param {VirgilAPIContext} context - Virgil API context.
-	 * @param {CryptoKeyHandle} privateKey - The card model to wrap.
-	 * @constructs {VirgilKey}
+	 * Encrypts the data with the card's public key.
+	 * @param {(string|Buffer)} data - The data to encrypt. If data is a
+	 * 		string, an encoding of UTF-8 is assumed.
+	 * @returns {Buffer}
 	 */
-	function virgilKey(context, privateKey) {
-		var storage = context.keyStorage;
-		var crypto = context.crypto;
+	VirgilCard.prototype.encrypt = function (data) {
+		return this._context.crypto.encrypt(data, this._publicKey);
+	};
 
-		return (/** @lends {VirgilKey} */{
-				/**
-	    * Saves the key under the name encrypted with the password.
-	    * @param {string} name - The name under which the key is stored.
-	    * @param {string} password - The password to encrypt the key with.
-	          * @returns {Promise}
-	          */
-				save: function save(name, password) {
-					return storage.store(name, privateKey, password);
-				},
+	/**
+	 * Verifies the data using the signature and the card's public key.
+	 * @param {(string|Buffer)} data - The data to verify. If data is a
+	 * 		string, an encoding of UTF-8 is assumed.
+	 * @param {Buffer} signature - The signature.
+	 * @returns {boolean} - True if the signature is valid for the data
+	 * 		and public key, otherwise False.
+	 */
+	VirgilCard.prototype.verify = function (data, signature) {
+		return this._context.crypto.verify(data, signature, this._publicKey);
+	};
 
-				/**
-	    * Calculate and return the signature for the data.
-	    * @param {(string|Buffer)} data - The data to calculate the signature
-	    * 		for. If data is a string, an encoding of UTF-8 is assumed.
-	          * @returns {Buffer} - The signature.
-	          */
-				sign: function sign(data) {
-					return crypto.sign(data, privateKey);
-				},
+	/**
+	 * Function to call to confirm the identity ownership and get the
+	 * validation token.
+	 * @name confirmIdentityCallback
+	 * @function
+	 * @param {string} confirmationCode - The identity confirmation code.
+	 * @param {{ time_to_live: number, count_to_live_number}} [tokenParams]
+	 * 		Desired parameters of the generated validation token. Optional.
+	 */
 
-				/**
-	    * Decrypts and returns the encrypted data.
-	    * @param {(string|Buffer)} cipherData - The data to be decrypted.
-	    * 		If cipherData is a string, an encoding of base64 is assumed.
-	    * @returns {Buffer}
-	          */
-				decrypt: function decrypt(cipherData) {
-					return crypto.decrypt(cipherData, privateKey);
-				},
+	/**
+	 * Initiates a process of confirming the ownership of the card's
+	 * identity.
+	 * @param {Object.<string, string>} [extraFields] - Optional hash with
+	 * 		custom parameters that will be passed in confirmation message.
+	 *
+	 * @returns {Promise.<confirmIdentityCallback>}
+	 */
+	VirgilCard.prototype.checkIdentity = function (extraFields) {
+		var client = this._context.client;
+		var card = this._card;
+		extraFields = utils.isObject(extraFields) ? extraFields : {};
+		return client.verifyIdentity(card.identity, card.identityType, extraFields).then(function (actionId) {
+			return function confirmIdentityCallback(confirmationCode, tokenParams) {
+				return client.confirmIdentity(actionId, confirmationCode, tokenParams);
+			};
+		});
+	};
 
-				/**
-	    * Calculates the signature for the data and encrypts the data along
-	    * with the signature for the given recipient(s).
-	    * @param {(string|Buffer)} data - The data to sign and encrypt. If
-	    * 		data is a string, an encoding of UTF-8 is assumed.
-	    * @param {VirgilCard|VirgilCard[]} recipientCards - The intended
-	    * 		recipient(s).
-	          * @returns {Buffer} - Encrypted data with attached signature.
-	          */
-				signThenEncrypt: function signThenEncrypt(data, recipientCards) {
-					var publicKeys = utils.toArray(recipientCards).map(function (card) {
-						return card.publicKey;
-					});
-					return crypto.signThenEncrypt(data, privateKey, publicKeys);
-				},
+	/**
+	 * Publishes the card on Virgil Services in application scope.
+	 * @returns {Promise}
+	 */
+	VirgilCard.prototype.publish = function () {
+		utils.assert(this._context.credentials, 'Cannot publish card in application scope. ' + 'App credentials are required but missing.');
 
-				/**
-	    * Decrypts the encrypted data, then verifies decrypted data integrity
-	    * using the attached signature and the signer's card.
-	    * @param {(string|Buffer)} cipherData - The data to be decrypted and
-	    * 		checked. If cipherData is a string, an encoding of base64 is
-	    * 		assumed.
-	    * @param {VirgilCard} signerCard - The Virgil Card of the signing
-	    * 		party.
-	          * @returns {*}
-	          */
-				decryptThenVerify: function decryptThenVerify(cipherData, signerCard) {
-					return crypto.decryptThenVerify(cipherData, privateKey, signerCard.publicKey);
-				},
+		var that = this;
+		var card = this._card;
 
-				/**
-	    * Returns the private key material in DER format.
-	    * @param {string} [password] - Optional password to encrypt the key
-	    * 		with before exporting.
-	    * @returns {Buffer} - The raw key material.
-	          */
-				export: function _export(password) {
-					return crypto.exportPrivateKey(privateKey, password);
-				},
+		var params = toRequestParams(card);
+		var request = new SignableRequest(card.snapshot, card.signatures, params);
 
-				/**
-	    * Returns the public key material in DER format.
-	    * @returns {Buffer} - The raw key material.
-	          */
-				exportPublicKey: function exportPublicKey() {
-					var publicKeyHandle = crypto.extractPublicKey(privateKey);
-					return crypto.exportPublicKey(publicKeyHandle);
-				}
-			}
-		);
+		var appId = this._context.credentials.getAppId();
+		var appKey = this._context.credentials.getAppKey(this._context.crypto);
+		var signer = requestSigner(this._context.crypto);
+
+		signer.authoritySign(request, appId, appKey);
+
+		return this._context.client.publishCard(request).then(function (publishedCard) {
+			that._card = publishedCard;
+		});
+	};
+
+	/**
+	 * Publishes the card on Virgil Services in global scope.
+	 * @param {string} validationToken - The card's identity validation
+	 * 		token.
+	 * @returns {Promise}
+	 */
+	VirgilCard.prototype.publishAsGlobal = function (validationToken) {
+		var that = this;
+		var card = this._card;
+		var params = toRequestParams(card);
+		var request = new SignableRequest(card.snapshot, card.signatures, params, validationToken);
+
+		return this._context.client.publishGlobalCard(request).then(function (publishedCard) {
+			that._card = publishedCard;
+		});
+	};
+
+	/**
+	 * Exports the card into a string representation suitable for transfer.
+	 * @returns {string} - Base64 encoded string.
+	 */
+	VirgilCard.prototype.export = function () {
+		var model = (0, _stringify2.default)(this._card.export());
+		return utils.base64Encode(model, 'utf8');
+	};
+
+	/**
+	 * Constructs the publish card request parameters from the card model.
+	 * @param {CardModel} card - The card model.
+	 * @returns {Object}
+	 *
+	 * @private
+	 */
+	function toRequestParams(card) {
+		var params = {
+			identity: card.identity,
+			identity_type: card.identityType,
+			scope: card.scope,
+			public_key: utils.base64Encode(card.publicKey),
+			data: card.data
+		};
+
+		if (card.device || card.deviceName) {
+			params.info = {
+				device: card.device,
+				device_name: card.deviceName
+			};
+		}
+
+		return params;
 	}
 
-	module.exports = virgilKey;
+	module.exports = VirgilCard;
 
 /***/ },
 /* 159 */
@@ -16801,8 +16899,132 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
+	var _typeof2 = __webpack_require__(2);
+
+	var _typeof3 = _interopRequireDefault(_typeof2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var utils = __webpack_require__(1);
+
+	/**
+	 * A wrapper on CryptoKeyHandle objects providing easier access to common
+	 * operations performed with keys (e.g. decrypt and sign data, save key
+	 * to storage etc.)
+	 *
+	 * @param {VirgilAPIContext} context - Virgil API context.
+	 * @param {CryptoKeyHandle} privateKey - The private key handle to wrap.
+	 * @constructor
+	 */
+	function VirgilKey(context, privateKey) {
+	  /**
+	   * @type {VirgilAPIContext}
+	   * @private
+	      */
+	  this._context = context;
+
+	  /**
+	   * @type {CryptoKeyHandle}
+	   * @private
+	      */
+	  this._privateKey = privateKey;
+	}
+
+	/**
+	 * Saves the key under the name encrypted with the password.
+	 * @param {string} name - The name under which the key is stored.
+	 * @param {string} password - The password to encrypt the key with.
+	 * @returns {Promise}
+	 */
+	VirgilKey.prototype.save = function (name, password) {
+	  utils.assert(utils.isString(name), 'save expects name argument to be passed as a string. ' + 'Got ' + (typeof name === 'undefined' ? 'undefined' : (0, _typeof3.default)(name)));
+
+	  utils.assert(utils.isString(password), 'save expects password argument to be passed as a string. ' + 'Got ' + (typeof password === 'undefined' ? 'undefined' : (0, _typeof3.default)(password)));
+
+	  var privateKeyData = this._context.crypto.exportPrivateKey(this._privateKey, password);
+
+	  return this._context.keyStorage.store(name, privateKeyData);
+	};
+
+	/**
+	 * Calculate and return the signature for the data.
+	 * @param {(string|Buffer)} data - The data to calculate the signature
+	 * 		for. If data is a string, an encoding of UTF-8 is assumed.
+	 * @returns {Buffer} - The signature.
+	 */
+	VirgilKey.prototype.sign = function (data) {
+	  return this._context.crypto.sign(data, this._privateKey);
+	};
+
+	/**
+	 * Decrypts and returns the encrypted data.
+	 * @param {(string|Buffer)} cipherData - The data to be decrypted.
+	 * 		If cipherData is a string, an encoding of base64 is assumed.
+	 * @returns {Buffer}
+	 */
+	VirgilKey.prototype.decrypt = function (cipherData) {
+	  return this._context.crypto.decrypt(cipherData, this._privateKey);
+	};
+
+	/**
+	 * Calculates the signature for the data and encrypts the data along
+	 * with the signature for the given recipient(s).
+	 * @param {(string|Buffer)} data - The data to sign and encrypt. If
+	 * 		data is a string, an encoding of UTF-8 is assumed.
+	 * @param {VirgilCard|VirgilCard[]} recipientCards - The intended
+	 * 		recipient(s).
+	 * @returns {Buffer} - Encrypted data with attached signature.
+	 */
+	VirgilKey.prototype.signThenEncrypt = function (data, recipientCards) {
+	  var publicKeys = utils.toArray(recipientCards).map(function (card) {
+	    return card.publicKey;
+	  });
+	  return this._context.crypto.signThenEncrypt(data, this._privateKey, publicKeys);
+	};
+
+	/**
+	 * Decrypts the encrypted data, then verifies decrypted data integrity
+	 * using the attached signature and the signer's card.
+	 * @param {(string|Buffer)} cipherData - The data to be decrypted and
+	 * 		checked. If cipherData is a string, an encoding of base64 is
+	 * 		assumed.
+	 * @param {VirgilCard} signerCard - The Virgil Card of the signing
+	 * 		party.
+	 * @returns {*}
+	 */
+	VirgilKey.prototype.decryptThenVerify = function (cipherData, signerCard) {
+	  return this._context.crypto.decryptThenVerify(cipherData, this._privateKey, signerCard.publicKey);
+	};
+
+	/**
+	 * Returns the private key material in DER format.
+	 * @param {string} [password] - Optional password to encrypt the key
+	 * 		with before exporting.
+	 * @returns {Buffer} - The raw key material.
+	 */
+	VirgilKey.prototype.export = function (password) {
+	  return this._context.crypto.exportPrivateKey(this._privateKey, password);
+	};
+
+	/**
+	 * Returns the public key material in DER format.
+	 * @returns {Buffer} - The raw key material.
+	 */
+	VirgilKey.prototype.exportPublicKey = function () {
+	  var publicKeyHandle = this._context.crypto.extractPublicKey(this._privateKey);
+	  return this._context.crypto.exportPublicKey(publicKeyHandle);
+	};
+
+	module.exports = VirgilKey;
+
+/***/ },
+/* 160 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	var VirgilCrypto = __webpack_require__(120);
-	var createVirgilCrypto = __webpack_require__(89);
+	var virgilCrypto = __webpack_require__(89);
 	var createVirgilClient = __webpack_require__(88);
 	var publishCardRequest = __webpack_require__(147);
 	var revokeCardRequest = __webpack_require__(87);
@@ -16812,44 +17034,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	var IdentityType = __webpack_require__(84);
 	var CardScope = __webpack_require__(25);
 	var RevocationReason = __webpack_require__(46);
-	var cardManager = __webpack_require__(146);
-	var keyManager = __webpack_require__(151);
-	var virgilAPIContext = __webpack_require__(156);
-	var utils = __webpack_require__(1);
+	var VirgilAPI = __webpack_require__(157);
 
-	/**
-	 *
-	 * @param {(string|VirgilAPIConfig)} config - Virgil access token or Virgil
-	 * 		API configuration object.
-	 * @constructs {VirgilAPI}
-	 */
-	function virgil(config) {
-		utils.assert(utils.isString(config) || utils.isObject(config), 'Virgil API requires a configuration object or an access token ' + 'string.');
+	var initAPI = function initAPI(config) {
+		return new VirgilAPI(config);
+	};
 
-		if (utils.isString(config)) {
-			config = { accessToken: config };
-		}
-
-		var context = virgilAPIContext(config);
-
-		return (/** @lends {VirgilAPI} */{
-				/** @type {KeyManager} */
-				keys: keyManager(context),
-				/** @type {CardManager} */
-				cards: cardManager(context)
-			}
-		);
-	}
-
-	virgil.client = createVirgilClient;
-	virgil.crypto = createVirgilCrypto();
-	virgil.publishCardRequest = publishCardRequest;
-	virgil.revokeCardRequest = revokeCardRequest;
-	virgil.requestSigner = requestSigner;
-	virgil.cardValidator = cardValidator;
-	virgil.IdentityType = IdentityType;
-	virgil.CardScope = CardScope;
-	virgil.RevocationReason = RevocationReason;
+	var virgil = {
+		client: createVirgilClient,
+		crypto: virgilCrypto,
+		publishCardRequest: publishCardRequest,
+		revokeCardRequest: revokeCardRequest,
+		requestSigner: requestSigner,
+		cardValidator: cardValidator,
+		IdentityType: IdentityType,
+		CardScope: CardScope,
+		RevocationReason: RevocationReason,
+		API: initAPI
+	};
 
 	// Expose Buffer
 	virgil.Buffer = VirgilCrypto.Buffer;
@@ -16866,12 +17068,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = virgil;
 
 /***/ },
-/* 160 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(167), __esModule: true };
-
-/***/ },
 /* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -16885,6 +17081,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(170), __esModule: true };
+
+/***/ },
+/* 164 */
 /***/ function(module, exports) {
 
 	'use strict'
@@ -17004,7 +17206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 164 */
+/* 165 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -17015,23 +17217,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 165 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var core  = __webpack_require__(4)
-	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
-	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
-	  return $JSON.stringify.apply($JSON, arguments);
-	};
-
-/***/ },
 /* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(196);
-	var $Object = __webpack_require__(4).Object;
-	module.exports = function create(P, D){
-	  return $Object.create(P, D);
+	var core  = __webpack_require__(5)
+	  , $JSON = core.JSON || (core.JSON = {stringify: JSON.stringify});
+	module.exports = function stringify(it){ // eslint-disable-line no-unused-vars
+	  return $JSON.stringify.apply($JSON, arguments);
 	};
 
 /***/ },
@@ -17039,37 +17231,47 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(197);
-	module.exports = __webpack_require__(4).Object.keys;
+	var $Object = __webpack_require__(5).Object;
+	module.exports = function create(P, D){
+	  return $Object.create(P, D);
+	};
 
 /***/ },
 /* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(199);
-	__webpack_require__(101);
-	__webpack_require__(201);
-	__webpack_require__(202);
-	module.exports = __webpack_require__(4).Symbol;
+	__webpack_require__(198);
+	module.exports = __webpack_require__(5).Object.keys;
 
 /***/ },
 /* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(198);
-	__webpack_require__(102);
-	module.exports = __webpack_require__(66).f('iterator');
+	__webpack_require__(200);
+	__webpack_require__(101);
+	__webpack_require__(202);
+	__webpack_require__(203);
+	module.exports = __webpack_require__(5).Symbol;
 
 /***/ },
 /* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
-	__webpack_require__(101);
+	__webpack_require__(199);
 	__webpack_require__(102);
-	__webpack_require__(200);
-	module.exports = __webpack_require__(4).WeakMap;
+	module.exports = __webpack_require__(66).f('iterator');
 
 /***/ },
 /* 171 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(101);
+	__webpack_require__(102);
+	__webpack_require__(201);
+	module.exports = __webpack_require__(5).WeakMap;
+
+/***/ },
+/* 172 */
 /***/ function(module, exports) {
 
 	module.exports = function(it){
@@ -17078,20 +17280,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 172 */
+/* 173 */
 /***/ function(module, exports) {
 
 	module.exports = function(){ /* empty */ };
 
 /***/ },
-/* 173 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// false -> Array#indexOf
 	// true  -> Array#includes
-	var toIObject = __webpack_require__(15)
+	var toIObject = __webpack_require__(16)
 	  , toLength  = __webpack_require__(63)
-	  , toIndex   = __webpack_require__(193);
+	  , toIndex   = __webpack_require__(194);
 	module.exports = function(IS_INCLUDES){
 	  return function($this, el, fromIndex){
 	    var O      = toIObject($this)
@@ -17110,12 +17312,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 174 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(10)
+	var isObject = __webpack_require__(11)
 	  , isArray  = __webpack_require__(96)
-	  , SPECIES  = __webpack_require__(3)('species');
+	  , SPECIES  = __webpack_require__(4)('species');
 
 	module.exports = function(original){
 	  var C;
@@ -17131,23 +17333,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 175 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 9.4.2.3 ArraySpeciesCreate(originalArray, length)
-	var speciesConstructor = __webpack_require__(174);
+	var speciesConstructor = __webpack_require__(175);
 
 	module.exports = function(original, length){
 	  return new (speciesConstructor(original))(length);
 	};
 
 /***/ },
-/* 176 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// getting tag from 19.1.3.6 Object.prototype.toString()
 	var cof = __webpack_require__(51)
-	  , TAG = __webpack_require__(3)('toStringTag')
+	  , TAG = __webpack_require__(4)('toStringTag')
 	  // ES3 wrong here
 	  , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
@@ -17170,18 +17372,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 177 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var redefineAll       = __webpack_require__(100)
 	  , getWeak           = __webpack_require__(27).getWeak
-	  , anObject          = __webpack_require__(11)
-	  , isObject          = __webpack_require__(10)
+	  , anObject          = __webpack_require__(12)
+	  , isObject          = __webpack_require__(11)
 	  , anInstance        = __webpack_require__(92)
 	  , forOf             = __webpack_require__(94)
 	  , createArrayMethod = __webpack_require__(50)
-	  , $has              = __webpack_require__(8)
+	  , $has              = __webpack_require__(9)
 	  , arrayFind         = createArrayMethod(5)
 	  , arrayFindIndex    = createArrayMethod(6)
 	  , id                = 0;
@@ -17258,23 +17460,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 178 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var global         = __webpack_require__(5)
+	var global         = __webpack_require__(6)
 	  , $export        = __webpack_require__(22)
 	  , meta           = __webpack_require__(27)
-	  , fails          = __webpack_require__(13)
-	  , hide           = __webpack_require__(9)
+	  , fails          = __webpack_require__(14)
+	  , hide           = __webpack_require__(10)
 	  , redefineAll    = __webpack_require__(100)
 	  , forOf          = __webpack_require__(94)
 	  , anInstance     = __webpack_require__(92)
-	  , isObject       = __webpack_require__(10)
+	  , isObject       = __webpack_require__(11)
 	  , setToStringTag = __webpack_require__(30)
-	  , dP             = __webpack_require__(14).f
+	  , dP             = __webpack_require__(15).f
 	  , each           = __webpack_require__(50)(0)
-	  , DESCRIPTORS    = __webpack_require__(12);
+	  , DESCRIPTORS    = __webpack_require__(13);
 
 	module.exports = function(NAME, wrapper, methods, common, IS_MAP, IS_WEAK){
 	  var Base  = global[NAME]
@@ -17322,7 +17524,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 179 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// all enumerable object keys, includes symbols
@@ -17342,18 +17544,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 180 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(5).document && document.documentElement;
+	module.exports = __webpack_require__(6).document && document.documentElement;
 
 /***/ },
-/* 181 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// check on default Array iterator
 	var Iterators  = __webpack_require__(23)
-	  , ITERATOR   = __webpack_require__(3)('iterator')
+	  , ITERATOR   = __webpack_require__(4)('iterator')
 	  , ArrayProto = Array.prototype;
 
 	module.exports = function(it){
@@ -17361,11 +17563,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// call something on iterator step with safe closing on error
-	var anObject = __webpack_require__(11);
+	var anObject = __webpack_require__(12);
 	module.exports = function(iterator, fn, value, entries){
 	  try {
 	    return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -17378,7 +17580,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17388,7 +17590,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  , IteratorPrototype = {};
 
 	// 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-	__webpack_require__(9)(IteratorPrototype, __webpack_require__(3)('iterator'), function(){ return this; });
+	__webpack_require__(10)(IteratorPrototype, __webpack_require__(4)('iterator'), function(){ return this; });
 
 	module.exports = function(Constructor, NAME, next){
 	  Constructor.prototype = create(IteratorPrototype, {next: descriptor(1, next)});
@@ -17396,7 +17598,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports) {
 
 	module.exports = function(done, value){
@@ -17404,11 +17606,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 185 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getKeys   = __webpack_require__(18)
-	  , toIObject = __webpack_require__(15);
+	  , toIObject = __webpack_require__(16);
 	module.exports = function(object, el){
 	  var O      = toIObject(object)
 	    , keys   = getKeys(O)
@@ -17419,7 +17621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 186 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -17432,7 +17634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  , $assign  = Object.assign;
 
 	// should work with symbols and should have deterministic property order (V8 bug)
-	module.exports = !$assign || __webpack_require__(13)(function(){
+	module.exports = !$assign || __webpack_require__(14)(function(){
 	  var A = {}
 	    , B = {}
 	    , S = Symbol()
@@ -17457,14 +17659,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	} : $assign;
 
 /***/ },
-/* 187 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var dP       = __webpack_require__(14)
-	  , anObject = __webpack_require__(11)
+	var dP       = __webpack_require__(15)
+	  , anObject = __webpack_require__(12)
 	  , getKeys  = __webpack_require__(18);
 
-	module.exports = __webpack_require__(12) ? Object.defineProperties : function defineProperties(O, Properties){
+	module.exports = __webpack_require__(13) ? Object.defineProperties : function defineProperties(O, Properties){
 	  anObject(O);
 	  var keys   = getKeys(Properties)
 	    , length = keys.length
@@ -17475,18 +17677,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 188 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var pIE            = __webpack_require__(28)
 	  , createDesc     = __webpack_require__(29)
-	  , toIObject      = __webpack_require__(15)
+	  , toIObject      = __webpack_require__(16)
 	  , toPrimitive    = __webpack_require__(64)
-	  , has            = __webpack_require__(8)
+	  , has            = __webpack_require__(9)
 	  , IE8_DOM_DEFINE = __webpack_require__(95)
 	  , gOPD           = Object.getOwnPropertyDescriptor;
 
-	exports.f = __webpack_require__(12) ? gOPD : function getOwnPropertyDescriptor(O, P){
+	exports.f = __webpack_require__(13) ? gOPD : function getOwnPropertyDescriptor(O, P){
 	  O = toIObject(O);
 	  P = toPrimitive(P, true);
 	  if(IE8_DOM_DEFINE)try {
@@ -17496,11 +17698,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 189 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-	var toIObject = __webpack_require__(15)
+	var toIObject = __webpack_require__(16)
 	  , gOPN      = __webpack_require__(98).f
 	  , toString  = {}.toString;
 
@@ -17521,11 +17723,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 190 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-	var has         = __webpack_require__(8)
+	var has         = __webpack_require__(9)
 	  , toObject    = __webpack_require__(31)
 	  , IE_PROTO    = __webpack_require__(60)('IE_PROTO')
 	  , ObjectProto = Object.prototype;
@@ -17539,13 +17741,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 191 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// most Object methods by ES6 should accept primitives
 	var $export = __webpack_require__(22)
-	  , core    = __webpack_require__(4)
-	  , fails   = __webpack_require__(13);
+	  , core    = __webpack_require__(5)
+	  , fails   = __webpack_require__(14);
 	module.exports = function(KEY, exec){
 	  var fn  = (core.Object || {})[KEY] || Object[KEY]
 	    , exp = {};
@@ -17554,7 +17756,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 192 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var toInteger = __webpack_require__(62)
@@ -17576,7 +17778,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 193 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var toInteger = __webpack_require__(62)
@@ -17588,27 +17790,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 194 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var classof   = __webpack_require__(176)
-	  , ITERATOR  = __webpack_require__(3)('iterator')
+	var classof   = __webpack_require__(177)
+	  , ITERATOR  = __webpack_require__(4)('iterator')
 	  , Iterators = __webpack_require__(23);
-	module.exports = __webpack_require__(4).getIteratorMethod = function(it){
+	module.exports = __webpack_require__(5).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR]
 	    || it['@@iterator']
 	    || Iterators[classof(it)];
 	};
 
 /***/ },
-/* 195 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var addToUnscopables = __webpack_require__(172)
-	  , step             = __webpack_require__(184)
+	var addToUnscopables = __webpack_require__(173)
+	  , step             = __webpack_require__(185)
 	  , Iterators        = __webpack_require__(23)
-	  , toIObject        = __webpack_require__(15);
+	  , toIObject        = __webpack_require__(16);
 
 	// 22.1.3.4 Array.prototype.entries()
 	// 22.1.3.13 Array.prototype.keys()
@@ -17640,7 +17842,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	addToUnscopables('entries');
 
 /***/ },
-/* 196 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var $export = __webpack_require__(22)
@@ -17648,25 +17850,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	$export($export.S, 'Object', {create: __webpack_require__(57)});
 
 /***/ },
-/* 197 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.14 Object.keys(O)
 	var toObject = __webpack_require__(31)
 	  , $keys    = __webpack_require__(18);
 
-	__webpack_require__(191)('keys', function(){
+	__webpack_require__(192)('keys', function(){
 	  return function keys(it){
 	    return $keys(toObject(it));
 	  };
 	});
 
 /***/ },
-/* 198 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var $at  = __webpack_require__(192)(true);
+	var $at  = __webpack_require__(193)(true);
 
 	// 21.1.3.27 String.prototype[@@iterator]()
 	__webpack_require__(97)(String, 'String', function(iterated){
@@ -17684,35 +17886,35 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 /***/ },
-/* 199 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	// ECMAScript 6 symbols shim
-	var global         = __webpack_require__(5)
-	  , has            = __webpack_require__(8)
-	  , DESCRIPTORS    = __webpack_require__(12)
+	var global         = __webpack_require__(6)
+	  , has            = __webpack_require__(9)
+	  , DESCRIPTORS    = __webpack_require__(13)
 	  , $export        = __webpack_require__(22)
 	  , redefine       = __webpack_require__(59)
 	  , META           = __webpack_require__(27).KEY
-	  , $fails         = __webpack_require__(13)
+	  , $fails         = __webpack_require__(14)
 	  , shared         = __webpack_require__(61)
 	  , setToStringTag = __webpack_require__(30)
 	  , uid            = __webpack_require__(32)
-	  , wks            = __webpack_require__(3)
+	  , wks            = __webpack_require__(4)
 	  , wksExt         = __webpack_require__(66)
 	  , wksDefine      = __webpack_require__(65)
-	  , keyOf          = __webpack_require__(185)
-	  , enumKeys       = __webpack_require__(179)
+	  , keyOf          = __webpack_require__(186)
+	  , enumKeys       = __webpack_require__(180)
 	  , isArray        = __webpack_require__(96)
-	  , anObject       = __webpack_require__(11)
-	  , toIObject      = __webpack_require__(15)
+	  , anObject       = __webpack_require__(12)
+	  , toIObject      = __webpack_require__(16)
 	  , toPrimitive    = __webpack_require__(64)
 	  , createDesc     = __webpack_require__(29)
 	  , _create        = __webpack_require__(57)
-	  , gOPNExt        = __webpack_require__(189)
-	  , $GOPD          = __webpack_require__(188)
-	  , $DP            = __webpack_require__(14)
+	  , gOPNExt        = __webpack_require__(190)
+	  , $GOPD          = __webpack_require__(189)
+	  , $DP            = __webpack_require__(15)
 	  , $keys          = __webpack_require__(18)
 	  , gOPD           = $GOPD.f
 	  , dP             = $DP.f
@@ -17915,7 +18117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	// 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-	$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(9)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+	$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(10)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 	// 19.4.3.5 Symbol.prototype[@@toStringTag]
 	setToStringTag($Symbol, 'Symbol');
 	// 20.2.1.9 Math[@@toStringTag]
@@ -17924,16 +18126,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	setToStringTag(global.JSON, 'JSON', true);
 
 /***/ },
-/* 200 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var each         = __webpack_require__(50)(0)
 	  , redefine     = __webpack_require__(59)
 	  , meta         = __webpack_require__(27)
-	  , assign       = __webpack_require__(186)
-	  , weak         = __webpack_require__(177)
-	  , isObject     = __webpack_require__(10)
+	  , assign       = __webpack_require__(187)
+	  , weak         = __webpack_require__(178)
+	  , isObject     = __webpack_require__(11)
 	  , getWeak      = meta.getWeak
 	  , isExtensible = Object.isExtensible
 	  , uncaughtFrozenStore = weak.ufstore
@@ -17962,7 +18164,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	// 23.3 WeakMap Objects
-	var $WeakMap = module.exports = __webpack_require__(178)('WeakMap', wrapper, methods, weak, true, true);
+	var $WeakMap = module.exports = __webpack_require__(179)('WeakMap', wrapper, methods, weak, true, true);
 
 	// IE11 WeakMap frozen keys fix
 	if(new $WeakMap().set((Object.freeze || Object)(tmp), 7).get(tmp) != 7){
@@ -17985,19 +18187,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 201 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(65)('asyncIterator');
 
 /***/ },
-/* 202 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	__webpack_require__(65)('observable');
 
 /***/ },
-/* 203 */
+/* 204 */
 /***/ function(module, exports) {
 
 	exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -18087,7 +18289,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 204 */
+/* 205 */
 /***/ function(module, exports) {
 
 	/*!
@@ -20394,11 +20596,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 205 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(16),
-	    root = __webpack_require__(6);
+	var getNative = __webpack_require__(17),
+	    root = __webpack_require__(7);
 
 	/* Built-in method references that are verified to be native. */
 	var DataView = getNative(root, 'DataView');
@@ -20407,14 +20609,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 206 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hashClear = __webpack_require__(250),
-	    hashDelete = __webpack_require__(251),
-	    hashGet = __webpack_require__(252),
-	    hashHas = __webpack_require__(253),
-	    hashSet = __webpack_require__(254);
+	var hashClear = __webpack_require__(251),
+	    hashDelete = __webpack_require__(252),
+	    hashGet = __webpack_require__(253),
+	    hashHas = __webpack_require__(254),
+	    hashSet = __webpack_require__(255);
 
 	/**
 	 * Creates a hash object.
@@ -20445,11 +20647,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 207 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(16),
-	    root = __webpack_require__(6);
+	var getNative = __webpack_require__(17),
+	    root = __webpack_require__(7);
 
 	/* Built-in method references that are verified to be native. */
 	var Promise = getNative(root, 'Promise');
@@ -20458,11 +20660,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 208 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(16),
-	    root = __webpack_require__(6);
+	var getNative = __webpack_require__(17),
+	    root = __webpack_require__(7);
 
 	/* Built-in method references that are verified to be native. */
 	var Set = getNative(root, 'Set');
@@ -20471,12 +20673,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 209 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var MapCache = __webpack_require__(68),
-	    setCacheAdd = __webpack_require__(274),
-	    setCacheHas = __webpack_require__(275);
+	    setCacheAdd = __webpack_require__(275),
+	    setCacheHas = __webpack_require__(276);
 
 	/**
 	 *
@@ -20504,10 +20706,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 210 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(6);
+	var root = __webpack_require__(7);
 
 	/** Built-in value references. */
 	var Uint8Array = root.Uint8Array;
@@ -20516,11 +20718,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 211 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getNative = __webpack_require__(16),
-	    root = __webpack_require__(6);
+	var getNative = __webpack_require__(17),
+	    root = __webpack_require__(7);
 
 	/* Built-in method references that are verified to be native. */
 	var WeakMap = getNative(root, 'WeakMap');
@@ -20529,7 +20731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 212 */
+/* 213 */
 /***/ function(module, exports) {
 
 	/**
@@ -20556,7 +20758,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 213 */
+/* 214 */
 /***/ function(module, exports) {
 
 	/**
@@ -20587,12 +20789,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 214 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseTimes = __webpack_require__(235),
+	var baseTimes = __webpack_require__(236),
 	    isArguments = __webpack_require__(74),
-	    isArray = __webpack_require__(7),
+	    isArray = __webpack_require__(8),
 	    isBuffer = __webpack_require__(75),
 	    isIndex = __webpack_require__(70),
 	    isTypedArray = __webpack_require__(78);
@@ -20642,7 +20844,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 215 */
+/* 216 */
 /***/ function(module, exports) {
 
 	/**
@@ -20669,7 +20871,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 216 */
+/* 217 */
 /***/ function(module, exports) {
 
 	/**
@@ -20695,7 +20897,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 217 */
+/* 218 */
 /***/ function(module, exports) {
 
 	/**
@@ -20724,10 +20926,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 218 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var createBaseFor = __webpack_require__(241);
+	var createBaseFor = __webpack_require__(242);
 
 	/**
 	 * The base implementation of `baseForOwn` which iterates over `object`
@@ -20746,10 +20948,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 219 */
+/* 220 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFor = __webpack_require__(218),
+	var baseFor = __webpack_require__(219),
 	    keys = __webpack_require__(42);
 
 	/**
@@ -20768,11 +20970,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 220 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(216),
-	    isArray = __webpack_require__(7);
+	var arrayPush = __webpack_require__(217),
+	    isArray = __webpack_require__(8);
 
 	/**
 	 * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
@@ -20794,7 +20996,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 221 */
+/* 222 */
 /***/ function(module, exports) {
 
 	/**
@@ -20813,7 +21015,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 222 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(19),
@@ -20837,7 +21039,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 223 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(19),
@@ -20860,15 +21062,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 224 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Stack = __webpack_require__(103),
 	    equalArrays = __webpack_require__(111),
-	    equalByTag = __webpack_require__(242),
-	    equalObjects = __webpack_require__(243),
+	    equalByTag = __webpack_require__(243),
+	    equalObjects = __webpack_require__(244),
 	    getTag = __webpack_require__(113),
-	    isArray = __webpack_require__(7),
+	    isArray = __webpack_require__(8),
 	    isBuffer = __webpack_require__(75),
 	    isTypedArray = __webpack_require__(78);
 
@@ -20949,7 +21151,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 225 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Stack = __webpack_require__(103),
@@ -21017,11 +21219,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 226 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isFunction = __webpack_require__(118),
-	    isMasked = __webpack_require__(257),
+	    isMasked = __webpack_require__(258),
 	    isObject = __webpack_require__(41),
 	    toSource = __webpack_require__(117);
 
@@ -21070,7 +21272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 227 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGetTag = __webpack_require__(19),
@@ -21136,14 +21338,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 228 */
+/* 229 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseMatches = __webpack_require__(229),
-	    baseMatchesProperty = __webpack_require__(230),
+	var baseMatches = __webpack_require__(230),
+	    baseMatchesProperty = __webpack_require__(231),
 	    identity = __webpack_require__(73),
-	    isArray = __webpack_require__(7),
-	    property = __webpack_require__(293);
+	    isArray = __webpack_require__(8),
+	    property = __webpack_require__(294);
 
 	/**
 	 * The base implementation of `_.iteratee`.
@@ -21173,11 +21375,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 229 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsMatch = __webpack_require__(225),
-	    getMatchData = __webpack_require__(245),
+	var baseIsMatch = __webpack_require__(226),
+	    getMatchData = __webpack_require__(246),
 	    matchesStrictComparable = __webpack_require__(115);
 
 	/**
@@ -21201,12 +21403,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 230 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseIsEqual = __webpack_require__(106),
-	    get = __webpack_require__(287),
-	    hasIn = __webpack_require__(288),
+	    get = __webpack_require__(288),
+	    hasIn = __webpack_require__(289),
 	    isKey = __webpack_require__(71),
 	    isStrictComparable = __webpack_require__(114),
 	    matchesStrictComparable = __webpack_require__(115),
@@ -21240,7 +21442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 231 */
+/* 232 */
 /***/ function(module, exports) {
 
 	/**
@@ -21260,7 +21462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 232 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGet = __webpack_require__(105);
@@ -21282,12 +21484,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 233 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var identity = __webpack_require__(73),
-	    overRest = __webpack_require__(273),
-	    setToString = __webpack_require__(277);
+	    overRest = __webpack_require__(274),
+	    setToString = __webpack_require__(278);
 
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -21305,10 +21507,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 234 */
+/* 235 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(286),
+	var constant = __webpack_require__(287),
 	    defineProperty = __webpack_require__(110),
 	    identity = __webpack_require__(73);
 
@@ -21333,7 +21535,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 235 */
+/* 236 */
 /***/ function(module, exports) {
 
 	/**
@@ -21359,12 +21561,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 236 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(34),
-	    arrayMap = __webpack_require__(215),
-	    isArray = __webpack_require__(7),
+	    arrayMap = __webpack_require__(216),
+	    isArray = __webpack_require__(8),
 	    isSymbol = __webpack_require__(77);
 
 	/** Used as references for various `Number` constants. */
@@ -21402,7 +21604,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 237 */
+/* 238 */
 /***/ function(module, exports) {
 
 	/**
@@ -21421,7 +21623,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 238 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assignValue = __webpack_require__(104),
@@ -21467,10 +21669,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 239 */
+/* 240 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(6);
+	var root = __webpack_require__(7);
 
 	/** Used to detect overreaching core-js shims. */
 	var coreJsData = root['__core-js_shared__'];
@@ -21479,11 +21681,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 240 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(233),
-	    isIterateeCall = __webpack_require__(255);
+	var baseRest = __webpack_require__(234),
+	    isIterateeCall = __webpack_require__(256);
 
 	/**
 	 * Creates a function like `_.assign`.
@@ -21522,7 +21724,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 241 */
+/* 242 */
 /***/ function(module, exports) {
 
 	/**
@@ -21553,15 +21755,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 242 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(34),
-	    Uint8Array = __webpack_require__(210),
+	    Uint8Array = __webpack_require__(211),
 	    eq = __webpack_require__(39),
 	    equalArrays = __webpack_require__(111),
-	    mapToArray = __webpack_require__(268),
-	    setToArray = __webpack_require__(276);
+	    mapToArray = __webpack_require__(269),
+	    setToArray = __webpack_require__(277);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1,
@@ -21671,10 +21873,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 243 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var getAllKeys = __webpack_require__(244);
+	var getAllKeys = __webpack_require__(245);
 
 	/** Used to compose bitmasks for value comparisons. */
 	var COMPARE_PARTIAL_FLAG = 1;
@@ -21766,11 +21968,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 244 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetAllKeys = __webpack_require__(220),
-	    getSymbols = __webpack_require__(247),
+	var baseGetAllKeys = __webpack_require__(221),
+	    getSymbols = __webpack_require__(248),
 	    keys = __webpack_require__(42);
 
 	/**
@@ -21788,7 +21990,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 245 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isStrictComparable = __webpack_require__(114),
@@ -21818,7 +22020,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 246 */
+/* 247 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(34);
@@ -21870,11 +22072,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 247 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayFilter = __webpack_require__(213),
-	    stubArray = __webpack_require__(294);
+	var arrayFilter = __webpack_require__(214),
+	    stubArray = __webpack_require__(295);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -21906,7 +22108,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 248 */
+/* 249 */
 /***/ function(module, exports) {
 
 	/**
@@ -21925,12 +22127,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 249 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var castPath = __webpack_require__(109),
 	    isArguments = __webpack_require__(74),
-	    isArray = __webpack_require__(7),
+	    isArray = __webpack_require__(8),
 	    isIndex = __webpack_require__(70),
 	    isLength = __webpack_require__(76),
 	    toKey = __webpack_require__(38);
@@ -21970,7 +22172,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 250 */
+/* 251 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(37);
@@ -21991,7 +22193,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 251 */
+/* 252 */
 /***/ function(module, exports) {
 
 	/**
@@ -22014,7 +22216,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 252 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(37);
@@ -22050,7 +22252,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 253 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(37);
@@ -22079,7 +22281,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 254 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var nativeCreate = __webpack_require__(37);
@@ -22108,7 +22310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 255 */
+/* 256 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(39),
@@ -22144,7 +22346,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 256 */
+/* 257 */
 /***/ function(module, exports) {
 
 	/**
@@ -22165,10 +22367,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 257 */
+/* 258 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var coreJsData = __webpack_require__(239);
+	var coreJsData = __webpack_require__(240);
 
 	/** Used to detect methods masquerading as native. */
 	var maskSrcKey = (function() {
@@ -22191,7 +22393,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 258 */
+/* 259 */
 /***/ function(module, exports) {
 
 	/**
@@ -22210,7 +22412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 259 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(35);
@@ -22251,7 +22453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 260 */
+/* 261 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(35);
@@ -22276,7 +22478,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 261 */
+/* 262 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(35);
@@ -22298,7 +22500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 262 */
+/* 263 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assocIndexOf = __webpack_require__(35);
@@ -22330,10 +22532,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 263 */
+/* 264 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Hash = __webpack_require__(206),
+	var Hash = __webpack_require__(207),
 	    ListCache = __webpack_require__(33),
 	    Map = __webpack_require__(67);
 
@@ -22357,7 +22559,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 264 */
+/* 265 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(36);
@@ -22381,7 +22583,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 265 */
+/* 266 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(36);
@@ -22403,7 +22605,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 266 */
+/* 267 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(36);
@@ -22425,7 +22627,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 267 */
+/* 268 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getMapData = __webpack_require__(36);
@@ -22453,7 +22655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 268 */
+/* 269 */
 /***/ function(module, exports) {
 
 	/**
@@ -22477,10 +22679,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 269 */
+/* 270 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoize = __webpack_require__(292);
+	var memoize = __webpack_require__(293);
 
 	/** Used as the maximum memoize cache size. */
 	var MAX_MEMOIZE_SIZE = 500;
@@ -22509,10 +22711,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 270 */
+/* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var overArg = __webpack_require__(272);
+	var overArg = __webpack_require__(273);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeKeys = overArg(Object.keys, Object);
@@ -22521,7 +22723,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 271 */
+/* 272 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -22549,7 +22751,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 272 */
+/* 273 */
 /***/ function(module, exports) {
 
 	/**
@@ -22570,10 +22772,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 273 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(212);
+	var apply = __webpack_require__(213);
 
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -22612,7 +22814,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 274 */
+/* 275 */
 /***/ function(module, exports) {
 
 	/** Used to stand-in for `undefined` hash values. */
@@ -22637,7 +22839,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 275 */
+/* 276 */
 /***/ function(module, exports) {
 
 	/**
@@ -22657,7 +22859,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 276 */
+/* 277 */
 /***/ function(module, exports) {
 
 	/**
@@ -22681,11 +22883,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 277 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(234),
-	    shortOut = __webpack_require__(278);
+	var baseSetToString = __webpack_require__(235),
+	    shortOut = __webpack_require__(279);
 
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -22701,7 +22903,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 278 */
+/* 279 */
 /***/ function(module, exports) {
 
 	/** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -22744,7 +22946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 279 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(33);
@@ -22765,7 +22967,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 280 */
+/* 281 */
 /***/ function(module, exports) {
 
 	/**
@@ -22789,7 +22991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports) {
 
 	/**
@@ -22809,7 +23011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 282 */
+/* 283 */
 /***/ function(module, exports) {
 
 	/**
@@ -22829,7 +23031,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 283 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListCache = __webpack_require__(33),
@@ -22869,10 +23071,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var memoizeCapped = __webpack_require__(269);
+	var memoizeCapped = __webpack_require__(270);
 
 	/** Used to match property names within property paths. */
 	var reLeadingDot = /^\./,
@@ -22903,12 +23105,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var assignValue = __webpack_require__(104),
-	    copyObject = __webpack_require__(238),
-	    createAssigner = __webpack_require__(240),
+	    copyObject = __webpack_require__(239),
+	    createAssigner = __webpack_require__(241),
 	    isArrayLike = __webpack_require__(40),
 	    isPrototype = __webpack_require__(72),
 	    keys = __webpack_require__(42);
@@ -22967,7 +23169,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports) {
 
 	/**
@@ -22999,7 +23201,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseGet = __webpack_require__(105);
@@ -23038,11 +23240,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseHasIn = __webpack_require__(221),
-	    hasPath = __webpack_require__(249);
+	var baseHasIn = __webpack_require__(222),
+	    hasPath = __webpack_require__(250);
 
 	/**
 	 * Checks if `path` is a direct or inherited property of `object`.
@@ -23078,10 +23280,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseIsArrayBuffer = __webpack_require__(223),
+	var baseIsArrayBuffer = __webpack_require__(224),
 	    baseUnary = __webpack_require__(108),
 	    nodeUtil = __webpack_require__(116);
 
@@ -23111,13 +23313,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseKeys = __webpack_require__(107),
 	    getTag = __webpack_require__(113),
 	    isArguments = __webpack_require__(74),
-	    isArray = __webpack_require__(7),
+	    isArray = __webpack_require__(8),
 	    isArrayLike = __webpack_require__(40),
 	    isBuffer = __webpack_require__(75),
 	    isPrototype = __webpack_require__(72),
@@ -23194,12 +23396,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseAssignValue = __webpack_require__(69),
-	    baseForOwn = __webpack_require__(219),
-	    baseIteratee = __webpack_require__(228);
+	    baseForOwn = __webpack_require__(220),
+	    baseIteratee = __webpack_require__(229);
 
 	/**
 	 * Creates an object with the same keys as `object` and values generated
@@ -23243,7 +23445,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var MapCache = __webpack_require__(68);
@@ -23322,11 +23524,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseProperty = __webpack_require__(231),
-	    basePropertyDeep = __webpack_require__(232),
+	var baseProperty = __webpack_require__(232),
+	    basePropertyDeep = __webpack_require__(233),
 	    isKey = __webpack_require__(71),
 	    toKey = __webpack_require__(38);
 
@@ -23360,7 +23562,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports) {
 
 	/**
@@ -23389,7 +23591,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports) {
 
 	/**
@@ -23413,10 +23615,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseToString = __webpack_require__(236);
+	var baseToString = __webpack_require__(237);
 
 	/**
 	 * Converts `value` to a string. An empty string is returned for `null`
@@ -23447,7 +23649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Buffer = __webpack_require__(49).Buffer
