@@ -46,7 +46,7 @@ test('setup alice', function (t) {
 
 test('setup bob', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	var key = api.keys.generate();
 	key.save(BOB_IDENTITY, KEY_PASSWORD)
@@ -67,7 +67,7 @@ var messageToBob;
 
 test('alice encrypt message for bob', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	findBob()
 		.tap(function (card) {
@@ -105,7 +105,7 @@ test('alice encrypt message for bob', function (t) {
 
 test('bob decrypt message', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	api.keys.load(BOB_IDENTITY, KEY_PASSWORD)
 		.then(function (key) {
@@ -123,7 +123,7 @@ test('bob decrypt message', function (t) {
 var aliceSignature;
 test('alice sign', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	api.keys.load(ALICE_IDENTITY, KEY_PASSWORD)
 		.then(function (key) {
@@ -139,7 +139,7 @@ test('alice sign', function (t) {
 
 test('bob verify', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	findAlice()
 		.tap(function (card) {
@@ -174,7 +174,7 @@ test('bob verify', function (t) {
 
 test('cleanup alice', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	findAlice()
 		.tap(function (aliceCard) {
@@ -209,7 +209,7 @@ test('cleanup alice', function (t) {
 
 test('cleanup bob', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	findBob()
 		.tap(function (bobCard) {

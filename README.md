@@ -48,11 +48,11 @@ Virgil Security makes it super easy to add encryption to any application. With o
 
 ```js
 // find Alice's card(s)
-virgilClient.cards.find(["alice"])
+virgilAPI.cards.find(["alice"])
   .then(function (cards) {
     // encrypt the message using Alice's cards
     var message = "Hello Alice!";
-    var encryptedMessage = virgilClient.encryptFor(message, cards);
+    var encryptedMessage = virgilAPI.encryptFor(message, cards);
     // transmit the message with your preferred technology
     transmitMessage(encryptedMessage.toString("base64"));
   });
@@ -63,7 +63,7 @@ The receiving user then uses their stored __private key__ to decrypt the message
 
 ```js
 // load Alice's Key from storage.
-virgilClient.keys.load("alices_key_1", "mypassword")
+virgilAPI.keys.load("alices_key_1", "mypassword")
   .then(function (key) {
     // decrypt the message using the key
     var data = key.decrypt(transferData).toString();
@@ -84,7 +84,7 @@ To use this SDK you need to [sign up for an account](https://developer.virgilsec
 To initialize the SDK in a web browser you will only need the __access token__ you created.
 
 ```js
-var virgilClient = virgil("[ACCESS_TOKEN]");
+var virgilAPI = virgil.API("[ACCESS_TOKEN]");
 ```
 
 > __Note:__ this client will have [limited capabilities](#guide_on_client_access_permissions). For example, it will be able to generate new __Cards__ but it will need a server-side client to transmit these to Virgil.
@@ -96,7 +96,7 @@ To initialize the SDK on the server side we will need the __access token__, __ap
 ```javascript
 var virgil = require("virgil-sdk");
 var appKey = require("fs").readFileSync("/path/to/app/key");
-var virgilClient = virgil({
+var virgilAPI = virgil.API({
     accessToken: "[ACCESS_TOKEN]",
     appCredentials: {
         appId: "[APP_ID]",

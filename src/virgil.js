@@ -12,41 +12,23 @@ var IdentityType = require('./client/card-identity-type');
 var CardScope = require('./client/card-scope');
 var RevocationReason = require('./client/card-revocation-reason');
 var VirgilAPI = require('./virgil-api');
-var utils = require('./shared/utils');
 
-/**
- *
- * @param {(string|VirgilAPIConfiguration)} config - Virgil access token or
- * 		Virgil API configuration object.
- * @returns {VirgilAPI}
- */
-function virgil (config) {
+var initAPI = function (config) {
+	return new VirgilAPI(config)
+};
 
-	utils.assert(
-		utils.isUndefined(config) ||
-		utils.isString(config) ||
-		utils.isObject(config),
-		'Virgil API expects "config" argument to be an object or a string ' +
-		'if provided.');
-
-	if (utils.isUndefined(config)) {
-		config = {};
-	} else if (utils.isString(config)) {
-		config = { accessToken: config };
-	}
-
-	return new VirgilAPI(config);
-}
-
-virgil.client = createVirgilClient;
-virgil.crypto = virgilCrypto;
-virgil.publishCardRequest = publishCardRequest;
-virgil.revokeCardRequest = revokeCardRequest;
-virgil.requestSigner = requestSigner;
-virgil.cardValidator = cardValidator;
-virgil.IdentityType = IdentityType;
-virgil.CardScope = CardScope;
-virgil.RevocationReason = RevocationReason;
+var virgil = {
+	client: createVirgilClient,
+	crypto: virgilCrypto,
+	publishCardRequest: publishCardRequest,
+	revokeCardRequest: revokeCardRequest,
+	requestSigner: requestSigner,
+	cardValidator: cardValidator,
+	IdentityType: IdentityType,
+	CardScope: CardScope,
+	RevocationReason: RevocationReason,
+	API: initAPI
+};
 
 // Expose Buffer
 virgil.Buffer = VirgilCrypto.Buffer;

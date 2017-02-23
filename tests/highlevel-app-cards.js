@@ -26,7 +26,7 @@ function setup() {
 
 test('generate and save key', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 	var key = api.keys.generate();
 	return key.save(KEY_NAME, KEY_PASSWORD)
 		.then(function () {
@@ -40,7 +40,7 @@ test('generate and save key', function (t) {
 
 test('load key', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 	api.keys.load(KEY_NAME, KEY_PASSWORD)
 		.then(function (key) {
 			t.ok(key, 'Key loaded');
@@ -53,7 +53,7 @@ test('load key', function (t) {
 
 test('create and publish card', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	api.keys.load(KEY_NAME, KEY_PASSWORD)
 		.then(function (key) {
@@ -72,7 +72,7 @@ test('create and publish card', function (t) {
 
 test('find card by identity', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	api.cards.find(LOCAL_IDENTITY)
 		.then(function (cards) {
@@ -86,7 +86,7 @@ test('find card by identity', function (t) {
 
 test('get card by id', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	api.cards.find(LOCAL_IDENTITY)
 		.then(function (cards) {
@@ -111,7 +111,7 @@ test('get card by id', function (t) {
 
 test('revoke card', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	api.cards.find(LOCAL_IDENTITY)
 		.then(function (cards) {
@@ -136,7 +136,7 @@ test('revoke card', function (t) {
 
 test('destroy key', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	api.keys.destroy(KEY_NAME)
 		.then(function () {

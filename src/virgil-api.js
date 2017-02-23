@@ -13,6 +13,19 @@ var virgilAPIContext = require('./virgil-api-context');
  * @constructor
  */
 function VirgilAPI (config) {
+	utils.assert(
+		utils.isUndefined(config) ||
+		utils.isString(config) ||
+		utils.isObject(config),
+		'Virgil API expects "config" argument to be an object or a string ' +
+		'if provided.');
+
+	if (utils.isUndefined(config)) {
+		config = {};
+	} else if (utils.isString(config)) {
+		config = { accessToken: config };
+	}
+
 	/**
 	 * @type {VirgilAPIContext}
 	 * @private
