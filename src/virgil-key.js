@@ -44,7 +44,7 @@ VirgilKey.prototype.save = function (name, password) {
 		this._privateKey,
 		password);
 
-	return this._context.keyStorage.save(name, privateKeyData);
+	return this._context.keyStorage.store(name, privateKeyData);
 };
 
 /**

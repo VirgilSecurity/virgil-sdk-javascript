@@ -3,8 +3,8 @@
 var virgilCrypto = require('./crypto/virgil-crypto');
 var virgilClient = require('./client/virgil-client');
 var cardValidator = require('./client/card-validator');
-var defaultKeyStorage = require('./key-storage');
 var appCredentials = require('./app-credentials');
+var initDefaultKeyStorage = require('./key-storage');
 var utils = require('./shared/utils');
 
 /**
@@ -95,7 +95,7 @@ function getClient (config) {
 
 function getKeyStorage (config) {
 	return config.keyStorage ||
-		defaultKeyStorage({
+		initDefaultKeyStorage({
 			dir: config.keyStoragePath,
 			name: config.keyStorageName
 		});

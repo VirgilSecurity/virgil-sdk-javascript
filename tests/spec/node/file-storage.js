@@ -7,7 +7,7 @@ var runStorageAdapterTestSuite =
 	require('../common/storage-adapter-test-runner');
 
 var fileSystemStorage =
-	require('../../../src/key-storage/file-storage');
+	require('../../../src/key-storage/adapters/file-storage');
 
 var TEST_DIR = path.join(__dirname, '/fs-storage');
 

@@ -58,7 +58,7 @@ function keyManager(context) {
 				'destroy expects name argument to be passed as a string. ' +
 				'Got ' + typeof name);
 
-			return context.keyStorage.remove(name);
+			return context.keyStorage.delete(name);
 		},
 
 		/**

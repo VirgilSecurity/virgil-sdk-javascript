@@ -6,9 +6,9 @@ var VirgilKey = require('../../src/virgil-key');
 
 function setup () {
 	var storageStub = /** @type {KeyStorage} */{
-		save: sinon.stub(),
+		store: sinon.stub(),
 		load: sinon.stub(),
-		remove: sinon.stub()
+		delete: sinon.stub()
 	};
 
 	var cryptoStub = {
@@ -43,7 +43,7 @@ test('encrypt and save key', function (t) {
 
 	t.true(fixture.context.crypto.exportPrivateKey.called,
 		'exports the key for saving');
-	t.true(fixture.context.keyStorage.save.called,
+	t.true(fixture.context.keyStorage.store.called,
 		'delegates saving to storage backend');
 
 	t.end();

@@ -1,7 +1,7 @@
 'use strict';
 
 var localforage = require('localforage');
-var browserStorage = require('../../../src/key-storage/localforage-storage');
+var browserStorage = require('../../../src/key-storage/adapters/localforage-storage');
 var runStorageAdapterTestSuite =
 	require('../common/storage-adapter-test-runner');
 

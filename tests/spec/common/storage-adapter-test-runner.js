@@ -270,4 +270,36 @@ module.exports = function (setup, teardown) {
 			});
 	});
 
+	test('exists with non-existent key', function (t) {
+		var storage = setup();
+
+		storage.exists('non-existent')
+			.then(function (exists) {
+				t.false(exists, 'returns false for non-existent key');
+			})
+			.then(function () {
+				teardown(function () { t.end(); });
+			})
+			.catch(function (err) {
+				teardown(function () { t.fail(err); });
+			});
+	});
+
+	test('exists with existent key', function (t) {
+		var storage = setup();
+
+		storage.save('existent', 'my value')
+			.then(function () {
+				return storage.exists('existent');
+			})
+			.then(function (exists) {
+				t.ok(exists, 'returns true for existent key');
+			})
+			.then(function () {
+				teardown(function () { t.end(); });
+			})
+			.catch(function (err) {
+				teardown(function () { t.fail(err); });
+			});
+	});
 };

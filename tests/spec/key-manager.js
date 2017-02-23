@@ -7,9 +7,9 @@ var createKeyManager = require('../../src/key-manager');
 
 function setup () {
 	var storageStub = /** @type {KeyStorage} */{
-		save: sinon.stub(),
+		store: sinon.stub(),
 		load: sinon.stub(),
-		remove: sinon.stub()
+		delete: sinon.stub()
 	};
 
 	var cryptoStub = {
@@ -66,7 +66,7 @@ test('remove persisted key', function (t) {
 	var manager = createKeyManager(fixture.context);
 	manager.destroy(name);
 
-	t.true(fixture.context.keyStorage.remove.called,
+	t.true(fixture.context.keyStorage.delete.called,
 		'delegates removal to the backend');
 	t.end();
 });

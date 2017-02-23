@@ -2,23 +2,24 @@
 
 var localforage = require('localforage');
 var toArrayBuffer = require('to-arraybuffer');
-var utils = require('../shared/utils');
+var utils = require('../../shared/utils');
 
 var defaults = {
 	driver: localforage.INDEXEDDB
 };
 
 /**
- *  Creates a storage backend that uses "localforage" for persistence.
+ *  Creates a storage adapter that uses "localforage" for persistence.
  *  @param {(Object|string)} config - The storage configuration options.
  *  @param {string} [config.name='VirgilSecurityKeys'] - The storage name.
+ *  @returns {StorageAdapter}
  * */
 function localforageStorage (config) {
 	config = utils.assign({}, defaults, config || {});
 
 	var store = localforage.createInstance(config);
 
-	return /** @implements {KeyStorage} */ {
+	return {
 
 		/**
 		 * Persist the value under the key.
@@ -48,6 +49,17 @@ function localforageStorage (config) {
 				}
 
 				return value;
+			});
+		},
+
+		/**
+		 * Checks whether a there is a value for the given key in store.
+		 * @param {string} key
+		 * @returns {Promise.<Boolean>}
+         */
+		exists: function (key) {
+			return store.getItem(key).then(function (value) {
+				return value !== null;
 			});
 		},
 

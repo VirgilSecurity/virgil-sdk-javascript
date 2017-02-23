@@ -4,7 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
 var mkdirp = require('mkdirp');
-var utils = require('../shared/utils');
+var utils = require('../../shared/utils');
 
 var defaults = {
 	dir: process.cwd(),
@@ -12,7 +12,7 @@ var defaults = {
 };
 
 /**
- *  Creates a storage backend that uses file system for persistence.
+ *  Creates a storage adapter that uses file system for persistence.
  *  @param {(Object|string)} config - The storage configuration options.
  *  		If config is a string, then it specifies the storage folder path.
  *  @param {string} [config.dir='.'] - Storage directory path. Can be relative
@@ -21,6 +21,8 @@ var defaults = {
  *  @param {string} [config.encoding] - The encoding that the data read and
  *  		written to file system is encoded with. If not specified - raw
  *  		Buffers will be read and written.
+ *
+ *  @returns {StorageAdapter}
  * */
 function fileStorage (config) {
 
@@ -32,10 +34,11 @@ function fileStorage (config) {
 
 	init();
 
-	return /** @implements {KeyStorage} */ {
+	return {
 		save: save,
 		load: load,
-		remove: remove
+		remove: remove,
+		exists: exists
 	};
 
 	/**
@@ -118,6 +121,23 @@ function fileStorage (config) {
 		});
 	}
 
+	function exists (key) {
+		return new Promise(function (resolve, reject) {
+			var path = resolveFilePath(key);
+			fs.access(path, function (err) {
+				if (err) {
+					if (err.code === 'ENOENT') {
+						resolve(false);
+					} else {
+						reject(err);
+					}
+				} else {
+					resolve(true);
+				}
+			});
+		});
+	}
+
 	/**
 	 * Resolves the absolute path to storage directory. If dir is a relative
 	 * path it is considered relative to the current working directory.
@@ -141,18 +161,19 @@ function fileStorage (config) {
 	 * @returns {string} File path
 	 * */
 	function resolveFilePath (key) {
-		var safeKey = md5(key);
+		var safeKey = hash(key);
 		return path.join(config.dir, safeKey);
 	}
 }
 
 /**
- * Helper function to generate md5 hash from string.
+ * Helper function to generate hash from string.
  * @param {string} data
  * @return {string} Hash as HEX-encoded string.
+ * @private
  * */
-var md5 = function (data) {
-	return crypto.createHash('md5').update(data).digest('hex');
+var hash = function (data) {
+	return crypto.createHash('sha256').update(data).digest('hex');
 };
 
 module.exports = fileStorage;
