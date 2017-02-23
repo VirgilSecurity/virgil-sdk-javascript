@@ -22,7 +22,7 @@ var defaults = {
  *  		written to file system is encoded with. If not specified - raw
  *  		Buffers will be read and written.
  * */
-function fileSystemStorage (config) {
+function fileStorage (config) {
 
 	config = utils.isString(config) ?
 		utils.assign({}, defaults, { dir: config }) :
@@ -155,4 +155,4 @@ var md5 = function (data) {
 	return crypto.createHash('md5').update(data).digest('hex');
 };
 
-module.exports = fileSystemStorage;
+module.exports = fileStorage;

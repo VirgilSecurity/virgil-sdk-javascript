@@ -5,6 +5,6 @@ require('./request-signer');
 require('./card');
 require('./card-validator');
 require('./identity-client');
-require('./node/file-system-storage');
+require('./node/file-storage');
 require('./key-manager');
 require('./virgil-key');

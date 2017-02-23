@@ -40,4 +40,4 @@
  * */
 
 
-module.exports = require('./file-system-storage');
+module.exports = require('./file-storage');
