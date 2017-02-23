@@ -1,36 +1,52 @@
-var ApiClient = require('apiapi');
+'use strict';
+
+var axios = require('axios');
 var errors = require('./cards-errors');
-var errorHandler = require('../shared/error-handler')(errors);
+var handleError = require('../shared/error-handler')(errors);
+var utils = require('../shared/utils');
 
-module.exports = function createCardsClient (applicationToken, opts) {
-	var apiClient = new ApiClient({
-		baseUrl: opts.cardsBaseUrl || 'https://cards.virgilsecurity.com/v4',
+var BASE_URL = 'https://cards.virgilsecurity.com/v4';
 
-		methods: {
-			publish: 'post /card',
-			revoke: 'delete /card/{card_id}'
-		},
+module.exports = function createCardsClient (options) {
+	options = utils.isObject(options) ? options : {};
 
-		headers: {
-			'Authorization': 'VIRGIL ' + applicationToken
-		},
+	var headers = options.accessToken ?
+		{ 'Authorization': 'VIRGIL ' + options.accessToken } : {};
 
-		body: {
-			publish: ['content_snapshot', 'meta'],
-			revoke: ['content_snapshot', 'meta']
-		},
-
-		required: {
-			publish: ['content_snapshot', 'meta'],
-			revoke: ['content_snapshot', 'meta']
-		},
-
-		errorHandler: errorHandler,
-
-		transformResponse: function transformResponse (res) {
-			return res.data;
-		}
+	var client = axios.create({
+		baseURL: options.cardsBaseUrl || BASE_URL,
+		headers: headers
 	});
 
-	return apiClient;
+	return {
+		/**
+		 * Publish a new Application Virgil Card in the Virgil PKI Services.
+		 *
+		 * @param {SignedRequestBody} data - The card's data.
+		 * @returns {Promise.<HTTPResponse>}
+		 * */
+		publish: function (data) {
+			return client.post('/card', data).catch(handleError);
+		},
+
+		/**
+		 * Revoke the Global Virgil Card in the Virgil PKI Services.
+		 *
+		 * @param {string} cardId - Id of the card to revoke.
+		 * @param {SignedRequestBody} data - The data required for revocation.
+		 *
+		 * @returns {Promise.<HTTPResponse>}
+		 * */
+		revoke: function (cardId, data) {
+			var dataJSON = JSON.stringify(data);
+			return client.request({
+				method: 'DELETE',
+				url: '/card/' + encodeURIComponent(cardId),
+				data: dataJSON,
+				headers: {
+					'Content-Type': 'application/json;charset=utf-8'
+				}
+			}).catch(handleError);
+		}
+	};
 };

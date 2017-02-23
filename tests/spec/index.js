@@ -4,3 +4,7 @@ require('./revoke-card-request');
 require('./request-signer');
 require('./card');
 require('./card-validator');
+require('./identity-client');
+require('./node/file-storage');
+require('./key-manager');
+require('./virgil-key');

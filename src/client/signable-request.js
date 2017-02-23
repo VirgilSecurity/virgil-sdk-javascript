@@ -4,9 +4,20 @@
  *
  * */
 
+/**
+ * @typedef {Object} SignedRequestBody
+ * @property {string} content_snapshot - The request's content snapshot.
+ * @property {Object} meta - The request's metadata.
+ * @property {Object.<string, string>} meta.signs - The request's
+ * 		signatures.
+ * @property {{token: string}} [meta.validation] - Optional identity
+ * 		validation token.
+ * */
+
 'use strict';
 
 var utils = require('../shared/utils');
+var takeSnapshot = require('../helpers/take-snapshot');
 
 var privateData = new WeakMap();
 
@@ -23,13 +34,16 @@ var privateData = new WeakMap();
  * @param {Object} signatures - Object representing a mapping from signer ids
  * 		to the signatures.
  * @param {Object} params - Request parameters.
+ * @param {string} [validationToken] - Optional card's identity validation
+ * 		token. Required when publishing\revoking cards with 'global' scope.
  *
  * @constructor
  * */
-function SignableRequest (snapshot, signatures, params) {
+function SignableRequest (snapshot, signatures, params, validationToken) {
 	privateData.set(this, {
 		snapshot: snapshot,
-		signatures: signatures
+		signatures: signatures,
+		validationToken: validationToken
 	});
 
 	utils.assign(this, params);
@@ -69,17 +83,45 @@ SignableRequest.prototype.getSignature = function (signerId) {
 /**
  * Returns serializable representation of the request.
  *
- * @returns {Object}
+ * @returns {SignedRequestBody}
  * */
 SignableRequest.prototype.getRequestBody = function () {
 	var privateFields = privateData.get(this);
-	return  {
-		content_snapshot: utils.bufferToBase64(privateFields.snapshot),
+	var body = {
+		content_snapshot: utils.base64Encode(privateFields.snapshot),
 		meta: {
 			signs: utils.mapValues(privateFields.signatures,
-									utils.bufferToBase64)
+									utils.base64Encode)
 		}
 	};
+
+	if (privateFields.validationToken) {
+		body.meta.validation = {
+			token: privateFields.validationToken
+		};
+	}
+
+	return body;
+};
+
+/**
+ * Gets the identity validation token to be passed with the request.
+ * Used when publishing\revoking globally-scoped cards.
+ *
+ * @returns {string}
+ */
+SignableRequest.prototype.getValidationToken = function () {
+	return privateData.get(this).validationToken;
+};
+
+/**
+ * Sets the identity validation token to be passed with the request.
+ * Used when publishing\revoking globally-scoped cards.
+ *
+ * @param {string} validationToken - The validation token.
+ */
+SignableRequest.prototype.setValidationToken = function (validationToken) {
+	privateData.get(this).validationToken = validationToken;
 };
 
 /**
@@ -89,41 +131,42 @@ SignableRequest.prototype.getRequestBody = function () {
  * */
 SignableRequest.prototype.export = function () {
 	var json = JSON.stringify(this.getRequestBody());
-	return utils.stringToBase64(json);
+	return utils.base64Encode(json, 'utf8');
 };
 
 /**
  * Creates a new request instance with the given parameters.
- *
- * @private
- * returns {SignableRequest} - The newly created request.
+ * @param {Object} params - The request parameters.
+ * @param {string} [validationToken] - Optional identity validation token.
+ * 		Required for publishing\revoking cards with 'global' scope.
+ * @returns {SignableRequest} - The newly created request.
  * */
-function createSignableRequest (params) {
-	var json = JSON.stringify(params);
-	var snapshot = utils.stringToBuffer(json);
+SignableRequest.create = function createSignableRequest (
+	params, validationToken) {
+	var snapshot = takeSnapshot(params);
 	var signatures = Object.create(null);
 
-	return new SignableRequest(snapshot, signatures, params);
-}
+	return new SignableRequest(snapshot, signatures, params, validationToken);
+};
 
 /**
  * Creates a new request instance from the previously exported request.
  * The new request has the exact same snapshot as the exported one.
  *
- * @private
  * returns {SignableRequest} - The imported request.
  * */
-function importSignableRequest (exportedRequest) {
-	var requestJSON = utils.base64ToString(exportedRequest);
+SignableRequest.import = function importSignableRequest (exportedRequest) {
+	var requestJSON = utils.base64Decode(exportedRequest, 'utf8');
 	var requestModel = JSON.parse(requestJSON);
-	var snapshot = utils.base64ToBuffer(requestModel.content_snapshot);
-	var signatures = utils.mapValues(requestModel.meta.signs, utils.base64ToBuffer);
+	var snapshot = utils.base64Decode(requestModel.content_snapshot);
+	var signatures = utils.mapValues(
+		requestModel.meta.signs,
+		utils.base64Decode);
 	var params = JSON.parse(snapshot.toString('utf8'));
+	var token = requestModel.meta.validation &&
+		requestModel.meta.validation.token;
 
-	return new SignableRequest(snapshot, signatures, params);
-}
-
-module.exports = {
-	createSignableRequest: createSignableRequest,
-	importSignableRequest: importSignableRequest
+	return new SignableRequest(snapshot, signatures, params, token);
 };
+
+module.exports = SignableRequest;

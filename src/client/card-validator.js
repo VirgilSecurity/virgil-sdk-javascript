@@ -12,7 +12,7 @@
 
 var utils = require('../shared/utils.js');
 var assert = utils.assert;
-var base64ToBuffer = utils.base64ToBuffer;
+var base64Decode = utils.base64Decode;
 var isBuffer = utils.isBuffer;
 var isString = utils.isString;
 
@@ -43,7 +43,7 @@ function cardValidator (crypto) {
 
 	var verifiers = Object.create(null);
 
-	addVerifier(SERVICE_CARD_ID, base64ToBuffer(SERVICE_PUBLIC_KEY));
+	addVerifier(SERVICE_CARD_ID, base64Decode(SERVICE_PUBLIC_KEY));
 
 	return /** @lends CardValidator */ {
 		addVerifier: addVerifier,
@@ -62,13 +62,16 @@ function cardValidator (crypto) {
 	 * 			{Buffer} or a base64-encoded {string}.
 	 * */
 	function addVerifier (signerId, publicKey) {
-		assert(isString(signerId), 'Argument "signerId" must be a string.');
+		assert(isString(signerId),
+			'addVerifier expects signerId argument to be passed as ' +
+			'a string. Got ' + typeof signerId);
+
 		assert(isBuffer(publicKey) || isString(publicKey),
-			'Argument "publicKey" must be a Buffer or a ' +
-			'base64-encoded string');
+			'addVerifier expects publicKey argument to be passed as a Buffer' +
+			' or a base64-encoded string. Got ' + typeof publicKey);
 
 		publicKey = isString(publicKey)
-			? base64ToBuffer(publicKey) : publicKey;
+			? base64Decode(publicKey) : publicKey;
 
 		verifiers[signerId] = crypto.importPublicKey(publicKey);
 	}
@@ -78,7 +81,7 @@ function cardValidator (crypto) {
 	 * of the signatures that this validator checks are valid, otherwise
 	 * returns {code: false}.
 	 *
-	 * @param {Card} card - The card to verify the signatures of.
+	 * @param {CardModel} card - The card to verify the signatures of.
 	 * @return {boolean}
 	 * */
 	function validate (card) {
@@ -96,10 +99,14 @@ function cardValidator (crypto) {
 	 * Returns a boolean indicating whether the given card can be validated
 	 * by this validator.
 	 *
-	 * @param {Card} card - The card to check.
-	 * @reutrn {boolean} - True if the card can be validated, otherwise False.
+	 * @param {CardModel} card - The card to check.
+	 * @returns {boolean} - True if the card can be validated, otherwise False.
 	 * */
 	function canValidate (card) {
+		if (!card) {
+			return false;
+		}
+
 		// ignore legacy cards
 		return card.version !== '3.0';
 	}
@@ -111,7 +118,7 @@ function cardValidator (crypto) {
 	 * @private
 	 *
 	 * @param {Buffer} fingerprint - The fingerprint
-	 * @param {Card} card - The card.
+	 * @param {CardModel} card - The card.
 	 *
 	 * @return {boolean}
 	 * */
@@ -125,7 +132,7 @@ function cardValidator (crypto) {
 	 * @private
 	 *
 	 * @param {Buffer} fingerprint - The fingerprint
-	 * @param {Card} card - The card.
+	 * @param {CardModel} card - The card.
 	 *
 	 * @return {boolean}
 	 * */
@@ -144,7 +151,7 @@ function cardValidator (crypto) {
 	 * @private
 	 *
 	 * @param {Buffer} fingerprint - The fingerprint
-	 * @param {Card} card - The card.
+	 * @param {CardModel} card - The card.
 	 *
 	 * @return {boolean}
 	 * */

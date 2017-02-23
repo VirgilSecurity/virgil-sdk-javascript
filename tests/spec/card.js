@@ -1,5 +1,5 @@
 var test = require('tape');
-var Card = require('../../src/client/card');
+var CardModel = require('../../src/client/card-model');
 var CardScope = require('../../src/client/card-scope');
 
 function setup () {
@@ -57,9 +57,9 @@ function setup () {
 
 test('import card from DTO', function (t) {
 	var fixture = setup();
-	var card = Card.import(fixture.dto);
+	var card = CardModel.import(fixture.dto);
 
-	t.ok(card, 'Card is created');
+	t.ok(card, 'CardModel is created');
 	t.equal(card.id, fixture.cardId, 'Id is set correctly');
 	t.equal(card.identity, fixture.props.identity, 'Identity is set correctly');
 	t.equal(card.identityType, fixture.props.identity_type,
@@ -85,7 +85,7 @@ test('import card from DTO', function (t) {
 
 test('export card to DTO', function (t) {
 	var fixture = setup();
-	var card = Card.import(fixture.dto);
+	var card = CardModel.import(fixture.dto);
 
 	var exportedCard = card.export();
 	t.deepEqual(exportedCard, fixture.dto);

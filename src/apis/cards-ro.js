@@ -1,34 +1,44 @@
-var ApiClient = require('apiapi');
+'use strict';
+
+var axios = require('axios');
 var errors = require('./cards-errors');
-var errorHandler = require('../shared/error-handler')(errors);
+var handleError = require('../shared/error-handler')(errors);
+var utils = require('../shared/utils');
 
-module.exports = function createReadCardsClient (applicationToken, opts) {
-	var apiClient = new ApiClient({
-		baseUrl: opts.cardsReadBaseUrl || 'https://cards-ro.virgilsecurity.com/v4',
+var BASE_URL = 'https://cards-ro.virgilsecurity.com/v4';
 
-		methods: {
-			search: 'post /card/actions/search',
-			get: 'get /card/{card_id}'
-		},
+module.exports = function createReadCardsClient (options) {
+	options = utils.isObject(options) ? options : {};
 
-		headers: {
-			'Authorization': 'VIRGIL ' + applicationToken
-		},
+	var headers = options.accessToken ?
+		{ 'Authorization': 'VIRGIL ' + options.accessToken } : {};
 
-		body: {
-			search: ['identities', 'identity_type', 'scope']
-		},
-
-		required: {
-			search: ['identities']
-		},
-
-		errorHandler: errorHandler,
-
-		transformResponse: function transformResponse (res) {
-			return res.data;
-		}
+	var client = axios.create({
+		baseURL: options.cardsReadBaseUrl || BASE_URL,
+		headers: headers
 	});
 
-	return apiClient;
+	return {
+		/**
+		 * Search cards by search criteria.
+		 *
+		 * @param {SearchCriteria} criteria - The search criteria.
+		 * @returns {Promise.<HTTPResponse>}
+		 * */
+		search: function searchCards (criteria) {
+			return client.post('/card/actions/search', criteria)
+				.catch(handleError);
+		},
+
+		/**
+		 * Get the card by id.
+		 *
+		 * @param {string} cardId - Id of the card.
+		 * @returns {Promise.<HTTPResponse>}
+		 * */
+		get: function getCard (cardId) {
+			return client.get('/card/' + encodeURIComponent(cardId))
+				.catch(handleError);
+		}
+	};
 };
