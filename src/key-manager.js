@@ -59,6 +59,25 @@ function keyManager(context) {
 				'Got ' + typeof name);
 
 			return context.keyStorage.remove(name);
+		},
+
+		/**
+		 * Creates a VirgilKey from a base64-encoded string or Buffer
+		 * representing key material.
+		 *
+		 * @param {(Buffer|string)} keyData - The key material.
+		 * @param {string} [password] - Optional password used to encrypt the
+		 * 		key material.
+         * @returns {VirgilKey}
+         */
+		import: function (keyData, password) {
+			utils.assert(utils.isBuffer(keyData) || utils.isString(keyData),
+				'import expects "keyData" argument to be passed as a ' +
+				'string in base64 or a Buffer. Got ' + typeof keyData);
+
+			var privateKey = context.crypto.importPrivateKey(
+				keyData, password);
+			return new VirgilKey(context, privateKey);
 		}
 	}
 }
