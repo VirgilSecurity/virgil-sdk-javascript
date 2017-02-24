@@ -118,9 +118,9 @@ Virgil Security has a powerful set of APIs, and the documentation is there to ge
   * [Encrypted communication][js_getstarted_encrypted_comms]
   * [Data integrity][js_getstarted_data_integrity]
   * [Passwordless login][js_getstarted_passwordless_login]
-* [Guides][js_guides]
-  * [Virgil Cards][js_guides_virgil_cards]
-  * [Virgil Keys][js_guides_keys]
+* [Guides][_guides]
+  * [Virgil Cards][_guides_virgil_cards]
+  * [Virgil Keys][_guides_virgil_keys]
 
 Alternatively, head over to our [Reference documentaton](#reference_docs) for in-depth information about every SDK method, it's arguments and return types.
 
@@ -139,7 +139,7 @@ Our developer support team is here to help you. You can find us on [Twitter](htt
 [js_getstarted_data_integrity]: https://virgilsecurity.com/docs/use-cases/data-verification
 [js_getstarted_passwordless_login]: https://virgilsecurity.com/docs/use-cases/passwordless-authentication
 [js_guides_initialization]: https://virgilsecurity.com/docs/sdk/javascript/javascript-programming-guide
-[js_guides_virgil_cards]: https://virgilsecurity.com/docs/sdk/javascript/javascript-features#working-with-virgil-cards
-[glossary_virgil_card]: https://virgilsecurity.com/docs/glossary/virgil-card#term-virgil-card
-[js_guides]: https://virgilsecurity.com/sdk/docs/js/features
+[_guides]: https://virgilsecurity.com/docs/sdk/javascript/features
+[_guides_virgil_cards]: https://virgilsecurity.com/docs/sdk/javascript/features#virgil-cards
+[_guides_virgil_keys]: https://virgilsecurity.com/docs/sdk/javascript/features#virgil-keys
 [npmjs]: https://www.npmjs.com/package/virgil-sdk
