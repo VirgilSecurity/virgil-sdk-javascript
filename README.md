@@ -141,4 +141,5 @@ Our developer support team is here to help you. You can find us on [Twitter](htt
 [js_guides_initialization]: https://virgilsecurity.com/docs/sdk/javascript/javascript-programming-guide
 [js_guides_virgil_cards]: https://virgilsecurity.com/docs/sdk/javascript/javascript-features#working-with-virgil-cards
 [glossary_virgil_card]: https://virgilsecurity.com/docs/glossary/virgil-card#term-virgil-card
+[js_guides]: https://virgilsecurity.com/sdk/docs/js/features
 [npmjs]: https://www.npmjs.com/package/virgil-sdk
