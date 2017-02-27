@@ -7,4 +7,5 @@ require('./card-validator');
 require('./identity-client');
 require('./node/file-storage');
 require('./key-manager');
+require('./card-manager');
 require('./virgil-key');
