@@ -1559,7 +1559,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			id: this.id,
 			content_snapshot: utils.base64Encode(this.snapshot),
 			meta: {
-				created_at: this.createdAt.toISOString(),
+				created_at: this.createdAt ? this.createdAt.toISOString() : undefined,
 				card_version: this.version,
 				signs: utils.mapValues(this.signatures, utils.base64Encode)
 			}
