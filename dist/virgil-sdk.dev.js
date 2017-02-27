@@ -15819,10 +15819,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 					utils.assert(utils.isObject(ownerKey), 'createGlobal expects ownerKey argument to be passed as ' + 'a VirgilKey object. Got ' + (typeof ownerKey === 'undefined' ? 'undefined' : (0, _typeof3.default)(ownerKey)));
 
-					if (identityType) {
-						utils.assert(IdentityType.APPLICATION !== identityType, 'creating global cards with "application" identity type ' + 'is not supported.');
-					}
-
 					var params = {
 						identity: identity,
 						identity_type: identityType || IdentityType.EMAIL,
