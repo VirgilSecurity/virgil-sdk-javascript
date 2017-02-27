@@ -12,7 +12,7 @@ var KEY_PASSWORD = 'q1w2e3$';
 function setup() {
 	var appCredentials = {
 		appId: virgilConfig.appCardId,
-		appKeyMaterial: virgilConfig.appPrivateKey,
+		appKeyData: virgilConfig.appPrivateKey,
 		appKeyPassword: virgilConfig.appPrivateKeyPassword
 	};
 
@@ -27,7 +27,7 @@ function setup() {
 
 test('setup alice', function (t) {
 	var config = setup();
-	var api = virgil(config);
+	var api = virgil.API(config);
 
 	var key = api.keys.generate();
 	key.save(ALICE_IDENTITY, KEY_PASSWORD)

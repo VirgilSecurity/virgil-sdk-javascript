@@ -3,6 +3,7 @@
 var assign = require('lodash/assign');
 var mapValues = require('lodash/mapValues');
 var isEmpty = require('lodash/isEmpty');
+var isBuffer = require('is-buffer');
 var isArrayBuffer = require('lodash/isArrayBuffer');
 var VirgilError = require('../errors/virgil-error');
 
@@ -22,8 +23,8 @@ function isObject(obj) {
 	return typeof obj === 'object';
 }
 
-function isBuffer(obj) {
-	return Buffer.isBuffer(obj);
+function isArray(obj) {
+	return Array.isArray(obj);
 }
 
 function isUndefined(obj) {
@@ -94,6 +95,7 @@ module.exports = {
 	isNumber: isNumber,
 	isFunction: isFunction,
 	isObject: isObject,
+	isArray: isArray,
 	isUndefined: isUndefined,
 	isBuffer: isBuffer,
 	isArrayBuffer: isArrayBuffer,

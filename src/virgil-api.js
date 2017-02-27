@@ -3,7 +3,7 @@
 var utils = require('./shared/utils');
 var cardManager = require('./card-manager');
 var keyManager = require('./key-manager');
-var virgilAPIContext = require('./virgil-api-context');
+var VirgilAPIContext = require('./virgil-api-context');
 
 /**
  * A class representing a high-level wrapper for the Virgil SDK API.
@@ -30,7 +30,7 @@ function VirgilAPI (config) {
 	 * @type {VirgilAPIContext}
 	 * @private
 	 */
-	this._context = virgilAPIContext(config);
+	this._context = new VirgilAPIContext(config);
 
 	/**
 	 * @type {CardManager}

@@ -51,6 +51,10 @@ var DEFAULTS = {
  * @constructor
  */
 function VirgilAPIContext (config) {
+	if (!(this instanceof VirgilAPIContext)) {
+		return new VirgilAPIContext(config);
+	}
+
 	/** @type {VirgilAPIConfiguration} */
 	this._config = utils.assign({}, DEFAULTS, config);
 }
