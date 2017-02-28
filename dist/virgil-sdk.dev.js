@@ -15959,7 +15959,7 @@ return /******/ (function(modules) { // webpackBootstrap
 					utils.assert(utils.isString(exportedCard), 'import expects exportedCard argument to be passed as ' + 'a string. Got ' + (typeof exportedCard === 'undefined' ? 'undefined' : (0, _typeof3.default)(exportedCard)));
 
 					var json = utils.base64Decode(exportedCard, 'utf8');
-					var model = CardModel.import(json);
+					var model = CardModel.import(JSON.parse(json));
 					return new VirgilCard(context, model);
 				}
 			}
