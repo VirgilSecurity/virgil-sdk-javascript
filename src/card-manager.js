@@ -244,7 +244,7 @@ function cardManager (context) {
 				'a string. Got ' + typeof exportedCard);
 
 			var json = utils.base64Decode(exportedCard, 'utf8');
-			var model = CardModel.import(json);
+			var model = CardModel.import(JSON.parse(json));
 			return new VirgilCard(context, model);
 		}
 	};
