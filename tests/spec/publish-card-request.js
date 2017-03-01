@@ -1,6 +1,7 @@
 var test = require('tape');
 
 var CardScope = require('../../src/client/card-scope');
+var IdentityType = require('../../src/client/card-identity-type');
 var publishCardRequest = require('../../src/client/publish-card-request');
 var VirgilError = require('../../src/errors/virgil-error');
 
@@ -122,5 +123,19 @@ test('publish request defaults', function (t) {
 		'sets identity type correctly');
 	t.equal(request.scope, CardScope.APPLICATION,
 		'sets default scope to "application');
+	t.end();
+});
+
+test('publish request global application card', function (t) {
+	var params = {
+		identity: 'com.example.app',
+		identity_type: IdentityType.APPLICATION,
+		scope: CardScope.GLOBAL,
+		public_key: 'publickeyinbase64'
+	};
+
+	var request = publishCardRequest(params);
+	t.ok(request,
+		'creates request for global app card without validation token');
 	t.end();
 });

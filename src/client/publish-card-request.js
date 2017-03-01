@@ -6,6 +6,7 @@ var isEmpty = require('../shared/utils').isEmpty;
 var isObject = require('../shared/utils').isObject;
 var SignableRequest = require('./signable-request');
 var CardScope = require('./card-scope');
+var IdentityType = require('./card-identity-type');
 
 /**
  * @typedef {Object} CardDeviceInfo
@@ -94,10 +95,12 @@ function publishCardRequest (params, validationToken) {
 		'publishCardRequest expects scope parameter to be either "global" ' +
 		'or "application".');
 
-	if (scope === CardScope.GLOBAL) {
+	if (scope === CardScope.GLOBAL &&
+		identity_type !== IdentityType.APPLICATION) {
 		assert(isString(validationToken) && !isEmpty(validationToken),
-			'publishCardRequest expects validation token to be passed if the ' +
-			'scope parameter is "global"');
+			'publishCardRequest expects validation token to be passed if ' +
+			'the scope parameter is "global" and identity type is "' +
+			identity_type + '".');
 	}
 
 	var requestData = {
