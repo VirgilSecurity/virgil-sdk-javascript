@@ -78,8 +78,8 @@ function publishCardRequest (params, validationToken) {
 	var	identity_type = params.identity_type;
 	var	scope = params.scope || CardScope.APPLICATION;
 	var	public_key = params.public_key;
-	var	info = params.info || null;
-	var	data = params.data || null;
+	var	info = params.info;
+	var	data = params.data;
 
 	assert(isString(identity) && !isEmpty(identity),
 		'publishCardRequest expects identity parameter to be passed as ' +

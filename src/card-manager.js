@@ -53,7 +53,7 @@ function cardManager (context) {
 				identity: identity,
 				identity_type: identityType || 'unknown',
 				scope: CardScope.APPLICATION,
-				data: customFields || null
+				data: customFields
 			};
 
 			var card = createCardModel(params, ownerKey);
@@ -85,7 +85,7 @@ function cardManager (context) {
 				identity: identity,
 				identity_type: identityType || IdentityType.EMAIL,
 				scope: CardScope.GLOBAL,
-				data: customFields || null
+				data: customFields
 			};
 
 			var card = createCardModel(params, ownerKey);
