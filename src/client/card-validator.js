@@ -10,23 +10,20 @@
 
 'use strict';
 
+var CardServiceVerifierInfo =
+	require('./card-verifiers/card-service-verifier-info');
 var utils = require('../shared/utils.js');
 var assert = utils.assert;
 var base64Decode = utils.base64Decode;
 var isBuffer = utils.isBuffer;
 var isString = utils.isString;
 
-// Id of the Card of the Virgil Cards Service
-var SERVICE_CARD_ID = '3e29d43373348cfb373b7eae189214dc01d7237765e572d' +
-	'b685839b64adca853';
-
-// Public Key of the Virgil Cards Service
-var SERVICE_PUBLIC_KEY = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JR' +
-	'WURLMlZ3QXlFQVlSNTAxa1YxdFVuZTJ1T2RrdzRrRXJSUmJKcmMyU3lhejVWMWZ1R' +
-	'ytyVnM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=';
 
 /**
  * The factory function used to create <code>CardValidator</code> instances.
+ * Card validator is responsible for verifying integrity of the Virgil
+ * Cards returned by the API methods.
+ *
  * <code>CardValidator</code> objects are not to be created directly using
  * the <code>new</code> keyword.
  *
@@ -35,15 +32,28 @@ var SERVICE_PUBLIC_KEY = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JR' +
  * var validator = virgil.cardValidator(virgil.crypto);
  *
  * @param {*} crypto - An object providing implementation of cryptographic
- * 			operations.
+ * 		operations.
+ * @param {(CardVerifierInfo|CardVerifierInfo[])} [cardVerifiers] -
+ * 		In order to ensure integrity the Virgil Cards are signed by other
+ * 		Virgil Cards. This parameter specifies a mapping of Virgil Card id
+ * 		to Virgil Card public keys of Virgil Cards whose signatures must
+ * 		be verified by this validator. Optional. Defaults to the
+ * 		Virgil Cards Service's info.
  *
  * @constructs CardValidator
  * */
-function cardValidator (crypto) {
+function cardValidator (crypto, cardVerifiers) {
 
 	var verifiers = Object.create(null);
 
-	addVerifier(SERVICE_CARD_ID, base64Decode(SERVICE_PUBLIC_KEY));
+	if (!cardVerifiers) {
+		cardVerifiers = [CardServiceVerifierInfo];
+	}
+
+	cardVerifiers = utils.toArray(cardVerifiers);
+	cardVerifiers.forEach(function (verifier) {
+		addVerifier(verifier.cardId, verifier.publicKeyData);
+	});
 
 	return /** @lends CardValidator */ {
 		addVerifier: addVerifier,

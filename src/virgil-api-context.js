@@ -8,14 +8,6 @@ var initDefaultKeyStorage = require('./key-storage');
 var utils = require('./shared/utils');
 
 /**
- * @typedef {Object} CardVerifierInfo
- * @property {string} cardId - Id of the card whose signature is to be
- * 		verified.
- * @property {(Buffer|string)} publicKeyData - The public key to use
- * 		for signature verification.
- * */
-
-/**
  * @typedef {Object} VirgilAPIConfiguration
  * @property {string} [accessToken] - The access token required by Virgil Cards
  * 		service to read and write application-level cards.
@@ -84,14 +76,7 @@ function getClient (config) {
 		config.accessToken,
 		config.clientParams);
 
-	var validator = cardValidator(config.crypto);
-
-	if (config.cardVerifiers) {
-		var verifiers = utils.toArray(config.cardVerifiers);
-		verifiers.forEach(function (verifier) {
-			validator.addVerifier(verifier.cardId, verifier.publicKeyData);
-		});
-	}
+	var validator = cardValidator(config.crypto, config.cardVerifiers);
 
 	client.setCardValidator(validator);
 	return client;

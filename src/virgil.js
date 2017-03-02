@@ -12,6 +12,8 @@ var IdentityType = require('./client/card-identity-type');
 var CardScope = require('./client/card-scope');
 var RevocationReason = require('./client/card-revocation-reason');
 var VirgilAPI = require('./virgil-api');
+var CardServiceVerifierInfo =
+	require('./client/card-verifiers/card-service-verifier-info');
 
 var initAPI = function (config) {
 	return new VirgilAPI(config)
@@ -28,6 +30,10 @@ var virgil = {
 	CardScope: CardScope,
 	RevocationReason: RevocationReason,
 	API: initAPI
+};
+
+virgil.PinnedCardVerifiers = {
+	CardServiceVerifier: CardServiceVerifierInfo
 };
 
 // Expose Buffer
