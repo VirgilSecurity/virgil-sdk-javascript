@@ -20,7 +20,8 @@ function setup() {
 	return {
 		appCredentials: appCredentials,
 		accessToken: accessToken,
-		clientParams: virgilConfig
+		clientParams: virgilConfig,
+		useBuiltInVerifiers: false
 	};
 }
 
@@ -33,8 +34,8 @@ test('generate and save key', function (t) {
 			t.pass('Key saved');
 			t.end();
 		})
-		.catch(function () {
-			t.fail('Failed to generate and save key')
+		.catch(function (err) {
+			t.fail('Failed to generate and save key. ' + err.message);
 		});
 });
 

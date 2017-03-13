@@ -33,6 +33,8 @@ test('default configuration', function (t) {
 		'sets default key storage path');
 	t.equal(context._config.keyStorageName, 'VirgilSecurityKeys',
 		'sets default key storage name');
+	t.equal(context._config.useBuiltInVerifiers, true,
+		'using built-in card verifiers by default');
 
 	t.ok(context.client, 'client is defined');
 	t.equal(context.credentials, null,
@@ -48,11 +50,14 @@ test('custom configuration', function (t) {
 	var config = {
 		crypto: {},
 		keyStorage: {},
-		defaultKeyPairType: 'EC_BP256R1'
+		defaultKeyPairType: 'EC_BP256R1',
+		useBuiltInVerifiers: false
 	};
 
 	var context = new VirgilAPIContext(config);
 
+	t.equal(context._config.useBuiltInVerifiers, false,
+		'useBuiltInVerifiers is overwritten');
 	t.equal(context.crypto, config.crypto, 'returns custom crypto');
 	t.equal(context.keyStorage, config.keyStorage, 'returns custom keyStorage');
 	t.equal(context.defaultKeyPairType, config.defaultKeyPairType,
