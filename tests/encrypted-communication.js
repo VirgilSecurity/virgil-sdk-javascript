@@ -1,6 +1,6 @@
 var test = require('tape');
 var virgilConfig = require('./helpers/virgil-config');
-var virgil = require('../');
+var virgil = require('../src/virgil');
 
 var appCardId = virgilConfig.appCardId;
 var appPrivateKey = virgil.crypto.importPrivateKey(
