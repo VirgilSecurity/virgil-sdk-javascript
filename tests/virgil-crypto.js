@@ -1,5 +1,5 @@
 var test = require('tape');
-var virgil = require('../');
+var virgil = require('../src/virgil');
 var virgilCrypto = virgil.crypto;
 
 test('sign then encrypt -> decrypt then verify', function (t) {

@@ -1,6 +1,6 @@
 require('./spec');
 require('./virgil-crypto');
+require('./compatibility/sdk-compatibility.test');
 require('./identity');
 require('./virgil-cards');
 require('./encrypted-communication');
-require('./compatibility/sdk-compatibility.test');

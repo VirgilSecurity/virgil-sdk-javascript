@@ -12,6 +12,7 @@ var VirgilKey = require('./virgil-key');
  */
 function keyManager(context) {
 
+
 	return /** @lends {KeyManager} */ {
 
 		/**
@@ -19,7 +20,8 @@ function keyManager(context) {
 		 * @returns {VirgilKey}
          */
 		generate: function () {
-			var keyPair = context.crypto.generateKeys();
+			var keyPair = context.crypto
+				.generateKeys(context.defaultKeyPairType);
 			return new VirgilKey(context, keyPair.privateKey);
 		},
 

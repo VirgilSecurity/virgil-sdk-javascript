@@ -1,5 +1,5 @@
 var test = require('tape');
-var virgil = require('../../');
+var virgil = require('../../src/virgil');
 var testData = require('./sdk-compatibility-data');
 
 test('encrypt single recipient', function testVerify (t) {

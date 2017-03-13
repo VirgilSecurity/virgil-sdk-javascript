@@ -11,7 +11,8 @@ var KEY_PASSWORD = 'q1w2e3$';
 
 function setup() {
 	return {
-		clientParams: virgilConfig
+		clientParams: virgilConfig,
+		useBuiltInVerifiers: false
 	};
 }
 

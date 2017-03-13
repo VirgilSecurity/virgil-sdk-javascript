@@ -6,6 +6,7 @@ require('./card');
 require('./card-validator');
 require('./identity-client');
 require('./node/file-storage');
+require('./virgil-api-context');
 require('./key-manager');
 require('./card-manager');
 require('./virgil-key');

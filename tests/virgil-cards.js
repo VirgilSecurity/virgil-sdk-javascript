@@ -1,6 +1,6 @@
 var test = require('tape');
 var virgilConfig = require('./helpers/virgil-config');
-var virgil = require('../');
+var virgil = require('../src/virgil');
 var mailinator = require('./helpers/mailinator');
 
 global.Promise = require('bluebird');
@@ -92,6 +92,7 @@ test('get application card by id', function (t) {
 	client.searchCards(localCardIdentity).then(function (cards) {
 		if (cards.length === 0) {
 			t.fail('Search for application card failed.');
+			return;
 		}
 		var lastFound = cards[cards.length - 1];
 		var id = lastFound.id;

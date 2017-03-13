@@ -21,7 +21,8 @@ function setup() {
 	return {
 		appCredentials: appCredentials,
 		accessToken: accessToken,
-		clientParams: virgilConfig
+		clientParams: virgilConfig,
+		useBuiltInVerifiers: false
 	};
 }
 

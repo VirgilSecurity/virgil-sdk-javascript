@@ -1,7 +1,7 @@
 var test = require('tape');
 var virgilConfig = require('./helpers/virgil-config');
 var mailinator = require('./helpers/mailinator');
-var virgil = require('../');
+var virgil = require('../src/virgil');
 
 global.Promise = require('bluebird');
 
