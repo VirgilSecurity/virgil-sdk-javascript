@@ -13,13 +13,15 @@ function setup () {
 	};
 
 	var cryptoStub = {
+		generateKeys: sinon.stub(),
 		exportPrivateKey: sinon.stub(),
 		importPrivateKey: sinon.stub()
 	};
 
 	var context = /** @type {VirgilAPIContext} */{
 		crypto: cryptoStub,
-		keyStorage: storageStub
+		keyStorage: storageStub,
+		defaultKeyPairType: 'DefaultKeyPairTypeStub'
 	};
 
 	return {
@@ -104,6 +106,21 @@ test('import key with password', function (t) {
 	t.ok(key, 'imports key with password');
 	t.ok(fixture.context.crypto.importPrivateKey
 			.calledWith(keyMaterial, password),
+		'passes correct args to crypto');
+	t.end();
+});
+
+test('generate key', function (t) {
+	var fixture = setup();
+	var manager = createKeyManager(fixture.context);
+	var keyHandle = {};
+
+	fixture.context.crypto.generateKeys.returns(keyHandle);
+
+	var key = manager.generate();
+	t.ok(key, 'generates key');
+	t.ok(fixture.context.crypto.generateKeys
+		.calledWith(fixture.context.defaultKeyPairType),
 		'passes correct args to crypto');
 	t.end();
 });

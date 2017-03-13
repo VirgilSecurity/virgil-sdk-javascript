@@ -44,7 +44,11 @@ function virgilCrypto() {
 		decryptThenVerify: decryptThenVerify,
 		/** @enum {object} */
 		HashAlgorithm: VirgilCrypto.HashAlgorithm,
-		/** @enum {string} */
+		/**
+		 * Enumeration of supported key types.
+		 * @readonly
+		 * @enum {string}
+		 * */
 		KeyPairType: VirgilCrypto.KeyPairType
 	};
 
