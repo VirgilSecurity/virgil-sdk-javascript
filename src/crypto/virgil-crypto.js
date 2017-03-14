@@ -179,13 +179,11 @@ function virgilCrypto() {
 			'a valid private key handle.');
 
 		if (!isString(password)) {
-			return VirgilCrypto.privateKeyToDER(keyData.value);
+			return keyData.value;
 		}
 
 		var passwordBuffer = stringToBuffer(password);
-		var encryptedKey = VirgilCrypto.encryptPrivateKey(
-			keyData.value, passwordBuffer);
-		return VirgilCrypto.privateKeyToDER(encryptedKey, passwordBuffer);
+		return VirgilCrypto.encryptPrivateKey(keyData.value, passwordBuffer);
 	}
 
 	/**
@@ -201,7 +199,7 @@ function virgilCrypto() {
 		assert(keyData, 'exportPublicKey expects publicKey argument to be ' +
 			'a valid public key handle.');
 
-		return VirgilCrypto.publicKeyToDER(keyData.value);
+		return keyData.value;
 	}
 
 	/**
@@ -224,8 +222,7 @@ function virgilCrypto() {
 
 		var publicKey = VirgilCrypto.extractPublicKey(
 			keyData.value, stringToBuffer(password));
-		return createPublicKeyHandle(
-			keyData.recipientId, VirgilCrypto.publicKeyToDER(publicKey));
+		return createPublicKeyHandle(keyData.recipientId, publicKey);
 	}
 
 	/**

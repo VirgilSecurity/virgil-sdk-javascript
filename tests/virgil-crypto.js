@@ -96,7 +96,8 @@ test('encrypt and decrypt strings', function (t) {
 		'WURLMlZ3QXlFQWNCTG1pZTFKam0rRC9BM0lQdVJVSUFsK0MvUlF0RWQ1cnhmb1BEM' +
 		'FlGbDQ9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=';
 
-	recipientPrivateKey = virgilCrypto.importPrivateKey(recipientPrivateKey, '4321');
+	recipientPrivateKey = virgilCrypto.importPrivateKey(
+		recipientPrivateKey, '4321');
 	recipientPublicKey = virgilCrypto.importPublicKey(recipientPublicKey);
 
 	var cipherData = virgilCrypto.encrypt(data, recipientPublicKey)
@@ -105,5 +106,34 @@ test('encrypt and decrypt strings', function (t) {
 
 	t.equal(decryptedData.toString(), data,
 		'Decrypts data when passed string arguments');
+	t.end();
+});
+
+test('export private key without password', function (t) {
+	var privateKeyBase64 = 'MC4CAQAwBQYDK2VwBCIEIEoWpq/k3bzUkV9ci7CGwkD8mpD' +
+		'480CVb1biGvEpmSvB';
+
+	t.comment('before');
+	var importedKey = virgilCrypto.importPrivateKey(privateKeyBase64);
+	var exportedKey = virgilCrypto.exportPrivateKey(importedKey);
+
+	t.comment('after');
+	t.equal(exportedKey.toString('base64'), privateKeyBase64,
+		'exported key is equal to imported one');
+	t.end();
+});
+
+test('extract public key', function (t) {
+	var privateKeyBase64 = 'MC4CAQAwBQYDK2VwBCIEIEoWpq/k3bzUkV9ci7CGwkD8mpD' +
+		'480CVb1biGvEpmSvB';
+	var publicKeyBase64 = 'MCowBQYDK2VwAyEA9OX9DOZ70JRq4RWNIhGDkmY4fGmip6Gd' +
+		'V/VR3R6hmIQ=';
+
+	var privateKey = virgilCrypto.importPrivateKey(privateKeyBase64);
+	var publicKey = virgilCrypto.extractPublicKey(privateKey);
+	var pubkeyData = virgilCrypto.exportPublicKey(publicKey);
+
+	t.equal(pubkeyData.toString('base64'), publicKeyBase64,
+		'extracted public key is equal to pre-computed');
 	t.end();
 });
