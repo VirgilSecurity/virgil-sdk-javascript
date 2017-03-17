@@ -113,7 +113,7 @@ Next: [Learn more about our the different ways of initializing the Javascript SD
 Virgil Security has a powerful set of APIs, and the documentation is there to get you started today.
 
 * [Get Started][js_getstarted] documentation
-  * [Initialize the SDK][js_guides_initialization]
+  * [Initialize the SDK][js_guides_initialize_root]
   * [Encrypted storage][js_getstarted_storage]
   * [Encrypted communication][js_getstarted_encrypted_comms]
   * [Data integrity][js_getstarted_data_integrity]
@@ -133,13 +133,14 @@ This library is released under the [3-clause BSD License](LICENSE).
 Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) and [email](support).
 
 [support]: mailto:support@virgilsecurity.com
-[js_getstarted]: https://virgilsecurity.com/docs/sdk/javascript/javascript-getting-started
-[js_getstarted_encrypted_comms]: https://virgilsecurity.com/docs/use-cases/ip-messaging
-[js_getstarted_storage]: https://virgilsecurity.com/docs/use-cases/secure-data-at-rest
-[js_getstarted_data_integrity]: https://virgilsecurity.com/docs/use-cases/data-verification
-[js_getstarted_passwordless_login]: https://virgilsecurity.com/docs/use-cases/passwordless-authentication
-[js_guides_initialization]: https://virgilsecurity.com/docs/sdk/javascript/javascript-programming-guide
-[_guides]: https://virgilsecurity.com/docs/sdk/javascript/features
-[_guides_virgil_cards]: https://virgilsecurity.com/docs/sdk/javascript/features#virgil-cards
-[_guides_virgil_keys]: https://virgilsecurity.com/docs/sdk/javascript/features#virgil-keys
+[js_getstarted]: https://developer.virgilsecurity.com/docs/javascript/get_started
+[js_getstarted_encrypted_comms]: https://developer.virgilsecurity.com/docs/javascript/get-started/encrypted-communication
+[js_getstarted_storage]: https://developer.virgilsecurity.com/docs/javascript/get-started/encrypted-storage
+[js_getstarted_data_integrity]: https://developer.virgilsecurity.com/docs/javascript/get-started/data-integrity
+[js_getstarted_passwordless_login]: https://developer.virgilsecurity.com/docs/javascript/get-started/passwordless-authentication
+[js_guides_initialization]: https://developer.virgilsecurity.com/docs/javascript/guides/settings/install-sdk
+[js_guides_initialize_root]: https://developer.virgilsecurity.com/docs/javascript/guides/settings/initialize-sdk-on-client
+[_guides]: https://developer.virgilsecurity.com/docs/javascript/guides
+[_guides_virgil_cards]: https://developer.virgilsecurity.com/docs/javascript/guides/virgil-card/creating
+[_guides_virgil_keys]: https://developer.virgilsecurity.com/docs/javascript/guides/virgil-key/generating
 [npmjs]: https://www.npmjs.com/package/virgil-sdk
