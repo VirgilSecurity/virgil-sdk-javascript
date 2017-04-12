@@ -17024,7 +17024,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 		utils.assert(utils.isObject(cards) || utils.isArray(cards), 'encryptFor expects cards argument to be passed as a VirgilCard ' + 'or an array of VirgilCard objects.');
 
-		cards = toArray(cards);
+		cards = utils.toArray(cards);
 
 		var publicKeys = cards.map(function (card) {
 			return card.publicKey;
