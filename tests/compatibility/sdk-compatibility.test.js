@@ -97,3 +97,20 @@ test('export signable request', function testVerify (t) {
 		'Owner\'s signature verified');
 	t.end();
 });
+
+test('sign then encrypt multiple signers', function testVerify(t) {
+	var testParams = testData.sign_then_encrypt_multiple_signers;
+	var privateKey = virgil.crypto.importPrivateKey(testParams.private_key);
+	var publicKeys = testParams.public_keys.map(function (publicKey) {
+		return virgil.crypto.importPublicKey(publicKey);
+	});
+	var originalData = new Buffer(testParams.original_data, 'base64');
+	var cipherData = new Buffer(testParams.cipher_data, 'base64');
+
+	var decryptedData = virgil.crypto.decryptThenVerify(
+		cipherData, privateKey, publicKeys
+	);
+
+	t.ok(decryptedData.equals(originalData), 'Decrypted and original data match');
+	t.end();
+});

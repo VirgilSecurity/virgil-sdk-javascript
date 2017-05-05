@@ -1,7 +1,7 @@
 var test = require('tape');
-var mailinator = require('./helpers/mailinator');
 var virgilConfig = require('./helpers/virgil-config');
 var virgil = require('../src/virgil');
+var getConfirmationCode = require('./helpers/get-confirmation-code');
 
 global.Promise = require('bluebird');
 
@@ -52,18 +52,7 @@ test('create and publish card', function (t) {
 			var card = api.cards.createGlobal(GLOBAL_IDENTITY, key);
 			return card.checkIdentity()
 				.then(function (confirmIdentity) {
-					// delay to make sure the `getConfirmationCode` returns
-					// the code from the latest email
-					return Promise.delay(5000)
-						.then(function () {
-							return mailinator
-								.getConfirmationCode(GLOBAL_IDENTITY)
-								.catch(function (err) {
-									throw new Error(
-										'Failed to get email from ' +
-										'mailinator. ' + err.message);
-								});
-						})
+					return getConfirmationCode(GLOBAL_IDENTITY)
 						.then(function (confirmationCode) {
 							return confirmIdentity(confirmationCode);
 						});
@@ -137,19 +126,7 @@ test('revoke card', function (t) {
 		var card = cards[cards.length - 1];
 		return card.checkIdentity()
 			.then(function (confirmIdentity) {
-				// need a delay here to give the time for the confirmation
-				// email to be received, otherwise the `getConfirmationCode`
-				// might return the code from previous message (the one sent
-				// when creating the card)
-				return Promise.delay(5000)
-					.then(function () {
-						return mailinator.getConfirmationCode(GLOBAL_IDENTITY)
-							.catch(function (err) {
-								throw new Error(
-									'Failed to get email from mailinator. ' +
-									err.message);
-							});
-					})
+				return getConfirmationCode(GLOBAL_IDENTITY)
 					.then(function (confirmationCode) {
 						return confirmIdentity(confirmationCode);
 					});

@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "4.3.2",
+  "version": "4.4.0",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
@@ -38,7 +38,7 @@
     "localforage": "^1.4.3",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
-    "virgil-crypto": "^2.0.1",
+    "virgil-crypto": "2.1.0",
     "to-arraybuffer": "^1.0.1"
   },
   "devDependencies": {
@@ -55,7 +55,6 @@
     "gulp-notify": "^2.2.0",
     "gulp-plumber": "^1.0.1",
     "is-buffer": "^1.1.4",
-    "mailinator": "^1.0.2",
     "raw-loader": "^0.5.1",
     "rimraf": "^2.5.4",
     "script-loader": "^0.6.1",

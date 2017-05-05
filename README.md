@@ -28,7 +28,7 @@ The client-side SDK targets ECMAScript5+ compatible browsers.
 
 ```html
 <script
-src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.3.2/virgil-sdk.min.js"
+src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.4.0/virgil-sdk.min.js"
 crossorigin="anonymous"></script>
 ```
 
@@ -70,7 +70,7 @@ client.keys.load("alices_key_1", "mypassword")
   });
 ```
 
-__Next:__ To [get you properly started][js_guides_virgil_cards] you'll need to know how to create and publish Virgil Cards. Our [Get Started guide][js_guides_virgil_cards] will get you there all the way.
+__Next:__ To [get you properly started][_guides_virgil_cards] you'll need to know how to create and publish Virgil Cards. Our [Get Started guide][_guides_virgil_cards] will get you there all the way.
 
 __Also:__ [Encrypted communication][js_getstarted_encrypted_comms] is just one of the few things our SDK can do. Have a look at our guides on  [Encrypted Storage][js_getstarted_storage], [Data Integrity][js_getstarted_data_integrity] and [Passwordless Login][js_getstarted_passwordless_login] for more information.
 

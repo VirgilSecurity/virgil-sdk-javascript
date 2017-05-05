@@ -383,7 +383,12 @@ function virgilCrypto() {
 		});
 
 		return VirgilCrypto.signThenEncrypt(
-			data, privateKeyData.value, publicKeys);
+			data,
+			{
+				privateKey: privateKeyData.value,
+				recipientId: privateKeyData.recipientId
+			},
+			publicKeys);
 	}
 
 	/**
@@ -393,7 +398,9 @@ function virgilCrypto() {
 	 * 	@param {Buffer|string} cipherData - The data to be decrypted and
 	 * 			verified as a {Buffer} or a {string} in base64.
 	 * 	@param {CryptoKeyHandle} privateKey - The private key handle.
-	 * 	@param {CryptoKeyHandle} publicKey - The public key handle.
+	 * 	@param {(CryptoKeyHandle|CryptoKeyHandle[])} publicKey - The public
+	 * 		key handle or an array of public key handles. If `publicKey`
+	 * 		is an array, the attached signature can be verified by any of them.
 	 *
 	 * 	@returns {Buffer} - Decrypted data iff verification is successful,
 	 * 			otherwise throws {code: VirgilCryptoError}.
@@ -404,12 +411,24 @@ function virgilCrypto() {
 			'a Buffer or a base64-encoded string. Got ' + typeof cipherData);
 
 		var privateKeyData = getKeyBytesFromHandle(privateKey);
-		var publicKeyData = getKeyBytesFromHandle(publicKey);
+		var verifiers;
+
+		publicKey = toArray(publicKey);
+		assert(publicKey, 'decryptThenVerify expects publicKey argument to ' +
+			'be passed.');
+
+		verifiers = publicKey.map(function (handle) {
+			var publicKeyData = getKeyBytesFromHandle(handle);
+			assert(publicKeyData, 'decryptThenVerify expects publicKey argument ' +
+				'to be a valid key handle.');
+			return {
+				publicKey: publicKeyData.value,
+				recipientId: publicKeyData.recipientId
+			};
+		});
 
 		assert(privateKeyData, 'decryptThenVerify expects privateKey argument' +
 			' to be a valid key handle.');
-		assert(publicKeyData, 'decryptThenVerify expects publicKey argument ' +
-			'to be a valid key handle.');
 
 		cipherData = isString(cipherData)
 			? base64Decode(cipherData) : cipherData;
@@ -418,7 +437,7 @@ function virgilCrypto() {
 			cipherData,
 			privateKeyData.recipientId,
 			privateKeyData.value,
-			publicKeyData.value);
+			verifiers);
 	}
 
 	/**
