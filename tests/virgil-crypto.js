@@ -137,3 +137,97 @@ test('extract public key', function (t) {
 		'extracted public key is equal to pre-computed');
 	t.end();
 });
+
+test('sign then encrypt -> decrypt then verify multiple public keys', function (t) {
+	var senderPrivateKey = 'LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVktLS' +
+		'0tLQpNSUdoTUYwR0NTcUdTSWIzRFFFRkRUQlFNQzhHQ1NxR1NJYjNEUUVGRERBaUJ' +
+		'CQlVZWXNvUWVvTm9YSWQxVzZHCjJxN2xBZ0lUN3pBS0JnZ3Foa2lHOXcwQ0NqQWRC' +
+		'Z2xnaGtnQlpRTUVBU29FRUpQSnJPZEtCdHNFZWdjTzc3dTEKTzZNRVFFVWlKTWtGT' +
+		'npNck1sUjh6N0ZDVVZieDdaRkhENjJYdHI3bm5sU05VaG04V1U0L1ZqTHAwTk5xdE' +
+		'RLTApPMjROaEcwa05iZUZaOXFlaFlUcU1sUXp3ejQ9Ci0tLS0tRU5EIEVOQ1JZUFR' +
+		'FRCBQUklWQVRFIEtFWS0tLS0tCg==';
+	var senderPublicKey = 'MCowBQYDK2VwAyEAmBZSnO/w/xhO8bb+NV/xykZp42pyty+' +
+		'dbsphBKdEYqA=';
+	var recipientPrivateKey = 'LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVk' +
+		'tLS0tLQpNSUdoTUYwR0NTcUdTSWIzRFFFRkRUQlFNQzhHQ1NxR1NJYjNEUUVGRERB' +
+		'aUJCQk5sMXEzeHBMTEh6Q2E5ODBMClVlMXdBZ0lPNGpBS0JnZ3Foa2lHOXcwQ0NqQ' +
+		'WRCZ2xnaGtnQlpRTUVBU29FRU5XZGxvK1hnNnJqYmdIUEJPMXoKRG9nRVFBZDY3eC' +
+		'tBT2xrTzBYTDNKbUEvSU5wUXE4cmNtVzU0citSUTBRY0xaaGVUdU9QYXBnZEk4UGp' +
+		'Kb0ZuWQpTUVp0WjRYby9TRllOeFdUZzk3Zi94V05SZmc9Ci0tLS0tRU5EIEVOQ1JZ' +
+		'UFRFRCBQUklWQVRFIEtFWS0tLS0tCg==';
+	var recipientPublicKey = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JR' +
+		'WURLMlZ3QXlFQWNCTG1pZTFKam0rRC9BM0lQdVJVSUFsK0MvUlF0RWQ1cnhmb1BEM' +
+		'FlGbDQ9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=';
+	var otherPublicKey = 'MCowBQYDK2VwAyEAMiGqjvwO+0atRWjXVFEybGooQcpJO54C' +
+		'mJPMp66WmsU=';
+
+	senderPrivateKey = virgilCrypto.importPrivateKey(senderPrivateKey, '1234');
+	senderPublicKey = virgilCrypto.importPublicKey(senderPublicKey);
+	recipientPrivateKey = virgilCrypto.importPrivateKey(recipientPrivateKey, '4321');
+	recipientPublicKey = virgilCrypto.importPublicKey(recipientPublicKey);
+	otherPublicKey = virgilCrypto.importPublicKey(otherPublicKey);
+
+	var message = 'Secret message';
+
+	var cipherData = virgilCrypto.signThenEncrypt(
+		message,
+		senderPrivateKey,
+		[ otherPublicKey, recipientPublicKey ]);
+
+	var decryptedMessage = virgilCrypto.decryptThenVerify(
+		cipherData,
+		recipientPrivateKey,
+		[ otherPublicKey, senderPublicKey ]);
+
+	t.plan(1);
+	t.equals(decryptedMessage.toString(), message,
+		'decrypted and original messages match');
+});
+
+test('sign then encrypt -> decrypt then verify wrong public key', function (t) {
+	var senderPrivateKey = 'LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVktLS' +
+		'0tLQpNSUdoTUYwR0NTcUdTSWIzRFFFRkRUQlFNQzhHQ1NxR1NJYjNEUUVGRERBaUJ' +
+		'CQlVZWXNvUWVvTm9YSWQxVzZHCjJxN2xBZ0lUN3pBS0JnZ3Foa2lHOXcwQ0NqQWRC' +
+		'Z2xnaGtnQlpRTUVBU29FRUpQSnJPZEtCdHNFZWdjTzc3dTEKTzZNRVFFVWlKTWtGT' +
+		'npNck1sUjh6N0ZDVVZieDdaRkhENjJYdHI3bm5sU05VaG04V1U0L1ZqTHAwTk5xdE' +
+		'RLTApPMjROaEcwa05iZUZaOXFlaFlUcU1sUXp3ejQ9Ci0tLS0tRU5EIEVOQ1JZUFR' +
+		'FRCBQUklWQVRFIEtFWS0tLS0tCg==';
+	var recipientPrivateKey = 'LS0tLS1CRUdJTiBFTkNSWVBURUQgUFJJVkFURSBLRVk' +
+		'tLS0tLQpNSUdoTUYwR0NTcUdTSWIzRFFFRkRUQlFNQzhHQ1NxR1NJYjNEUUVGRERB' +
+		'aUJCQk5sMXEzeHBMTEh6Q2E5ODBMClVlMXdBZ0lPNGpBS0JnZ3Foa2lHOXcwQ0NqQ' +
+		'WRCZ2xnaGtnQlpRTUVBU29FRU5XZGxvK1hnNnJqYmdIUEJPMXoKRG9nRVFBZDY3eC' +
+		'tBT2xrTzBYTDNKbUEvSU5wUXE4cmNtVzU0citSUTBRY0xaaGVUdU9QYXBnZEk4UGp' +
+		'Kb0ZuWQpTUVp0WjRYby9TRllOeFdUZzk3Zi94V05SZmc9Ci0tLS0tRU5EIEVOQ1JZ' +
+		'UFRFRCBQUklWQVRFIEtFWS0tLS0tCg==';
+	var recipientPublicKey = 'LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JR' +
+		'WURLMlZ3QXlFQWNCTG1pZTFKam0rRC9BM0lQdVJVSUFsK0MvUlF0RWQ1cnhmb1BEM' +
+		'FlGbDQ9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQo=';
+	var otherPublicKey = 'MCowBQYDK2VwAyEAMiGqjvwO+0atRWjXVFEybGooQcpJO54C' +
+		'mJPMp66WmsU=';
+	var anotherPublicKey = 'MCowBQYDK2VwAyEAylmHyTGVh/E3RrarH359UhrHO7z+Dg' +
+		'uXJoueYLiF5VU=';
+
+	senderPrivateKey = virgilCrypto.importPrivateKey(senderPrivateKey, '1234');
+	recipientPrivateKey = virgilCrypto.importPrivateKey(recipientPrivateKey, '4321');
+	recipientPublicKey = virgilCrypto.importPublicKey(recipientPublicKey);
+	otherPublicKey = virgilCrypto.importPublicKey(otherPublicKey);
+	anotherPublicKey = virgilCrypto.importPublicKey(anotherPublicKey);
+
+	var message = 'Secret message';
+
+	var cipherData = virgilCrypto.signThenEncrypt(
+		message,
+		senderPrivateKey,
+		[ recipientPublicKey, otherPublicKey, anotherPublicKey ]);
+
+	t.throws(function () {
+			virgilCrypto.decryptThenVerify(
+				cipherData,
+				recipientPrivateKey,
+				[ otherPublicKey, anotherPublicKey ]);
+	},
+	/Signature verification has failed/,
+	'verification failed without the right public key');
+
+	t.end();
+});

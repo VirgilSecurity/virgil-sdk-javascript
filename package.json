@@ -38,7 +38,7 @@
     "localforage": "^1.4.3",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
-    "virgil-crypto": "^2.0.1",
+    "virgil-crypto": "2.1.0",
     "to-arraybuffer": "^1.0.1"
   },
   "devDependencies": {
