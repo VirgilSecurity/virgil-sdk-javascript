@@ -1,7 +1,7 @@
 var test = require('tape');
 var virgilConfig = require('./helpers/virgil-config');
-var mailinator = require('./helpers/mailinator');
 var virgil = require('../src/virgil');
+var getConfirmationCode = require('./helpers/get-confirmation-code');
 
 global.Promise = require('bluebird');
 
@@ -32,7 +32,7 @@ test('identity verify flow', function testVerify (t) {
 	}
 
 	function getConfirmationToken (actionId) {
-		return mailinator.getConfirmationCode(username)
+		return getConfirmationCode(username)
 			.then(function (code) {
 				return [code, actionId];
 			});

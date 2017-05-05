@@ -1,7 +1,7 @@
 var test = require('tape');
 var virgilConfig = require('./helpers/virgil-config');
 var virgil = require('../src/virgil');
-var mailinator = require('./helpers/mailinator');
+var getConfirmationCode = require('./helpers/get-confirmation-code');
 
 global.Promise = require('bluebird');
 
@@ -153,7 +153,7 @@ test('publish global virgil card', function (t) {
 
 	client.verifyIdentity(identity, identityType)
 		.then(function (actionId) {
-			return mailinator.getConfirmationCode(identity)
+			return getConfirmationCode(identity)
 				.then(function (code) {
 					return [actionId, code];
 				});
@@ -240,11 +240,8 @@ test('revoke global virgil card', function (t) {
 	var identityType = virgil.IdentityType.EMAIL;
 
 	client.verifyIdentity(identity, identityType)
-	// add 10 second delay to give the service the time to deliver the
-	// confirmation message
-	.delay(10000)
 	.then(function (actionId) {
-		return mailinator.getConfirmationCode(identity)
+		return getConfirmationCode(identity)
 			.then(function (code) {
 				return [actionId, code];
 			});
