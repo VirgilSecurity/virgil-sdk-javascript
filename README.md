@@ -133,7 +133,7 @@ This library is released under the [3-clause BSD License](LICENSE).
 Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) and [email](support).
 
 [support]: mailto:support@virgilsecurity.com
-[js_getstarted]: https://developer.virgilsecurity.com/docs/javascript/get_started
+[js_getstarted]: https://developer.virgilsecurity.com/docs/javascript/get-started
 [js_getstarted_encrypted_comms]: https://developer.virgilsecurity.com/docs/javascript/get-started/encrypted-communication
 [js_getstarted_storage]: https://developer.virgilsecurity.com/docs/javascript/get-started/encrypted-storage
 [js_getstarted_data_integrity]: https://developer.virgilsecurity.com/docs/javascript/get-started/data-integrity
