@@ -91,7 +91,7 @@ var client = virgil.API("[ACCESS_TOKEN]");
 
 ### On a server
 
-To initialize the SDK on the server side we will need the __access token__, __app id__ and the __App Key__ you created on the [Developer Dashboard](https://developer.virgilsecurity.com/).
+To initialize the SDK on the server side we will need the __access token__, __app id__ and the __App Key__ you created on the [Developer Dashboard](https://developer.virgilsecurity.com/account/dashboard).
 
 ```javascript
 var virgil = require("virgil-sdk");
