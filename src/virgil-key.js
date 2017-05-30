@@ -28,23 +28,22 @@ function VirgilKey (context, privateKey) {
 /**
  * Saves the key under the name encrypted with the password.
  * @param {string} name - The name under which the key is stored.
- * @param {string} password - The password to encrypt the key with.
- * @returns {Promise}
+ * @param {string} [password] - Optional password to encrypt the key with.
+ * @returns {Promise.<VirgilKey>}
  */
 VirgilKey.prototype.save = function (name, password) {
 	utils.assert(utils.isString(name),
 		'save expects name argument to be passed as a string. ' +
 		'Got ' + typeof  name);
 
-	utils.assert(utils.isString(password),
-		'save expects password argument to be passed as a string. ' +
-		'Got ' + typeof  password);
-
 	var privateKeyData = this._context.crypto.exportPrivateKey(
 		this._privateKey,
 		password);
 
-	return this._context.keyStorage.store(name, privateKeyData);
+	return this._context.keyStorage.store(name, privateKeyData)
+		.then(function () {
+			return this;
+		}.bind(this));
 };
 
 /**
@@ -72,15 +71,20 @@ VirgilKey.prototype.decrypt = function (cipherData) {
  * with the signature for the given recipient(s).
  * @param {(string|Buffer)} data - The data to sign and encrypt. If
  * 		data is a string, an encoding of UTF-8 is assumed.
- * @param {VirgilCard|VirgilCard[]} recipientCards - The intended
+ * @param {VirgilCard|VirgilCard[]} recipientCard - The intended
  * 		recipient(s).
  * @returns {Buffer} - Encrypted data with attached signature.
  */
-VirgilKey.prototype.signThenEncrypt = function (data, recipientCards) {
-	var publicKeys = utils.toArray(recipientCards)
-		.map(function (card) {
-			return card.publicKey;
-		});
+VirgilKey.prototype.signThenEncrypt = function (data, recipientCard) {
+	var recipientCards = utils.toArray(recipientCard);
+	utils.assert(
+		recipientCards && recipientCards.length > 0,
+		'signThenEncrypt requires at least one recipient card to be passed.'
+	);
+
+	var publicKeys = recipientCards.map(function (card) {
+		return card.publicKey;
+	});
 	return this._context.crypto.signThenEncrypt(
 		data, this._privateKey, publicKeys);
 };
@@ -91,13 +95,25 @@ VirgilKey.prototype.signThenEncrypt = function (data, recipientCards) {
  * @param {(string|Buffer)} cipherData - The data to be decrypted and
  * 		checked. If cipherData is a string, an encoding of base64 is
  * 		assumed.
- * @param {VirgilCard} signerCard - The Virgil Card of the signing
- * 		party.
+ * @param {(VirgilCard|VirgilCard[])} signerCard - The Virgil Card or an array
+ * 		of Virgil Cards of the signing party.
  * @returns {*}
  */
 VirgilKey.prototype.decryptThenVerify = function (cipherData, signerCard) {
+	var signerCards = utils.toArray(signerCard);
+	utils.assert(
+		signerCards && signerCards.length > 0,
+		'decryptThenVerify requires at least one signer card to be passed.'
+	);
+
+	var publicKeys = signerCards.map(function (card) {
+		return card.publicKey;
+	});
 	return this._context.crypto.decryptThenVerify(
-		cipherData, this._privateKey, signerCard.publicKey);
+		cipherData,
+		this._privateKey,
+		publicKeys
+	);
 };
 
 /**

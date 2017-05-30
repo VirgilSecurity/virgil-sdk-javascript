@@ -9,7 +9,8 @@ function setup () {
 	var storageStub = /** @type {KeyStorage} */{
 		store: sinon.stub(),
 		load: sinon.stub(),
-		delete: sinon.stub()
+		delete: sinon.stub(),
+		exists: sinon.stub()
 	};
 
 	var cryptoStub = {
@@ -122,6 +123,52 @@ test('generate key', function (t) {
 	t.ok(fixture.context.crypto.generateKeys
 		.calledWith(fixture.context.defaultKeyPairType),
 		'passes correct args to crypto');
+	t.end();
+});
+
+test('load key without password', function (t) {
+	var fixture = setup();
+	var keyHandle = /** @type {CryptoKeyHandle} */ {};
+	var name = 'my_private_key';
+	var keyMaterial = new Buffer('private_key');
+
+	var manager = createKeyManager(fixture.context);
+
+	fixture.context.keyStorage.load
+		.withArgs(name)
+		.returns(Promise.resolve(keyMaterial));
+
+	fixture.context.crypto.importPrivateKey
+		.withArgs(keyMaterial)
+		.returns(keyHandle);
+
+	manager.load(name)
+		.then(function (loadedKey) {
+			t.true(fixture.context.keyStorage.load.called,
+				'gets the stored key from backend');
+
+			t.true(fixture.context.crypto.importPrivateKey.called,
+				'imports the key material');
+
+			t.ok(loadedKey instanceof VirgilKey,
+				'returns stored key as VirgilKey');
+
+			t.end();
+		});
+});
+
+test('checks to see if key exists', function (t) {
+	var fixture = setup();
+	var name = 'my_private_key';
+
+	var manager = createKeyManager(fixture.context);
+
+	manager.exists(name);
+
+	t.ok(
+		fixture.context.keyStorage.exists.calledWith(name),
+		'delegates to storage backend correctly'
+	);
 	t.end();
 });
 

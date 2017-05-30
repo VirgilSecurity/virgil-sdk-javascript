@@ -28,7 +28,8 @@ function keyManager(context) {
 		/**
 		 * Loads the key with the given name and password from storage.
 		 * @param {string} name - The name under which the key is stored.
-		 * @param {string} password - The password used for key encryption.
+		 * @param {string} [password] - Optional password used to decrypt
+		 * 		the key before before loading.
 		 *
 		 * @returns {Promise.<VirgilKey>}
          */
@@ -36,10 +37,6 @@ function keyManager(context) {
 			utils.assert(utils.isString(name),
 				'load expects name argument to be passed as a string. ' +
 				'Got ' + typeof  name);
-
-			utils.assert(utils.isString(password),
-				'load expects password argument to be passed as a string. ' +
-				'Got ' + typeof  password);
 
 			return context.keyStorage.load(name)
 				.then(function (privateKeyData) {
@@ -80,6 +77,21 @@ function keyManager(context) {
 			var privateKey = context.crypto.importPrivateKey(
 				keyData, password);
 			return new VirgilKey(context, privateKey);
+		},
+
+		/**
+		 * Checks if the key with the given name exists in storage.
+		 * @param {string} name - The name of the key to check.
+		 * @returns {Promise.<boolean>} True if key exists, otherwise False.
+		 */
+		exists: function (name) {
+			utils.assert(
+				utils.isString(name),
+				'exists expects name argument to be passed as a string. ' +
+				'Got ' + typeof name
+			);
+
+			return context.keyStorage.exists(name);
 		}
 	}
 }
