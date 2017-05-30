@@ -33,8 +33,8 @@ test('setup alice', function (t) {
 			aliceCardId = card.id;
 			t.end();
 		}).catch(function (err) {
-		t.fail(err.message);
-	});
+			t.fail(err.message);
+		});
 });
 
 test('setup bob', function (t) {
@@ -59,8 +59,8 @@ test('setup bob', function (t) {
 			bobCardId = card.id;
 			t.end();
 		}).catch(function (err) {
-		t.fail(err.message);
-	});
+			t.fail(err.message);
+		});
 });
 
 var messageToBob;
@@ -69,40 +69,37 @@ test('alice encrypt message for bob', function (t) {
 
 	findBob()
 		.tap(function assertBobIsFound(card) {
-			t.ok(card !== null, 'Bob\'s card was found.');
+			if (card == null) {
+				t.fail('Bob\'s card was not found.');
+			}
 		})
 		.then(encryptMessageForBob)
 		.tap(function assertMessageEncrypted(msg) {
-			t.ok(Buffer.isBuffer(msg), 'Encrypted message is a Buffer.');
+			if (!Buffer.isBuffer(msg)) {
+				t.fail('Encrypted message is not a Buffer.');
+			}
 		})
 		.then(function (msg) {
 			messageToBob = msg;
 			t.end();
 		}).catch(function (err) {
-		t.fail(err.message);
-	});
+			t.fail(err.message);
+		});
 
 	function findBob() {
 		return client.searchCards({
 			identities: [ 'bob_test_sdk' ],
 			identity_type: 'username',
 			scope: 'application'
-		}).then(function (cards) {
-			if (cards.length === 0) {
-				return null;
-			}
-
-			cards.sort(function (a, b) {
-				return a.createdAt - b.createdAt;
-			});
-			return cards[cards.length - 1];
 		});
 	}
 
-	function encryptMessageForBob(bobCard) {
+	function encryptMessageForBob(bobCards) {
 		var plainText = 'hello Bob! This is my secret message.';
-		var pubkey = virgil.crypto.importPublicKey(bobCard.publicKey);
-		var cipherText = virgil.crypto.encrypt(plainText, pubkey);
+		var publicKeys = bobCards.map(function (bobCard) {
+			return virgil.crypto.importPublicKey(bobCard.publicKey);
+		});
+		var cipherText = virgil.crypto.encrypt(plainText, publicKeys);
 		return cipherText;
 	}
 });
@@ -128,15 +125,19 @@ test('alice sign', function (t) {
 test('bob verify', function (t) {
 	findAlice()
 		.tap(function (card) {
-			t.ok(card !== null, 'Alice\'s card was found.');
+			if (card == null) {
+				t.fail('Alice\'s card was not found.');
+			}
 		})
 		.then(verifyAliceSignature)
 		.tap(function (isVerified) {
-			t.ok(isVerified, 'Data verified.');
+			if (!isVerified) {
+				t.fail('Signature not verified.');
+			}
 			t.end();
 		}).catch(function (err) {
-		t.fail(err.message);
-	});
+			t.fail(err.message);
+		});
 
 	function findAlice() {
 		return client.searchCards({
@@ -144,14 +145,9 @@ test('bob verify', function (t) {
 			identity_type: 'username',
 			scope: 'application'
 		}).then(function (cards) {
-			if (cards.length === 0) {
-				return null;
-			}
-
-			cards.sort(function (a, b) {
-				return a.createdAt - b.createdAt;
+			return cards.find(function (card) {
+				return card.id === aliceCardId;
 			});
-			return cards[cards.length - 1];
 		});
 	}
 
@@ -174,8 +170,8 @@ test('cleanup alice', function (t) {
 			t.ok(res, 'Card revoked');
 			t.end();
 		}).catch(function (err) {
-		t.fail(err.message);
-	});
+			t.fail(err.message);
+		});
 });
 
 test('cleanup bob', function (t) {
@@ -190,6 +186,6 @@ test('cleanup bob', function (t) {
 			t.ok(res, 'Card revoked');
 			t.end();
 		}).catch(function (err) {
-		t.fail(err.message);
-	});
+			t.fail(err.message);
+		});
 });
