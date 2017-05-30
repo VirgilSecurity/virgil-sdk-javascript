@@ -9,7 +9,8 @@ function setup () {
 	var storageStub = /** @type {KeyStorage} */{
 		store: sinon.stub(),
 		load: sinon.stub(),
-		delete: sinon.stub()
+		delete: sinon.stub(),
+		exists: sinon.stub()
 	};
 
 	var cryptoStub = {
@@ -154,5 +155,20 @@ test('load key without password', function (t) {
 
 			t.end();
 		});
+});
+
+test('checks to see if key exists', function (t) {
+	var fixture = setup();
+	var name = 'my_private_key';
+
+	var manager = createKeyManager(fixture.context);
+
+	manager.exists(name);
+
+	t.ok(
+		fixture.context.keyStorage.exists.calledWith(name),
+		'delegates to storage backend correctly'
+	);
+	t.end();
 });
 

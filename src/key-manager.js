@@ -77,6 +77,21 @@ function keyManager(context) {
 			var privateKey = context.crypto.importPrivateKey(
 				keyData, password);
 			return new VirgilKey(context, privateKey);
+		},
+
+		/**
+		 * Checks if the key with the given name exists in storage.
+		 * @param {string} name - The name of the key to check.
+		 * @returns {Promise.<boolean>} True if key exists, otherwise False.
+		 */
+		exists: function (name) {
+			utils.assert(
+				utils.isString(name),
+				'exists expects name argument to be passed as a string. ' +
+				'Got ' + typeof name
+			);
+
+			return context.keyStorage.exists(name);
 		}
 	}
 }
