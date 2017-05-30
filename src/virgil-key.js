@@ -29,7 +29,7 @@ function VirgilKey (context, privateKey) {
  * Saves the key under the name encrypted with the password.
  * @param {string} name - The name under which the key is stored.
  * @param {string} [password] - Optional password to encrypt the key with.
- * @returns {Promise}
+ * @returns {Promise.<VirgilKey>}
  */
 VirgilKey.prototype.save = function (name, password) {
 	utils.assert(utils.isString(name),
@@ -40,7 +40,10 @@ VirgilKey.prototype.save = function (name, password) {
 		this._privateKey,
 		password);
 
-	return this._context.keyStorage.store(name, privateKeyData);
+	return this._context.keyStorage.store(name, privateKeyData)
+		.then(function () {
+			return this;
+		}.bind(this));
 };
 
 /**

@@ -6,7 +6,7 @@ var VirgilKey = require('../../src/virgil-key');
 
 function setup () {
 	var storageStub = /** @type {KeyStorage} */{
-		store: sinon.stub(),
+		store: sinon.stub().returns(Promise.resolve()),
 		load: sinon.stub(),
 		delete: sinon.stub()
 	};
@@ -149,4 +149,23 @@ test('decrypt then verify with empty array', function (t) {
 		'throws when passed an empty array of cards'
 	);
 	t.end();
+});
+
+test('returns this key instance on save', function (t) {
+	var fixture = setup();
+	var keyHandle = /** @type {CryptoKeyHandle} */ {};
+	var name = 'my_private_key';
+	var privateKey = new Buffer('private_key');
+
+	var virgilKey = new VirgilKey(fixture.context, keyHandle);
+
+	fixture.context.crypto.exportPrivateKey
+		.withArgs(keyHandle)
+		.returns(privateKey);
+
+	virgilKey.save(name)
+		.then(function (result) {
+			t.ok(result === virgilKey, 'resolves with the instance on save');
+			t.end();
+		});
 });
