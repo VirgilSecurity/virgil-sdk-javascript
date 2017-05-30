@@ -13,7 +13,9 @@ function setup () {
 
 	var cryptoStub = {
 		exportPrivateKey: sinon.stub(),
-		importPrivateKey: sinon.stub()
+		importPrivateKey: sinon.stub(),
+		signThenEncrypt: sinon.stub(),
+		decryptThenVerify: sinon.stub()
 	};
 
 	var context = /** @type {VirgilAPIContext} */{
@@ -68,5 +70,83 @@ test('save key without password', function (t) {
 	t.true(fixture.context.keyStorage.store.called,
 		'delegates saving to storage backend');
 
+	t.end();
+});
+
+test('sign then encrypt with multiple recipient cards', function (t) {
+	var fixture = setup();
+	var data = new Buffer('data to encrypt');
+	var keyHandle = /** @type {CryptoKeyHandle} */ {};
+	var virgilKey = new VirgilKey(fixture.context, keyHandle);
+	var recipientCards = [
+		{ publicKey: {} },
+		{ publicKey: {} }
+	];
+	var publicKeys = recipientCards.map(function (card) {
+		return card.publicKey;
+	});
+
+	virgilKey.signThenEncrypt(data, recipientCards);
+
+	t.true(
+		fixture.context.crypto.signThenEncrypt.calledWith(data, keyHandle, publicKeys),
+		'delegates to crypto provider correctly'
+	);
+	t.end();
+});
+
+test('sign then encrypt with empty array', function (t) {
+	var fixture = setup();
+	var data = new Buffer('data to encrypt');
+	var keyHandle = /** @type {CryptoKeyHandle} */ {};
+	var virgilKey = new VirgilKey(fixture.context, keyHandle);
+	var recipientCards = [];
+
+
+
+	t.throws(
+		function () {
+			virgilKey.signThenEncrypt(data, recipientCards);
+		},
+		'throws when passed an empty array of cards'
+	);
+	t.end();
+});
+
+test('decrypt then verify with multiple signer cards', function (t) {
+	var fixture = setup();
+	var cipherData = new Buffer('enciphered data');
+	var keyHandle = /** @type {CryptoKeyHandle} */ {};
+	var virgilKey = new VirgilKey(fixture.context, keyHandle);
+	var signerCards = [
+		{ publicKey: {} },
+		{ publicKey: {} }
+	];
+	var publicKeys = signerCards.map(function (card) {
+		return card.publicKey;
+	});
+
+	virgilKey.decryptThenVerify(cipherData, signerCards);
+
+	t.true(
+		fixture.context.crypto.decryptThenVerify.calledWith(cipherData, keyHandle, publicKeys),
+		'delegates to crypto provider correctly'
+	);
+	t.end();
+});
+
+test('decrypt then verify with empty array', function (t) {
+	var fixture = setup();
+	var cipherData = new Buffer('enciphered data');
+	var keyHandle = /** @type {CryptoKeyHandle} */ {};
+	var virgilKey = new VirgilKey(fixture.context, keyHandle);
+	var signerCards = [];
+
+	t.throws(
+		function () {
+			virgilKey.decryptThenVerify(cipherData, signerCards);
+		},
+		'throws when passed an empty array of cards'
+	);
 	t.end();
 });
