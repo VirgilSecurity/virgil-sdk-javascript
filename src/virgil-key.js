@@ -28,17 +28,13 @@ function VirgilKey (context, privateKey) {
 /**
  * Saves the key under the name encrypted with the password.
  * @param {string} name - The name under which the key is stored.
- * @param {string} password - The password to encrypt the key with.
+ * @param {string} [password] - Optional password to encrypt the key with.
  * @returns {Promise}
  */
 VirgilKey.prototype.save = function (name, password) {
 	utils.assert(utils.isString(name),
 		'save expects name argument to be passed as a string. ' +
 		'Got ' + typeof  name);
-
-	utils.assert(utils.isString(password),
-		'save expects password argument to be passed as a string. ' +
-		'Got ' + typeof  password);
 
 	var privateKeyData = this._context.crypto.exportPrivateKey(
 		this._privateKey,
