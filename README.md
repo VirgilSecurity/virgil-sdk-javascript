@@ -106,7 +106,9 @@ var client = virgil.API({
 });
 ```
 
-Next: [Learn more about our the different ways of initializing the Javascript SDK][js_guides_initialization] in our documentation.
+Get started with initializing Javascript SDK:
+* [Set up your client-side][_guides_set_up_client]
+* [Set up your server-side][_guides_set_up_server]
 
 ## Documentation
 
@@ -119,10 +121,17 @@ Virgil Security has a powerful set of APIs, and the documentation is there to ge
   * [Data integrity][js_getstarted_data_integrity]
   * [Passwordless login][js_getstarted_passwordless_login]
 * [Guides][_guides]
+  * [Encryption][_guides_encryption]
+  * [Signature][_guides_signature]
   * [Virgil Cards][_guides_virgil_cards]
   * [Virgil Keys][_guides_virgil_keys]
+* [Guides][_guides]
+  * [Set up your client-side][_guides_set_up_client]
+  * [Set up your server-side][_guides_set_up_server]
+  * [Set up your PFS][_guides_set_up_PFS]
+* [Reference API][_guides_reference_API]
 
-Alternatively, head over to our [Reference documentaton](#reference_docs) for in-depth information about every SDK method, it's arguments and return types.
+Alternatively, head over to our [Reference documentation](#reference_docs) for in-depth information about every SDK method, it's arguments and return types.
 
 ## License
 
