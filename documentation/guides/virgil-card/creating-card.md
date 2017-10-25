@@ -21,7 +21,7 @@ Set up your project environment before you begin to create a user's Virgil Card,
 
 The Virgil Card creation procedure is shown in the figure below.
 
-![Virgil Card Generation](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/img/Card_introduct.png "Create Virgil Card")
+![Virgil Card Generation](/documentation/img/Card_introduct.png "Create Virgil Card")
 
 
 In order to create a Virgil Card:

@@ -7,11 +7,11 @@ Privacy is even more important when it comes to cloud-based storage. If servers 
 
 
 ## <a name="head1"></a> Set Up Your Server
-Your server should be able to authorize your users, store Application's Virgil Key and use **Virgil SDK** for cryptographic operations or for some requests to Virgil Services. You can configure your server using the [Setup Guide](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/server-configuration.md).
+Your server should be able to authorize your users, store Application's Virgil Key and use **Virgil SDK** for cryptographic operations or for some requests to Virgil Services. You can configure your server using the [Setup Guide](/documentation/guides/configuration/server-configuration.md).
 
 
 ## <a name="head2"></a> Set Up Your Clients
-Setup the client-side to provide your users with an access token after their registration at your Application Server to authenticate them for further operations and transmit their **Virgil Cards** to the server. Configure the client-side using the [Setup Guide](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/client-configuration.md).
+Setup the client-side to provide your users with an access token after their registration at your Application Server to authenticate them for further operations and transmit their **Virgil Cards** to the server. Configure the client-side using the [Setup Guide](/documentation/guides/configuration/client-configuration.md).
 
 
 ## <a name="head3"></a> Register Users
@@ -19,7 +19,7 @@ Now you need to register the users who will encrypt data.
 
 In order to encrypt a data each user must have his own tools, which allow him to perform cryptographic operations, and these tools must contain the necessary information to identify users. In Virgil Security, these tools are the Virgil Key and the Virgil Card.
 
-![Virgil Card](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/img/Card_introduct.png "Create Virgil Card")
+![Virgil Card](/documentation/img/Card_introduct.png "Create Virgil Card")
 
 When we have already set up the Virgil SDK on the server & client sides, we can finally create Virgil Cards for the users and transmit the Cards to your Server for further publication on Virgil Services.
 
@@ -43,7 +43,7 @@ Warning: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key
 
 It should be noted that recently created user Virgil Cards will be visible only for application users because they are related to the Application.
 
-Read more about Virgil Cards and their types [here](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/virgil-card/creating-card.md).
+Read more about Virgil Cards and their types [here](/documentation/guides/virgil-card/creating-card.md).
 
 
 ### Transmit the Cards to Your Server
@@ -58,7 +58,7 @@ var exportedCard = aliceCard.export();
 transmitToServer(exportedCard);
 ```
 
-Use the [approve & publish users guide](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/server-configuration.md
+Use the [approve & publish users guide](/documentation/guides/configuration/server-configuration.md
 ) to publish user's Virgil Card on Virgil Services.
 
 
@@ -66,7 +66,7 @@ Use the [approve & publish users guide](https://github.com/VirgilSecurity/virgil
 
 With the Virgil Card created, we're ready to start encrypting data which will then be stored in the encrypted storage.  In this case we will encrypt some data for Alice, using her own Virgil Card.
 
-![encrypted storage](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/img/encrypted_storage_upload.png "Encrypt data")
+![encrypted storage](/documentation/img/encrypted_storage_upload.png "Encrypt data")
 
 In order to encrypt data, the user must search for Virgil Cards at Virgil Services, where all Virgil Cards are saved.
 
@@ -81,7 +81,7 @@ api.cards.find(["alice"])
   });
 ```
 
-See our [guide](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/virgil-card/finding-card.md) on Finding Cards for best practices on loading Alice's card.
+See our [guide](/documentation/guides/virgil-card/finding-card.md) on Finding Cards for best practices on loading Alice's card.
 
 ### Storage
 
@@ -92,7 +92,7 @@ With this in place, Alice is now ready to store the encrypted files to a local o
 
 You can easily **decrypt** your encrypted files at any time using your private Virgil Key.
 
-![Encrypt Data](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/img/encrypted_storage_download.png "Decrypt Data")
+![Encrypt Data](/documentation/img/encrypted_storage_download.png "Decrypt Data")
 
 To decrypt your encrypted files, load the data and use your own Virgil Key to decrypt the data.
 
@@ -105,4 +105,4 @@ api.keys.load("[KEY_NAME]", "[KEY_PASSWORD]")
     });
 ```
 
-To decrypt data, you will need your stored Virgil Key. See the [Loading Key](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/virgil-key/loading-key.md) guide for more details.
+To decrypt data, you will need your stored Virgil Key. See the [Loading Key](/documentation/guides/virgil-key/loading-key.md) guide for more details.

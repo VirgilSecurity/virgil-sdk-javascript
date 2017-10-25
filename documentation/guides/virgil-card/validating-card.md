@@ -8,7 +8,7 @@ During the validation process we verify, by default, two signatures:
 
 Additionally, developers can verify the **signature of the application server**.
 
-Set up your project environment before you begin to validate a Virgil Card, with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/client-side) guide.
+Set up your project environment before you begin to validate a Virgil Card, with the [getting started](/documentation/guides/configuration/client-side) guide.
 
 In order to validate the signature of the Virgil Card owner, **Virgil Services**, and the Application Server, we need to:
 

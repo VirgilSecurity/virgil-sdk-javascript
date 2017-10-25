@@ -4,11 +4,11 @@ This guide is a short tutorial on how to create a **Digital Signature** with Vir
 
 See our [Use Cases](https://github.com/VirgilSecurity/virgil-sdk-javascript/tree/docs-review/documentation/get-started) to find out what you can do with Digital Signature.
 
-Set up your project environment before starting to create a Digital Signature, with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/client-side) guide.
+Set up your project environment before starting to create a Digital Signature, with the [getting started](/documentation/guides/configuration/client-side) guide.
 
 The **Signature Creation** procedure is shown in the figure below.
 
-![Virgil Signature Intro](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/img/Signature_introduction.png "Create Signature")
+![Virgil Signature Intro](/documentation/img/Signature_introduction.png "Create Signature")
 
 In order to create a Digital Signature and sign the message, Alice has to have her **Virgil Key**.
 
@@ -45,6 +45,6 @@ var message = "Hey Bob, hope you are doing well.";
 var signature = aliceKey.sign(message);
 ```
 
-See our guide on [Loading Keys](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/virgil-key/loading-key.md) for more examples.
+See our guide on [Loading Keys](/documentation/guides/virgil-key/loading-key.md) for more examples.
 
 Alice can now send a signed message to Bob.

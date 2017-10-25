@@ -4,11 +4,11 @@ This guide is a short tutorial on how to **decrypt** encrypted data with Virgil 
 
 Decryption is the reverse operation of encryption. As previously noted, Virgil Security allows you to encrypt data using public-key encryption. It's means that only the owner of the related private **Virgil Key**  can decrypt the encrypted data.
 
-Set up your project environment before you start to decrypt data, with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/client-configuration.md) guide.
+Set up your project environment before you start to decrypt data, with the [getting started](/documentation/guides/configuration/client-configuration.md) guide.
 
 The Data Decryption procedure is shown in the figure below.
 
-![Virgil Encryption Intro](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/img/Encryption_introduction.png "Data decryption")
+![Virgil Encryption Intro](/documentation/img/Encryption_introduction.png "Data decryption")
 
 In order to decrypt a **message**, Bob has to have:
  - His Virgil Key
@@ -46,4 +46,4 @@ var api = virgil.API();
 
 To load a Virgil Key from a specific storage, developers need to change the storage path during Virgil SDK initialization.
 
-To decrypt data, you will need Bob's stored Virgil Key. See the [Storing Keys](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/virgil-key/saving-key.md) guide for more details.
+To decrypt data, you will need Bob's stored Virgil Key. See the [Storing Keys](/documentation/guides/virgil-key/saving-key.md) guide for more details.

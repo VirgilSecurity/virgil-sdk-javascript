@@ -2,7 +2,7 @@
 
 This guide shows how to revoke a **Virgil Card** from Virgil Services.
 
-Set up your project environment before you begin to revoke a Virgil Card, with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/client-side) guide.
+Set up your project environment before you begin to revoke a Virgil Card, with the [getting started](/documentation/guides/configuration/client-side) guide.
 
 In order to revoke a Virgil Card, we need to:
 

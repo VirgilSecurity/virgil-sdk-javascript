@@ -4,12 +4,12 @@ This guide is a short tutorial on how to verify a **Digital Signature** with Vir
 
 For original information about the Digital Signature follow the link [here](https://github.com/VirgilSecurity/virgil/blob/wiki/wiki/glossary.md#digital-signature).
 
-Set up your project environment before starting to verify a Digital Signature, with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/client-side) guide.
+Set up your project environment before starting to verify a Digital Signature, with the [getting started](/documentation/guides/configuration/client-side) guide.
 
 The Signature Verification procedure is shown in the figure below.
 
 
-![Virgil Signature Intro](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/img/Signature_introduction.png "Verify Signature")
+![Virgil Signature Intro](/documentation/img/Signature_introduction.png "Verify Signature")
 
 In order to verify the Digital Signature, Bob has to have Alice's **Virgil Card"**.
 
@@ -35,4 +35,4 @@ api.cards.get("ALICE_CARD_ID")
     })
 ```
 
-See our guide on [Validating Cards](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/virgil-card/validating-card.md) for the best practices.
+See our guide on [Validating Cards](/documentation/guides/virgil-card/validating-card.md) for the best practices.
