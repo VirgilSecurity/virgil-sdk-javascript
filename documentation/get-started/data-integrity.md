@@ -8,11 +8,11 @@ Use **Virgil** to verify the integrity of data at any point. **Data Integrity** 
 <!-- ![Virgil Signature Intro](/img/Signature_introduction.png "Data integrity") -->
 
 ## <a name="head1"></a> Setup Your Server
-Your server should be able to authorize your users, store Application's Virgil Key and use **Virgil SDK** for cryptographic operations or for some requests to Virgil Services. You can configure your server using the [Setup Guide](/guides/configuration/server-configuration.md).
+Your server should be able to authorize your users, store Application's Virgil Key and use **Virgil SDK** for cryptographic operations or for some requests to Virgil Services. You can configure your server using the [Setup Guide](/documentation/guides/configuration/server-configuration.md).
 
 
 ## <a name="head2"></a> Setup Your Clients
-Setup the client-side to provide your users with an access token after their registration at your Application Server to authenticate them for further operations and transmit their **Virgil Cards** to the server. Configure the client-side using the [Setup Guide](/documentation/guides/configuration/client-configuration.md).
+Setup the client side to provide your users with an access token after their registration at your Application Server to authenticate them for further operations and transmit their **Virgil Cards** to the server. Configure the client side using the [Setup Guide](/documentation/guides/configuration/client-configuration.md).
 
 
 ## <a name="head3"></a> Register Users
@@ -59,7 +59,7 @@ var exportedCard = aliceCard.export();
 transmitToServer(exportedCard);
 ```
 
-Use the [approve & publish users guide](/) to publish users Virgil Cards on Virgil Services.
+Use the [approve & publish users guide](/documentation/guides/configuration/server-configuration.md) to publish users Virgil Cards on Virgil Services.
 
 ## <a name="head4"></a> Sign Data
 

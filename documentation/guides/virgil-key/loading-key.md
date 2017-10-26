@@ -2,7 +2,7 @@
 
 This guide shows how to load a private **Virgil Key**, which is stored on the device. The key must be loaded when Alice wants to **sign** some data, **decrypt** any encrypted content, and perform cryptographic operations.
 
-Set up your project environment before you begin to load a Virgil Key, with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/documentation/guides/configuration/client-side) guide.
+Set up your project environment before you begin to load a Virgil Key, with the [getting started](/documentation/guides/configuration/client-configuration.md) guide.
 
 In order to load the Virgil Key from the default storage:
 

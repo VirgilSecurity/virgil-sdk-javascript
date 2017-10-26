@@ -16,7 +16,7 @@ Your server should be able to authorize your users, store Application's Virgil K
 
 
 ## <a name="head2"></a> Set Up Your Clients
-Setup the client-side to provide your users with an access token after their registration at your Application Server to authenticate them for further operations and transmit their **Virgil Cards** to the server. Configure the client-side using the [Setup Guide](/documentation/guides/configuration/client-configuration.md).
+Set up the client side to provide your users with an access token after their registration at your Application Server to authenticate them for further operations and transmit their **Virgil Cards** to the server. Configure the client side using the [Setup Guide](/documentation/guides/configuration/client-configuration.md).
 
 
 ## <a name="head3"></a> Register Users
@@ -105,7 +105,7 @@ See our tutorial on [Virgil & Twilio Programmable Chat](https://github.com/Virgi
 
 ## <a name="head5"></a> Decrypt a Message & Verify its Signature
 
-Once the Recipient receives the signed and encrypted message, he can decrypt and validate the message. Thus proving that the message has not been tampered with, by verifying the signature against the Sender's Virgil Card.
+Once the Recipient receives the signed and encrypted message, he can decrypt and validate the message. Thus, proving that the message has not been tampered with, by verifying the signature against the Sender's Virgil Card.
 
 In order to **decrypt** the encrypted message and then verify the signature, we need to load a private receiver's Virgil Key and search for the sender's Virgil Card at Virgil Services.
 
