@@ -2,7 +2,7 @@
 
 This guide shows how to export a **Virgil Key** from a Base64 encoded string representation.
 
-Set up your project environment before you begin to import a Virgil Key, with the [getting started](/documentation/guides/configuration/client-side) guide.
+Set up your project environment before you begin to import a Virgil Key, with the [getting started](/documentation/guides/configuration/client-configuration.md) guide.
 
 In order to import a Virgil Key, we need to:
 
