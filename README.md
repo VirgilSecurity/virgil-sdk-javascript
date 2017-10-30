@@ -96,18 +96,18 @@ __Next:__ On the page below you can find configuration documentation and the lis
 
 Virgil Security has a powerful set of APIs and the documentation to help you get started:
 
-* [Get Started](/documentation/get-started) documentation
-  * [Encrypted storage](/documentation/get-started/encrypted-storage.md)
-  * [Encrypted communication](/documentation/get-started/encrypted-communication.md)
-  * [Data integrity](/documentation/get-started/data-integrity.md)
-* [Guides](/documentation/guides)
-  * [Virgil Cards](/documentation/guides/virgil-card)
-  * [Virgil Keys](/documentation/guides/virgil-key)
-  * [Encryption](/documentation/guides/encryption)
-  * [Signature](/documentation/guides/signature)
-* [Configuration](/documentation/guides/configuration)
-  * [Set Up Client Side](/documentation/guides/configuration/client.md)
-  * [Set Up Server Side](/documentation/guides/configuration/server.md)
+* [Get Started](/docs/get-started) documentation
+  * [Encrypted storage](/docs/get-started/encrypted-storage.md)
+  * [Encrypted communication](/docs/get-started/encrypted-communication.md)
+  * [Data integrity](/docs/get-started/data-integrity.md)
+* [Guides](/docs/guides)
+  * [Virgil Cards](/docs/guides/virgil-card)
+  * [Virgil Keys](/docs/guides/virgil-key)
+  * [Encryption](/docs/guides/encryption)
+  * [Signature](/docs/guides/signature)
+* [Configuration](/docs/guides/configuration)
+  * [Set Up Client Side](/docs/guides/configuration/client.md)
+  * [Set Up Server Side](/docs/guides/configuration/server.md)
 
 ## License
 
