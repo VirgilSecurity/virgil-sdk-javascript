@@ -2,7 +2,7 @@
 
 This guide shows how to revoke a **Virgil Card** from Virgil Services.
 
-Set up your project environment before you begin to revoke a Virgil Card, with the [getting started](/docs/guides/configuration/client.md) guide.
+Before you begin to revoke a Virgil Card, set up your project environment with the [getting started](/docs/guides/configuration/client.md) guide.
 
 To revoke a Virgil Card, we need to:
 
