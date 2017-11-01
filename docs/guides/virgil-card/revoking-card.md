@@ -21,7 +21,7 @@ var api = virgil.API({
 ```
 
 - Get Alice's Virgil Card by **ID** from **Virgil Services**
-- Revoke Alice's Virgil Card from Virgil Services
+- Revoke Alice's Virgil Card from **Virgil Services**
 
 ```javascript
 // get Virgil Card by ID
