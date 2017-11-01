@@ -5,7 +5,8 @@ This guide helps you to set up your server and implement required mechanisms usi
 
 ## <a name="head1"></a> Developer Account
 
-To use the Virgil SDK package you need to sign up for a **Developer account** and create your first application. Make sure to save the **App ID**, the **App Key** and the **App Key Password**. If you did not create a Developer account yet, you can do so now by using this [link](https://developer.virgilsecurity.com/account/signup).
+To use the Virgil SDK package, you need to sign up for a **Developer account** and create your first application. 
+Make sure to save the **App ID**, the **App Key** and the **App Key Password**. If you did not create a Developer account yet, you can do it now using this [link](https://developer.virgilsecurity.com/account/signup).
 
 ## <a name="head2"></a> Install SDK
 
@@ -39,7 +40,8 @@ var api = virgil.API({
 
 ## <a name="head4"></a> Create an Access Token
 
-When users want to start working with your Application in a browser or mobile device, Virgil can't trust them right away.  Virgil needs the developer to vouch for his users, so we can trust them too. You'll need to give your users an Access Token that tells Virgil who they are and what they can do. Thus, you need a service that will be responsible for an access token creation in your Virgil Developer Dashboard for users in case of their successful registration on your server.
+When users want to start working with your Application in a browser or mobile device, Virgil can't trust them right away.  
+Virgil needs the developer to vouch for his users, so we can trust them too. You'll need to give your users an Access Token that tells Virgil who they are and what they can do. Thus, you need a service that will be responsible for an access token creation in your Virgil Developer Dashboard for users in case of their successful registration on your server.
 
 You must decide, based on the token request that was sent to you, who the user is and what they should be allowed to do and then you have to transfer a recently created special access token to the client side. To figure out who the user is, you might implement the users authentication mechanism by using the user's identity. Also, you can assign a temporary identity to the user if you don't care who he is.
 
