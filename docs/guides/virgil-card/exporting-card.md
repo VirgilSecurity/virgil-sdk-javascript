@@ -2,7 +2,7 @@
 
 This guide shows how to export a **Virgil Card** to the string representation.
 
-Set up your project environment before you begin to export a Virgil Card, with the [getting started](/docs/guides/configuration/client.md) guide.
+Before you begin to export a Virgil Card, set up your project environment with the [getting started](/docs/guides/configuration/client.md) guide.
 
 To export a Virgil Card, we need to:
 
