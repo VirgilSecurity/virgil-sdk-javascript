@@ -22,7 +22,7 @@ Set up the client side to provide your users with an access token after their re
 ## <a name="head3"></a> Register Users
 Now you need to register the users who will participate in encrypted communications.
 
-In order to sign and encrypt a message each user must have his own tools, which allow him to perform cryptographic operations, and these tools must contain the necessary information to identify users. In Virgil Security, these tools are the Virgil Key and the Virgil Card.
+To sign and encrypt a message each user must have his own tools, which allow him to perform cryptographic operations, and these tools must contain the necessary information to identify users. In Virgil Security, these tools are the Virgil Key and the Virgil Card.
 
 ![Virgil Card](/docs/img/Card_introduct.png "Create Virgil Card")
 
@@ -44,9 +44,9 @@ aliceKey.save("[KEY_NAME]", "[KEY_PASSWORD]")
     });
 ```
 
-Warning: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
+**Warning**: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
 
-In order for the Sender to be able to send a message, we also need a Virgil Card associated with the Recipient. It should be noted that recently created user Virgil Cards will be visible only for application users because they are related to the Application.
+To enable the Sender to send a message, we also need a Virgil Card associated with the Recipient. It should be noted that recently created user Virgil Cards will be visible only for application users because they are related to the Application.
 
 Read more about Virgil Cards and their types [here](/docs/guides/virgil-card/creating-card.md).
 
@@ -74,7 +74,7 @@ As previously noted we encrypt data for secure communication, but a recipient al
 
 ![Virgil Intro](/docs/img/Guides_introduction.png "Sign & Encrypt")
 
-In order to sign then encrypt messages, the Sender must load their own recently generated Virgil Key and search for the receiver's Virgil Cards at Virgil Services, where all Virgil Cards are saved.
+To sign and encrypt messages, the Sender must load their own recently generated Virgil Key and search for the receiver's Virgil Cards at Virgil Services, where all Virgil Cards are saved.
 
 ```javascript
 Promise.all([
@@ -107,7 +107,7 @@ See our tutorial on [Virgil & Twilio Programmable Chat](https://github.com/Virgi
 
 Once the Recipient receives the signed and encrypted message, he can decrypt and validate the message. Thus, proving that the message has not been tampered with, by verifying the signature against the Sender's Virgil Card.
 
-In order to **decrypt** the encrypted message and then verify the signature, we need to load a private receiver's Virgil Key and search for the sender's Virgil Card at Virgil Services.
+To **decrypt** the message and then verify the signature, we need to load a private receiver's Virgil Key and search for the sender's Virgil Card at Virgil Services.
 
 ```javascript
 Promise.all([

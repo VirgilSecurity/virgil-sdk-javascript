@@ -4,7 +4,7 @@ This guide shows how to load a private **Virgil Key**, which is stored on the de
 
 Set up your project environment before you begin to load a Virgil Key, with the [getting started](/docs/guides/configuration/client.md) guide.
 
-In order to load the Virgil Key from the default storage:
+To load the Virgil Key from the default storage:
 
 - Initialize the **Virgil SDK**
 

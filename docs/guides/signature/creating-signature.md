@@ -10,7 +10,7 @@ The **Signature Creation** procedure is shown in the figure below.
 
 ![Virgil Signature Intro](/docs/img/Signature_introduction.png "Create Signature")
 
-In order to create a Digital Signature and sign the message, Alice has to have her **Virgil Key**.
+To create a Digital Signature and sign the message, Alice has to have her **Virgil Key**.
 
 
 Let's review the **Digital Signature** creation process:

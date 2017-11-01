@@ -4,7 +4,7 @@ This guide demonstrates how to create a **Global Virgil Card**. The main feature
 
 After a Global Virgil Card's creation, it's published at the Virgil Card Service, where an owner can find their Cards at any time.
 
-Warning: You can not change a Global Virgil Card's content after its publishing.
+**Warning**: You can not change a Global Virgil Card's content after its publishing.
 
 Each Virgil Card contains a permanent digital signature that provides data integrity for the Virgil Card over its life-cycle.
 
@@ -16,7 +16,7 @@ The Global Virgil Card creation procedure is shown in the figure below.
 
 ![Card Intro](/docs/img/Card_intro.png "Create Global Virgil Card")
 
-In order to create a Global Virgil Card:
+To create a Global Virgil Card:
 
 1. Developers need to initialize the **Virgil SDK**
 
@@ -47,7 +47,7 @@ aliceKey.save("[KEY_NAME]", "[KEY_PASSWORD]")
 
 The Virgil Key will be saved into default device storage. Developers can also change the Virgil Key storage directory as needed, during Virgil SDK initialization.
 
-Warning: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
+**Warning**: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
 
 3. Now, developers can initiate an identity verification process.
 4. A User has to confirm a Virgil Card's identity using a **confirmation code** received by email.

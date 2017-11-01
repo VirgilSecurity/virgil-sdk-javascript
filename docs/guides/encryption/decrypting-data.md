@@ -10,7 +10,7 @@ The Data Decryption procedure is shown in the figure below.
 
 ![Virgil Encryption Intro](/docs/img/Encryption_introduction.png "Data decryption")
 
-In order to decrypt a **message**, Bob has to have:
+To decrypt a **message**, Bob has to have:
  - His Virgil Key
 
 Let's review the data decryption process:

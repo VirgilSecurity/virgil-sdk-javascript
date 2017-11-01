@@ -29,7 +29,7 @@ var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
 var key = api.keys.generate();
 ```
 
-Warning: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
+**Warning**: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
 
 2. To generate a Virgil Key with a specific type, we need to:
 

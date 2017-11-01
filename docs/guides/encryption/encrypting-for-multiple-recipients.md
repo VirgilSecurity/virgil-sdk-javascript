@@ -13,7 +13,7 @@ The Data Encryption procedure is shown in the figure below.
 ![Virgil Encryption Intro](/docs/img/Encryption_introduction.png "Data encryption")
 
 
-In order to encrypt a message, Alice has to have:
+To encrypt a message, Alice has to have:
  - The participants' Virgil Cards, which should be published on Virgil Services.
 
 Let's review data encryption for multiple recipients:

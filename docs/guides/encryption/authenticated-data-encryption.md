@@ -12,7 +12,7 @@ The Authenticated Data Encryption procedure is shown in the figure below.
 
 ![Authenticated Data Encryption](/docs/img/Guides_introduction.png "Authenticated Data Encryption")
 
-In order to **sign"** and **encrypt** a **message**, Alice has to have:
+To **sign"** and **encrypt** a **message**, Alice has to have:
  - Her Virgil Key
  - Bob's Virgil Card
 

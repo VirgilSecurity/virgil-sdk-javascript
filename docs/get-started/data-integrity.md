@@ -40,7 +40,7 @@ aliceKey.save("[KEY_NAME]", "[KEY_PASSWORD]")
 var aliceCard = api.cards.create("alice", aliceKey);
 ```
 
-Warning: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
+**Warning**: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
 
 It should be noted that recently created user Virgil Cards will be visible only for application users because they are related to the Application.
 

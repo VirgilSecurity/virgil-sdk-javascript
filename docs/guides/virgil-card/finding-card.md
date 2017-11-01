@@ -5,7 +5,7 @@ This guide shows how to find a **Virgil Card**. As previously noted, all Virgil 
 Set up your project environment before you begin to find a Virgil Card, with the [getting started](/docs/guides/configuration/client.md) guide.
 
 
-In order to search for an **Application** or **Global Virgil Card** you need to initialize the **Virgil SDK**:
+To search for an **Application** or **Global Virgil Card** you need to initialize the **Virgil SDK**:
 
 ```javascript
 var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
