@@ -1,6 +1,7 @@
 # Loading Key
 
-This guide shows how to load a private **Virgil Key**, which is stored on the device. The key must be loaded when Alice wants to **sign** some data, **decrypt** any encrypted content, and perform cryptographic operations.
+This guide shows how to load a private **Virgil Key** stored on the device. 
+The key must be loaded when Alice wants to **sign** some data, **decrypt** any encrypted content, and perform cryptographic operations.
 
 Set up your project environment before you begin to load a Virgil Key, with the [getting started](/docs/guides/configuration/client.md) guide.
 
