@@ -2,7 +2,7 @@
 
 This guide shows how to revoke a **Global Virgil Card**.
 
-Set up your project environment before you begin to revoke a Global Virgil Card, with the [getting started](/docs/guides/configuration/client.md) guide.
+Before you begin to revoke a Global Virgil Card, set up your project environment with the [getting started](/docs/guides/configuration/client.md) guide.
 
 To revoke a Global Virgil Card, we need to:
 
@@ -20,7 +20,7 @@ var api = virgil.API({
 });
 ```
 
-- Load Alice's **Virgil Key** from the secure storage provided by default
+- Load Alice's Virgil Key from the secure storage provided by default
 - Load Alice's Virgil Card from **Virgil Services**
 - Initiate the Card identity verification process
 - Confirm the Card identity using a **confirmation code**
