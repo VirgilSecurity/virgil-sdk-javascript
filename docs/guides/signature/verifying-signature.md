@@ -4,7 +4,7 @@ This guide is a short tutorial on how to verify a **Digital Signature** with Vir
 
 For original information about the Digital Signature follow the link [here](https://github.com/VirgilSecurity/virgil/blob/wiki/wiki/glossary.md#digital-signature).
 
-Set up your project environment before starting to verify a Digital Signature, with the [getting started](/docs/guides/configuration/client.md) guide.
+Before starting to verify a Digital Signature, set up your project environment with the [getting started](/docs/guides/configuration/client.md) guide.
 
 The Signature Verification procedure is shown in the figure below.
 
