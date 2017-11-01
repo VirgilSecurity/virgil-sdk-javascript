@@ -2,7 +2,7 @@
 
 This guide shows how to export a **Virgil Key** to the string representation.
 
-Set up your project environment before you begin to export a Virgil Key, with the [getting started](/docs/guides/configuration/client-side) guide.
+Before you begin to export a Virgil Key, set up your project environment with the [getting started](/docs/guides/configuration/client-configuration) guide.
 
 To export the Virgil Key:
 
