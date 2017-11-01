@@ -4,7 +4,7 @@ This guide is a short tutorial on how to create a **Digital Signature** with Vir
 
 See our [Use Cases](/docs/get-started) to find out what you can do with Digital Signature.
 
-Set up your project environment before starting to create a Digital Signature, with the [getting started](/docs/guides/configuration/client.md) guide.
+Before starting to create a Digital Signature, set up your project environment with the [getting started](/docs/guides/configuration/client.md) guide.
 
 The **Signature Creation** procedure is shown in the figure below.
 
