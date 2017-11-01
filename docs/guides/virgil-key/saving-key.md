@@ -6,7 +6,7 @@ Set up your project environment before you begin to generate a Virgil Key, with 
 
 To save the Virgil Key, we need to:
 
-- Initialize the **Virgil SDK**:
+- Initialize the **Virgil SDK**
 
 ```javascript
 var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
