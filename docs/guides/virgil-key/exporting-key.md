@@ -13,7 +13,7 @@ var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
 ```
 
 - Alice Generates a Virgil Key
-- After Virgil Key generation, developers can export Alice's Virgil Key to a Base64 encoded string
+- After Virgil Key generated, developers can export Alice's Virgil Key to the Base64 encoded string
 
 ```javascript
 // generate Virgil Key
