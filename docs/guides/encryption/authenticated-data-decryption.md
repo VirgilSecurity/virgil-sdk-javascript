@@ -11,7 +11,7 @@ The Authenticated Data Decryption procedure is shown in the figure below.
 
 ![Virgil Intro](/docs/img/Guides_introduction.png "Authenticated Data Decryption")
 
-To decrypt and verify the message, Bob has to have:
+To decrypt and verify the message, Bob needs:
  - His Virgil Key
  - Alice's Virgil Card
 

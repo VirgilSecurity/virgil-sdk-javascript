@@ -12,7 +12,7 @@ The Data Encryption procedure is shown in the figure below.
 
 ![Virgil Encryption Intro](/docs/img/Encryption_introduction.png "Data encryption")
 
-To encrypt a **message**, Alice has to have:
+To encrypt a **message**, Alice needs:
  - Bob's Virgil Cards, which should be published on **Virgil Services**.
 
 Remember that Bob can have a **Global Virgil Card** as well as an Application Virgil Card. If Alice is not a user of a specific Application, she will only be able to find Bob's Global Virgil Cards.

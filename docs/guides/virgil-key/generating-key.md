@@ -1,6 +1,6 @@
 # Generating Keys
 
-This guide shows how to generate a **Virgil Key**.  The Virgil Key is a Private Key, which never leaves its device. It allows only those who hold the key to sign data and decrypt data that was encrypted with the Private Key's associated Public Key.
+This guide shows how to generate a **Virgil Key**.  The Virgil Key is a Private Key, which never leaves its device. It allows only those who hold the key to sign data and decrypt data that was encrypted with the Private Key associated Public Key.
 
 Set up your project environment before you begin to generate a Virgil Key, with the [getting started](/docs/guides/configuration/client.md) guide.
 

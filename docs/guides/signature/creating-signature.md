@@ -10,7 +10,7 @@ The **Signature Creation** procedure is shown in the figure below.
 
 ![Virgil Signature Intro](/docs/img/Signature_introduction.png "Create Signature")
 
-To create a Digital Signature and sign the message, Alice has to have her **Virgil Key**.
+To create a Digital Signature and sign the message, Alice needs her **Virgil Key**.
 
 
 Let's review the **Digital Signature** creation process:
@@ -21,7 +21,7 @@ Let's review the **Digital Signature** creation process:
 var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
 ```
 
-- Load Alice's Virgil Key from the protected storage and enter the Virgil Key's password;
+- Load Alice's Virgil Key from the protected storage and enter the Virgil Key password;
 
 ```javascript
 // load Virgil Key

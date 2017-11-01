@@ -8,7 +8,7 @@ See our [Use Cases](https://github.com/VirgilSecurity/virgil-sdk-javascript/tree
 
 After a Virgil Card is created, it's published at Virgil Card Service, where an owner can find their Virgil Cards at any time.
 
-**Warning**: You cannot change a Virgil Card's content after it is published.
+**Warning**: You cannot change a Virgil Card content after it is published.
 
 Each Virgil Card contains a  permanent digital signature that provides data integrity for the Virgil Card over its life-cycle.
 
@@ -35,7 +35,7 @@ var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
 Users' Virgil Card creation is carried out on the client side.
 
 2. Once the SDK is ready, we can proceed to the next step:
-  – Generate and save a **Virgil Key** (it's also necessary to enter the Virgil Key's name and password)
+  – Generate and save a **Virgil Key** (it's also necessary to enter the Virgil Key name and password)
   – Create a Virgil Card using the recently generated Virgil Key
 
 
@@ -49,7 +49,7 @@ Users' Virgil Card creation is carried out on the client side.
       });
   ```
 
-The Virgil Key will be saved into default device storage. Developers can also change the Virgil Key's storage directory as needed during Virgil SDK initialization.
+The Virgil Key will be saved into default device storage. Developers can also change the Virgil Key storage directory as needed during Virgil SDK initialization.
 
 **Warning**: Virgil doesn't keep a copy of your Virgil Key. If you lose a Virgil Key, there is no way to recover it.
 

@@ -26,7 +26,7 @@ When we have already set up the Virgil SDK on the server & client sides, we can 
 ### Generate Keys and Create Virgil Card
 Use the Virgil SDK on the client side to generate a new Key Pair, and then create a user's Virgil Card using the recently generated Virgil Key. All keys are generated and stored on the client side.
 
-In this example, we will pass on the user's username and a password, which will lock in their private encryption key. Each Virgil Card is signed by a user's Virgil Key, which guarantees the Virgil Card's content integrity over its life cycle.
+In this example, we will pass on the user's username and a password, which will lock in their private encryption key. Each Virgil Card is signed by a user's Virgil Key, which guarantees the Virgil Card content integrity over its life cycle.
 
 ```javascript
 // generate and save Virgil Key

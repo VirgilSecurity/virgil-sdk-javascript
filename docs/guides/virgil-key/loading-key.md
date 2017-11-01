@@ -12,7 +12,7 @@ To load the Virgil Key from the default storage:
 var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
 ```
 
-- Alice has to load her Virgil Key from the protected storage and enter the Virgil Key's password
+- Alice has to load her Virgil Key from the protected storage and enter the Virgil Key password
 
 ```javascript
 // load Alice's Virgil Key from storage
