@@ -1,6 +1,6 @@
 # Virgil Security JavaScript SDK
 
-[![npm](https://img.shields.io/npm/v/virgil-sdk.svg)]
+![npm](https://img.shields.io/npm/v/virgil-sdk.svg)
 [![Contact Support](https://img.shields.io/badge/contact-support-yellow.svg)][support]
 
 [Installation](#installation) | [Initialization](#initialization) | [Encryption / Decryption Example](#encryption-example) | [Documentation](#documentation) | [Support](#support)
