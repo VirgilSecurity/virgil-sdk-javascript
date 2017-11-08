@@ -1,11 +1,11 @@
 # Virgil Security JavaScript SDK
 
-[![npm](https://img.shields.io/npm/v/virgil-sdk.svg)][npmjs]
+[![npm](https://img.shields.io/npm/v/virgil-sdk.svg)]
 [![Contact Support](https://img.shields.io/badge/contact-support-yellow.svg)][support]
 
 [Installation](#installation) | [Initialization](#initialization) | [Encryption / Decryption Example](#encryption-example) | [Documentation](#documentation) | [Support](#support)
 
-[[Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few steps, you can encrypt communication, securely store data, provide passwordless authentication, and ensure data integrity.
+[Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few steps, you can encrypt communication, securely store data, provide passwordless authentication, and ensure data integrity.
 
 To initialize and use Virgil SDK, you need to have [Developer Account](https://developer.virgilsecurity.com/account/signin).
 
