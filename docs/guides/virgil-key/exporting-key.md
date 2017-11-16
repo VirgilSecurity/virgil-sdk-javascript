@@ -2,7 +2,7 @@
 
 This guide shows how to export a **Virgil Key** to the string representation.
 
-Before you begin to export a Virgil Key, set up your project environment with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/docs/guides/configuration/client.md) guide.
+Before you begin to export a Virgil Key, set up your project environment with the [getting started](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/v4/docs/guides/configuration/client.md) guide.
 
 To export the Virgil Key:
 
