@@ -15,7 +15,7 @@ This client can be used both __server-side__ in a Node application, and __client
 
 This module requires Node 4.0+ and can be installed via NPM.
 
-```javascript
+```sh
 npm install virgil-sdk --save
 ```
 
