@@ -43,8 +43,8 @@ Be sure that you have already registered at the [Dev Portal](https://developer.v
 
 To initialize the SDK at the __Client Side__ you need only the __Access Token__ created for a client at [Dev Portal](https://developer.virgilsecurity.com/account/signin). The Access Token helps to authenticate client's requests.
 
-```js
-var client = virgil.API("[ACCESS_TOKEN]");
+```javascript
+var api = virgil.API("[YOUR_ACCESS_TOKEN_HERE]");
 ```
 
 To initialize the SDK at the __Server Side__ you need the application credentials (__Access Token__, __App ID__, __App Key__ and __App Key Password__) you got during Application registration at the [Dev Portal](https://developer.virgilsecurity.com/account/signin).
