@@ -70,4 +70,4 @@ api.cards.publish(importedCard)
 
 At the Virgil Services, the Virgil Card(s) will be also signed. Developers can verify the signature of the Virgil Card owner, the Virgil Services, and the Application Server at any time.
 
-To find more examples of Card Validation, see our guide on [Validating Cards](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/docs-review/docs/guides/virgil-card/validating-card.md).
+To find more examples of Card Validation, see our guide on [Validating Cards](https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/v4/docs/guides/virgil-card/validating-card.md).
