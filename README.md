@@ -13,12 +13,18 @@ To initialize and use Virgil SDK, you need to have [Developer Account](https://d
 
 This client can be used both __server-side__ in a Node application, and __client-side__ in a web browser.
 
-This module requires Node 4.0+ and can be installed via NPM.
+This module requires Node 4.x - 6.x and can be installed via NPM.
 
 ```sh
 npm install virgil-sdk --save
 ```
 
+> **Important!** virgil-sdk only works with Node.js versions 4 to 6. 
+This is due to Node.js bindings for C++ crypto library being generated using a tool called [SWIG](http://www.swig.org/index.php) 
+which does't support versions of V8 used in Node 7 and higher.  
+We are working hard on fixing this, meanwhile you can use [nvm](https://github.com/creationix/nvm) 
+(or a similar tool) to install Node.js v6.x alongside your current installation.  
+If you only intend to use virgil-sdk in a browser environment, you can ignore this warning.
 
 The client-side SDK targets ECMAScript5+ compatible browsers.
 
