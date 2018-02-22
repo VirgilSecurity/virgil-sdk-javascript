@@ -28,7 +28,7 @@ The client-side SDK targets ECMAScript5+ compatible browsers.
 
 ```html
 <script
-src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.5.2/virgil-sdk.min.js"
+src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.5.3/virgil-sdk.min.js"
 crossorigin="anonymous"></script>
 ```
 
