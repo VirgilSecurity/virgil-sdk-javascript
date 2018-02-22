@@ -111,6 +111,9 @@ function createVirgilClient(accessToken, options) {
 
 			return cardsReadOnlyClient.search(criteria)
 				.then(function (response) {
+					if (response.data === null) {
+						return [];
+					}
 					return response.data.map(CardModel.import);
 				})
 				.then(function (cards) {
