@@ -231,3 +231,14 @@ test('sign then encrypt -> decrypt then verify wrong public key', function (t) {
 
 	t.end();
 });
+
+test('verify throws when passed invalid value as signature', function (t) {
+	var publicKey = 'MCowBQYDK2VwAyEAMiGqjvwO+0atRWjXVFEybGooQcpJO54CmJPMp66WmsU=';
+	t.throws(function () {
+		virgilCrypto.verify('some message', undefined, virgilCrypto.importPublicKey(publicKey))
+	},
+	/verify expects signature argument to be passed as a Buffer or a base64-encoded string/,
+	'throws when invalid value for signature is passed');
+
+	t.end();
+});
