@@ -327,9 +327,9 @@ function virgilCrypto() {
 			'verify expects data argument to be passed as a Buffer or ' +
 			'a string. Got ' + typeof data);
 
-		assert(isBuffer(signature) || isString(data),
+		assert(isBuffer(signature) || isString(signature),
 			'verify expects signature argument to be passed as a Buffer ' +
-			'or a base64-encoded string. Got ' + typeof data);
+			'or a base64-encoded string. Got ' + typeof signature);
 
 		var keyData = getKeyBytesFromHandle(publicKey);
 

@@ -9,15 +9,17 @@ var appPrivateKey = virgil.crypto.importPrivateKey(
 
 var client = virgil.client(virgilConfig.accessToken, virgilConfig);
 
+var aliceIdentity = 'alice_test_sdk_' + Date.now();
+var bobIdentity = 'bob_test_sdk_' + Date.now();
+
 var alicePrivateKey, bobPrivateKey, aliceCardId, bobCardId;
 
 test('setup alice', function (t) {
 	var keyPair = virgil.crypto.generateKeys();
 	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
-	var username = 'alice_test_sdk';
 
 	var publishCardRequest = virgil.publishCardRequest({
-		identity: username,
+		identity: aliceIdentity,
 		identity_type: 'username',
 		public_key: rawPublicKey.toString('base64')
 	});
@@ -40,10 +42,9 @@ test('setup alice', function (t) {
 test('setup bob', function (t) {
 	var keyPair = virgil.crypto.generateKeys();
 	var rawPublicKey = virgil.crypto.exportPublicKey(keyPair.publicKey);
-	var username = 'bob_test_sdk';
 
 	var publishCardRequest = virgil.publishCardRequest({
-		identity: username,
+		identity: bobIdentity,
 		identity_type: 'username',
 		public_key: rawPublicKey.toString('base64')
 	});
@@ -88,7 +89,7 @@ test('alice encrypt message for bob', function (t) {
 
 	function findBob() {
 		return client.searchCards({
-			identities: [ 'bob_test_sdk' ],
+			identities: [ bobIdentity ],
 			identity_type: 'username',
 			scope: 'application'
 		});
@@ -141,7 +142,7 @@ test('bob verify', function (t) {
 
 	function findAlice() {
 		return client.searchCards({
-			identities: [ 'alice_test_sdk' ],
+			identities: [ aliceIdentity ],
 			identity_type: 'username',
 			scope: 'application'
 		}).then(function (cards) {
