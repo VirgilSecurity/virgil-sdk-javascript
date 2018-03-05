@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "4.5.1",
+  "version": "4.5.3",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
@@ -35,12 +35,12 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "axios": "^0.15.3",
+    "is-buffer": "^1.1.4",
     "localforage": "^1.4.3",
     "lodash": "^4.17.4",
     "mkdirp": "^0.5.1",
-    "virgil-crypto": "2.1.0",
     "to-arraybuffer": "^1.0.1",
-    "is-buffer": "^1.1.4"
+    "virgil-crypto": "^2.2.0"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
