@@ -1,4 +1,7 @@
 node_modules
 *.pem
-dist/index.html
+dist/*
 .env
+.idea
+npm-debug.log
+.rpt2_cache
