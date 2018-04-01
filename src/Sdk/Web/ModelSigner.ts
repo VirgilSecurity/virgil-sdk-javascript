@@ -1,14 +1,14 @@
 import { IRawSignedModel } from './IRawSignedModel';
 import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
-import { ISignExtraFields } from '../ICard';
+import { IExtraData } from '../ICard';
 
 export interface IRawSignParams {
 	readonly model: IRawSignedModel;
 	readonly signerPrivateKey: IPrivateKey;
 	readonly signatureSnapshot?: Buffer;
 	readonly signer?: string;
-	readonly extraFields?: ISignExtraFields;
+	readonly extraFields?: IExtraData;
 }
 
 export interface IFinalSignParams {
@@ -18,8 +18,8 @@ export interface IFinalSignParams {
 	readonly signer: string;
 }
 
-const SelfSigner = "self";
-const VirgilSigner = "virgil";
+export const SelfSigner = "self";
+export const VirgilSigner = "virgil";
 
 export class ModelSigner {
 
@@ -29,8 +29,8 @@ export class ModelSigner {
 		const { model, signerPrivateKey, signer, signatureSnapshot } = this.prepareParams(rawParams);
 
 		const extendedSnapshot = signatureSnapshot == null
-			? model.contentSnapshot
-			: Buffer.concat([model.contentSnapshot, signatureSnapshot]);
+			? model.content_snapshot
+			: Buffer.concat([model.content_snapshot, signatureSnapshot]);
 
 		const signature = this.crypto.generateSignature(extendedSnapshot, signerPrivateKey);
 
