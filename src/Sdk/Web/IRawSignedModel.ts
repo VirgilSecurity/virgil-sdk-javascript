@@ -1,10 +1,10 @@
-export interface IRawSignature {
+export interface IRawSignature {  // json
 	readonly signer: string;
 	readonly signature: Buffer;
 	readonly snapshot?: Buffer;
 }
 
-export interface IRawSignedModel {
+export interface IRawSignedModel {  // json
 	readonly signatures: IRawSignature[];
-	readonly contentSnapshot: Buffer;
+	readonly content_snapshot: Buffer;
 }

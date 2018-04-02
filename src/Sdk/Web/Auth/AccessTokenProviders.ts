@@ -1,3 +1,5 @@
+import { Jwt } from './Jwt';
+
 export interface IAccessToken {
 	identity(): string;
 	toString(): string;
@@ -18,5 +20,15 @@ export class ConstAccessTokenProvider implements IAccessTokenProvider {
 
 	public async getToken(context: ITokenContext): Promise<IAccessToken> {
 		return Promise.resolve(this.accessToken);
+	}
+}
+
+export type JwtCallback = (context: ITokenContext) => Promise<string>;
+
+export class CallbackJwtProvider implements IAccessTokenProvider {
+	public constructor (private readonly obtainTokenFunc: JwtCallback) {};
+
+	public async getToken(context: ITokenContext): Promise<IAccessToken> {
+		return Jwt.fromString(await this.obtainTokenFunc(context));
 	}
 }
