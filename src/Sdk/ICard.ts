@@ -1,4 +1,5 @@
 import { IPublicKey } from '../CryptoApi/IPublicKey';
+import { IPrivateKey } from '../CryptoApi/IPrivateKey';
 
 export interface IExtraData {
 	[key: string]: string;
@@ -20,7 +21,8 @@ export interface ICard {
 	readonly signatures: ICardSignature[];
 	readonly previousCardId: string;
 	readonly contentSnapshot: Buffer;
-	readonly isOutDated: boolean;
+	isOutDated: boolean;
+	previousCard?: ICard;
 }
 
 export interface IRawCardContent { // json
