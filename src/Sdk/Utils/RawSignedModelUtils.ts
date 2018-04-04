@@ -6,7 +6,7 @@ import { ICardParams, takeSnapshot } from './SnapshotUtils';
 
 export const CardVersion = '5.0';
 
-export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard) {
+export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard): IRawSignedModel {
 	const model = generateRawSigned(crypto, card);
 
 	for (const sign of card.signatures) {
