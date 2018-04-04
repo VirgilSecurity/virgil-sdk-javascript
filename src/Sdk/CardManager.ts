@@ -83,7 +83,7 @@ export class CardManager {
 		return card;
 	}
 
-	async searchCards (identity: string): ICard[] {
+	async searchCards (identity: string): Promise<ICard[]> {
 		const tokenContext: ITokenContext = { operation: 'search' };
 
 		const accessToken = await this.accessTokenProvider.getToken(tokenContext);
