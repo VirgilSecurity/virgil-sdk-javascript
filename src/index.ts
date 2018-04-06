@@ -1,9 +1,3 @@
-class Foo {
-	title: string = 'World';
-
-	getHello(): string {
-		return 'Hello, ' + this.title;
-	}
-}
-
-console.log(new Foo().getHello());
+export { JwtGenerator } from './Sdk/Web/Auth/JwtGenerator';
+export { JwtVerifier } from './Sdk/Web/Auth/JwtVerifier';
+export { Jwt } from './Sdk/Web/Auth/Jwt';
