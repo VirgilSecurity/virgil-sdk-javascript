@@ -6,9 +6,9 @@ export interface IAccessToken {
 }
 
 export interface ITokenContext {
-	readonly identity: string;
+	readonly identity?: string;
 	readonly operation: string;
-	readonly forceReload: boolean;
+	readonly forceReload?: boolean;
 }
 
 export interface IAccessTokenProvider {

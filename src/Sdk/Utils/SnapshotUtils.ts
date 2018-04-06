@@ -1,10 +1,9 @@
 import { IExtraData } from '../ICard';
-import { IPublicKey } from '../../CryptoApi/IPublicKey';
 import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
 
 export interface ICardParams {
 	readonly identity: string;
-	readonly publicKey: IPublicKey;
+	readonly publicKey: Buffer;
 	readonly privateKey?: IPrivateKey;
 	readonly previousCardId?: string;
 	readonly extraFields?: IExtraData;

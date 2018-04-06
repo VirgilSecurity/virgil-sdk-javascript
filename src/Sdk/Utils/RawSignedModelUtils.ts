@@ -1,18 +1,13 @@
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
-import { ICard } from '../ICard';
+import { ICard, IExtraData } from '../ICard';
 import { IRawSignedModel } from '../Web/IRawSignedModel';
 import { base64Decode } from '../Lib/base64';
 import { ICardParams, takeSnapshot } from './SnapshotUtils';
 
 export const CardVersion = '5.0';
 
-export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard) {
-	const model = generateRawSigned(crypto, {
-		identity: card.identity,
-		previousCardId: card.previousCardId,
-		publicKey: card.publicKey,
-		createdAt: card.createdAt
-	});
+export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard): IRawSignedModel {
+	const model = generateRawSigned(crypto, card);
 
 	for (const sign of card.signatures) {
 		const { signature, signer, snapshot } = sign;
@@ -23,11 +18,15 @@ export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard) {
 	return model;
 }
 
-export function generateRawSigned (crypto: ICardCrypto, params: ICardParams): IRawSignedModel {
+export function generateRawSigned (crypto: ICardCrypto, params: ICard): IRawSignedModel {
+	const { identity, publicKey, previousCardId, createdAt } = params;
+
 	const details = {
+		identity,
+		previousCardId,
+		createdAt,
 		version: CardVersion,
-		...params,
-		publicKey: crypto.exportPublicKey(params.publicKey)
+		publicKey: crypto.exportPublicKey(publicKey)
 	};
 
 	return { content_snapshot: takeSnapshot(details), signatures: [] } as IRawSignedModel;

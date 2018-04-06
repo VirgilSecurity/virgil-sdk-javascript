@@ -1,7 +1,7 @@
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
 import { IRawSignature, IRawSignedModel } from '../Web/IRawSignedModel';
 import { ICard, ICardSignature, IExtraData } from '../ICard';
-import { ICardParams, parseSnapshot } from './SnapshotUtils';
+import { parseSnapshot } from './SnapshotUtils';
 
 const cardIdLength = 16;
 
@@ -17,7 +17,7 @@ export function parseRawSignedModel (crypto: ICardCrypto, model: IRawSignedModel
 
 	return {
 		id: generateCardId(crypto, model.content_snapshot),
-		publicKey: crypto.importPublicKey(content.publicKey), // should IPublicKey extends Buffer, or I made mistake in types?
+		publicKey: crypto.importPublicKey(content.publicKey),
 		contentSnapshot: model.content_snapshot,
 		identity: content.identity,
 		version: content.version!,
@@ -68,6 +68,6 @@ export function linkedCardList (cards: ICard[]): ICard[] {
 	for (const id in unsorted) if (unsorted.hasOwnProperty(id)) {
 		result.push(unsorted[id]);
 	}
-	
+
 	return result;
 }
