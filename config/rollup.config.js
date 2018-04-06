@@ -6,10 +6,17 @@ export default config => {
 		input: 'src/index.ts',
 		output: config.output,
 		watch: {
-			include: 'src/**',
+			include: 'src/**/*.ts',
 		},
 		plugins: [
-			typescript({ useTsconfigDeclarationDir: true }),
+			typescript({
+				useTsconfigDeclarationDir: true,
+				tsconfigOverride: {
+					compilerOptions: {
+						module: 'es2015'
+					}
+				}
+			}),
 			replace({ 'process.browser': JSON.stringify(Boolean(config.browser)) })
 		].concat(config.plugins || [])
 	};
