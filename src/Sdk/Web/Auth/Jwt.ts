@@ -1,6 +1,7 @@
 import { IExtraData } from '../../ICard';
-import { base64Decode, base64Encode } from '../../Lib/base64';
+import { base64UrlDecode, base64UrlEncode } from '../../Lib/base64';
 import { IAccessToken } from './AccessTokenProviders';
+import { getUnixTimestamp } from '../../Lib/timestamp';
 
 export const SubjectPrefix = "identity-";
 export const IssuerPrefix = "virgil-";
@@ -18,12 +19,9 @@ export interface IJwtHeader {
 export interface IJwtBody {
 	readonly iss: string; // Issuer.
 	readonly sub: string; // Subject
-	readonly iat: Date; // IssuedAt
-	readonly exp: Date; // ExpiresAt
+	readonly iat: number; // IssuedAt
+	readonly exp: number; // ExpiresAt
 	readonly ada?: IExtraData; // AdditionalData
-
-	//iss = IssuerPrefix + appId;
-	//sub = SubjectPrefix + identity;
 }
 
 export class Jwt implements IAccessToken {
@@ -33,9 +31,9 @@ export class Jwt implements IAccessToken {
 		if (parts.length !== 3) throw new Error('Wrong JWT format');
 
 		try {
-			const headerJson = base64Decode(parts[0]).toString('utf8');
-			const bodyJson   = base64Decode(parts[1]).toString('utf8');
-			const signature  = base64Decode(parts[2]);
+			const headerJson = base64UrlDecode(parts[0]).toString('utf8');
+			const bodyJson   = base64UrlDecode(parts[1]).toString('utf8');
+			const signature  = base64UrlDecode(parts[2]);
 
 			const header = JSON.parse(headerJson);
 			const body   = JSON.parse(bodyJson);
@@ -61,7 +59,7 @@ export class Jwt implements IAccessToken {
 		if (this.signature == null) {
 			this.stringRepresentation = withoutSignature;
 		} else {
-			this.stringRepresentation = withoutSignature + this.signatureBase64();
+			this.stringRepresentation = withoutSignature + '.' + this.signatureBase64();
 		}
 	}
 
@@ -69,31 +67,36 @@ export class Jwt implements IAccessToken {
 		return this.stringRepresentation;
 	}
 
-	public headerBase64(): string {
-		return base64Encode( JSON.stringify(this.header) );
-	}
-
-	public bodyBase64(): string {
-		return base64Encode( JSON.stringify(this.body) );
-	}
-
-	public signatureBase64(): string {
-		return base64Encode( JSON.stringify(this.signature) );
-	}
-
-	public identity (): string {
-		if (!this.body.sub.startsWith(SubjectPrefix)) {
+	public identity(): string {
+		if (this.body.sub.indexOf(SubjectPrefix) !== 0) {
 			throw new Error('wrong sub format');
 		}
 
-		return this.body.sub.substr(0, SubjectPrefix.length);
+		return this.body.sub.substr(SubjectPrefix.length);
 	}
 
-	public appId (): string {
-		if (!this.body.iss.startsWith(IssuerPrefix)) {
+	public appId(): string {
+		if (this.body.iss.indexOf(IssuerPrefix) !== 0) {
 			throw new Error('wrong iss format');
 		}
 
-		return this.body.iss.substr(0, IssuerPrefix.length);
+		return this.body.iss.substr(IssuerPrefix.length);
+	}
+
+	public isExpired (): boolean {
+		const now = getUnixTimestamp(new Date);
+		return this.body.exp < now;
+	}
+
+	private headerBase64(): string {
+		return base64UrlEncode( JSON.stringify(this.header) );
+	}
+
+	private bodyBase64(): string {
+		return base64UrlEncode( JSON.stringify(this.body) );
+	}
+
+	private signatureBase64(): string {
+		return base64UrlEncode( this.signature! );
 	}
 }
