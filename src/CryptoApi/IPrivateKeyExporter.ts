@@ -47,12 +47,12 @@ export interface IPrivateKeyExporter {
 	 * @param privateKey - The private key.
 	 * @returns - The private key material representation bytes.
 	 */
-	exportPrivatekey(privateKey: IPrivateKey): Buffer;
+	exportPrivateKey(privateKey: IPrivateKey): Buffer;
 
 	/**
 	 * Imports the private key from its material representation
 	 * @param privateKeyBytes - The private key material representation bytes.
 	 * @returns - The instance of `IPrivateKey` imported `privateKeyBytes`.
 	 */
-	importPrivateKey(privateKeyBytes: Buffer): IPrivateKey;
+	importPrivateKey(privateKeyBytes: Buffer|string): IPrivateKey;
 }

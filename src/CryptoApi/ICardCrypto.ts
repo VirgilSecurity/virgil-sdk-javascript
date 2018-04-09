@@ -48,30 +48,30 @@ export interface ICardCrypto
 	 * @param privateKey - The private key.
 	 * @returns - The digital signature for the specified data.
 	 */
-	generateSignature(inputBytes: Buffer, privateKey: IPrivateKey): Buffer;
+	generateSignature(inputBytes: Buffer|string, privateKey: IPrivateKey): Buffer;
 
 	/**
 	 * Verifies that a digital signature is valid by checking the `signature` and provided `IPublicKey` and `inputBytes`.
-	 * @param signature - The digital signature for the `inputBytes`
 	 * @param inputBytes - The input data for which the `signature` has been generated.
+	 * @param signature - The digital signature for the `inputBytes`
 	 * @param publicKey - The public key
 	 * @returns
 	 */
-	verifySignature(signature: Buffer, inputBytes: Buffer, publicKey: IPublicKey): boolean;
+	verifySignature(inputBytes: Buffer|string, signature: Buffer|string, publicKey: IPublicKey): boolean;
 
 	/**
 	 * Generates the fingerprint(512-bit hash) for the specified `inputBytes`.
 	 * @param inputBytes - The input data for which to compute the fingerprint.
 	 * @returns - The fingerprint for specified data.
 	 */
-	generateSHA512(inputBytes: Buffer): Buffer;
+	generateSha512(inputBytes: Buffer|string): Buffer;
 
 	/**
 	 * Imports the public key from its material representation
 	 * @param publicKeyBytes - The public key material representation bytes
 	 * @returns - The instance of `IPublicKey` imported from `publicKeyBytes`.
 	 */
-	importPublicKey(publicKeyBytes: Buffer): IPublicKey;
+	importPublicKey(publicKeyBytes: Buffer|string): IPublicKey;
 
 	/**
 	 * Exports the provided `IPublicKey` into material representation bytes.

@@ -6,7 +6,7 @@ import { parseSnapshot } from './SnapshotUtils';
 const cardIdLength = 16;
 
 export function generateCardId (crypto: ICardCrypto, snapshot: Buffer): string {
-	const fingerprint = crypto.generateSHA512(snapshot);
+	const fingerprint = crypto.generateSha512(snapshot);
 
 	return fingerprint.toString('hex').substr(0, cardIdLength);
 }
