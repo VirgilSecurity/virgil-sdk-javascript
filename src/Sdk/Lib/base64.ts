@@ -1,17 +1,7 @@
 const BASE_64 = 'base64';
 
 export function base64UrlEncode (input: string|Buffer, inputEncoding?: string) {
-	let buffer: Buffer;
-
-	if (Buffer.isBuffer(input)) {
-		buffer = input;
-	} else if (inputEncoding && Buffer.isEncoding(inputEncoding)) {
-		buffer = new Buffer(input, inputEncoding)
-	} else {
-		buffer = new Buffer(input);
-	}
-
-	let output = buffer.toString(BASE_64);
+	let output = base64Encode(input, inputEncoding);
 	output = output.split('=')[0];
 	output = output.replace('+', '-').replace('/', '_');
 	return output;
@@ -36,4 +26,18 @@ export function base64UrlDecode (input: string): Buffer {
 
 export function base64Decode(input: string): Buffer {
 	return Buffer.from(input, BASE_64);
+}
+
+export function base64Encode(input: Buffer|string, inputEncoding?: string) {
+	let buffer: Buffer;
+
+	if (Buffer.isBuffer(input)) {
+		buffer = input;
+	} else if (inputEncoding && Buffer.isEncoding(inputEncoding)) {
+		buffer = new Buffer(input, inputEncoding)
+	} else {
+		buffer = new Buffer(input);
+	}
+
+	return buffer.toString(BASE_64);
 }

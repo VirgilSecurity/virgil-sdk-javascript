@@ -1,20 +1,20 @@
-import { IRawSignedModel } from './IRawSignedModel';
+import { RawSignedModel } from './IRawSignedModel';
 import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
 import { IExtraData } from '../ICard';
+import { takeSnapshot } from '../Utils/SnapshotUtils';
 
 export interface IRawSignParams {
-	readonly model: IRawSignedModel;
+	readonly model: RawSignedModel;
 	readonly signerPrivateKey: IPrivateKey;
-	readonly signatureSnapshot?: Buffer;
-	readonly signer?: string;
 	readonly extraFields?: IExtraData;
+	readonly signer?: string;
 }
 
 export interface IFinalSignParams {
-	readonly model: IRawSignedModel;
+	readonly model: RawSignedModel;
 	readonly signerPrivateKey: IPrivateKey;
-	readonly signatureSnapshot?: Buffer;
+	readonly extraSnapshot?: Buffer;
 	readonly signer: string;
 }
 
@@ -26,29 +26,30 @@ export class ModelSigner {
 	public constructor (private readonly crypto: ICardCrypto) {}
 
 	public sign (rawParams: IRawSignParams) {
-		const { model, signerPrivateKey, signer, signatureSnapshot } = this.prepareParams(rawParams);
+		const { model, signerPrivateKey, signer, extraSnapshot } = this.prepareParams(rawParams);
 
-		const extendedSnapshot = signatureSnapshot == null
-			? model.content_snapshot
-			: Buffer.concat([model.content_snapshot, signatureSnapshot]);
+		const signedSnapshot = extraSnapshot != null
+			? Buffer.concat([ model.contentSnapshot, extraSnapshot ])
+			: model.contentSnapshot;
 
-		const signature = this.crypto.generateSignature(extendedSnapshot, signerPrivateKey);
+		const signature = this.crypto.generateSignature(signedSnapshot, signerPrivateKey);
 
 		model.signatures.push({
 			signer,
-			signature,
-			snapshot: signatureSnapshot
+			signature: signature,
+			snapshot: extraSnapshot
 		});
 	}
 
-	private prepareParams ({ model, signerPrivateKey, signatureSnapshot, signer, extraFields }: IRawSignParams): IFinalSignParams {
-		if (!signer) signer = SelfSigner;
+	private prepareParams ({ model, signerPrivateKey, extraFields, signer }: IRawSignParams): IFinalSignParams {
+		signer = signer || SelfSigner;
 
+		let extraSnapshot;
 		if (extraFields != null) {
-			// signatureSnapshot = SnapshotUtils.TakeSnapshot(ExtraFields)
+			extraSnapshot = takeSnapshot(extraFields);
 		}
 
-		const final: IFinalSignParams = { model, signerPrivateKey, signer, signatureSnapshot };
+		const final: IFinalSignParams = { model, signerPrivateKey, signer, extraSnapshot };
 
 		this.validate(final);
 

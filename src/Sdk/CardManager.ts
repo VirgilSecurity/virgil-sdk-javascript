@@ -1,26 +1,22 @@
 import { ICardCrypto } from '../CryptoApi/ICardCrypto';
-import { IRawSignedModel } from './Web/IRawSignedModel';
+import { RawSignedModel, IRawSignedModelJson } from './Web/IRawSignedModel';
 import { CardClient } from './Web/CardClient';
 import { ModelSigner } from './Web/ModelSigner';
-import { ICard } from './ICard';
-import { CardVerificationError, ICardVerifier } from './CardVerifier';
+import { ICard, INewCardParams, IRawCardContent } from './ICard';
+import { ICardVerifier } from './CardVerifier';
 import { IAccessToken, IAccessTokenProvider, ITokenContext } from './Web/Auth/AccessTokenProviders';
-import { IAccessTokenSigner } from '../CryptoApi/IAccessTokenSigner';
-import { TokContext } from 'acorn';
 import { parseRawSignedModel } from './Utils/CardUtils';
-import { deepEqual } from 'assert';
-import {
-	cardToRawSignedModel,
-	generateRawSignedFromJson,
-	generateRawSignedFromString
-} from './Utils/RawSignedModelUtils';
+import { cardToRawSignedModel, generateRawSigned } from './Utils/RawSignedModelUtils';
+import { assert } from './Lib/assert';
+import { getUnixTimestamp } from './Lib/timestamp';
 import { VirgilCardVerificationError, VirgilHttpError } from './Web/errors';
+import { parseSnapshot } from './Utils/SnapshotUtils';
 
-export type ISignCallback =  (model: IRawSignedModel) => Promise<IRawSignedModel>;
+export type ISignCallback =  (model: RawSignedModel) => Promise<RawSignedModel>;
 
 export interface ICardManagerParams {
 	readonly cardCrypto: ICardCrypto;
-	readonly signCallback: ISignCallback;
+	readonly signCallback?: ISignCallback;
 	readonly apiUrl?: string;
 	readonly retryOnUnauthorized: boolean;
 	readonly verifier: ICardVerifier;
@@ -31,7 +27,7 @@ export class CardManager {
 	public readonly crypto: ICardCrypto;
 	public readonly client: CardClient;
 	public readonly modelSigner: ModelSigner;
-	public readonly signCallback: ISignCallback;
+	public readonly signCallback?: ISignCallback;
 	public readonly retryOnUnauthorized: boolean;
 	public readonly verifier: ICardVerifier;
 
@@ -47,18 +43,30 @@ export class CardManager {
 		this.accessTokenProvider = params.accessTokenProvider;
 	}
 
-	generateRawCard() {
+	generateRawCard(params: INewCardParams): RawSignedModel {
+		const now = getUnixTimestamp(new Date);
+		const model = generateRawSigned(this.crypto, params, now);
 
+		this.modelSigner.sign({
+			model,
+			signerPrivateKey: params.privateKey,
+			signer: 'self',
+			extraFields: params.extraFields
+		});
+
+		return model;
 	}
 
-	async publishRawCard (rawCard: IRawSignedModel, context: ITokenContext, accessToken: IAccessToken): Promise<ICard> {
+	private async publishRawSignedModel (rawCard: RawSignedModel, context: ITokenContext, accessToken: IAccessToken): Promise<ICard> {
 		if (this.signCallback != null) {
 			rawCard = await this.signCallback(rawCard);
 		}
 
-		const publishedModel = await this.tryDo(context, accessToken,
-			async token => await this.client.publishCard(rawCard, token.toString()));
-
+		const publishedModel = await this.tryDo(
+			context,
+			accessToken,
+			async token => await this.client.publishCard(rawCard, token.toString())
+		);
 
 		if (!rawCard.contentSnapshot.equals(publishedModel.contentSnapshot)) {
 			throw new VirgilCardVerificationError('Received invalid card');
@@ -67,6 +75,26 @@ export class CardManager {
 		const card = parseRawSignedModel(this.crypto, publishedModel);
 		this.validateCards([ card ]);
 		return card;
+	}
+
+	async publishCard(cardParams: INewCardParams) {
+		validateCardParams(cardParams);
+		const tokenContext: ITokenContext = { identity: cardParams.identity, operation: 'publish' };
+		const token = await this.accessTokenProvider.getToken(tokenContext);
+		const rawSignedModel = this.generateRawCard(
+			Object.assign({}, cardParams, { identity: token.identity() })
+		);
+
+		return await this.publishRawSignedModel(rawSignedModel, tokenContext, token);
+	}
+
+	async publishRawCard(rawCard: RawSignedModel) {
+		assert(rawCard != null && rawCard.contentSnapshot != null, '`rawCard` should not be empty');
+		const cardDetails = parseSnapshot<IRawCardContent>(rawCard.contentSnapshot);
+		const tokenContext: ITokenContext = { identity: cardDetails.identity, operation: 'publish' };
+		const token = await this.accessTokenProvider.getToken(tokenContext);
+
+		return this.publishRawSignedModel(rawCard, tokenContext, token);
 	}
 
 	async getCard(cardId: string): Promise<ICard> {
@@ -103,21 +131,23 @@ export class CardManager {
 		return cards;
 	}
 
-	importCard (rawCard: IRawSignedModel): ICard {
+	importCard (rawCard: RawSignedModel): ICard {
 		const card = parseRawSignedModel( this.crypto, rawCard );
 		this.validateCards([ card ]);
 		return card;
 	}
 
 	importCardFromString (str: string): ICard {
-		return this.importCard( generateRawSignedFromString(str) );
+		assert(Boolean(str), '`str` should not be empty');
+		return this.importCard( RawSignedModel.fromString(str) );
 	}
 
-	importCardFromJson (json: string): ICard {
-		return this.importCard( generateRawSignedFromJson(json) );
+	importCardFromJson (json: IRawSignedModelJson): ICard {
+		assert(Boolean(json), '`json` should not be empty');
+		return this.importCard( RawSignedModel.fromJson(json) );
 	}
 
-	exportCard (card: ICard): IRawSignedModel {
+	exportCard (card: ICard): RawSignedModel {
 		return cardToRawSignedModel(this.crypto, card);
 	}
 
