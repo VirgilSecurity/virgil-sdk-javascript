@@ -13,13 +13,6 @@ export interface IVerifierCredentials {
 	publicKeyBase64: string;
 }
 
-export class CardVerificationError extends Error {
-	public constructor(m: string) {
-		super(m);
-		Object.setPrototypeOf(this, CardVerificationError.prototype);
-	}
-}
-
 export type IWhiteList = IVerifierCredentials[];
 
 export class VirgilCardVerifier implements ICardVerifier {

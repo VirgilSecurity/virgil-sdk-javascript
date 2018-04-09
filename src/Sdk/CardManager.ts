@@ -14,6 +14,7 @@ import {
 	generateRawSignedFromJson,
 	generateRawSignedFromString
 } from './Utils/RawSignedModelUtils';
+import { VirgilCardVerificationError, VirgilHttpError } from './Web/errors';
 
 export type ISignCallback =  (model: IRawSignedModel) => Promise<IRawSignedModel>;
 
@@ -59,9 +60,9 @@ export class CardManager {
 			async token => await this.client.publishCard(rawCard, token.toString()));
 
 
-		/*if (!deepEqual(rawCard.content_snapshot, publishedModel.content_snapshot)) {
-			throw new CardVerificationException("Publishing returns invalid card");
-		}*/
+		if (!rawCard.contentSnapshot.equals(publishedModel.contentSnapshot)) {
+			throw new VirgilCardVerificationError('Received invalid card');
+		}
 
 		const card = parseRawSignedModel(this.crypto, publishedModel);
 		this.validateCards([ card ]);
@@ -77,7 +78,9 @@ export class CardManager {
 
 		const card = parseRawSignedModel( this.crypto, cardWithStatus.cardRaw, cardWithStatus.isOutdated );
 
-		if (card.id != cardId) throw new Error("Invalid card");
+		if (card.id !== cardId) {
+			throw new VirgilCardVerificationError('Received invalid card');
+		}
 
 		this.validateCards([ card ]);
 		return card;
@@ -92,7 +95,9 @@ export class CardManager {
 
 		const cards = rawCards.map(raw => parseRawSignedModel(this.crypto, raw, false));
 
-		if (cards.some(c => c.identity != identity)) throw new Error("Invalid cards");
+		if (cards.some(c => c.identity !== identity)) {
+			throw new VirgilCardVerificationError('Received invalid cards');
+		}
 
 		this.validateCards(cards);
 		return cards;
@@ -120,17 +125,17 @@ export class CardManager {
 		try {
 			return await func(token);
 		} catch (e) {
-			// todo: e instanceof UnauthorizedClientException
+			if (e instanceof VirgilHttpError && e.httpStatus === 401 && this.retryOnUnauthorized) {
+				token = await this.accessTokenProvider.getToken({
+					identity: context.identity,
+					operation: context.operation,
+					forceReload: true
+				});
 
-			if (!this.retryOnUnauthorized) throw e;
+				return await func(token);
+			}
 
-			token = await this.accessTokenProvider.getToken({
-				identity: context.identity,
-				operation: context.operation,
-				forceReload: true
-			});
-
-			return await func(token);
+			throw e;
 		}
 	}
 
@@ -139,8 +144,20 @@ export class CardManager {
 
 		for (const card of cards) {
 			if (!this.verifier.verifyCard(card)) {
-				throw new CardVerificationError("Validation errors have been detected");
+				throw new VirgilCardVerificationError('Validation errors have been detected');
 			}
 		}
+	}
+}
+
+function validateCardParams(params: INewCardParams, validateIdentity: boolean = false) {
+	assert(params != null, 'Card parameters must be provided');
+	assert(params.privateKey != null, 'Card\'s private key is required');
+	assert(params.publicKey != null, 'Card\'s public key is required');
+	if (validateIdentity) {
+		assert(
+			typeof params.identity === 'string' && params.identity !== '',
+			'Card\'s identity is required'
+		);
 	}
 }

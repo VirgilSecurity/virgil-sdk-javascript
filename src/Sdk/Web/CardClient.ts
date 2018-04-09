@@ -29,7 +29,16 @@ export class CardClient {
 
 		const response = await this.connection.post( SearchEndpoint, jwtToken, { identity } );
 
-		return response.json() as Promise<IRawSignedModel[]>;
+		if (!response.ok) {
+			throw await generateErrorFromResponse(response);
+		}
+
+		const cardsJson = await response.json();
+		if (cardsJson === null) {
+			return [];
+		}
+
+		return cardsJson as IRawSignedModel[];
 	}
 
 	public async getCard (cardId: string, jwtToken: string): Promise<ICardResult> {
@@ -37,6 +46,10 @@ export class CardClient {
 		if (!jwtToken) throw new TypeError("`jwtToken` should not be empty");
 
 		const response = await this.connection.get( GetCardEndpoint(cardId), jwtToken );
+		if (!response.ok) {
+			throw await generateErrorFromResponse(response);
+		}
+
 		const isOutdated = response.headers.get('X-Virgil-Is-Superseeded') === 'true';
 
 		const cardRaw = await response.json() as IRawSignedModel;
@@ -50,6 +63,9 @@ export class CardClient {
 
 		// what is correct way to serialize model?
 		const response = await this.connection.post( PublishEndpoint, jwtToken, model );
+		if (!response.ok) {
+			throw await generateErrorFromResponse(response);
+		}
 
 		return response.json() as Promise<IRawSignedModel>;
 	}
