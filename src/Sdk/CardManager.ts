@@ -57,26 +57,6 @@ export class CardManager {
 		return model;
 	}
 
-	private async publishRawSignedModel (rawCard: RawSignedModel, context: ITokenContext, accessToken: IAccessToken): Promise<ICard> {
-		if (this.signCallback != null) {
-			rawCard = await this.signCallback(rawCard);
-		}
-
-		const publishedModel = await this.tryDo(
-			context,
-			accessToken,
-			async token => await this.client.publishCard(rawCard, token.toString())
-		);
-
-		if (!rawCard.contentSnapshot.equals(publishedModel.contentSnapshot)) {
-			throw new VirgilCardVerificationError('Received invalid card');
-		}
-
-		const card = parseRawSignedModel(this.crypto, publishedModel);
-		this.validateCards([ card ]);
-		return card;
-	}
-
 	async publishCard(cardParams: INewCardParams) {
 		validateCardParams(cardParams);
 		const tokenContext: ITokenContext = { identity: cardParams.identity, operation: 'publish' };
@@ -158,6 +138,26 @@ export class CardManager {
 
 	exportCardAsJson (card: ICard): IRawSignedModelJson {
 		return cardToRawSignedModel(this.crypto, card).exportAsJson();
+	}
+
+	private async publishRawSignedModel (rawCard: RawSignedModel, context: ITokenContext, accessToken: IAccessToken): Promise<ICard> {
+		if (this.signCallback != null) {
+			rawCard = await this.signCallback(rawCard);
+		}
+
+		const publishedModel = await this.tryDo(
+			context,
+			accessToken,
+			async token => await this.client.publishCard(rawCard, token.toString())
+		);
+
+		if (!rawCard.contentSnapshot.equals(publishedModel.contentSnapshot)) {
+			throw new VirgilCardVerificationError('Received invalid card');
+		}
+
+		const card = parseRawSignedModel(this.crypto, publishedModel);
+		this.validateCards([ card ]);
+		return card;
 	}
 
 	private async tryDo<T> (context: ITokenContext, token: IAccessToken, func: (token: IAccessToken) => Promise<T>): Promise<T> {

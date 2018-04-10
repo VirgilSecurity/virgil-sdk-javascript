@@ -3,7 +3,7 @@ import { IRawSignature, RawSignedModel } from '../Web/IRawSignedModel';
 import { ICard, ICardSignature, IExtraData, IRawCardContent } from '../ICard';
 import { parseSnapshot } from './SnapshotUtils';
 
-const CARD_ID_BYTE_LENGTH = 8;
+const CARD_ID_BYTE_LENGTH = 32;
 
 export function generateCardId (crypto: ICardCrypto, snapshot: Buffer): string {
 	const fingerprint = crypto.generateSha512(snapshot).slice(0, CARD_ID_BYTE_LENGTH);
