@@ -8,7 +8,6 @@ import { IAccessToken, IAccessTokenProvider, ITokenContext } from './Web/Auth/Ac
 import { linkedCardList, parseRawSignedModel } from './Utils/CardUtils';
 import { cardToRawSignedModel, generateRawSigned } from './Utils/RawSignedModelUtils';
 import { assert } from './Lib/assert';
-import { getUnixTimestamp } from './Lib/timestamp';
 import { VirgilCardVerificationError, VirgilHttpError } from './Web/errors';
 import { parseSnapshot } from './Utils/SnapshotUtils';
 
@@ -44,8 +43,7 @@ export class CardManager {
 	}
 
 	generateRawCard(params: INewCardParams): RawSignedModel {
-		const now = getUnixTimestamp(new Date);
-		const model = generateRawSigned(this.crypto, params, now);
+		const model = generateRawSigned(this.crypto, params);
 
 		this.modelSigner.sign({
 			model,
