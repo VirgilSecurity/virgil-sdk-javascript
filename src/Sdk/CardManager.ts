@@ -5,7 +5,7 @@ import { ModelSigner } from './Web/ModelSigner';
 import { ICard, INewCardParams, IRawCardContent } from './ICard';
 import { ICardVerifier } from './CardVerifier';
 import { IAccessToken, IAccessTokenProvider, ITokenContext } from './Web/Auth/AccessTokenProviders';
-import { parseRawSignedModel } from './Utils/CardUtils';
+import { linkedCardList, parseRawSignedModel } from './Utils/CardUtils';
 import { cardToRawSignedModel, generateRawSigned } from './Utils/RawSignedModelUtils';
 import { assert } from './Lib/assert';
 import { getUnixTimestamp } from './Lib/timestamp';
@@ -128,7 +128,8 @@ export class CardManager {
 		}
 
 		this.validateCards(cards);
-		return cards;
+		const linkedCards = linkedCardList(cards);
+		return linkedCards;
 	}
 
 	importCard (rawCard: RawSignedModel): ICard {
@@ -149,6 +150,14 @@ export class CardManager {
 
 	exportCard (card: ICard): RawSignedModel {
 		return cardToRawSignedModel(this.crypto, card);
+	}
+
+	exportCardAsString (card: ICard): string {
+		return cardToRawSignedModel(this.crypto, card).exportAsString();
+	}
+
+	exportCardAsJson (card: ICard): IRawSignedModelJson {
+		return cardToRawSignedModel(this.crypto, card).exportAsJson();
 	}
 
 	private async tryDo<T> (context: ITokenContext, token: IAccessToken, func: (token: IAccessToken) => Promise<T>): Promise<T> {
