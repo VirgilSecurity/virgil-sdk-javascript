@@ -1,17 +1,31 @@
+import { fetch, Headers, Response } from '../Lib/fetch';
+
 export class Connection {
 
 	public constructor (private readonly prefix: string) {}
 
-	public get (endpoint: string, jwtToken: string, params: object = {}): Promise<Response> {
-		return this.send(endpoint, 'GET', params);
+	public get (endpoint: string, accessToken: string): Promise<Response> {
+		const headers = this.createHeaders(accessToken);
+		return this.send(endpoint, 'GET', { headers });
 	}
 
-	public post (endpoint: string, jwtToken: string, params: object = {}): Promise<Response> {
-		return this.send(endpoint, 'POST', params);
+	public post (endpoint: string, accessToken: string, data: object = {}): Promise<Response> {
+		const headers = this.createHeaders(accessToken);
+		headers.set('Content-Type', 'application/json');
+		return this.send(endpoint, 'POST', {
+			headers: headers,
+			body: JSON.stringify( data )
+		});
 	}
 
 	private send (endpoint: string, method: string, params: object): Promise<Response> {
 		return fetch(this.prefix + endpoint, { method, ...params });
+	}
+
+	private createHeaders (accessToken: string) {
+		const headers = new Headers();
+		headers.set('Authorization', `Virgil ${accessToken}`);
+		return headers;
 	}
 
 }

@@ -1,38 +1,37 @@
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
-import { IRawSignature, IRawSignedModel } from '../Web/IRawSignedModel';
-import { ICard, ICardSignature, IExtraData } from '../ICard';
+import { IRawSignature, RawSignedModel } from '../Web/IRawSignedModel';
+import { ICard, ICardSignature, IExtraData, IRawCardContent } from '../ICard';
 import { parseSnapshot } from './SnapshotUtils';
 
-const cardIdLength = 16;
+const CARD_ID_BYTE_LENGTH = 8;
 
 export function generateCardId (crypto: ICardCrypto, snapshot: Buffer): string {
-	const fingerprint = crypto.generateSHA512(snapshot);
-
-	return fingerprint.toString('hex').substr(0, cardIdLength);
+	const fingerprint = crypto.generateSha512(snapshot).slice(0, CARD_ID_BYTE_LENGTH);
+	return fingerprint.toString('hex');
 }
 
-export function parseRawSignedModel (crypto: ICardCrypto, model: IRawSignedModel, isOutDated = false): ICard {
-	const content = parseSnapshot(model.content_snapshot);
+export function parseRawSignedModel (crypto: ICardCrypto, model: RawSignedModel, isOutdated = false): ICard {
+	const content = parseSnapshot<IRawCardContent>(model.contentSnapshot);
 	const signatures = model.signatures.map(rawSignToCardSign);
 
 	return {
-		id: generateCardId(crypto, model.content_snapshot),
-		publicKey: crypto.importPublicKey(content.publicKey),
-		contentSnapshot: model.content_snapshot,
+		id: generateCardId(crypto, model.contentSnapshot),
+		publicKey: crypto.importPublicKey(content.public_key),
+		contentSnapshot: model.contentSnapshot,
 		identity: content.identity,
-		version: content.version!,
-		createdAt: content.createdAt!,
-		previousCardId: content.previousCardId!,
+		version: content.version,
+		createdAt: new Date(content.created_at * 1000),
+		previousCardId: content.previous_card_id,
 		signatures,
-		isOutDated
+		isOutdated
 	};
 }
 
 function rawSignToCardSign ({ snapshot, signature, signer }: IRawSignature): ICardSignature {
-	if (snapshot == null) throw new Error('`snapshot cant be null`');
-
 	return {
-		snapshot, signature, signer,
+		signer,
+		signature,
+		snapshot,
 		extraFields: tryParseExtraFields(snapshot)
 	};
 }
@@ -40,7 +39,7 @@ function rawSignToCardSign ({ snapshot, signature, signer }: IRawSignature): ICa
 function tryParseExtraFields(snapshot?: Buffer): IExtraData {
 	if (snapshot) {
 		try {
-			return parseSnapshot(snapshot) as any as IExtraData;
+			return parseSnapshot<IExtraData>(snapshot);
 		} catch (ignored) {}
 	}
 
@@ -58,7 +57,7 @@ export function linkedCardList (cards: ICard[]): ICard[] {
 		if (card.previousCardId == null) continue;
 		if (unsorted[card.previousCardId] == null) continue;
 
-		unsorted[card.previousCardId].isOutDated = true;
+		unsorted[card.previousCardId].isOutdated = true;
 		card.previousCard = unsorted[card.previousCardId];
 		delete unsorted[card.previousCardId];
 	}

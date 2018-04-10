@@ -8,6 +8,9 @@ export default config => {
 		watch: {
 			include: 'src/**/*.ts',
 		},
+		moduleContext: {
+			[require.resolve('whatwg-fetch')]: 'window'
+		},
 		plugins: [
 			typescript({
 				useTsconfigDeclarationDir: true,

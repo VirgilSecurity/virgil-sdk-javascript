@@ -1,47 +1,25 @@
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
-import { ICard, IExtraData } from '../ICard';
-import { IRawSignedModel } from '../Web/IRawSignedModel';
-import { base64Decode } from '../Lib/base64';
-import { ICardParams, takeSnapshot } from './SnapshotUtils';
+import { ICard, INewCardParams } from '../ICard';
+import { RawSignedModel } from '../Web/IRawSignedModel';
+import { base64Encode } from '../Lib/base64';
+import { takeSnapshot } from './SnapshotUtils';
 
 export const CardVersion = '5.0';
 
-export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard): IRawSignedModel {
-	const model = generateRawSigned(crypto, card);
-
-	for (const sign of card.signatures) {
-		const { signature, signer, snapshot } = sign;
-
-		model.signatures.push({ signature, signer, snapshot });
-	}
-
-	return model;
+export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard): RawSignedModel {
+	return new RawSignedModel(card.contentSnapshot, card.signatures.slice());
 }
 
-export function generateRawSigned (crypto: ICardCrypto, params: ICard): IRawSignedModel {
-	const { identity, publicKey, previousCardId, createdAt } = params;
+export function generateRawSigned (crypto: ICardCrypto, params: INewCardParams, createdAt: number): RawSignedModel {
+	const { identity, publicKey, previousCardId } = params;
 
 	const details = {
-		identity,
-		previousCardId,
-		createdAt,
+		identity: identity!,
+		previous_card_id: previousCardId,
+		created_at: createdAt,
 		version: CardVersion,
-		publicKey: crypto.exportPublicKey(publicKey)
+		public_key: base64Encode(crypto.exportPublicKey(publicKey))
 	};
 
-	return { content_snapshot: takeSnapshot(details), signatures: [] } as IRawSignedModel;
-}
-
-export function generateRawSignedFromString (str: string): IRawSignedModel {
-	if (!str) throw new Error("str is empty");
-
-	return generateRawSignedFromJson(
-		base64Decode(str).toString('utf8')
-	);
-
-}
-export function generateRawSignedFromJson (json: string): IRawSignedModel {
-	if (!json) throw new Error("json is empty");
-
-	return JSON.parse(json) as IRawSignedModel;
+	return new RawSignedModel(takeSnapshot(details), []);
 }

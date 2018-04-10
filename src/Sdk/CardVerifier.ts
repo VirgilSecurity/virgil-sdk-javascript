@@ -2,7 +2,7 @@ import { ICard } from './ICard';
 import { ICardCrypto } from '../CryptoApi/ICardCrypto';
 import { IPublicKey } from '../CryptoApi/IPublicKey';
 import { base64Decode } from './Lib/base64';
-import { ModelSigner, SelfSigner, VirgilSigner } from './Web/ModelSigner';
+import { SelfSigner, VirgilSigner } from './Web/ModelSigner';
 
 export interface ICardVerifier {
 	verifyCard(card: ICard): boolean;
@@ -11,13 +11,6 @@ export interface ICardVerifier {
 export interface IVerifierCredentials {
 	signer: string;
 	publicKeyBase64: string;
-}
-
-export class CardVerificationError extends Error {
-	public constructor(m: string) {
-		super(m);
-		Object.setPrototypeOf(this, CardVerificationError.prototype);
-	}
 }
 
 export type IWhiteList = IVerifierCredentials[];
@@ -38,7 +31,7 @@ export class VirgilCardVerifier implements ICardVerifier {
 			return false;
 		}
 		if (!this.whiteLists || this.whiteLists.length === 0) {
-			return false;
+			return true;
 		}
 		const signers = card.signatures.map(s => s.signer);
 
@@ -48,22 +41,22 @@ export class VirgilCardVerifier implements ICardVerifier {
 				return false;
 			}
 
-			const intersectedCreds = whitelist.filter(x => signers.includes(x.signer));
+			const intersectedCreds = whitelist.filter(x => signers.indexOf(x.signer) !== -1);
 
 			if (intersectedCreds.length === 0) {
 				return false;
 			}
 
-			for (const cred of intersectedCreds) {
-				const signerPublicKey = this.getPublicKey(cred.publicKeyBase64);
+			const isValidForSome = intersectedCreds.some(cred =>
+				this.validateSignerSignature(
+					card,
+					this.getPublicKey(cred.publicKeyBase64),
+					cred.signer
+				)
+			);
 
-				if (this.validateSignerSignature(card, signerPublicKey, cred.signer)) {
-					break;
-				}
-
-				if (cred === intersectedCreds[intersectedCreds.length - 1]) {
-					return false;
-				}
+			if (!isValidForSome) {
+				return false;
 			}
 		}
 
@@ -96,6 +89,6 @@ export class VirgilCardVerifier implements ICardVerifier {
 			? card.contentSnapshot
 			: Buffer.concat([card.contentSnapshot, signature.snapshot]);
 
-		return this.crypto.verifySignature( signature.signature, extendedSnapshot, signerPublicKey );
+		return this.crypto.verifySignature(extendedSnapshot, signature.signature, signerPublicKey);
 	}
 }
