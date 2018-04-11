@@ -1,5 +1,5 @@
 import commonjs from 'rollup-plugin-commonjs';
-import globals from 'rollup-plugin-node-globals';
+import resolve from 'rollup-plugin-node-resolve';
 import config from './rollup.config';
 
 export default config({

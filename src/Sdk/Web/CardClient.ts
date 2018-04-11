@@ -68,7 +68,7 @@ export class CardClient {
 			throw await generateErrorFromResponse(response);
 		}
 
-		const cardJson =  await response.json() as IRawSignedModelJson;
+		const cardJson = await response.json() as IRawSignedModelJson;
 		return RawSignedModel.fromJson(cardJson);
 	}
 

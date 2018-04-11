@@ -1,15 +1,8 @@
-import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
-import * as chaiAsPromised from 'chai-as-promised';
 import { CardClient } from '../../Sdk/Web/CardClient';
 import { Response } from '../../Sdk/Lib/fetch';
 import { IConnection } from '../../Sdk/Web/Connection';
 import { RawSignedModel } from '../../Sdk/Web/IRawSignedModel';
-
-const assert = chai.assert;
-chai.use(sinonChai);
-chai.use(chaiAsPromised);
 
 describe('CardClient', () => {
 	describe('publishCard', () => {

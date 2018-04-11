@@ -27,8 +27,8 @@ export class CardManager {
 	public readonly client: CardClient;
 	public readonly modelSigner: ModelSigner;
 	public readonly signCallback?: ISignCallback;
-	public readonly retryOnUnauthorized: boolean;
 	public readonly verifier: ICardVerifier;
+	public retryOnUnauthorized: boolean;
 
 	public readonly accessTokenProvider: IAccessTokenProvider;
 

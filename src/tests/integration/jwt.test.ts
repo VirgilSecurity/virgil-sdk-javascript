@@ -1,8 +1,10 @@
-import { assert } from 'chai';
+import * as sinon from 'sinon';
 import { createVirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtVerifier } from '../../Sdk/Web/Auth/JwtVerifier';
 import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
 import { Jwt } from '../../Sdk/Web/Auth/Jwt';
+import { CallbackJwtProvider, ITokenContext } from '../../Sdk/Web/Auth/AccessTokenProviders';
+import { ConstAccessTokenProvider } from '../..';
 
 const compatData = require('./data.json');
 
@@ -25,7 +27,7 @@ const initJwtGenerator = (appId: string, apiKeyId: string, apiKeyPrivateKey: str
 	});
 };
 
-describe('JWT compatibility', () => {
+describe.only('JWT compatibility', () => {
 	describe('JwtVerifier', () => {
 		it('verifies imported JWT (STC-22)', () => {
 			const verifier = initJwtVerifier(
@@ -68,4 +70,117 @@ describe('JWT compatibility', () => {
 			assert.isTrue(verifier.verifyToken(jwt), 'jwt is verified');
 		});
 	});
-})
+
+	describe('CallbackJwtProvider', () => {
+		it ('invokes callback correctly', () => {
+			const generator = initJwtGenerator(
+				compatData['STC-23.app_id'],
+				compatData['STC-23.api_key_id'],
+				compatData['STC-23.api_private_key_base64']
+			);
+			const jwt = generator.generateToken('irrelevant');
+			const callback = sinon.stub().returns(Promise.resolve(jwt.toString()));
+			const provider = new CallbackJwtProvider(callback);
+			const tokenContext: ITokenContext = { identity: 'irrelevant', operation: 'irrelevant' };
+
+			return assert.isFulfilled(
+				provider.getToken(tokenContext)
+					.then(token => {
+						assert.equal(token.toString(), jwt.toString(), 'token is unmodified');
+						assert.calledOnce(callback);
+						assert.calledWithExactly(callback, tokenContext);
+					})
+			);
+		});
+
+		it ('rejects when receives invalid token from callback (STC-24)', () => {
+			const callback = sinon.stub().returns(Promise.resolve('invalid-token'));
+			const provider = new CallbackJwtProvider(callback);
+			const tokenContext: ITokenContext = { identity: 'irrelevant', operation: 'irrelevant' };
+
+
+			return assert.isRejected(
+				provider.getToken(tokenContext),
+				/Wrong JWT/
+			);
+		});
+	});
+
+	describe('ConstJwtProvider', () => {
+		it ('returns the constant token (STC-37)', () => {
+			const generator = initJwtGenerator(
+				compatData['STC-23.app_id'],
+				compatData['STC-23.api_key_id'],
+				compatData['STC-23.api_private_key_base64']
+			);
+			const jwt = generator.generateToken('irrelevant');
+			const provider = new ConstAccessTokenProvider(jwt);
+			const tokenContext: ITokenContext = { identity: 'irrelevant', operation: 'irrelevant' };
+
+			return assert.isFulfilled(
+				provider.getToken(tokenContext)
+					.then(token => {
+						assert.equal(token, jwt);
+					})
+			);
+		});
+	});
+
+	describe('Jwt', () => {
+		it ('can be constructed from string (STC-28)', () => {
+			const tokenString = compatData['STC-28.jwt'];
+			const jwt = Jwt.fromString(tokenString);
+
+			assert.equal(jwt.identity(), compatData['STC-28.jwt_identity'], 'identity is correct');
+			assert.equal(jwt.appId(), compatData['STC-28.jwt_app_id'], 'app id is correct');
+			assert.equal(jwt.body.iss, compatData['STC-28.jw_issuer'], 'issuer is correct');
+			assert.equal(jwt.body.sub, compatData['STC-28.jwt_subject'], 'subject is correct');
+			assert.deepEqual(
+				jwt.body.ada,
+				JSON.parse(compatData['STC-28.jwt_additional_data']),
+				'additional data is correct'
+			);
+			assert.equal(jwt.body.exp, compatData['STC-28.jwt_expires_at'], 'expiresAt is correct');
+			assert.equal(jwt.body.iat, compatData['STC-28.jwt_issued_at'], 'issuedAt is correct');
+			assert.equal(jwt.header.alg, compatData['STC-28.jwt_algorithm'], 'algorithm is correct');
+			assert.equal(jwt.header.kid, compatData['STC-28.jwt_api_key_id'], 'key id is correct');
+			assert.equal(jwt.header.cty, compatData['STC-28.jwt_content_type'], 'content type is correct');
+			assert.equal(jwt.header.typ, compatData['STC-28.jwt_type'], 'type is correct');
+			assert.equal(
+				jwt.signature!.toString('base64'),
+				compatData['STC-28.jwt_signature_base64'],
+				'type is correct'
+			);
+			assert.isTrue(jwt.isExpired(), 'jwt is expired');
+			assert.equal(jwt.toString(), tokenString, 'string representation is correct');
+		});
+
+		it ('can be constructed from string (STC-29)', () => {
+			const tokenString = compatData['STC-29.jwt'];
+			const jwt = Jwt.fromString(tokenString);
+
+			assert.equal(jwt.identity(), compatData['STC-29.jwt_identity'], 'identity is correct');
+			assert.equal(jwt.appId(), compatData['STC-29.jwt_app_id'], 'app id is correct');
+			assert.equal(jwt.body.iss, compatData['STC-29.jw_issuer'], 'issuer is correct');
+			assert.equal(jwt.body.sub, compatData['STC-29.jwt_subject'], 'subject is correct');
+			assert.deepEqual(
+				jwt.body.ada,
+				JSON.parse(compatData['STC-29.jwt_additional_data']),
+				'additional data is correct'
+			);
+			assert.equal(jwt.body.exp, compatData['STC-29.jwt_expires_at'], 'expiresAt is correct');
+			assert.equal(jwt.body.iat, compatData['STC-29.jwt_issued_at'], 'issuedAt is correct');
+			assert.equal(jwt.header.alg, compatData['STC-29.jwt_algorithm'], 'algorithm is correct');
+			assert.equal(jwt.header.kid, compatData['STC-29.jwt_api_key_id'], 'key id is correct');
+			assert.equal(jwt.header.cty, compatData['STC-29.jwt_content_type'], 'content type is correct');
+			assert.equal(jwt.header.typ, compatData['STC-29.jwt_type'], 'type is correct');
+			assert.equal(
+				jwt.signature!.toString('base64'),
+				compatData['STC-29.jwt_signature_base64'],
+				'type is correct'
+			);
+			assert.isFalse(jwt.isExpired(), 'jwt is not expired');
+			assert.equal(jwt.toString(), tokenString, 'string representation is correct');
+		});
+	});
+});
