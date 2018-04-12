@@ -27,7 +27,7 @@ const initJwtGenerator = (appId: string, apiKeyId: string, apiKeyPrivateKey: str
 	});
 };
 
-describe.only('JWT compatibility', () => {
+describe('JWT compatibility', () => {
 	describe('JwtVerifier', () => {
 		it('verifies imported JWT (STC-22)', () => {
 			const verifier = initJwtVerifier(
