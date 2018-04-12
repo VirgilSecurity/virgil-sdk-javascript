@@ -8,4 +8,5 @@ chai.use(chaiAsPromised);
 
 sinon.assert.expose(chai.assert, { prefix: '' });
 
+global.sinon = sinon;
 global.assert = chai.assert;
