@@ -14,7 +14,8 @@
   },
   "main": "index.js",
   "browser": {
-    "./src/Sdk/Lib/fetch.js": "./src/Sdk/Lib/fetch-browser.js"
+    "./src/Sdk/Lib/fetch.js": "./src/Sdk/Lib/fetch-browser.js",
+    "./src/Sdk/Lib/KeyStorage/index.js": "./src/Sdk/Lib/KeyStorage/browser.js"
   },
   "author": "Virgil Security Inc. <support@virgilsecurity.com>",
   "keywords": [
@@ -31,9 +32,11 @@
   "devDependencies": {
     "@types/chai": "^4.1.2",
     "@types/chai-as-promised": "^7.1.0",
+    "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^5.0.0",
     "@types/node": "^9.4.7",
     "@types/node-fetch": "^1.6.8",
+    "@types/rimraf": "^2.0.2",
     "@types/sinon": "^4.3.1",
     "@types/sinon-chai": "^2.7.29",
     "buffer-es6": "^4.9.3",
@@ -61,7 +64,10 @@
     "test:node": "mocha --require ts-node/register --require dotenv/config --require scripts/register-assert \"src/**/*.test.ts\""
   },
   "dependencies": {
+    "localforage": "^1.7.1",
+    "mkdirp": "^0.5.1",
     "node-fetch": "^2.1.2",
+    "rimraf": "^2.6.2",
     "whatwg-fetch": "^2.0.4"
   },
   "peerDependencies": {

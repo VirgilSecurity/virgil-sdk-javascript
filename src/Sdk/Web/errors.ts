@@ -1,13 +1,5 @@
 import { Response } from '../Lib/fetch';
-
-export class VirgilError extends Error {
-	name: string;
-	constructor(m: string, name: string = 'VirgilError') {
-		super(m);
-		Object.setPrototypeOf(this, new.target.prototype);
-		this.name = name;
-	}
-}
+import { VirgilError } from '../Lib/VirgilError';
 
 export class VirgilCardVerificationError extends VirgilError {
 	constructor(m: string) {
