@@ -1,4 +1,3 @@
-import * as sinon from 'sinon';
 import { CardClient } from '../../Sdk/Web/CardClient';
 import { Response } from '../../Sdk/Lib/fetch';
 import { IConnection } from '../../Sdk/Web/Connection';

@@ -84,7 +84,8 @@
     "build:iife": "rollup -c config/rollup.config.browser.iife.js",
     "build:cjs": "rollup -c config/rollup.config.cjs.js",
     "test:node": "mocha --require ts-node/register --require dotenv/config --require scripts/register-assert \"src/**/*.test.ts\"",
-    "test:browser": "karma start"
+    "test:browser": "karma start",
+    "test": "npm run test:node && npm run test:browser -- --signle-run"
   },
   "devEngines": {
     "node": ">= 8.x"

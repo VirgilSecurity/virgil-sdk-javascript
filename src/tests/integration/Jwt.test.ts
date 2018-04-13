@@ -1,12 +1,11 @@
-import * as sinon from 'sinon';
 import { createVirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtVerifier } from '../../Sdk/Web/Auth/JwtVerifier';
 import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
 import { Jwt } from '../../Sdk/Web/Auth/Jwt';
 import { CallbackJwtProvider, ITokenContext } from '../../Sdk/Web/Auth/AccessTokenProviders';
-import { ConstAccessTokenProvider } from '../..';
+import { ConstAccessTokenProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
 
-const compatData = require('./data.json');
+import { compatData } from './data';
 
 const initJwtVerifier = (apiKeyId: string, apiKeyPublicKey: string) => {
 	const crypto = createVirgilCrypto();
@@ -140,8 +139,8 @@ describe('JWT compatibility', () => {
 				JSON.parse(compatData['STC-28.jwt_additional_data']),
 				'additional data is correct'
 			);
-			assert.equal(jwt.body.exp, compatData['STC-28.jwt_expires_at'], 'expiresAt is correct');
-			assert.equal(jwt.body.iat, compatData['STC-28.jwt_issued_at'], 'issuedAt is correct');
+			assert.equal(jwt.body.exp, Number(compatData['STC-28.jwt_expires_at']), 'expiresAt is correct');
+			assert.equal(jwt.body.iat, Number(compatData['STC-28.jwt_issued_at']), 'issuedAt is correct');
 			assert.equal(jwt.header.alg, compatData['STC-28.jwt_algorithm'], 'algorithm is correct');
 			assert.equal(jwt.header.kid, compatData['STC-28.jwt_api_key_id'], 'key id is correct');
 			assert.equal(jwt.header.cty, compatData['STC-28.jwt_content_type'], 'content type is correct');
@@ -168,8 +167,8 @@ describe('JWT compatibility', () => {
 				JSON.parse(compatData['STC-29.jwt_additional_data']),
 				'additional data is correct'
 			);
-			assert.equal(jwt.body.exp, compatData['STC-29.jwt_expires_at'], 'expiresAt is correct');
-			assert.equal(jwt.body.iat, compatData['STC-29.jwt_issued_at'], 'issuedAt is correct');
+			assert.equal(jwt.body.exp, Number(compatData['STC-29.jwt_expires_at']), 'expiresAt is correct');
+			assert.equal(jwt.body.iat, Number(compatData['STC-29.jwt_issued_at']), 'issuedAt is correct');
 			assert.equal(jwt.header.alg, compatData['STC-29.jwt_algorithm'], 'algorithm is correct');
 			assert.equal(jwt.header.kid, compatData['STC-29.jwt_api_key_id'], 'key id is correct');
 			assert.equal(jwt.header.cty, compatData['STC-29.jwt_content_type'], 'content type is correct');

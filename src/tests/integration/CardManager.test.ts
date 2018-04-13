@@ -1,5 +1,4 @@
 import { createVirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
-import * as sinon from 'sinon';
 import { CardManager } from '../../Sdk/CardManager';
 import { GeneratorJwtProvider, ITokenContext } from '../../Sdk/Web/Auth/AccessTokenProviders';
 import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
@@ -7,9 +6,7 @@ import { VirgilCardVerifier } from '../../Sdk/CardVerifier';
 import { VirgilCardVerificationError } from '../../Sdk/Web/errors';
 import { IVirgilCrypto } from 'virgil-crypto/dist/types/IVirgilCrypto';
 
-const compatData = require('./data.json');
-const WELL_KNOWN_IDENTITY = 'well_known_identity@virgil.com';
-const WELL_KNOWN_CARD_ID = 'f70c198bd5111be289c3e53acac2ac050d0fe1eeb0e1e8189ac9e1e41d2efb0e';
+import { compatData } from './data';
 
 const init = () => {
 	const crypto = createVirgilCrypto();
@@ -54,7 +51,26 @@ const init = () => {
 	};
 };
 
-describe('CardManager', () => {
+const WELL_KNOWN_IDENTITY = `js_sdk_well_known_identity${Date.now()}@virgil.com`;
+let WELL_KNOWN_CARD_ID:string;
+
+describe('CardManager', function () {
+
+	this.timeout(10000);
+
+	before(() => {
+		const { cardManager, crypto, cardVerifier } = init();
+		const keypair = crypto.generateKeys();
+		cardVerifier.verifySelfSignature = false;
+		cardVerifier.verifyVirgilSignature = false;
+		return cardManager.publishCard({
+			privateKey: keypair.privateKey,
+			publicKey: keypair.publicKey,
+			identity: WELL_KNOWN_IDENTITY
+		}).then(card => {
+			WELL_KNOWN_CARD_ID = card.id;
+		});
+	});
 
 	describe('card import', () => {
 		let cardManager: CardManager;
@@ -172,7 +188,7 @@ describe('CardManager', () => {
 			);
 		});
 
-		it.skip ('verifies cards after publishing', () => {
+		it ('verifies cards after publishing', () => {
 			const keypair = crypto.generateKeys();
 
 			return assert.isRejected(
@@ -289,8 +305,6 @@ describe('CardManager', () => {
 		let cardManager: CardManager;
 		let crypto: IVirgilCrypto;
 
-		this.timeout(10000);
-
 		beforeEach(() => {
 			const fixture = init();
 			cardManager = fixture.cardManager;
@@ -302,7 +316,7 @@ describe('CardManager', () => {
 			const sharedIdentity = `user_${Date.now()}@virgil.com`;
 			const keypair1 = crypto.generateKeys();
 
-			return assert.isFulfilled(
+			return assert.eventually.equal(
 				// publish card that we will rotate later
 				cardManager.publishCard({
 					privateKey: keypair1.privateKey,
@@ -316,15 +330,12 @@ describe('CardManager', () => {
 						publicKey: keypair2.publicKey,
 						previousCardId: publishedCard1.id,
 						identity: sharedIdentity
-					}).then(publishedCard2 => {
-						assert.equal(publishedCard2.previousCardId, publishedCard1.id);
-						assert.isFalse(publishedCard2.isOutdated);
-						// retrieve first card by id
-						return cardManager.getCard(publishedCard1.id);
-					}).then(retrievedCard1 => {
-						assert.isTrue(retrievedCard1.isOutdated);
-					});
-				})
+					})
+					.then(() => cardManager.getCard(publishedCard1.id))
+					.then(retrievedCard1 => retrievedCard1.isOutdated)
+				}),
+				true,
+				'rotated card is outdated'
 			);
 		});
 
@@ -386,8 +397,6 @@ describe('CardManager', () => {
 	describe('retry on unauthorized', function () {
 		let cardManager: CardManager;
 		let crypto: IVirgilCrypto;
-
-		this.timeout(10000);
 
 		beforeEach(() => {
 			const fixture = init();

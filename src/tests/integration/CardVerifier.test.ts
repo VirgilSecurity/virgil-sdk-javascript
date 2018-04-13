@@ -1,10 +1,9 @@
-import { assert } from 'chai';
 import { createVirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { VirgilCardVerifier } from '../../Sdk/CardVerifier';
 import { parseRawSignedModel } from '../../Sdk/Utils/CardUtils';
 import { RawSignedModel } from '../../Sdk/Web/IRawSignedModel';
 
-const compatData = require('./data.json');
+import { compatData } from './data';
 
 const init = (cardAsString: string) => {
 	const crypto = createVirgilCrypto();

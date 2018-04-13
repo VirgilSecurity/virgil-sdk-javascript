@@ -1,4 +1,3 @@
-import { assert } from 'chai';
 import { createVirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { ModelSigner, SelfSigner } from '../../Sdk/Web/ModelSigner';
 import { generateRawSigned } from '../../Sdk/Utils/RawSignedModelUtils';

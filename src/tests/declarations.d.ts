@@ -1,6 +1,9 @@
+/// <reference types="sinon" />
+
 import AssertStatic = Chai.AssertStatic;
 import SinonSpy = sinon.SinonSpy;
 import SinonSpyCall = sinon.SinonSpyCall;
+import SinonStatic = sinon.SinonStatic;
 
 interface ExtendedAssert extends AssertStatic {
 	notCalled(spy: SinonSpy): void;
@@ -30,3 +33,10 @@ interface ExtendedAssert extends AssertStatic {
 }
 
 declare var assert: ExtendedAssert;
+
+declare var sinon: SinonStatic;
+
+declare module '*.json' {
+	const value: { [key: string]: any };
+	export default value;
+}

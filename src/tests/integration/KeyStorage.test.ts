@@ -1,4 +1,4 @@
-import { KeyStorage } from '../../Sdk/Lib/KeyStorage';
+import { KeyStorage } from '../../Sdk/Lib/KeyStorage/index';
 import { PrivateKeyExistsError } from '../../Sdk/Lib/KeyStorage/PrivateKeyExistsError';
 
 describe('KeyStorage', () => {
