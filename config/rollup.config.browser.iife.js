@@ -13,7 +13,7 @@ export default config({
 			include: '**/*.ts',
 			exclude: 'node_modules/**',
 			modules: {
-				Buffer: ['buffer-es6', 'Buffer']
+				Buffer: ['buffer', 'Buffer']
 			}
 		}),
 
