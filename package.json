@@ -71,7 +71,6 @@
     "virgil-crypto": "^3.0.0-alpha.3"
   },
   "dependencies": {
-    "localforage": "^1.7.1",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.1.2",
     "rimraf": "^2.6.2",

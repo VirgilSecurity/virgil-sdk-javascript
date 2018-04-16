@@ -1,1 +1,1 @@
-export { LocalforageStorage as KeyStorage } from './LocalforageStorage';
+export { IDbKeyStorage as KeyStorage } from './IDbKeyStorage';

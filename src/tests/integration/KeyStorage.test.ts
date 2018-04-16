@@ -14,14 +14,14 @@ describe('KeyStorage', () => {
 
 	it('set and get the key', () => {
 		const expected = Buffer.from('one');
-		return assert.isFulfilled(
+		return assert.eventually.equal(
 			storage.save('first', expected)
 				.then(() => storage.load('first'))
 				.then(value => {
-					assert.exists(value);
-					assert.isTrue(value!.equals(expected),
-						'loaded key is identical to the saved one');
-				})
+					return value != null && value.equals(expected)
+				}),
+			true,
+			'loaded key is identical to the saved one'
 		);
 	});
 
@@ -33,120 +33,101 @@ describe('KeyStorage', () => {
 		);
 	});
 
-	it('removes the key', () => {
-		return assert.isFulfilled(
+	it('returns false when removing non-existent key', () => {
+		return assert.eventually.isFalse(
+			storage.remove('first')
+		);
+	});
+
+	it('returns true when removing existent key', () => {
+		return assert.eventually.isTrue(
 			storage.save('first', Buffer.from('one'))
 				.then(() => storage.remove('first'))
-				.then(isRemoved => {
-					assert.isTrue(isRemoved, 'returns true when key existed');
-					return storage.load('first');
-				})
-				.then( value => {
-					assert.isNull(value,'removes items');
-				})
 		);
 	});
 
 	it('set remove set', () => {
-		return assert.isFulfilled(
+		return assert.eventually.isTrue(
 			storage.save('first', Buffer.from('one'))
 				.then(() => storage.remove('first'))
-				.then((isRemoved) => {
-					assert.isTrue(isRemoved, 'returns true when key existed');
-					return storage.save('first', Buffer.from('two'));
-				})
+				.then(() => storage.save('first', Buffer.from('two')))
 				.then(() => storage.load('first'))
-				.then(value => {
-					assert.isNotNull(value)
-					assert.isTrue(value!.equals(Buffer.from('two')));
-				})
+				.then(value => value != null && value!.equals(Buffer.from('two')))
 		);
 	});
 
 	it ('remove item twice', () => {
-		return assert.isFulfilled(
+		return assert.eventually.isNull(
 			storage.remove('first')
-				.then(isRemoved => {
-					assert.isFalse(isRemoved, 'returns false for non-existent key');
-					return storage.remove('first');
-				})
-				.then(isRemoved => {
-					assert.isFalse(isRemoved, 'returns false the second time');
-					return storage.load('first');
-				})
-				.then(value => {
-					assert.isNull(value);
-				})
+				.then(() => storage.remove('first'))
+				.then(() => storage.load('first'))
 		);
 	});
 
 	it('set two items', () => {
-		return assert.isFulfilled(
+		const oneExpected = Buffer.from('one');
+		const twoExpected = Buffer.from('two');
+		return assert.becomes(
 			Promise.all([
-				storage.save('first', Buffer.from('one')),
-				storage.save('second', Buffer.from('two'))
+				storage.save('first', oneExpected),
+				storage.save('second', twoExpected)
 			]).then(() => Promise.all([
 					storage.load('first'),
 					storage.load('second')
 				])
 			).then(([ one, two ]) => {
-				assert.isNotNull(one);
-				assert.isNotNull(two);
-				assert.equal(one!.toString(), 'one');
-				assert.equal(two!.toString(), 'two');
-			})
+				return [
+					one != null && one.equals(oneExpected),
+					two != null && two.equals(twoExpected)
+				]
+			}),
+			[ true, true ]
 		);
 	});
 
 	it('set remove three items', () => {
-		return assert.isFulfilled(
+		return assert.eventually.isNull(
 			Promise.all([
 				storage.save('first', Buffer.from('one')),
 				storage.save('second', Buffer.from('two')),
 				storage.save('third', Buffer.from('three'))
 			]).then(() => storage.remove('second'))
 				.then(() => Promise.all([
-						storage.load('first'),
-						storage.load('second'),
-						storage.load('third')
+						assert.eventually.isTrue(
+							storage.load('first')
+								.then(first => first != null && first.toString() === 'one')
+						),
+						assert.eventually.isNull(storage.load('second')),
+						assert.eventually.isTrue(
+							storage.load('third')
+								.then(third => third != null && third.toString() === 'three')
+						)
 					])
 				)
-				.then(([ first, second, third ]) => {
-					assert.equal(first!.toString(), 'one');
-					assert.isNull(second);
-					assert.equal(third!.toString(), 'three');
-				})
 				.then(() => storage.remove('first'))
 				.then(() => Promise.all([
-						storage.load('first'),
-						storage.load('third')
+						assert.eventually.isNull(storage.load('first')),
+						assert.eventually.isTrue(
+							storage.load('third')
+								.then(third => third != null && third.toString() === 'three')
+						)
 					])
 				)
-				.then(([ first, third ]) => {
-					assert.isNull(first);
-					assert.equal(third!.toString(), 'three');
-				})
 				.then(() => storage.remove('third'))
 				.then(() => storage.load('third'))
-				.then(value => {
-					assert.isNull(value);
-				})
 		);
 	});
 
 	it('set empty value', () => {
-		return assert.isFulfilled(
+		return assert.eventually.isTrue(
 			storage.save('first', new Buffer(0))
 				.then(() => storage.load('first'))
-				.then(value => {
-					assert.isNotNull(value);
-					assert.isTrue(value!.equals(new Buffer(0)))
-				})
+				.then(value => value != null && value.equals(new Buffer(0)))
 		);
 	});
 
 	it('set with weird keys', () => {
-		return assert.isFulfilled(
+		return assert.becomes(
 			Promise.all([
 				storage.save(' ', Buffer.from('space')),
 				storage.save('=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`', Buffer.from('control')),
@@ -170,34 +151,21 @@ describe('KeyStorage', () => {
 						storage.load('')
 					]);
 				})
-				.then(values => {
-					assert.equal(values[0]!.toString(), 'space');
-					assert.equal(values[1]!.toString(), 'control');
-					assert.equal(values[2]!.toString(), 'ten');
-					assert.equal(values[3]!.toString(), 'null');
-					assert.equal(values[4]!.toString(), 'double null');
-					assert.equal(values[5]!.toString(), 'null A');
-					assert.equal(values[6]!.toString(), 'zero');
-				})
+				.then(values => values.map(value => value && value.toString())),
+			[ 'space', 'control', 'ten', 'null', 'double null', 'null A', 'zero' ]
 		);
 	});
 
 	it('exists with non-existent key', () => {
-		return assert.isFulfilled(
+		return assert.eventually.isFalse(
 			storage.exists('non-existent')
-				.then(exists => {
-					assert.isFalse(exists);
-				})
 		);
 	});
 
 	it('exists with existent key', () => {
-		return assert.isFulfilled(
+		return assert.eventually.isTrue(
 			storage.save('existent', Buffer.from('my value'))
 				.then(() => storage.exists('existent'))
-				.then(exists => {
-					assert.isTrue(exists, 'returns true for existent key');
-				})
 		);
 	});
 });
