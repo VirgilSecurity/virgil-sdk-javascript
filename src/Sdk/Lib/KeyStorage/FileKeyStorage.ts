@@ -1,64 +1,61 @@
-import { IKeyStorage } from './IKeyStorage';
+import { IKeyStorage, IKeyStorageConfig } from './IKeyStorage';
 
-// todo: correct imports
-var fs = require('fs');
-var path = require('path');
-var crypto = require('crypto');
-var mkdirp = require('mkdirp');
-var utils = require('../../shared/utils');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as crypto from 'crypto';
+import * as mkdirp_ from 'mkdirp';
+import * as rimraf_ from 'rimraf';
+import { PrivateKeyExistsError } from './PrivateKeyExistsError';
 
-export interface IFileKeyStorageConfig {
-	dir: string;
-	encoding: string|null;
-}
+const mkdirp = mkdirp_;
+const rimraf = rimraf_;
 
-const defaults: IFileKeyStorageConfig = {
-	dir: process.cwd(),
-	encoding: null
+const defaults: IKeyStorageConfig = {
+	dir: '.virgil_keys'
 };
 
 export class FileKeyStorage implements IKeyStorage {
-	private store: any;
-	private config: IFileKeyStorageConfig;
 
-	constructor (config: IFileKeyStorageConfig|string) {
+	private config: IKeyStorageConfig;
+
+	constructor (config?: IKeyStorageConfig|string) {
 		this.config = typeof config === 'string'
 			? { ...defaults, dir: config }
 			: { ...defaults, ...(config || {}) };
 
-		mkdirp.sync(this.config.dir);
+		mkdirp.sync(path.resolve(this.config.dir!));
 	}
 
-	public async exists(name: string): Promise<boolean> {
+	public exists(name: string): Promise<boolean> {
+		assert(name != null, '`name` is required');
 		return new Promise<boolean>((resolve, reject) => {
 			const file = this.resolveFilePath(name);
 
-			fs.access(path, err => {
+			fs.access(file, err => {
 				if (err) {
 					if (err.code === 'ENOENT') {
-						resolve(false);
-					} else {
-						reject(err);
+						return resolve(false);
 					}
-				} else {
-					resolve(true);
+					return reject(err);
 				}
+
+				resolve(true);
 			});
 		});
 	}
 
-	public async load(name: string): Promise<Buffer> {
-		return new Promise<Buffer>((resolve, reject) => {
+	public load(name: string): Promise<Buffer|null> {
+		assert(name != null, '`name` is required');
+		return new Promise<Buffer|null>((resolve, reject) => {
 			const file = this.resolveFilePath(name);
 
-			fs.readFile(file, this.config.encoding, (err, data) => {
+			fs.readFile(file, (err, data) => {
 				if (err) {
 					if (err.code === 'ENOENT') {
-						resolve(null as any);
-					} else {
-						reject(err);
+						return resolve(null as any);
 					}
-					return;
+
+					return reject(err);
 				}
 
 				resolve(data);
@@ -66,46 +63,57 @@ export class FileKeyStorage implements IKeyStorage {
 		});
 	}
 
-	public async remove(name: string): Promise<void> { // todo: should it be Promise<bool> ?
-		return new Promise<void>((resolve, reject) => {
+	public remove(name: string): Promise<boolean> {
+		assert(name != null, '`name` is required');
+		return new Promise<boolean>((resolve, reject) => {
 			const file = this.resolveFilePath(name);
-
 			fs.unlink(file, err => {
 				if (err) {
-					reject(err);
-				} else {
-					resolve();
+					if (err.code === 'ENOENT') {
+						return resolve(false);
+					}
+
+					return reject(err);
 				}
+
+				resolve(true);
 			});
 		});
 	}
 
-	public async save(name: string, privateKeyData: Buffer): Promise<void> {
+	public save(name: string, privateKeyData: Buffer): Promise<void> {
+		assert(name != null, '`name` is required');
+		assert(Buffer.isBuffer(privateKeyData), '`privateKeyData` must be a Buffer');
 		return new Promise<void>((resolve, reject) => {
 			const file = this.resolveFilePath(name);
 
-			fs.writeFile(file, privateKeyData, this.config.encoding, err => {
+			fs.writeFile(file, privateKeyData, { flag: 'wx' }, err => {
 				if (err) {
-					reject(err);
-				} else {
-					resolve();
+					if (err.code === 'EEXIST') {
+						return reject(new PrivateKeyExistsError());
+					}
+
+					return reject(err);
 				}
+
+				resolve();
 			});
 		});
 	}
 
-	private resolveDir (dir: string) {
-		dir = path.normalize(dir);
-
-		if (path.isAbsolute(dir)) {
-			return dir;
-		}
-
-		return path.join(process.cwd(), dir);
+	public clear (): Promise<void> {
+		return new Promise<void>((resolve, reject) => {
+			rimraf(this.config.dir!, err => {
+				if (err) {
+					return reject(err);
+				}
+				resolve();
+			});
+		});
 	}
 
 	private resolveFilePath (key: string): string {
-		return path.join(this.config.dir, this.hash(key));
+		return path.resolve(this.config.dir!, this.hash(key));
 	}
 
 	private hash (data: string): string {

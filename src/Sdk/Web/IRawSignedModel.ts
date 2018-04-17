@@ -48,11 +48,16 @@ export class RawSignedModel {
 	toJson(): IRawSignedModelJson {
 		return {
 			content_snapshot: base64Encode(this.contentSnapshot),
-			signatures: this.signatures.map(({ signer, signature, snapshot }: IRawSignature) => ({
-				signer,
-				signature: base64Encode(signature),
-				snapshot: snapshot && base64Encode(snapshot)
-			}))
+			signatures: this.signatures.map(({ signer, signature, snapshot }: IRawSignature) => {
+				return snapshot ? {
+					signer,
+					signature: base64Encode(signature),
+					snapshot: base64Encode(snapshot)
+				} : {
+					signer,
+					signature: base64Encode(signature)
+				};
+			})
 		};
 	}
 

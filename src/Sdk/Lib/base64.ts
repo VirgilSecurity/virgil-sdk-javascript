@@ -3,12 +3,12 @@ const BASE_64 = 'base64';
 export function base64UrlEncode (input: string|Buffer, inputEncoding?: string) {
 	let output = base64Encode(input, inputEncoding);
 	output = output.split('=')[0];
-	output = output.replace('+', '-').replace('/', '_');
+	output = output.replace(/\+/g, '-').replace(/\//g, '_');
 	return output;
 }
 
 export function base64UrlDecode (input: string): Buffer {
-	input = input.replace('-', '+').replace('_', '/');
+	input = input.replace(/-/g, '+').replace(/_/g, '/');
 	switch (input.length % 4) {
 		case 0: break; // no padding needed
 		case 2:

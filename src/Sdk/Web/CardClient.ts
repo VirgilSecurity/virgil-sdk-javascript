@@ -1,4 +1,4 @@
-import { Connection } from './Connection';
+import { Connection, IConnection } from './Connection';
 import { IRawSignedModelJson, RawSignedModel } from './IRawSignedModel';
 import { generateErrorFromResponse } from './errors';
 
@@ -12,9 +12,9 @@ export interface ICardResult {
 }
 
 export class CardClient {
-	private readonly connection: Connection;
+	private readonly connection: IConnection;
 
-	public constructor (connection: Connection|string|undefined) {
+	public constructor (connection?: IConnection|string) {
 		if (typeof connection === 'string') {
 			this.connection = new Connection(connection)
 		} else if (connection) {
@@ -39,7 +39,7 @@ export class CardClient {
 			return [];
 		}
 
-		return cardsJson.map(RawSignedModel.fromJSON);
+		return cardsJson.map(RawSignedModel.fromJson);
 	}
 
 	public async getCard (cardId: string, jwtToken: string): Promise<ICardResult> {
@@ -54,7 +54,7 @@ export class CardClient {
 		const isOutdated = response.headers.get('X-Virgil-Is-Superseeded') === 'true';
 
 		const cardJson = await response.json();
-		const cardRaw = RawSignedModel.fromJSON(cardJson);
+		const cardRaw = RawSignedModel.fromJson(cardJson);
 
 		return { cardRaw, isOutdated };
 	}
@@ -68,8 +68,8 @@ export class CardClient {
 			throw await generateErrorFromResponse(response);
 		}
 
-		const cardJson =  await response.json() as IRawSignedModelJson;
-		return RawSignedModel.fromJSON(cardJson);
+		const cardJson = await response.json() as IRawSignedModelJson;
+		return RawSignedModel.fromJson(cardJson);
 	}
 
 }

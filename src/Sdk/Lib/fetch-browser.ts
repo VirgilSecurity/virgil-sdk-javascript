@@ -1,5 +1,5 @@
-const f = fetch;
-const h = Headers;
-const r = Response;
+import fetchPonyfill from 'fetch-ponyfill';
 
-export { f as fetch, h as Headers, r as Response };
+const { fetch, Headers, Response } = fetchPonyfill();
+
+export { fetch, Headers, Response };

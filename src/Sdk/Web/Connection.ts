@@ -1,6 +1,11 @@
 import { fetch, Headers, Response } from '../Lib/fetch';
 
-export class Connection {
+export interface IConnection {
+	get (endpoint: string, accessToken: string): Promise<Response>;
+	post (endpoint: string, accessToken: string, data?: object): Promise<Response>;
+}
+
+export class Connection implements IConnection {
 
 	public constructor (private readonly prefix: string) {}
 

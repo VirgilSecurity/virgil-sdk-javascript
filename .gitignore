@@ -1,7 +1,7 @@
 node_modules
-*.pem
-dist/*
+dist/
 .env
-.idea
+.idea/
 npm-debug.log
 .rpt2_cache
+yarn-error.log

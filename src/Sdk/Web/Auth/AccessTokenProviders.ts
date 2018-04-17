@@ -17,6 +17,8 @@ export interface IAccessTokenProvider {
 	getToken(context: ITokenContext): Promise<IAccessToken>;
 }
 
+export type JwtCallback = (context: ITokenContext) => Promise<string>;
+
 export class ConstAccessTokenProvider implements IAccessTokenProvider {
 	public constructor (private readonly accessToken: IAccessToken) {};
 
@@ -24,8 +26,6 @@ export class ConstAccessTokenProvider implements IAccessTokenProvider {
 		return Promise.resolve(this.accessToken);
 	}
 }
-
-export type JwtCallback = (context: ITokenContext) => Promise<string>;
 
 export class CallbackJwtProvider implements IAccessTokenProvider {
 	public constructor (private readonly obtainTokenFunc: JwtCallback) {};
