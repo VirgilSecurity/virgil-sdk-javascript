@@ -3,9 +3,12 @@ import { IKeyStorage, IKeyStorageConfig } from './IKeyStorage';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import * as mkdirp from 'mkdirp';
-import * as rimraf from 'rimraf';
+import * as mkdirp_ from 'mkdirp';
+import * as rimraf_ from 'rimraf';
 import { PrivateKeyExistsError } from './PrivateKeyExistsError';
+
+const mkdirp = mkdirp_;
+const rimraf = rimraf_;
 
 const defaults: IKeyStorageConfig = {
 	dir: '.virgil_keys'

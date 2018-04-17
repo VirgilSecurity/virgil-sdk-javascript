@@ -3,25 +3,16 @@ const commonjs = require('rollup-plugin-commonjs');
 const typescript = require('rollup-plugin-typescript2');
 const inject = require('rollup-plugin-inject');
 const replace = require('rollup-plugin-replace');
-const globals = require('rollup-plugin-node-globals');
 const json = require('rollup-plugin-json');
 const builtinModules = require('builtin-modules');
-const path = require('path');
-const pkg = require('./package.json');
 
 require('dotenv').config();
-
-const browserFiles = Object.keys(pkg.browser)
-	.reduce((acc, key) => {
-		acc[path.resolve(key)] = path.resolve(pkg.browser[key]);
-		return acc;
-	}, {});
 
 module.exports = function (config) {
 	config.set({
 		frameworks: [ 'mocha', 'chai', 'sinon-chai', 'chai-as-promised' ],
 		autoWatch: false,
-		browsers: [ 'ChromeHeadless' ],
+		browsers: [ 'Chrome' ],
 		files: [
 			{ pattern: 'scripts/register-assert-browser.js', watched: false },
 			{ pattern: 'src/tests/integration/index.ts', watched: false }
@@ -38,16 +29,14 @@ module.exports = function (config) {
 
 		rollupPreprocessor: {
 			plugins: [
-				{
-					resolveId(importee, importer) {
-						if (importer) {
-							const filename = path.resolve(path.dirname(importer), importee) + '.ts';
-							if (filename in browserFiles) {
-								return browserFiles[filename];
-							}
-						}
-					}
-				},
+
+				resolve({
+					browser: true,
+					jsnext: true,
+					extensions: [ '.ts', '.js' ],
+					include: 'src/**/*.ts',
+					preferBuiltins: false
+				}),
 
 				typescript({
 					tsconfigOverride: {
@@ -69,22 +58,12 @@ module.exports = function (config) {
 					include: '**/*.ts',
 					exclude: 'node_modules/**',
 					modules: {
-						Buffer: [ 'buffer-es6', 'Buffer' ]
+						Buffer: [ 'buffer', 'Buffer' ]
 					}
 				}),
 
-				globals({
-					exclude: [ 'node_modules' ]
-				}),
-
-				resolve({
-					browser: true,
-					jsnext: true
-				}),
-
 				commonjs({
-					ignore: builtinModules,
-					ignoreGlobal: true
+					ignore: builtinModules
 				}),
 
 				json({
