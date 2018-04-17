@@ -64,6 +64,7 @@
     "rollup-plugin-replace": "^2.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.11.1",
+    "rollup-plugin-uglify": "^3.0.0",
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
     "ts-node": "^5.0.1",
@@ -83,6 +84,7 @@
   "scripts": {
     "build:iife": "rollup -c config/rollup.config.browser.iife.js",
     "build:cjs": "rollup -c config/rollup.config.cjs.js",
+    "build": "node scripts/build.js",
     "test:node": "mocha --require ts-node/register --require dotenv/config --require scripts/register-assert \"src/**/*.test.ts\"",
     "test:browser": "karma start",
     "test": "npm run test:node && npm run test:browser -- --signle-run"
