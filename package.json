@@ -83,12 +83,12 @@
     "virgil-crypto": "3.0.0-alpha.3"
   },
   "scripts": {
-    "build:iife": "rollup -c config/rollup.config.browser.iife.js",
-    "build:cjs": "rollup -c config/rollup.config.cjs.js",
     "build": "node scripts/build.js",
     "test:node": "mocha --require ts-node/register --require dotenv/config --require scripts/register-assert \"src/**/*.test.ts\"",
     "test:browser": "karma start",
-    "test": "yarn run test:node && yarn run test:browser --signle-run"
+    "test": "yarn run test:node && yarn run test:browser --signle-run",
+    "preversion": "yarn run test",
+    "version": "yarn run build"
   },
   "devEngines": {
     "node": ">= 8.x"
