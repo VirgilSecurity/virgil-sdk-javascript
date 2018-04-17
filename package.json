@@ -88,7 +88,7 @@
     "build": "node scripts/build.js",
     "test:node": "mocha --require ts-node/register --require dotenv/config --require scripts/register-assert \"src/**/*.test.ts\"",
     "test:browser": "karma start",
-    "test": "npm run test:node && npm run test:browser -- --signle-run"
+    "test": "yarn run test:node && yarn run test:browser --signle-run"
   },
   "devEngines": {
     "node": ">= 8.x"

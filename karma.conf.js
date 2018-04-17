@@ -21,7 +21,7 @@ module.exports = function (config) {
 	config.set({
 		frameworks: [ 'mocha', 'chai', 'sinon-chai', 'chai-as-promised' ],
 		autoWatch: false,
-		browsers: [ 'Chrome' ],
+		browsers: [ 'ChromeHeadless' ],
 		files: [
 			{ pattern: 'scripts/register-assert-browser.js', watched: false },
 			{ pattern: 'src/tests/integration/index.ts', watched: false }
