@@ -4153,9 +4153,9 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-virgil-crypto@^3.0.0-alpha.3:
-  version "3.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/virgil-crypto/-/virgil-crypto-3.0.0-alpha.3.tgz#87a656ce29672f269ec33e84a14591be5e8d32aa"
+virgil-crypto@^3.0.0-alpha.5:
+  version "3.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/virgil-crypto/-/virgil-crypto-3.0.0-alpha.5.tgz#ddfde3068b184164ca51ae883ed652f475f08bf9"
 
 vlq@^0.2.1, vlq@^0.2.2:
   version "0.2.3"

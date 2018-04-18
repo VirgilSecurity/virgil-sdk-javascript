@@ -1,4 +1,4 @@
-import { createVirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtVerifier } from '../../Sdk/Web/Auth/JwtVerifier';
 import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
 import { Jwt } from '../../Sdk/Web/Auth/Jwt';
@@ -8,7 +8,7 @@ import { ConstAccessTokenProvider } from '../../Sdk/Web/Auth/AccessTokenProvider
 import { compatData } from './data';
 
 const initJwtVerifier = (apiKeyId: string, apiKeyPublicKey: string) => {
-	const crypto = createVirgilCrypto();
+	const crypto = new VirgilCrypto();
 	return new JwtVerifier({
 		accessTokenSigner: new VirgilAccessTokenSigner(crypto),
 		apiKeyId: apiKeyId,
@@ -17,7 +17,7 @@ const initJwtVerifier = (apiKeyId: string, apiKeyPublicKey: string) => {
 };
 
 const initJwtGenerator = (appId: string, apiKeyId: string, apiKeyPrivateKey: string) => {
-	const crypto = createVirgilCrypto();
+	const crypto = new VirgilCrypto();
 	return new JwtGenerator({
 		appId: appId,
 		apiKeyId: apiKeyId,

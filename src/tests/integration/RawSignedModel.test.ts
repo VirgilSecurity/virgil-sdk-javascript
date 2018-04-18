@@ -1,10 +1,10 @@
-import { createVirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
+import { VirgilCardCrypto } from 'virgil-crypto';
 import { RawSignedModel, IRawSignedModelJson } from '../../Sdk/Web/IRawSignedModel';
 import { parseRawSignedModel } from '../../Sdk/Utils/CardUtils';
 
 import { compatData } from './data';
 
-const initCardCrypto = () => new VirgilCardCrypto(createVirgilCrypto());
+const initCardCrypto = () => new VirgilCardCrypto();
 
 describe('RawSignedModel', () => {
 

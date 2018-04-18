@@ -73,7 +73,7 @@
     "sinon-chai": "^3.0.0",
     "ts-node": "^5.0.1",
     "typescript": "^2.6.2",
-    "virgil-crypto": "^3.0.0-alpha.3"
+    "virgil-crypto": "^3.0.0-alpha.5"
   },
   "dependencies": {
     "buffer": "^5.1.0",
@@ -83,7 +83,7 @@
     "whatwg-fetch": "^2.0.4"
   },
   "peerDependencies": {
-    "virgil-crypto": "3.0.0-alpha.3"
+    "virgil-crypto": "^3.0.0-alpha.5"
   },
   "scripts": {
     "build": "node scripts/build.js",

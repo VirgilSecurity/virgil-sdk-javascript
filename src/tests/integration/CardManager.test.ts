@@ -1,4 +1,4 @@
-import { createVirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { VirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { CardManager } from '../../Sdk/CardManager';
 import { GeneratorJwtProvider, ITokenContext } from '../../Sdk/Web/Auth/AccessTokenProviders';
 import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
@@ -9,7 +9,7 @@ import { IVirgilCrypto } from 'virgil-crypto/dist/types/IVirgilCrypto';
 import { compatData } from './data';
 
 const init = () => {
-	const crypto = createVirgilCrypto();
+	const crypto = new VirgilCrypto();
 	const accessTokenSigner = new VirgilAccessTokenSigner(crypto);
 	const cardCrypto = new VirgilCardCrypto(crypto);
 
