@@ -1,29 +1,15 @@
-const resolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-const typescript = require('rollup-plugin-typescript2');
-const inject = require('rollup-plugin-inject');
-const replace = require('rollup-plugin-replace');
-const uglify = require('rollup-plugin-uglify');
 const builtinModules = require('builtin-modules');
 const { promisify } = require('util');
 const rimraf = promisify(require('rimraf'));
 const mkdirp = promisify(require('mkdirp'));
 const path = require('path');
 const { rollup } = require('rollup');
+const bundleTypes = require('./bundle-types');
+const getRollupPlugins = require('./get-rollup-plugins');
 
-const BROWSER_ONLY_PLUGINS = [
-	inject({
-		include: '**/*.ts',
-		exclude: 'node_modules/**',
-		modules: {
-			Buffer: [ 'buffer', 'Buffer' ]
-		}
-	})
-];
-
-const NODE = 'NODE';
-const BROWSER = 'BROWSER';
-const BROWSER_PROD = 'BROWSER_PROD';
+const NODE = bundleTypes.NODE;
+const BROWSER = bundleTypes.BROWSER;
+const BROWSER_PROD = bundleTypes.BROWSER_PROD;
 
 const virgilSdk = {
 	path: '.',
@@ -33,63 +19,18 @@ const virgilSdk = {
 };
 
 function createBundle(bundle) {
-	const pkg = require(path.resolve(bundle.path, 'package.json'));
 
 	return Promise.resolve()
 		.then(() => rimraf(path.resolve(bundle.path, 'dist')))
 		.then(() => mkdirp(path.resolve(bundle.path, 'dist')))
 		.then(() => {
 			return Promise.all(bundle.bundleTypes.map(bundleType => {
-				const isBrowser = bundleType !== NODE;
-				const isProd = bundleType === BROWSER_PROD;
-
-				const browserEntry = typeof pkg.browser === 'object' && pkg.browser['./src/index.ts']
-					? pkg.browser['./src/index.ts']
-					: 'src/index.ts';
-
-				const entry = isBrowser ? browserEntry : 'src/index.ts';
-
-				// ingore built-ins in node,
-				// include buffer in browser bundles
-				const externalModules = isBrowser ? [] : builtinModules;
+				const entry = 'src/index.ts';
 
 				return rollup({
 					input: path.resolve(bundle.path, entry),
-					external: externalModules,
-					// moduleContext: {
-					// 	'whatwg-fetch': 'window'
-					// },
-					plugins: [
-						resolve({
-							browser: isBrowser,
-							jsnext: true,
-							extensions: [ '.ts', '.js' ],
-							include: 'src/**/*.ts',
-							preferBuiltins: !isBrowser
-						}),
-
-						typescript({
-							useTsconfigDeclarationDir: true,
-							tsconfigOverride: {
-								compilerOptions: {
-									module: 'es2015'
-								}
-							}
-						}),
-
-						replace({ 'process.browser': JSON.stringify(isBrowser) }),
-
-						...(isBrowser ? BROWSER_ONLY_PLUGINS : []),
-
-						commonjs({
-							ignore: externalModules
-						}),
-
-						...(isProd
-							? [ uglify() ]
-							: []
-						)
-					]
+					external: builtinModules,
+					plugins: getRollupPlugins(bundleType)
 				}).then(output => {
 					const formats = getOutputFormatsFromBundleType(bundleType);
 					return Promise.all(formats.map(format => {

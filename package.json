@@ -86,7 +86,7 @@
     "virgil-crypto": "^3.0.0-alpha.5"
   },
   "scripts": {
-    "build": "node scripts/build.js",
+    "build": "node scripts/rollup/build.js",
     "test:node": "mocha --require ts-node/register --require dotenv/config --require scripts/register-assert \"src/**/*.test.ts\"",
     "test:browser": "karma start",
     "test": "yarn run test:node && yarn run test:browser --signle-run",

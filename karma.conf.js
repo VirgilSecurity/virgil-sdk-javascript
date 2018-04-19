@@ -1,10 +1,7 @@
-const resolve = require('rollup-plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-const typescript = require('rollup-plugin-typescript2');
-const inject = require('rollup-plugin-inject');
 const replace = require('rollup-plugin-replace');
 const json = require('rollup-plugin-json');
-const builtinModules = require('builtin-modules');
+const bundleTypes = require('./scripts/rollup/bundle-types');
+const getRollupPlugins = require('./scripts/rollup/get-rollup-plugins');
 
 require('dotenv').config();
 
@@ -29,48 +26,19 @@ module.exports = function (config) {
 		},
 
 		rollupPreprocessor: {
-			plugins: [
-
-				resolve({
-					browser: true,
-					jsnext: true,
-					extensions: [ '.ts', '.js' ],
-					include: 'src/**/*.ts',
-					preferBuiltins: false
-				}),
-
-				typescript({
-					tsconfigOverride: {
-						compilerOptions: {
-							module: 'es2015'
-						}
-					}
-				}),
+			plugins: getRollupPlugins(bundleTypes.BROWSER).concat([
 
 				replace({
-					'process.browser': JSON.stringify(true),
 					'process.env.API_KEY_PRIVATE_KEY': JSON.stringify(process.env.API_KEY_PRIVATE_KEY),
 					'process.env.API_KEY_ID': JSON.stringify(process.env.API_KEY_ID),
 					'process.env.APP_ID': JSON.stringify(process.env.APP_ID),
 					'process.env.API_URL': JSON.stringify(process.env.API_URL),
 				}),
 
-				inject({
-					include: '**/*.ts',
-					exclude: 'node_modules/**',
-					modules: {
-						Buffer: [ 'buffer', 'Buffer' ]
-					}
-				}),
-
-				commonjs({
-					ignore: builtinModules
-				}),
-
 				json({
 					include: 'src/tests/**/*.json'
 				})
-			],
+			]),
 
 			output: {
 				format: 'iife',
