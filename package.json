@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "5.0.0",
+  "version": "5.0.0-alpha.1",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
@@ -73,17 +73,16 @@
     "sinon-chai": "^3.0.0",
     "ts-node": "^5.0.1",
     "typescript": "^2.6.2",
-    "virgil-crypto": "^3.0.0-alpha.5"
+    "virgil-crypto": "^3.0.0-alpha.6"
   },
   "dependencies": {
-    "buffer": "^5.1.0",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.1.2",
     "rimraf": "^2.6.2",
     "whatwg-fetch": "^2.0.4"
   },
   "peerDependencies": {
-    "virgil-crypto": "^3.0.0-alpha.5"
+    "virgil-crypto": "^3.0.0-alpha.6"
   },
   "scripts": {
     "build": "node scripts/rollup/build.js",

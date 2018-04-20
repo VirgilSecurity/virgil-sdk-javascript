@@ -15,13 +15,14 @@ This module can be used both __server-side__ in a Node application, and __client
 
 ### On a server
 
-This module can be installed via NPM.
+This module can be installed via NPM. This is a pre-release version, so to install from npm you need to 
+specify the `next` tag
 
 ```sh
-npm install virgil-sdk --save
+npm install virgil-sdk@next
 ```
 
-> **Important!** You will need node.js version >= 4 to use virgil-sdk.  
+> **Important!** You will need node.js version >= 6 to use virgil-sdk.  
 If you have a different version you can use [nvm](https://github.com/creationix/nvm) 
 (or a similar tool) to install Node.js of supported version alongside your current installation.  
 If you only intend to use virgil-sdk in a browser environment, you can ignore this warning.
@@ -30,20 +31,9 @@ __Next:__ [Get Started with the JS SDK][js_getstarted].
 ### In the browser
 
 The client-side SDK targets ECMAScript5+ compatible browsers.
-
-```html
-<script
-src="https://cdn.virgilsecurity.com/packages/javascript/sdk/4.5.3/virgil-sdk.min.js"
-crossorigin="anonymous"></script>
-```
-
-Alternatively [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases) into your application.
-
-> __Warning:__
-> Please note that in the browser environment we use Web Workers
-to invoke some cryptographic operations. As a result, Chrome and Opera will raise an error unless the code is executed on an actual proper domain:
-
-> `"Uncaught SecurityError: Script at '[blob url here]' cannot be accessed from origin 'null'."`
+Installation via script tag is coming soon. 
+For now, you can use npm or [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases) 
+into your application.
 
 __Next:__ [Get Started with the JS SDK][js_getstarted].
 
@@ -52,16 +42,19 @@ __Next:__ [Get Started with the JS SDK][js_getstarted].
 Virgil Security makes it super easy to add encryption to any application. With our SDK you create a public [__Virgil Card__][glossary_virgil_card] for every one of your users and devices. With these in place you can easily encrypt any data in the client.
 
 ```js
+const { VirgilCrypto } = require('virgil-crypto');
+const virgilCrypto = new VirgilCrypto();
+ 
 // find Alice's card(s)
-client.cards.find(["alice"])
-  .then(function (cards) {
-    // encrypt the message using Alice's cards
-    var message = "Hello Alice!";
-    var encryptedMessage = client.encryptFor(message, cards);
-    // transmit the message with your preferred technology
-    // this method must be implemented by the developer
-    transmitMessage(encryptedMessage.toString("base64"));
-  });
+cardManager.searchCards('alice')
+	.then(function (cards) {
+		// encrypt the message using Alice's cards
+        const message = "Hello Alice!";
+		const encryptedMessage = virgilCrypto.encrypt(message, cards.map(function () { return card.publicKey; }));
+		// transmit the message with your preferred technology
+		// this method must be implemented by the developer
+		transmitMessage(encryptedMessage.toString("base64"));
+	});
 ```
 
 The receiving user then uses their stored __private key__ to decrypt the message.
@@ -69,11 +62,18 @@ The receiving user then uses their stored __private key__ to decrypt the message
 
 ```js
 // load Alice's Key from storage.
-client.keys.load("alices_key_1", "alices_password")
-  .then(function (key) {
-    // decrypt the message using the key
-    var message = key.decrypt(transferData).toString();
-  });
+const { VirgilCrypto } = require('virgil-crypto');
+const { KeyStorage } = require('virgil-sdk');
+
+const virgilCrypto = new VirgilCrypto();
+const virgilKeyStorage = new KeyStorage();
+
+virgilKeyStorage.load("alices_key_1")
+	.then(function (rawPrivateKey) {
+		const privateKey = virgilCrypto.importPrivateKey(rawPrivateKey, "alices_password");
+		const message = virgilCrypto.decrypt(transferData, privateKey);
+		console.log(message.toString());
+	});
 ```
 
 __Next:__ To [get you properly started][_guides_virgil_cards] you'll need to know how to create and publish Virgil Cards. Our [Get Started guide][_guides_virgil_cards] will get you there all the way.
@@ -84,32 +84,51 @@ __Also:__ [Encrypted communication][js_getstarted_encrypted_comms] is just one o
 ## Initialization
 
 To use this SDK you need to [sign up for an account](https://dashboard.virgilsecurity.com/signup) and create your first __application__. 
-Make sure the API version you select is V4. Also make sure to save the __app id__, __private key__ and it's __password__. After this, create an __application token__ for your application to make authenticated requests from your clients.
+Make sure the API version you select is V5. Also make sure to save the __application id__. Next, create an __api key__ 
+and save its __private key__, and __id__. 
 
 ### In the browser
 
-To initialize the SDK in a web browser you will only need the __access token__ you created.
+To initialize the SDK in a web browser you will need to provide a callback that will be used to get the JWT from _your_ 
+ server.
 
 ```js
-var client = virgil.API("[ACCESS_TOKEN]");
-```
+const { VirgilCardCrypto } = require('virgil-crypto');
+const { CardManager, CallbackJwtProvider, VirgilCardVerifier } = require('virgil-sdk');
 
-> __Note:__ this client will have limited capabilities. For example, it will be able to generate new __Cards__ but it will need a server-side client to transmit these to Virgil.
+const cardCrypto = new VirgilCardCrypto();
+
+// getVirgilJwt is a function, that returns a Promise, that resolves
+// to a Virgil JWT
+const jwtProvider = new CallbackJwtProvider(getVirgilJwt);
+const cardVerifier = new VirgilCardVerifier(cardCrypto);
+
+const cardManager = new CardManager({
+	cardCrypto,
+	accessTokenProvider: jwtProvider,
+	retryOnUnauthorized: true,
+	verifier: cardVerifier
+});
+```
 
 ### On a server
 
-To initialize the SDK on the server side we will need the __access token__, __app id__ and the __App Key__ you created on the [Developer Dashboard](https://developer.virgilsecurity.com/account/dashboard).
+To initialize the SDK on the server side we will need the __app id__, __api key private key__, the __api key id__ 
+you created on the [Developer Dashboard](https://developer.virgilsecurity.com/account/dashboard).
 
 ```javascript
-var virgil = require("virgil-sdk");
-var appKey = require("fs").readFileSync("/path/to/app/key");
-var client = virgil.API({
-    accessToken: "[ACCESS_TOKEN]",
-    appCredentials: {
-        appId: "[APP_ID]",
-        appKeyData: appKey,
-        appKeyPassword: "[APP_KEY_PASSWORD]"
-    }
+const { VirgilCrypto, VirgilAccessTokenSigner } = require('virgil-crypto');
+const { JwtGenerator } = require('virgil-sdk');
+
+const crypto = new VirgilCrypto();
+const apiPrivateKey = crypto.importPrivateKey(process.env.API_PRIVATE_KEY);
+	
+const jwtGenerator = new JwtGenerator({
+	appId: process.env.VIRGIL_APP_ID,
+	apiKey: apiPrivateKey,
+	apiKeyId: process.env.VIRGIL_API_KEY_ID,
+	accessTokenSigner,
+	millisecondsToLive: 20 * 60 * 1000
 });
 ```
 
