@@ -55,7 +55,7 @@ describe('VirgilCardVerifier', () => {
 
 		verifier.verifySelfSignature = true;
 		verifier.verifyVirgilSignature = true;
-		verifier.whiteLists = [
+		verifier.whitelists = [
 			[
 				{ signer: 'extra', publicKeyBase64: publicKey1Base64}
 			]
@@ -78,7 +78,7 @@ describe('VirgilCardVerifier', () => {
 
 		verifier.verifySelfSignature = true;
 		verifier.verifyVirgilSignature = true;
-		verifier.whiteLists = [
+		verifier.whitelists = [
 			[
 				{ signer: 'extra', publicKeyBase64: publicKey2Base64 },
 				{ signer: 'extra', publicKeyBase64: publicKey1Base64 }
@@ -106,7 +106,7 @@ describe('VirgilCardVerifier', () => {
 
 		verifier.verifySelfSignature = true;
 		verifier.verifyVirgilSignature = true;
-		verifier.whiteLists = [
+		verifier.whitelists = [
 			[
 				{ signer: 'extra', publicKeyBase64: publicKey2Base64 },
 				{ signer: 'extra', publicKeyBase64: publicKey1Base64 }
@@ -164,7 +164,7 @@ describe('VirgilCardVerifier', () => {
 
 		verifier.verifySelfSignature = true;
 		verifier.verifyVirgilSignature = true;
-		verifier.whiteLists = [
+		verifier.whitelists = [
 			[
 				{ signer: 'extra', publicKeyBase64: publicKeyBase64 }
 			]

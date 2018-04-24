@@ -13,15 +13,32 @@ export interface IVerifierCredentials {
 	publicKeyBase64: string;
 }
 
-export type IWhiteList = IVerifierCredentials[];
+export interface IVirgilCardVerifierParams {
+	verifySelfSignature?: boolean;
+	verifyVirgilSignature?: boolean;
+	whitelists?: IWhitelist[]
+}
+
+export type IWhitelist = IVerifierCredentials[];
+
+const DEFAULTS: IVirgilCardVerifierParams = {
+	verifySelfSignature: true,
+	verifyVirgilSignature: true,
+	whitelists: []
+};
 
 export class VirgilCardVerifier implements ICardVerifier {
-	public whiteLists: IWhiteList[] = [];
-	public verifySelfSignature = true;
-	public verifyVirgilSignature = true;
+	public whitelists: IWhitelist[];
+	public verifySelfSignature: boolean;
+	public verifyVirgilSignature: boolean;
 	public virgilPublicKeyBase64 = "MCowBQYDK2VwAyEAljOYGANYiVq1WbvVvoYIKtvZi2ji9bAhxyu6iV/LF8M=";
 
-	public constructor (private readonly crypto: ICardCrypto) {}
+	public constructor (private readonly crypto: ICardCrypto, options?: IVirgilCardVerifierParams) {
+		const params = { ...DEFAULTS, ...(options || {})};
+		this.verifySelfSignature = params.verifySelfSignature!;
+		this.verifyVirgilSignature = params.verifyVirgilSignature!;
+		this.whitelists = params.whitelists!;
+	}
 
 	public verifyCard(card: ICard): boolean {
 		if (this.selfValidationFailed(card)) {
@@ -30,12 +47,12 @@ export class VirgilCardVerifier implements ICardVerifier {
 		if (this.virgilValidationFailed(card)) {
 			return false;
 		}
-		if (!this.whiteLists || this.whiteLists.length === 0) {
+		if (!this.whitelists || this.whitelists.length === 0) {
 			return true;
 		}
 		const signers = card.signatures.map(s => s.signer);
 
-		for (const whitelist of this.whiteLists) {
+		for (const whitelist of this.whitelists) {
 
 			if (whitelist == null || whitelist.length === 0) {
 				return false;
