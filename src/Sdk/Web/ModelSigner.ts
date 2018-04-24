@@ -1,4 +1,4 @@
-import { RawSignedModel } from './IRawSignedModel';
+import { RawSignedModel } from './RawSignedModel';
 import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
 import { IExtraData } from '../ICard';

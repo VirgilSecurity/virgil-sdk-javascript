@@ -1,5 +1,5 @@
 import { ICardCrypto } from '../CryptoApi/ICardCrypto';
-import { RawSignedModel, IRawSignedModelJson } from './Web/IRawSignedModel';
+import { RawSignedModel, IRawSignedModelJson } from './Web/RawSignedModel';
 import { CardClient } from './Web/CardClient';
 import { ModelSigner } from './Web/ModelSigner';
 import { ICard, INewCardParams, IRawCardContent } from './ICard';

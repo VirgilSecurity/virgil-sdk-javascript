@@ -9,3 +9,5 @@ export {
 } from './Sdk/Web/Auth/AccessTokenProviders';
 export { VirgilCardVerifier } from './Sdk/CardVerifier';
 export { KeyStorage } from './Sdk/Lib/KeyStorage/index';
+export { RawSignedModel } from './Sdk/Web/RawSignedModel';
+export { ModelSigner } from './Sdk/Web/ModelSigner';

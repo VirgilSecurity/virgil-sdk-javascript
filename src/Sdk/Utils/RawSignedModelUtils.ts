@@ -1,6 +1,6 @@
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
 import { ICard, INewCardParams } from '../ICard';
-import { RawSignedModel } from '../Web/IRawSignedModel';
+import { RawSignedModel } from '../Web/RawSignedModel';
 import { base64Encode } from '../Lib/base64';
 import { takeSnapshot } from './SnapshotUtils';
 import { getUnixTimestamp } from '../Lib/timestamp';

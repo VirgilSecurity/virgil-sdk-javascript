@@ -1,5 +1,5 @@
 import { Connection, IConnection } from './Connection';
-import { IRawSignedModelJson, RawSignedModel } from './IRawSignedModel';
+import { IRawSignedModelJson, RawSignedModel } from './RawSignedModel';
 import { generateErrorFromResponse } from './errors';
 
 const PublishEndpoint = '/card/v5';
