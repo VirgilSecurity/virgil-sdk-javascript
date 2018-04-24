@@ -31,9 +31,12 @@ __Next:__ [Get Started with the JS SDK][js_getstarted].
 ### In the browser
 
 The client-side SDK targets ECMAScript5+ compatible browsers.
-Installation via script tag is coming soon. 
-For now, you can use npm or [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases) 
-into your application.
+
+```html
+<script src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.min.js"></script>
+```
+
+or [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases) into your application.
 
 __Next:__ [Get Started with the JS SDK][js_getstarted].
 
