@@ -18,7 +18,7 @@ export interface ICardManagerParams {
 	readonly signCallback?: ISignCallback;
 	readonly apiUrl?: string;
 	readonly retryOnUnauthorized: boolean;
-	readonly verifier: ICardVerifier;
+	readonly cardVerifier: ICardVerifier;
 	readonly accessTokenProvider: IAccessTokenProvider;
 }
 
@@ -27,7 +27,7 @@ export class CardManager {
 	public readonly client: CardClient;
 	public readonly modelSigner: ModelSigner;
 	public readonly signCallback?: ISignCallback;
-	public readonly verifier: ICardVerifier;
+	public readonly cardVerifier: ICardVerifier;
 	public retryOnUnauthorized: boolean;
 
 	public readonly accessTokenProvider: IAccessTokenProvider;
@@ -38,7 +38,7 @@ export class CardManager {
 		this.modelSigner = new ModelSigner(params.cardCrypto);
 		this.signCallback = params.signCallback;
 		this.retryOnUnauthorized = params.retryOnUnauthorized;
-		this.verifier = params.verifier;
+		this.cardVerifier = params.cardVerifier;
 		this.accessTokenProvider = params.accessTokenProvider;
 	}
 
@@ -177,10 +177,10 @@ export class CardManager {
 	}
 
 	private validateCards(cards: ICard[]) {
-		if (this.verifier == null) return;
+		if (this.cardVerifier == null) return;
 
 		for (const card of cards) {
-			if (!this.verifier.verifyCard(card)) {
+			if (!this.cardVerifier.verifyCard(card)) {
 				throw new VirgilCardVerificationError('Validation errors have been detected');
 			}
 		}

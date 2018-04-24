@@ -107,7 +107,7 @@ const cardManager = new CardManager({
 	cardCrypto,
 	accessTokenProvider: jwtProvider,
 	retryOnUnauthorized: true,
-	verifier: cardVerifier
+	cardVerifier: cardVerifier
 });
 ```
 

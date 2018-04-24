@@ -45,7 +45,7 @@ const init = () => {
 			cardCrypto,
 			retryOnUnauthorized: false,
 			accessTokenProvider: accessTokenProvider,
-			verifier: cardVerifier,
+			cardVerifier: cardVerifier,
 			apiUrl: process.env.API_URL
 		})
 	};
@@ -76,7 +76,7 @@ describe('CardManager', function () {
 		let cardManager: CardManager;
 		beforeEach(() => {
 			cardManager = init().cardManager;
-			sinon.stub(cardManager.verifier, 'verifyCard').returns(true);
+			sinon.stub(cardManager.cardVerifier, 'verifyCard').returns(true);
 		});
 
 		it('imports and parses card form string (STC-3)', () => {
@@ -163,7 +163,7 @@ describe('CardManager', function () {
 			const fixture = init();
 			cardManager = fixture.cardManager;
 			crypto = fixture.crypto;
-			sinon.stub(cardManager.verifier, 'verifyCard').returns(false);
+			sinon.stub(cardManager.cardVerifier, 'verifyCard').returns(false);
 		});
 
 		it ('verifies cards on import from string', () => {
