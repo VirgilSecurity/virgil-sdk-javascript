@@ -195,3 +195,7 @@ Also, get extra help from our support team on [Slack](https://virgilsecurity.sla
 [_services_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
 [_configure_sdk]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
 [_more_examples]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
+[_get_started]: https://developer.virgilsecurity.com/docs/use-cases
+[_encrypted_storage]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v4/encrypted-storage
+[_encrypted_communication]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v4/encrypted-communication
+[_data_integrity]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v4/data-integrity
