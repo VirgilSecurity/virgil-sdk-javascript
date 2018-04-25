@@ -37,137 +37,147 @@ The client-side SDK targets ECMAScript5+ compatible browsers.
 
 or [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases) into your application.
 
-__Next:__ [Get Started with the JS SDK][js_getstarted].
+## Usage Examples
 
-## Encryption Example
+Before start practicing with the usage examples be sure that the SDK is configured. Check out our [SDK configuration guides][_configure_sdk] for more information.
 
-Virgil Security makes it super easy to add encryption to any application. With our SDK you create a public [__Virgil Card__][glossary_virgil_card] for every one of your users and devices. With these in place you can easily encrypt any data in the client.
+#### Generate and publish user's Cards with Public Keys inside on Cards Service
 
-```js
-const { VirgilCrypto } = require('virgil-crypto');
-const virgilCrypto = new VirgilCrypto();
- 
-// find Alice's card(s)
-cardManager.searchCards('alice')
-	.then(function (cards) {
-		// encrypt the message using Alice's cards
-        const message = "Hello Alice!";
-		const encryptedMessage = virgilCrypto.encrypt(message, cards.map(function () { return card.publicKey; }));
-		// transmit the message with your preferred technology
-		// this method must be implemented by the developer
-		transmitMessage(encryptedMessage.toString("base64"));
-	});
-```
-
-The receiving user then uses their stored __private key__ to decrypt the message.
-
-
-```js
-// load Alice's Key from storage.
-const { VirgilCrypto } = require('virgil-crypto');
-const { KeyStorage } = require('virgil-sdk');
-
-const virgilCrypto = new VirgilCrypto();
-const virgilKeyStorage = new KeyStorage();
-
-virgilKeyStorage.load("alices_key_1")
-	.then(function (rawPrivateKey) {
-		const privateKey = virgilCrypto.importPrivateKey(rawPrivateKey, "alices_password");
-		const message = virgilCrypto.decrypt(transferData, privateKey);
-		console.log(message.toString());
-	});
-```
-
-__Next:__ To [get you properly started][_guides_virgil_cards] you'll need to know how to create and publish Virgil Cards. Our [Get Started guide][_guides_virgil_cards] will get you there all the way.
-
-__Also:__ [Encrypted communication][js_getstarted_encrypted_comms] is just one of the few things our SDK can do. Have a look at our guides on  [Encrypted Storage][js_getstarted_storage] and [Data Integrity][js_getstarted_data_integrity] for more information.
-
-
-## Initialization
-
-To use this SDK you need to [sign up for an account](https://dashboard.virgilsecurity.com/signup) and create your first __application__. 
-Make sure the API version you select is V5. Also make sure to save the __application id__. Next, create an __api key__ 
-and save its __private key__, and __id__. 
-
-### In the browser
-
-To initialize the SDK in a web browser you will need to provide a callback that will be used to get the JWT from _your_ 
- server.
-
-```js
-const { VirgilCardCrypto } = require('virgil-crypto');
-const { CardManager, CallbackJwtProvider, VirgilCardVerifier } = require('virgil-sdk');
-
-const cardCrypto = new VirgilCardCrypto();
-
-// getVirgilJwt is a function, that returns a Promise, that resolves
-// to a Virgil JWT
-const jwtProvider = new CallbackJwtProvider(getVirgilJwt);
-const cardVerifier = new VirgilCardVerifier(cardCrypto);
-
-const cardManager = new CardManager({
-	cardCrypto,
-	accessTokenProvider: jwtProvider,
-	retryOnUnauthorized: true,
-	cardVerifier: cardVerifier
-});
-```
-
-### On a server
-
-To initialize the SDK on the server side we will need the __app id__, __api key private key__, the __api key id__ 
-you created on the [Developer Dashboard](https://developer.virgilsecurity.com/account/dashboard).
+Use the following code to create and publish a user's Card with Public Key inside on Virgil Cards Service:
 
 ```javascript
-const { VirgilCrypto, VirgilAccessTokenSigner } = require('virgil-crypto');
-const { JwtGenerator } = require('virgil-sdk');
+import { VirgilCrypto } from 'virgil-crypto';
+import { KeyStorage } from 'virgil-sdk';
 
-const crypto = new VirgilCrypto();
-const apiPrivateKey = crypto.importPrivateKey(process.env.API_PRIVATE_KEY);
-	
-const jwtGenerator = new JwtGenerator({
-	appId: process.env.VIRGIL_APP_ID,
-	apiKey: apiPrivateKey,
-	apiKeyId: process.env.VIRGIL_API_KEY_ID,
-	accessTokenSigner,
-	millisecondsToLive: 20 * 60 * 1000
-});
+(async function() {
+	const crypto = new VirgilCrypto();
+    const privateKeyStorage = new KeyStorage();
+    
+    // Generate a key pair
+    const keyPair = crypto.generateKeys();
+    
+    // Get the raw private key bytes
+    const privateKeyBytes = crypto.exportPrivateKey(keyPair.privateKey, 'OPTIONAL_PASSWORD');
+    
+    // Store the private key bytes
+    await privateKeyStorage.save('alice_private_key', privateKeyBytes);
+    
+    // Publish user's card on the Cards Service
+    const card = await cardManager.publishCard({
+		privateKey: keyPair.privateKey,
+		publicKey: keyPair.publicKey,
+		identity: 'alice@example.com'
+	});
+})();
 ```
 
-Next: [Learn more about our the different ways of initializing the Javascript SDK][js_guides_initialization] in our documentation.
+#### Sign then encrypt data
 
-## Documentation
+Virgil SDK lets you use a user's Private key and his or her Cards to sign, then encrypt any kind of data.
 
-Virgil Security has a powerful set of APIs, and the documentation is there to get you started today.
+In the following example, we load a Private Key from a customized Key Storage and get recipient's Card from the Virgil Cards Services. 
+Recipient's Card contains a Public Key on which we will encrypt the data and verify a signature.
 
-* [Get Started][js_getstarted] documentation
-  * [Initialize the SDK][js_guides_initialize_root]
-  * [Encrypted storage][js_getstarted_storage]
-  * [Encrypted communication][js_getstarted_encrypted_comms]
-  * [Data integrity][js_getstarted_data_integrity]
-* [Guides][_guides]
-  * [Virgil Cards][_guides_virgil_cards]
-  * [Virgil Keys][_guides_virgil_keys]
+```javascript
+import { VirgilCrypto } from 'virgil-crypto';
+import { KeyStorage } from 'virgil-sdk';
 
-Alternatively, head over to our [Reference documentation](#reference_docs) for in-depth information about every SDK method, it's arguments and return types.
+(async function() {
+	const crypto = new VirgilCrypto();
+    const privateKeyStorage = new KeyStorage();
+    
+    // Load the private key bytes
+	const privateKeyBytes = await privateKeyStorage.load('alice_private_key');
+	if (privateKeyBytes === null) {
+		return;
+	}
+	
+	// Get the PrivateKey object from raw private key bytes
+	const alicePrivateKey = crypto.importPrivateKey(privateKeyBytes, 'OPTIONAL_PASSWORD');
+	
+	const cards = await cardManager.searchCards('bob@example.com');
+	if (cards.length === 0) {
+		return;
+	}
+	
+	const messageToEncrypt = 'Hello, Bob!';
+	const bobPublicKeys = cards.map(card => card.publicKey);
+	const encryptedMessage = crypto.signThenEncrypt(messageToEncrypt, alicePrivateKey, bobPublicKeys);
+	console.log(encryptedMessage.toString('base64'));
+})();
+```
+
+#### Decrypt then verify data
+Once the Users receive the signed and encrypted message, they can decrypt it with their own Private Key and verify signature with a Sender's Card:
+
+```javascript
+import { VirgilCrypto } from 'virgil-crypto';
+import { KeyStorage } from 'virgil-sdk';
+
+(async function() {
+	const crypto = new VirgilCrypto();
+    const privateKeyStorage = new KeyStorage();
+    
+    // Load the private key bytes
+	const privateKeyBytes = await privateKeyStorage.load('bob_private_key');
+	if (privateKeyBytes === null) {
+		return;
+	}
+	
+	// Get the PrivateKey object from raw private key bytes
+	const bobPrivateKey = crypto.importPrivateKey(privateKeyBytes, 'OPTIONAL_PASSWORD');
+	
+	const cards = await cardManager.searchCards('alice@example.com');
+	if (cards.length === 0) {
+		return;
+	}
+	
+	const alicePublicKeys = cards.map(card => card.publicKey);
+	const decryptedMessage = crypto.decryptThenVerify(encryptedMessage, bobPrivateKey, alicePublicKeys);
+	console.log(decryptedMessage.toString('utf8'));
+})();
+```
+## Docs
+Virgil Security has a powerful set of APIs, and the documentation below can get you started today.
+
+In order to use the Virgil SDK with your application, you will need to first configure your application. By default, the SDK will attempt to look for Virgil-specific settings in your application but you can change it during SDK configuration.
+
+* [Configure the SDK][_configure_sdk] documentation
+  * [Setup authentication][_setup_authentication] to make API calls to Virgil Services
+  * [Setup Card Manager][_card_manager] to manage user's Public Keys
+  * [Setup Card Verifier][_card_verifier] to verify signatures inside of user's Card
+  * [Setup Key storage][_key_storage] to store Private Keys
+  * [Setup your own Crypto library][_own_crypto] inside of the SDK
+* [More usage examples][_more_examples]
+  * [Create & publish a Card][_create_card] that has a Public Key on Virgil Cards Service
+  * [Search user's Card by user's identity][_search_card]
+  * [Get user's Card by its ID][_get_card]
+  * [Use Card for crypto operations][_use_card]
+* [Reference API][_reference_api]
+
 
 ## License
 
-This library is released under the [3-clause BSD License](LICENSE).
+This library is released under the [3-clause BSD License](LICENSE.md).
 
 ## Support
+Our developer support team is here to help you. Find out more information on our [Help Center](https://help.virgilsecurity.com/).
 
-Our developer support team is here to help you. You can find us on [Twitter](https://twitter.com/virgilsecurity) and [email](support).
+You can find us on [Twitter](https://twitter.com/VirgilSecurity) or send us email support@VirgilSecurity.com.
 
-[support]: mailto:support@VirgilSecurity.com
-[js_getstarted]: https://developer.virgilsecurity.com/docs/use-cases
-[js_getstarted_encrypted_comms]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v5/encrypted-communication
-[js_getstarted_storage]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v5/encrypted-storage
-[js_getstarted_data_integrity]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v5/data-integrity
-[js_guides_initialization]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/install-sdk
-[js_guides_initialize_root]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
-[_guides]: https://developer.virgilsecurity.com/docs/how-to
-[_guides_virgil_cards]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
-[_guides_virgil_keys]: https://developer.virgilsecurity.com/docs/how-to#cryptography
-[npmjs]: https://www.npmjs.com/package/virgil-sdk
-[glossary_virgil_card]: https://developer.virgilsecurity.com/docs/glossary#virgil-card
+Also, get extra help from our support team on [Slack](https://virgilsecurity.slack.com/join/shared_invite/enQtMjg4MDE4ODM3ODA4LTc2OWQwOTQ3YjNhNTQ0ZjJiZDc2NjkzYjYxNTI0YzhmNTY2ZDliMGJjYWQ5YmZiOGU5ZWEzNmJiMWZhYWVmYTM).
+
+[_virgil_crypto]: https://github.com/VirgilSecurity/virgil-crypto-javascript
+[_cards_service]: https://developer.virgilsecurity.com/docs/api-reference/card-service/v5
+[_use_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v5/use-card-for-crypto-operation
+[_get_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v5/get-card
+[_search_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v5/search-card
+[_create_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v5/create-card
+[_own_crypto]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-own-crypto-library
+[_key_storage]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-key-storage
+[_card_verifier]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-card-verifier
+[_card_manager]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-card-manager
+[_setup_authentication]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-authentication
+[_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
+[_configure_sdk]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
+[_more_examples]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
