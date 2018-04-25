@@ -64,7 +64,7 @@ To initialize the SDK at the __Server Side__ you need the application credential
 ```javascript
 var virgil = require("virgil-sdk");
 var appKey = require("fs").readFileSync("/path/to/app/key");
-var client = virgil.API({
+var api = virgil.API({
     accessToken: "[ACCESS_TOKEN]",
     appCredentials: {
         appId: "[APP_ID]",
@@ -81,6 +81,8 @@ Before start practicing with the usage examples be sure that the SDK is configur
 #### Generate and publish user's Cards with Public Keys inside on Cards Service
 Use the following lines of code to create and publish a user's Card with Public Key inside on Virgil Cards Service:
 
+##### Client side
+
 ```js
 // generate and save Virgil Key in key storage on a device
 var aliceKey = api.keys.generate();
@@ -94,13 +96,19 @@ aliceKey.save("[KEY_NAME]", "[KEY_PASSWORD]")
 var exportedAliceCard = aliceCard.export();
 
 // transmit the Card to your App Server
+```
+
+##### Server side
+
+```js
 // import the Virgil Card from a string
 var aliceCard = api.cards.import(exportedAliceCard);
 
 // publish the Virgil Card on the Virgil Cards Service
 api.cards.publish(aliceCard)
-    .then(function () {
+    .then(function (card) {
         // Virgil Card is published
+        // return it to the client
     });
 ```
 
@@ -153,17 +161,16 @@ Virgil Security has a powerful set of APIs, and the documentation below can get 
 
 In order to use the Virgil SDK with your application, you will need to first configure your application. By default, the SDK will attempt to look for Virgil-specific settings in your application but you can change it during SDK configuration.
 
-* [Configure the SDK][_configure_sdk] documentation
-  * [Setup authentication][_setup_authentication] to make API calls to Virgil Services
-  * [Setup Card Manager][_card_manager] to manage user's Public Keys
-  * [Setup Card Verifier][_card_verifier] to verify signatures inside of user's Card
-  * [Setup Key storage][_key_storage] to store Private Keys
+* [Get Started][_get_started] documentation
+  * [Encrypted Storage][_encrypted_storage]
+  * [Encrypted Communication][_encrypted_communication]
+  * [Data Integrity][_data_integrity]
 * [More usage examples][_more_examples]
   * [Create & publish a Card][_create_card] that has a Public Key on Virgil Cards Service
   * [Search user's Card by user's identity][_search_card]
   * [Get user's Card by its ID][_get_card]
   * [Use Card for crypto operations][_use_card]
-* [Reference API][_reference_api]
+* [Service Reference API][_services_reference_api]
 
 ## License
 
@@ -180,15 +187,10 @@ Also, get extra help from our support team on [Slack](https://virgilsecurity.sla
 
 [_virgil_crypto]: https://github.com/VirgilSecurity/virgil-crypto
 [_cards_service]: https://developer.virgilsecurity.com/docs/api-reference/card-service/v4
-[_use_card]: https://developer.virgilsecurity.com/docs/js/how-to/public-key-management/v4/use-card-for-crypto-operation
-[_get_card]: https://developer.virgilsecurity.com/docs/js/how-to/public-key-management/v4/get-card
-[_search_card]: https://developer.virgilsecurity.com/docs/js/how-to/public-key-management/v4/search-card
-[_create_card]: https://developer.virgilsecurity.com/docs/js/how-to/public-key-management/v4/create-card
-[_key_storage]: https://developer.virgilsecurity.com/docs/js/how-to/setup/v4/setup-key-storage
-[_card_verifier]: https://developer.virgilsecurity.com/docs/js/how-to/setup/v4/setup-card-verifier
-[_card_manager]: https://developer.virgilsecurity.com/docs/js/how-to/setup/v4/setup-card-manager
-[_setup_authentication]: https://developer.virgilsecurity.com/docs/js/how-to/setup/v4/setup-authentication
+[_use_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v4/use-card-for-crypto-operation
+[_get_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v4/get-card
+[_search_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v4/search-card
+[_create_card]: https://developer.virgilsecurity.com/docs/javascript/how-to/public-key-management/v4/create-card
 [_services_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
 [_configure_sdk]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
 [_more_examples]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
-[_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
