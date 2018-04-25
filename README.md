@@ -1,13 +1,23 @@
 # Virgil Security JavaScript SDK
 
 [![npm](https://img.shields.io/npm/v/virgil-sdk/next.svg)][npmjs]
-[![Contact Support](https://img.shields.io/badge/contact-support-yellow.svg)][support]
+[![Build status](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript/v5.svg)](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript/v5.svg)
+[![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
 
-[Installation](#installation) | [Encryption Example](#encryption-example) | [Initialization](#initialization) | [Documentation](#documentation) | [Support](#support)
+[Introduction](#introduction) | [SDK Features](#sdk-features) | [Installation](#installation) | [Usage Examples](#usage-examples) | [Docs](#docs) | [Support](#support)
 
-[Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
+## Introduction
 
-To initialize and use Virgil SDK, you need to have [Developer Account](https://dashboard.virgilsecurity.com).
+<a href="https://developer.virgilsecurity.com/docs"><img width="230px" src="https://cdn.virgilsecurity.com/assets/images/github/logos/virgil-logo-red.png" align="left" hspace="10" vspace="6"></a>[Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
+
+The Virgil SDK allows developers to get up and running with Virgil API quickly and add full end-to-end security to their existing digital solutions to become HIPAA and GDPR compliant and more.
+
+## SDK Features
+- communicate with [Virgil Cards Service][_cards_service]
+- manage users' Public Keys
+- store private keys in secure local storage
+- use Virgil [Crypto library][_virgil_crypto]
+- use your own Crypto
 
 ## Installation
 
@@ -181,3 +191,4 @@ Also, get extra help from our support team on [Slack](https://virgilsecurity.sla
 [_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
 [_configure_sdk]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
 [_more_examples]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
+[npmjs]: https://www.npmjs.com/package/virgil-sdk
