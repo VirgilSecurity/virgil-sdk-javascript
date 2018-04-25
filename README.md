@@ -1,7 +1,8 @@
 # Virgil Security JavaScript SDK
 
+[![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](https://www.npmjs.com/package/virgil-sdk)
+[![Build status](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript/v4.svg)](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript/v4.svg)
 [![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
-![npm](https://img.shields.io/npm/v/virgil-sdk.svg)
 
 [Introduction](#introduction) | [SDK Features](#sdk-features) | [Installation](#installation) | [Initialization](#initialization) | [Usage Examples](#usage-examples) | [Docs](#docs) | [Support](#support)
 
