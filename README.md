@@ -1,6 +1,6 @@
 # Virgil Security JavaScript SDK
 
-[![npm](https://img.shields.io/npm/v/virgil-sdk.svg)][npmjs]
+[![npm](https://img.shields.io/npm/v/virgil-sdk/next.svg)][npmjs]
 [![Contact Support](https://img.shields.io/badge/contact-support-yellow.svg)][support]
 
 [Installation](#installation) | [Encryption Example](#encryption-example) | [Initialization](#initialization) | [Documentation](#documentation) | [Support](#support)
@@ -26,7 +26,6 @@ npm install virgil-sdk@next
 If you have a different version you can use [nvm](https://github.com/creationix/nvm) 
 (or a similar tool) to install Node.js of supported version alongside your current installation.  
 If you only intend to use virgil-sdk in a browser environment, you can ignore this warning.
-__Next:__ [Get Started with the JS SDK][js_getstarted].
 
 ### In the browser
 
@@ -162,10 +161,10 @@ Our developer support team is here to help you. You can find us on [Twitter](htt
 
 [support]: mailto:support@VirgilSecurity.com
 [js_getstarted]: https://developer.virgilsecurity.com/docs/use-cases
-[js_getstarted_encrypted_comms]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v4/encrypted-communication
-[js_getstarted_storage]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v4/encrypted-storage
-[js_getstarted_data_integrity]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v4/data-integrity
-[js_guides_initialization]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v4/install-sdk
+[js_getstarted_encrypted_comms]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v5/encrypted-communication
+[js_getstarted_storage]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v5/encrypted-storage
+[js_getstarted_data_integrity]: https://developer.virgilsecurity.com/docs/javascript/use-cases/v5/data-integrity
+[js_guides_initialization]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/install-sdk
 [js_guides_initialize_root]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
 [_guides]: https://developer.virgilsecurity.com/docs/how-to
 [_guides_virgil_cards]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
