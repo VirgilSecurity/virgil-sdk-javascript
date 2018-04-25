@@ -149,7 +149,7 @@ Virgil Security has a powerful set of APIs, and the documentation is there to ge
   * [Virgil Cards][_guides_virgil_cards]
   * [Virgil Keys][_guides_virgil_keys]
 
-Alternatively, head over to our [Reference documentaton](#reference_docs) for in-depth information about every SDK method, it's arguments and return types.
+Alternatively, head over to our [Reference documentation](#reference_docs) for in-depth information about every SDK method, it's arguments and return types.
 
 ## License
 
