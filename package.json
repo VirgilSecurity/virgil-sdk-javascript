@@ -73,7 +73,7 @@
     "sinon-chai": "^3.0.0",
     "ts-node": "^5.0.1",
     "typescript": "^2.6.2",
-    "virgil-crypto": "^3.0.0-alpha.6"
+    "virgil-crypto": "^3.0.0-alpha.11"
   },
   "dependencies": {
     "mkdirp": "^0.5.1",
