@@ -26,10 +26,15 @@ This module can be used both __server-side__ in a Node application, and __client
 ### On a server
 
 This module can be installed via NPM. This is a pre-release version, so to install from npm you need to 
-specify the `next` tag
+specify the `next` tag.
 
 ```sh
 npm install virgil-sdk@next
+```
+
+You will also need to install the `virgil-crypto` package from npm, unless plan to use custom crypto
+```sh
+npm install virgil-crypto@next
 ```
 
 > **Important!** You will need node.js version >= 6 to use virgil-sdk.  
@@ -39,13 +44,32 @@ If you only intend to use virgil-sdk in a browser environment, you can ignore th
 
 ### In the browser
 
-The client-side SDK targets ECMAScript5+ compatible browsers.
+The client-side SDK targets ECMAScript5+ compatible browsers. It is compatible with module bundlers like Rollup, 
+Webpack and Browserify. If you're using those, you need to install from npm. It can be added via `script` tag as well.
+Note that the `virgil-crypto` script must also be added to the page.
 
 ```html
+<script src="https://unpkg.com/virgil-crypto@next/dist/virgil-crypto.browser.umd.min.js"></script>
 <script src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.min.js"></script>
-```
+<script>
+	// here you can use the global variables `Virgil` and `VirgilCrypto` as namespace objects,
+	// containing all of `virgil-sdk` and `virgil-crypto` exports as properties
 
-or [download the source code](https://github.com/VirgilSecurity/virgil-sdk-javascript/releases) into your application.
+	// note that you cannot declare a variable named `crypto` in
+	// global scope (i.e. outside of any function) in browsers that
+	// implement Web Crypto API
+	const virgilCrypto = new VirgilCrypto.VirgilCrypto();
+	const virgilCardCrypto = new VirgilCrypto.VirgilCardCrypto();
+
+	const jwtProvider = new Virgil.CachingJwtProvider(fetchVirgilJwt);
+	const cardVerifier = new Virgil.VirgilCardVerifier(virgilCardCrypto);
+	const cardManager = new Virgil.CardManager({
+		cardCrypto: virgilCardCrypto,
+		accessTokenProvider: jwtProvider,
+		cardVerifier: cardVerifier
+	});
+</script>
+```
 
 ## Usage Examples
 
@@ -56,29 +80,49 @@ Before start practicing with the usage examples be sure that the SDK is configur
 Use the following code to create and publish a user's Card with Public Key inside on Virgil Cards Service:
 
 ```javascript
-import { VirgilCrypto } from 'virgil-crypto';
-import { KeyStorage } from 'virgil-sdk';
+import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
+import { CachingJwtProvider, CardManager, KeyStorage, VirgilCardVerifier } from 'virgil-sdk';
 
 (async function() {
 	const crypto = new VirgilCrypto();
-    const privateKeyStorage = new KeyStorage();
-    
-    // Generate a key pair
-    const keyPair = crypto.generateKeys();
-    
-    // Get the raw private key bytes
-    const privateKeyBytes = crypto.exportPrivateKey(keyPair.privateKey, 'OPTIONAL_PASSWORD');
-    
-    // Store the private key bytes
-    await privateKeyStorage.save('alice_private_key', privateKeyBytes);
-    
-    // Publish user's card on the Cards Service
-    const card = await cardManager.publishCard({
+	const cardCrypto = new VirgilCardCrypto(crypto);
+	
+	const jwtProvider = new CachingJwtProvider(fetchVirgilJwt);
+	const cardVerifier = new VirgilCardVerifier(cardCrypto);
+	const cardManager = new CardManager({
+		cardCrypto: cardCrypto,
+		accessTokenProvider: jwtProvider,
+		cardVerifier: cardVerifier
+	});
+	const privateKeyStorage = new KeyStorage();
+	
+	// Generate a key pair
+	const keyPair = crypto.generateKeys();
+	
+	// Get the raw private key bytes
+	const privateKeyBytes = crypto.exportPrivateKey(keyPair.privateKey, 'OPTIONAL_PASSWORD');
+	
+	// Store the private key bytes
+	await privateKeyStorage.save('alice_private_key', privateKeyBytes);
+	
+	// Publish user's card on the Cards Service
+	const card = await cardManager.publishCard({
 		privateKey: keyPair.privateKey,
 		publicKey: keyPair.publicKey,
 		identity: 'alice@example.com'
 	});
 })();
+
+async function fetchVirgilJwt (context) {
+	// assuming your backend server is serving Virgil JWT tokens in plaintext
+	// at /virgil-access-token endpoint
+	const response = await fetch('/virgil-access-token');
+	if (!response.ok) {
+		throw new Error('Failed to get Virgil Access Token');
+	}
+
+	return await response.text();
+}
 ```
 
 #### Sign then encrypt data
@@ -94,9 +138,9 @@ import { KeyStorage } from 'virgil-sdk';
 
 (async function() {
 	const crypto = new VirgilCrypto();
-    const privateKeyStorage = new KeyStorage();
-    
-    // Load the private key bytes
+	const privateKeyStorage = new KeyStorage();
+	
+	// Load the private key bytes
 	const privateKeyBytes = await privateKeyStorage.load('alice_private_key');
 	if (privateKeyBytes === null) {
 		return;
@@ -126,9 +170,9 @@ import { KeyStorage } from 'virgil-sdk';
 
 (async function() {
 	const crypto = new VirgilCrypto();
-    const privateKeyStorage = new KeyStorage();
-    
-    // Load the private key bytes
+	const privateKeyStorage = new KeyStorage();
+	
+	// Load the private key bytes
 	const privateKeyBytes = await privateKeyStorage.load('bob_private_key');
 	if (privateKeyBytes === null) {
 		return;
