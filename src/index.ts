@@ -6,6 +6,7 @@ export {
 	GeneratorJwtProvider,
 	ConstAccessTokenProvider,
 	CallbackJwtProvider,
+	CachingJwtProvider
 } from './Sdk/Web/Auth/AccessTokenProviders';
 export { VirgilCardVerifier } from './Sdk/CardVerifier';
 export { KeyStorage } from './Sdk/Lib/KeyStorage/index';
