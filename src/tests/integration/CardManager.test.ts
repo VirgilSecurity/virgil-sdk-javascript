@@ -4,7 +4,6 @@ import { GeneratorJwtProvider, ITokenContext } from '../../Sdk/Web/Auth/AccessTo
 import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
 import { VirgilCardVerifier } from '../../Sdk/CardVerifier';
 import { VirgilCardVerificationError } from '../../Sdk/Web/errors';
-import { IVirgilCrypto } from 'virgil-crypto/dist/types/IVirgilCrypto';
 
 import { compatData } from './data';
 
@@ -158,7 +157,7 @@ describe('CardManager', function () {
 
 	describe('card verification (STC-13)', () => {
 		let cardManager: CardManager;
-		let crypto: IVirgilCrypto;
+		let crypto: VirgilCrypto;
 		beforeEach(() => {
 			const fixture = init();
 			cardManager = fixture.cardManager;
@@ -232,7 +231,7 @@ describe('CardManager', function () {
 
 	describe('card publishing, and retrieval (STC-17 - STC-18)', () => {
 		let cardManager: CardManager;
-		let crypto: IVirgilCrypto;
+		let crypto: VirgilCrypto;
 
 		beforeEach(() => {
 			const fixture = init();
@@ -303,7 +302,7 @@ describe('CardManager', function () {
 
 	describe('card rotation (STC-19)', function () {
 		let cardManager: CardManager;
-		let crypto: IVirgilCrypto;
+		let crypto: VirgilCrypto;
 
 		beforeEach(() => {
 			const fixture = init();
@@ -396,7 +395,7 @@ describe('CardManager', function () {
 
 	describe('retry on unauthorized', function () {
 		let cardManager: CardManager;
-		let crypto: IVirgilCrypto;
+		let crypto: VirgilCrypto;
 
 		beforeEach(() => {
 			const fixture = init();
