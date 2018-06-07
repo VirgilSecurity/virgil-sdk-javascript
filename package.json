@@ -15,8 +15,8 @@
   "main": "dist/virgil-sdk.cjs.js",
   "module": "dist/virgil-sdk.es.js",
   "browser": {
-    "dist/virgil-sdk.cjs.js": "dist/virgil-sdk.browser.cjs.js",
-    "dist/virgil-sdk.es.js": "dist/virgil-sdk.browser.es.js",
+    "./dist/virgil-sdk.cjs.js": "./dist/virgil-sdk.browser.cjs.js",
+    "./dist/virgil-sdk.es.js": "./dist/virgil-sdk.browser.es.js",
     "./src/Sdk/Lib/fetch.ts": "./src/Sdk/Lib/fetch-browser.ts",
     "./src/Sdk/Lib/KeyStorage/index.ts": "./src/Sdk/Lib/KeyStorage/browser.ts"
   },
