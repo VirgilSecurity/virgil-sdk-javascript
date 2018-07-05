@@ -1,5 +1,5 @@
-import { CallbackJwtProvider, GetJwtCallback } from '../../Sdk/Web/Auth/AccessTokenProviders';
-import { Jwt } from '../..';
+import { CallbackJwtProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
+import { GetJwtCallback, Jwt } from '../..';
 import { getUnixTimestamp } from '../../Sdk/Lib/timestamp';
 import { randomBytes } from 'crypto';
 

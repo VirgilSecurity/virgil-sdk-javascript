@@ -1,5 +1,5 @@
-import { Jwt } from '../Jwt';
-import { GetJwtCallback, IAccessToken, IAccessTokenProvider, ITokenContext } from './interfaces';
+import { GetJwtCallback, Jwt } from '../Jwt';
+import { IAccessToken, IAccessTokenProvider, ITokenContext } from './interfaces';
 
 /**
  * Implementation of {@link IAccessToken} that calls the user-provided

@@ -1,7 +1,7 @@
-import { CachingJwtProvider, GetJwtCallback } from '../../Sdk/Web/Auth/AccessTokenProviders';
-import { Jwt } from '../..';
+import { CachingJwtProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
 import { addSeconds, getUnixTimestamp } from '../../Sdk/Lib/timestamp';
 import { randomBytes } from 'crypto';
+import { Jwt, GetJwtCallback } from '../..';
 
 const generateJwt = (expiresAt: Date) => {
 	return new Jwt(

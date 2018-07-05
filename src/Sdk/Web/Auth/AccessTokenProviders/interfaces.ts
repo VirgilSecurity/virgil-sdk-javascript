@@ -1,5 +1,3 @@
-import { Jwt } from '../Jwt';
-
 /**
  * Interface for objects that represent API Access Tokens.
  */
@@ -58,9 +56,3 @@ export interface IAccessTokenProvider {
 	 */
 	getToken(context: ITokenContext): Promise<IAccessToken>;
 }
-
-/**
- * The callback function used to get the JWT as either `string`, or {@Link Jwt} instance
- * synchronously or asynchronously.
- */
-export type GetJwtCallback = (context: ITokenContext) => Promise<Jwt|string> | Jwt | string;

@@ -1,5 +1,5 @@
-import { GetJwtCallback, IAccessToken, IAccessTokenProvider, ITokenContext } from './interfaces';
-import { Jwt } from '../Jwt';
+import { IAccessToken, IAccessTokenProvider, ITokenContext } from './interfaces';
+import { GetJwtCallback, Jwt } from '../Jwt';
 import { addSeconds } from '../../../Lib/timestamp';
 
 const TOKEN_EXPIRATION_MARGIN = 5;
