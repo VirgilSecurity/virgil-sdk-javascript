@@ -9,4 +9,5 @@ export interface IStorageAdapter {
 	exists (key: string): Promise<boolean>;
 	remove (key: string): Promise<boolean>;
 	clear (): Promise<void>;
+	list (): Promise<{ key: string, value: Buffer }[]>;
 }

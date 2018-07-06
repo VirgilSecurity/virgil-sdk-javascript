@@ -9,7 +9,7 @@ import * as rimraf_ from 'rimraf';
 const mkdirp = mkdirp_;
 const rimraf = rimraf_;
 
-const NO_SUCH_FILE_ERROR = 'ENOENT';
+const NO_SUCH_FILE = 'ENOENT';
 
 export default class FileSystemStorageAdapter implements IStorageAdapter {
 
@@ -36,20 +36,9 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 	}
 
 	load(key: string): Promise<Buffer|null> {
-		return new Promise<Buffer|null>((resolve, reject) => {
-			const file = this.resolveFilePath(key);
-
-			fs.readFile(file, (err, data) => {
-				if (err) {
-					if (err.code === NO_SUCH_FILE_ERROR) {
-						return resolve(null as any);
-					}
-
-					return reject(err);
-				}
-
-				resolve(data);
-			});
+		return Promise.resolve().then(() => {
+			const filename = this.resolveFilePath(key);
+			return readFileAsync(filename);
 		});
 	}
 
@@ -59,7 +48,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 
 			fs.access(file, err => {
 				if (err) {
-					if (err.code === NO_SUCH_FILE_ERROR) {
+					if (err.code === NO_SUCH_FILE) {
 						return resolve(false);
 					}
 					return reject(err);
@@ -75,7 +64,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 			const file = this.resolveFilePath(key);
 			fs.unlink(file, err => {
 				if (err) {
-					if (err.code === NO_SUCH_FILE_ERROR) {
+					if (err.code === NO_SUCH_FILE) {
 						return resolve(false);
 					}
 
@@ -98,6 +87,26 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	list (): Promise<{ key: string, value: Buffer }[]> {
+		return new Promise((resolve, reject) => {
+			fs.readdir(this.config.dir, (err, files) => {
+				if (err) {
+					return reject(err);
+				}
+
+				Promise.all(
+					files.map(filename =>
+						readFileAsync(filename).then(content =>
+							content === null ? content : { key: filename, value: content }
+						)
+					)
+				).then(entries =>
+					resolve(entries.filter(Boolean) as { key: string, value: Buffer }[])
+				).catch(reject);
+			});
+		});
+	}
+
 	private resolveFilePath (key: string): string {
 		return path.resolve(this.config.dir!, this.hash(key));
 	}
@@ -108,4 +117,20 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 			.update(data)
 			.digest('hex');
 	}
+}
+
+function readFileAsync (filename: string): Promise<Buffer|null> {
+	return new Promise((resolve, reject) => {
+		fs.readFile(filename, (err, data) => {
+			if (err) {
+				if (err.code === NO_SUCH_FILE) {
+					return resolve(null as any);
+				}
+
+				return reject(err);
+			}
+
+			resolve(data);
+		});
+	});
 }

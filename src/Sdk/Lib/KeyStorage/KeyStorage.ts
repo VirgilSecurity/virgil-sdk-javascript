@@ -47,6 +47,12 @@ export class KeyStorage implements IKeyStorage {
 				return Promise.reject(error);
 			});
 	}
+
+	list (): Promise<IKeyEntry[]> {
+		return this.adapter.list().then(entries =>
+			entries.map(entry => deserializeKeyEntry(entry.value, entry.key))
+		);
+	}
 }
 
 function serializeKeyEntry (keyEntry: IKeyEntry): Buffer {

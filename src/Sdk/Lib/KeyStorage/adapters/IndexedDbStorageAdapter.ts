@@ -119,7 +119,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 							}
 
 							const arrayBuffer = req.result;
-							const buffer = new Buffer(arrayBuffer);
+							const buffer = Buffer.from(arrayBuffer);
 							resolve(buffer);
 						};
 
@@ -227,6 +227,42 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 								? req.error
 								: req.transaction.error;
 							reject(err);
+						};
+					} catch (e) {
+						reject(e);
+					}
+				});
+			}).catch(reject);
+		});
+	}
+
+	list(): Promise<{ key: string, value: Buffer }[]> {
+		return new Promise((resolve, reject) => {
+			this.ready().then(() => {
+				createTransaction(this._dbInfo!, READ_ONLY, (err, transaction) => {
+					if (err) {
+						return reject(err);
+					}
+
+					try {
+						const store = transaction!.objectStore(this._dbInfo!.storeName!);
+						const req = store.openCursor();
+
+						const entries: { key: string, value: Buffer }[] = [];
+
+						req.onsuccess = () => {
+							const cursor = req.result;
+							if (!cursor) {
+								resolve(entries);
+							} else {
+								const { key, value } = cursor;
+								entries.push({ key, value: Buffer.from(value) });
+								cursor.continue();
+							}
+						};
+
+						req.onerror = () => {
+							reject(req.error);
 						};
 					} catch (e) {
 						reject(e);
