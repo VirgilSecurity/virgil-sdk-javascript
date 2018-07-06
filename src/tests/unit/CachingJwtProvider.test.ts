@@ -95,10 +95,11 @@ describe ('CachingJwtProvider', () => {
 
 			const provider = new CachingJwtProvider(getJwtCallback);
 
-			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
-				expectedJwt
-			);
+			return provider.getToken({ operation: 'stub' }).then(actual => {
+				assert.deepEqual((actual as Jwt).header, expectedJwt.header);
+				assert.deepEqual((actual as Jwt).body, expectedJwt.body);
+				assert.isTrue((actual as Jwt).signature!.equals(expectedJwt.signature!));
+			});
 		});
 
 		it ('rejects if the token string is malformed', () => {
