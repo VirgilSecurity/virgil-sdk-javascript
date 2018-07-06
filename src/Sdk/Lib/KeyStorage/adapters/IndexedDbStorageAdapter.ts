@@ -1,7 +1,6 @@
-import { IKeyStorage, IKeyStorageConfig } from './IKeyStorage';
-import { isIndexedDbValid } from './indexedDb/isIndexedDbValid';
-import { idb } from './indexedDb/idb';
-import { PrivateKeyExistsError } from './PrivateKeyExistsError';
+import { isIndexedDbValid } from '../indexedDb/isIndexedDbValid';
+import { idb } from '../indexedDb/idb';
+import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
 
 // Some code originally from localForage in
 // [localForage](https://github.com/localForage/localForage).
@@ -33,7 +32,7 @@ type DbInfo = {
 
 const dbContexts: { [name: string]: DbContext } = {};
 
-export class IDbKeyStorage implements IKeyStorage {
+export default class IndexedDbStorageAdapter implements IStorageAdapter {
 
 	private _dbInfo?: DbInfo;
 
@@ -41,13 +40,13 @@ export class IDbKeyStorage implements IKeyStorage {
 
 	private _ready: Promise<void>;
 
-	constructor(options: IKeyStorageConfig = {}) {
+	constructor(config: IStorageAdapterConfig) {
 		if (!isIndexedDbValid()) {
-			throw new Error('Cannot use IDbKeyStorage. indexedDb is not supported');
+			throw new Error('Cannot use IndexedDbStorageAdapter. indexedDb is not supported');
 		}
 
 		this._defaultConfig = {
-			name: options.name || 'VirgilKeys',
+			name: config.name,
 			version: 1,
 			storeName: 'keyvaluepairs'
 		};
@@ -55,7 +54,7 @@ export class IDbKeyStorage implements IKeyStorage {
 		this._ready = this._initStorage();
 	}
 
-	save (key: string, data: Buffer): Promise<void> {
+	store (key: string, data: Buffer): Promise<void> {
 		key = normalizeKey(key);
 
 		return new Promise((resolve, reject) => {
@@ -73,7 +72,9 @@ export class IDbKeyStorage implements IKeyStorage {
 						countReq.onsuccess = () => {
 							const count = countReq.result;
 							if (count !== 0) {
-								return reject(new PrivateKeyExistsError())
+								const error: any = new Error('Data for given key already exists.');
+								error.code = 'EEXIST';
+								return reject(error);
 							}
 
 							putReq = store.put(toArrayBuffer(data), key);
@@ -498,7 +499,12 @@ function _tryReconnect(dbInfo: DbInfo) {
 
 // FF doesn't like Promises (micro-tasks) and IDDB store operations,
 // so we have to do it with callbacks
-function createTransaction(dbInfo: DbInfo, mode: IDBTransactionMode, callback: (err: Error|null, tx?: IDBTransaction) => void, retries?: number) {
+function createTransaction(
+	dbInfo: DbInfo,
+	mode: IDBTransactionMode,
+	callback: (err: Error|null, tx?: IDBTransaction) => void,
+	retries?: number
+) {
 	if (retries === undefined) {
 		retries = 1;
 	}
