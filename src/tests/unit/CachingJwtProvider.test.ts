@@ -1,9 +1,10 @@
-import { CachingJwtProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
+import { VirgilCrypto } from 'virgil-crypto';
 import { addSeconds, getUnixTimestamp } from '../../Sdk/Lib/timestamp';
-import { randomBytes } from 'crypto';
-import { Jwt, GetJwtCallback } from '../..';
+import { GetJwtCallback, Jwt } from '../../Sdk/Web/Auth/Jwt';
+import { CachingJwtProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
 
-const generateJwt = (expiresAt: Date) => {
+const virgilCrypto = new VirgilCrypto();
+const generateJwt = (expiresAt: Date): Jwt => {
 	return new Jwt(
 		{
 			alg: 'stub',
@@ -17,7 +18,7 @@ const generateJwt = (expiresAt: Date) => {
 			iat: getUnixTimestamp(new Date),
 			exp: getUnixTimestamp(expiresAt)
 		},
-		randomBytes(16)
+		virgilCrypto.getRandomBytes(16)
 	);
 };
 
