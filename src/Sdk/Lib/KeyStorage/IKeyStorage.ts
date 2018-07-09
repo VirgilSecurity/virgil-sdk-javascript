@@ -17,4 +17,5 @@ export interface IKeyStorage {
 	load (name: string): Promise<IKeyEntry|null>;
 	exists (name: string): Promise<boolean>;
 	remove (name: string): Promise<boolean>;
+	list (): Promise<IKeyEntry[]>;
 }
