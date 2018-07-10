@@ -96,13 +96,18 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 
 				Promise.all(
 					files.map(filename =>
-						readFileAsync(filename).then(content =>
-							content === null ? content : { key: filename, value: content }
-						)
+						readFileAsync(path.resolve(this.config.dir!, filename))
 					)
-				).then(entries =>
-					resolve(entries.filter(Boolean) as { key: string, value: Buffer }[])
-				).catch(reject);
+				).then(contents => {
+					const entries = contents
+						.filter(content => content !== null)
+						// always use empty string as the `key`, because the real
+						// name cannot be inferred from file name, which is a hash
+						// of the name provided by user
+						.map(content => ({ key: '', value: content as Buffer }));
+
+					resolve(entries);
+				}).catch(reject);
 			});
 		});
 	}

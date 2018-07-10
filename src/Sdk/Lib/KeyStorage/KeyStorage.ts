@@ -18,10 +18,12 @@ export class KeyStorage implements IKeyStorage {
 	}
 
 	exists(name: string): Promise<boolean> {
+		validateName(name);
 		return this.adapter.exists(name);
 	}
 
 	load(name: string): Promise<IKeyEntry | null> {
+		validateName(name);
 		return this.adapter.load(name)
 			.then(data => {
 				if (data == null) {
@@ -33,10 +35,12 @@ export class KeyStorage implements IKeyStorage {
 	}
 
 	remove(name: string): Promise<boolean> {
+		validateName(name);
 		return this.adapter.remove(name);
 	}
 
 	save(keyEntry: IKeyEntry): Promise<void> {
+		validateKeyEntry(keyEntry);
 		const data = serializeKeyEntry(keyEntry);
 		return this.adapter.store(keyEntry.name, data)
 			.catch(error => {
@@ -91,4 +95,14 @@ function resolveAdapter (config: IKeyStorageConfig|string) {
 	}
 
 	return new StorageAdapter({ ...DEFAULTS, ...rest });
+}
+
+function validateName (name: string) {
+	if (!name) throw new TypeError('Argument `name` is required.');
+}
+
+function validateKeyEntry (keyEntry: IKeyEntry) {
+	if (!keyEntry) throw new TypeError('Argument `keyEntry` is required.');
+	if (!keyEntry.name) throw new TypeError('Invalid `keyEntry`. Property `name` is required');
+	if (!keyEntry.value) throw new TypeError('Invalid `keyEntry`. Property `value` is required');
 }
