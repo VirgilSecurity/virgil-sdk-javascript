@@ -1,6 +1,6 @@
 import StorageAdapter from '../../Sdk/Lib/KeyStorage/adapters/FileSystemStorageAdapter';
 
-describe('StorageAdapter', () => {
+describe ('StorageAdapter', () => {
 	let storage: StorageAdapter;
 
 	beforeEach(() => {
@@ -170,5 +170,39 @@ describe('StorageAdapter', () => {
 			storage.store('existent', Buffer.from('my value'))
 				.then(() => storage.exists('existent'))
 		);
+	});
+
+	it('list returns empty array if storage is empty', () => {
+		return assert.becomes(
+			storage.list().then(entries => entries.length),
+			0
+		);
+	});
+
+	it('list returns array of all entries', () => {
+		let expectedEntries: { key: string, value: Buffer }[];
+		if (process.browser) {
+			expectedEntries = [
+				{ key: 'one', value: Buffer.from('one') },
+				{ key: 'two', value: Buffer.from('two') },
+				{ key: 'three', value: Buffer.from('three') }
+			];
+		} else {
+			expectedEntries = [
+				{ key: '', value: Buffer.from('one') },
+				{ key: '', value: Buffer.from('two') },
+				{ key: '', value: Buffer.from('three') }
+			];
+		}
+
+		return Promise.all([
+			storage.store('one', Buffer.from('one')),
+			storage.store('two', Buffer.from('two')),
+			storage.store('three', Buffer.from('three'))
+		]).then(() =>
+			storage.list()
+		).then(entries => {
+			assert.sameDeepMembers(entries, expectedEntries);
+		})
 	});
 });

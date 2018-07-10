@@ -4,6 +4,8 @@ import './unit/CardClient.test';
 import './unit/ConstAccesTokenProvider.test';
 import './unit/GeneratorJwtProvider.test';
 import './unit/StorageAdapter.test';
+import './unit/KeyStorage.test';
+import './unit/PrivateKeyStorage.test';
 import './integration/CardManager.test';
 import './integration/CardVerifier.test';
 import './integration/Jwt.test';
