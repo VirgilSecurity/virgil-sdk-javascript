@@ -1,6 +1,6 @@
 import { IStorageAdapter } from './adapters/IStorageAdapter';
 
-export interface IKeyStorageConfig {
+export interface IKeyEntryStorageConfig {
 	dir?: string;
 	name?: string;
 	adapter?: IStorageAdapter;
@@ -12,7 +12,7 @@ export interface IKeyEntry {
 	meta?: { [key: string]: string };
 }
 
-export interface IKeyStorage {
+export interface IKeyEntryStorage {
 	save (keyEntry: IKeyEntry): Promise<void>;
 	load (name: string): Promise<IKeyEntry|null>;
 	exists (name: string): Promise<boolean>;

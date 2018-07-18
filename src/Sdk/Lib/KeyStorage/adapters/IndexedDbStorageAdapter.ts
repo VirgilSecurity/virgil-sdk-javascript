@@ -236,7 +236,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
-	list(): Promise<{ key: string, value: Buffer }[]> {
+	list(): Promise<Buffer[]> {
 		return new Promise((resolve, reject) => {
 			this.ready().then(() => {
 				createTransaction(this._dbInfo!, READ_ONLY, (err, transaction) => {
@@ -248,15 +248,14 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 						const store = transaction!.objectStore(this._dbInfo!.storeName!);
 						const req = store.openCursor();
 
-						const entries: { key: string, value: Buffer }[] = [];
+						const entries: Buffer[] = [];
 
 						req.onsuccess = () => {
 							const cursor = req.result;
 							if (!cursor) {
 								resolve(entries);
 							} else {
-								const { key, value } = cursor;
-								entries.push({ key, value: Buffer.from(value) });
+								entries.push(Buffer.from(cursor.value));
 								cursor.continue();
 							}
 						};

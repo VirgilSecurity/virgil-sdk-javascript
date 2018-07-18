@@ -87,7 +87,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
-	list (): Promise<{ key: string, value: Buffer }[]> {
+	list (): Promise<Buffer[]> {
 		return new Promise((resolve, reject) => {
 			fs.readdir(this.config.dir, (err, files) => {
 				if (err) {
@@ -101,10 +101,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 				).then(contents => {
 					const entries = contents
 						.filter(content => content !== null)
-						// always use empty string as the `key`, because the real
-						// name cannot be inferred from file name, which is a hash
-						// of the name provided by user
-						.map(content => ({ key: '', value: content as Buffer }));
+						.map(content => content as Buffer);
 
 					resolve(entries);
 				}).catch(reject);

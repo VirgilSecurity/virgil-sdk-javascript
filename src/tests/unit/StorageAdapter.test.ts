@@ -179,21 +179,12 @@ describe ('StorageAdapter', () => {
 		);
 	});
 
-	it('list returns array of all entries', () => {
-		let expectedEntries: { key: string, value: Buffer }[];
-		if (process.browser) {
-			expectedEntries = [
-				{ key: 'one', value: Buffer.from('one') },
-				{ key: 'two', value: Buffer.from('two') },
-				{ key: 'three', value: Buffer.from('three') }
-			];
-		} else {
-			expectedEntries = [
-				{ key: '', value: Buffer.from('one') },
-				{ key: '', value: Buffer.from('two') },
-				{ key: '', value: Buffer.from('three') }
-			];
-		}
+	it('list returns array of all values', () => {
+		const expectedEntries = [
+			Buffer.from('one'),
+			Buffer.from('two'),
+			Buffer.from('three')
+		];
 
 		return Promise.all([
 			storage.store('one', Buffer.from('one')),

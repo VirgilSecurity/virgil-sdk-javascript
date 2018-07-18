@@ -1,15 +1,15 @@
-import { KeyStorage, PrivateKeyStorage } from '../..';
+import { KeyEntryStorage, PrivateKeyStorage } from '../..';
 import { SinonStubbedInstance } from 'sinon';
 import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
-import { IKeyStorage } from '../../Sdk/Lib/KeyStorage/IKeyStorage';
+import { IKeyEntryStorage } from '../../Sdk/Lib/KeyStorage/IKeyEntryStorage';
 
 describe ('PrivateKeyStorage', () => {
 	let privateKeyStorage: PrivateKeyStorage;
-	let storageBackendStub: SinonStubbedInstance<IKeyStorage>;
+	let storageBackendStub: SinonStubbedInstance<IKeyEntryStorage>;
 	let privateKeyExporterStub: SinonStubbedInstance<IPrivateKeyExporter>;
 
 	beforeEach(() => {
-		storageBackendStub = sinon.createStubInstance(KeyStorage);
+		storageBackendStub = sinon.createStubInstance(KeyEntryStorage);
 		privateKeyExporterStub = {
 			exportPrivateKey: sinon.stub(),
 			importPrivateKey: sinon.stub()

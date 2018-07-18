@@ -1,7 +1,7 @@
 import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
-import { IKeyStorage } from './KeyStorage/IKeyStorage';
+import { IKeyEntryStorage } from './KeyStorage/IKeyEntryStorage';
 import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
-import { KeyStorage } from './KeyStorage/KeyStorage';
+import { KeyEntryStorage } from './KeyStorage/KeyEntryStorage';
 
 export interface IPrivateKeyEntry {
 	privateKey: IPrivateKey,
@@ -11,7 +11,7 @@ export interface IPrivateKeyEntry {
 export class PrivateKeyStorage {
 	constructor (
 		private privateKeyExporter: IPrivateKeyExporter,
-		private storageBackend: IKeyStorage = new KeyStorage()
+		private storageBackend: IKeyEntryStorage = new KeyEntryStorage()
 	) {}
 
 	store (name: string, privateKey: IPrivateKey, meta?: { [key: string]: string }) {
