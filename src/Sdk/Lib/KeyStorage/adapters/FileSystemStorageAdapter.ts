@@ -1,13 +1,10 @@
 import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
 
-import * as fs from 'fs';
-import * as path from 'path';
-import * as crypto from 'crypto';
-import * as mkdirp_ from 'mkdirp';
-import * as rimraf_ from 'rimraf';
-
-const mkdirp = mkdirp_;
-const rimraf = rimraf_;
+import fs from 'fs';
+import path from 'path';
+import crypto from 'crypto';
+import mkdirp from 'mkdirp';
+import rimraf from 'rimraf';
 
 const NO_SUCH_FILE = 'ENOENT';
 
