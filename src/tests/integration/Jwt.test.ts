@@ -1,9 +1,12 @@
 import { VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
-import { JwtVerifier } from '../../Sdk/Web/Auth/JwtVerifier';
-import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
-import { Jwt } from '../../Sdk/Web/Auth/Jwt';
-import { CallbackJwtProvider, ITokenContext } from '../../Sdk/Web/Auth/AccessTokenProviders';
-import { ConstAccessTokenProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
+import {
+	CallbackJwtProvider,
+	ConstAccessTokenProvider,
+	ITokenContext,
+	Jwt,
+	JwtGenerator,
+	JwtVerifier
+} from '../..';
 
 import { compatData } from './data';
 

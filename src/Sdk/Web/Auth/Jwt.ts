@@ -1,7 +1,13 @@
 import { IExtraData } from '../../ICard';
 import { base64UrlDecode, base64UrlEncode } from '../../Lib/base64';
-import { IAccessToken } from './AccessTokenProviders';
+import { IAccessToken, ITokenContext } from './AccessTokenProviders';
 import { getUnixTimestamp } from '../../Lib/timestamp';
+
+/**
+ * The callback function used to get the JWT as either `string`, or {@Link Jwt} instance
+ * synchronously or asynchronously.
+ */
+export type GetJwtCallback = (context: ITokenContext) => Promise<Jwt|string> | Jwt | string;
 
 export const SubjectPrefix = "identity-";
 export const IssuerPrefix = "virgil-";

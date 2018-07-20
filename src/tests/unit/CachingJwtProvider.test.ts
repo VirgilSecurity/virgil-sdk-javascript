@@ -1,9 +1,10 @@
-import { CachingJwtProvider, GetJwtCallback } from '../../Sdk/Web/Auth/AccessTokenProviders';
-import { Jwt } from '../..';
+import { VirgilCrypto } from 'virgil-crypto';
 import { addSeconds, getUnixTimestamp } from '../../Sdk/Lib/timestamp';
-import { randomBytes } from 'crypto';
+import { GetJwtCallback, Jwt } from '../../Sdk/Web/Auth/Jwt';
+import { CachingJwtProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
 
-const generateJwt = (expiresAt: Date) => {
+const virgilCrypto = new VirgilCrypto();
+const generateJwt = (expiresAt: Date): Jwt => {
 	return new Jwt(
 		{
 			alg: 'stub',
@@ -17,7 +18,7 @@ const generateJwt = (expiresAt: Date) => {
 			iat: getUnixTimestamp(new Date),
 			exp: getUnixTimestamp(expiresAt)
 		},
-		randomBytes(16)
+		virgilCrypto.getRandomBytes(16)
 	);
 };
 
@@ -95,10 +96,11 @@ describe ('CachingJwtProvider', () => {
 
 			const provider = new CachingJwtProvider(getJwtCallback);
 
-			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
-				expectedJwt
-			);
+			return provider.getToken({ operation: 'stub' }).then(actual => {
+				assert.deepEqual((actual as Jwt).header, expectedJwt.header);
+				assert.deepEqual((actual as Jwt).body, expectedJwt.body);
+				assert.isTrue((actual as Jwt).signature!.equals(expectedJwt.signature!));
+			});
 		});
 
 		it ('rejects if the token string is malformed', () => {
