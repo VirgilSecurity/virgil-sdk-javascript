@@ -17,7 +17,6 @@
   "browser": {
     "./dist/virgil-sdk.cjs.js": "./dist/virgil-sdk.browser.cjs.js",
     "./dist/virgil-sdk.es.js": "./dist/virgil-sdk.browser.es.js",
-    "./src/Sdk/Lib/fetch.ts": "./src/Sdk/Lib/fetch-browser.ts",
     "./src/Sdk/Lib/KeyStorage/adapters/FileSystemStorageAdapter.ts": "./src/Sdk/Lib/KeyStorage/adapters/IndexedDbStorageAdapter.ts"
   },
   "typings": "dist/types/index.d.ts",
@@ -42,7 +41,6 @@
     "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^5.0.0",
     "@types/node": "^9.4.7",
-    "@types/node-fetch": "^1.6.8",
     "@types/rimraf": "^2.0.2",
     "@types/sinon": "^4.3.1",
     "@types/sinon-chai": "^2.7.29",
@@ -51,7 +49,6 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "dotenv": "^5.0.1",
-    "fetch-ponyfill": "^6.0.1",
     "karma": "^2.0.0",
     "karma-chai-plugins": "^0.9.0",
     "karma-chrome-launcher": "^2.2.0",
@@ -76,10 +73,9 @@
     "virgil-crypto": "^3.0.0-alpha.14"
   },
   "dependencies": {
+    "fetch-ponyfill": "^6.0.2",
     "mkdirp": "^0.5.1",
-    "node-fetch": "^2.1.2",
-    "rimraf": "^2.6.2",
-    "whatwg-fetch": "^2.0.4"
+    "rimraf": "^2.6.2"
   },
   "peerDependencies": {
     "virgil-crypto": "^3.0.0-alpha.14"
