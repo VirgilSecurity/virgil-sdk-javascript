@@ -70,7 +70,7 @@
     "sinon-chai": "^3.0.0",
     "ts-node": "^5.0.1",
     "typescript": "^2.6.2",
-    "virgil-crypto": "^3.0.0-alpha.14"
+    "virgil-crypto": "^3.0.0"
   },
   "dependencies": {
     "fetch-ponyfill": "^6.0.2",
@@ -78,7 +78,7 @@
     "rimraf": "^2.6.2"
   },
   "peerDependencies": {
-    "virgil-crypto": "^3.0.0-alpha.14"
+    "virgil-crypto": "3.x"
   },
   "scripts": {
     "build": "node scripts/rollup/build.js",

@@ -2090,7 +2090,11 @@ nise@^1.2.0:
     path-to-regexp "^1.7.0"
     text-encoding "^0.6.4"
 
-node-fetch@^2.1.2, node-fetch@~2.1.0:
+node-fetch@^2.1.2:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.2.0.tgz#4ee79bde909262f9775f731e3656d0db55ced5b5"
+
+node-fetch@~2.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.1.2.tgz#ab884e8e7e57e38a944753cec706f788d1768bb5"
 
@@ -3338,9 +3342,9 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-virgil-crypto@^3.0.0-alpha.14:
-  version "3.0.0-alpha.14"
-  resolved "https://registry.yarnpkg.com/virgil-crypto/-/virgil-crypto-3.0.0-alpha.14.tgz#b2ea09c9cf68f08d3a0b71a935764c50e1ae3c41"
+virgil-crypto@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/virgil-crypto/-/virgil-crypto-3.0.0.tgz#35f1b1cfac07d6eb320342686e5471022bf3c3c0"
   dependencies:
     node-fetch "^2.1.2"
     tar "^4.4.2"
