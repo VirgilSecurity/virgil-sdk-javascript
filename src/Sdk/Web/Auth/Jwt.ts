@@ -1,29 +1,14 @@
 import { IExtraData } from '../../ICard';
 import { base64UrlDecode, base64UrlEncode } from '../../Lib/base64';
-import { IAccessToken } from './AccessTokenProviders';
+import { IAccessToken, ITokenContext } from './AccessTokenProviders';
 import { getUnixTimestamp } from '../../Lib/timestamp';
-
-export const SubjectPrefix = "identity-";
-export const IssuerPrefix = "virgil-";
+import { IssuerPrefix, SubjectPrefix } from './jwt-constants';
 
 /**
- * Content type of the token. Used to convey structural information
- * about the JWT.
- *
- * @type {string}
- *
- * @hidden
+ * The callback function used to get the JWT as either `string`, or {@Link Jwt} instance
+ * synchronously or asynchronously.
  */
-export const VirgilContentType = "virgil-jwt;v=1";
-
-/**
- * Media type of the JWT.
- *
- * @type {string}
- *
- * @hidden
- */
-export const JwtContentType = "JWT";
+export type GetJwtCallback = (context: ITokenContext) => Promise<Jwt|string> | Jwt | string;
 
 /**
  * Interface for objects representing JWT Header.

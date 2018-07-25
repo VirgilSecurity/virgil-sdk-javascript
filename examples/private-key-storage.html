@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Private Key Storage</title>
+	<script src="../node_modules/virgil-crypto/dist/virgil-crypto.browser.umd.min.js"></script>
+	<script src="../dist/virgil-sdk.browser.umd.min.js"></script>
+</head>
+<body>
+<script>
+	const { VirgilCrypto, VirgilPrivateKeyExporter } = window.VirgilCrypto;
+	const { PrivateKeyStorage, KeyStorage } = window.Virgil;
+
+	const virgilCrypto = new VirgilCrypto();
+	const exporter = new VirgilPrivateKeyExporter(virgilCrypto, 'OPTIONAL_PASSWORD');
+
+	// const privateKeyStorage = new PrivateKeyStorage(exporter);
+	// OR
+	const storageBackend = new KeyStorage();
+	const privateKeyStorage = new PrivateKeyStorage(exporter, storageBackend);
+
+	function storePrivateKey (name) {
+		const keyPair = virgilCrypto.generateKeys();
+		privateKeyStorage.store(name, keyPair.privateKey, { foo: 'bar' }).then(() => {
+			console.log('Saved!');
+		}).catch(error => console.error(error));
+	}
+
+	function loadPrivateKey (name) {
+		privateKeyStorage.load(name).then(entry => {
+			console.log('Loaded: ', entry);
+		}).catch(error => console.error(error));
+	}
+
+	function listEntries () {
+		storageBackend.list()
+			.then(entries => console.log(entries))
+			.catch(err => console.error(err));
+	}
+</script>
+</body>
+</html>

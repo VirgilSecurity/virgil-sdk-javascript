@@ -1,11 +1,13 @@
-import { KeyStorage } from '../../Sdk/Lib/KeyStorage/index';
-import { PrivateKeyExistsError } from '../../Sdk/Lib/KeyStorage/PrivateKeyExistsError';
+import StorageAdapter from '../../Sdk/Lib/KeyStorage/adapters/FileSystemStorageAdapter';
 
-describe('KeyStorage', () => {
-	let storage: KeyStorage;
+describe ('StorageAdapter', () => {
+	let storage: StorageAdapter;
 
 	beforeEach(() => {
-		storage = new KeyStorage();
+		storage = new StorageAdapter({
+			dir: '.virgil_keys_test',
+			name: 'VirgilKeysTest'
+		});
 	});
 
 	afterEach(() => {
@@ -15,7 +17,7 @@ describe('KeyStorage', () => {
 	it('set and get the key', () => {
 		const expected = Buffer.from('one');
 		return assert.eventually.equal(
-			storage.save('first', expected)
+			storage.store('first', expected)
 				.then(() => storage.load('first'))
 				.then(value => {
 					return value != null && value.equals(expected)
@@ -27,9 +29,10 @@ describe('KeyStorage', () => {
 
 	it('throws when saving key with existing name', () => {
 		return assert.isRejected(
-			storage.save('first', Buffer.from('one'))
-				.then(() => storage.save('first', Buffer.from('two'))),
-			PrivateKeyExistsError
+			storage.store('first', Buffer.from('one'))
+				.then(() => storage.store('first', Buffer.from('two'))),
+			Error,
+			'already exists'
 		);
 	});
 
@@ -41,16 +44,16 @@ describe('KeyStorage', () => {
 
 	it('returns true when removing existent key', () => {
 		return assert.eventually.isTrue(
-			storage.save('first', Buffer.from('one'))
+			storage.store('first', Buffer.from('one'))
 				.then(() => storage.remove('first'))
 		);
 	});
 
 	it('set remove set', () => {
 		return assert.eventually.isTrue(
-			storage.save('first', Buffer.from('one'))
+			storage.store('first', Buffer.from('one'))
 				.then(() => storage.remove('first'))
-				.then(() => storage.save('first', Buffer.from('two')))
+				.then(() => storage.store('first', Buffer.from('two')))
 				.then(() => storage.load('first'))
 				.then(value => value != null && value!.equals(Buffer.from('two')))
 		);
@@ -69,8 +72,8 @@ describe('KeyStorage', () => {
 		const twoExpected = Buffer.from('two');
 		return assert.becomes(
 			Promise.all([
-				storage.save('first', oneExpected),
-				storage.save('second', twoExpected)
+				storage.store('first', oneExpected),
+				storage.store('second', twoExpected)
 			]).then(() => Promise.all([
 					storage.load('first'),
 					storage.load('second')
@@ -88,9 +91,9 @@ describe('KeyStorage', () => {
 	it('set remove three items', () => {
 		return assert.eventually.isNull(
 			Promise.all([
-				storage.save('first', Buffer.from('one')),
-				storage.save('second', Buffer.from('two')),
-				storage.save('third', Buffer.from('three'))
+				storage.store('first', Buffer.from('one')),
+				storage.store('second', Buffer.from('two')),
+				storage.store('third', Buffer.from('three'))
 			]).then(() => storage.remove('second'))
 				.then(() => Promise.all([
 						assert.eventually.isTrue(
@@ -120,7 +123,7 @@ describe('KeyStorage', () => {
 
 	it('set empty value', () => {
 		return assert.eventually.isTrue(
-			storage.save('first', new Buffer(0))
+			storage.store('first', new Buffer(0))
 				.then(() => storage.load('first'))
 				.then(value => value != null && value.equals(new Buffer(0)))
 		);
@@ -129,16 +132,16 @@ describe('KeyStorage', () => {
 	it('set with weird keys', () => {
 		return assert.becomes(
 			Promise.all([
-				storage.save(' ', Buffer.from('space')),
-				storage.save('=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`', Buffer.from('control')),
-				storage.save(
+				storage.store(' ', Buffer.from('space')),
+				storage.store('=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`', Buffer.from('control')),
+				storage.store(
 					'\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341',
 					Buffer.from('ten')
 				),
-				storage.save('\0', Buffer.from('null')),
-				storage.save('\0\0', Buffer.from('double null')),
-				storage.save('\0A', Buffer.from('null A')),
-				storage.save('', Buffer.from('zero'))
+				storage.store('\0', Buffer.from('null')),
+				storage.store('\0\0', Buffer.from('double null')),
+				storage.store('\0A', Buffer.from('null A')),
+				storage.store('', Buffer.from('zero'))
 			]).then(() => {
 					return Promise.all([
 						storage.load(' '),
@@ -164,8 +167,33 @@ describe('KeyStorage', () => {
 
 	it('exists with existent key', () => {
 		return assert.eventually.isTrue(
-			storage.save('existent', Buffer.from('my value'))
+			storage.store('existent', Buffer.from('my value'))
 				.then(() => storage.exists('existent'))
 		);
+	});
+
+	it('list returns empty array if storage is empty', () => {
+		return assert.becomes(
+			storage.list().then(entries => entries.length),
+			0
+		);
+	});
+
+	it('list returns array of all values', () => {
+		const expectedEntries = [
+			Buffer.from('one'),
+			Buffer.from('two'),
+			Buffer.from('three')
+		];
+
+		return Promise.all([
+			storage.store('one', Buffer.from('one')),
+			storage.store('two', Buffer.from('two')),
+			storage.store('three', Buffer.from('three'))
+		]).then(() =>
+			storage.list()
+		).then(entries => {
+			assert.sameDeepMembers(entries, expectedEntries);
+		})
 	});
 });

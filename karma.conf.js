@@ -12,7 +12,7 @@ module.exports = function (config) {
 		browsers: [ 'ChromeHeadless' ],
 		files: [
 			{ pattern: 'scripts/register-assert-browser.js', watched: false },
-			{ pattern: 'src/tests/integration/index.ts', watched: false }
+			{ pattern: 'src/tests/index.ts', watched: false }
 		],
 		colors: true,
 		reporters: [ 'progress' ],

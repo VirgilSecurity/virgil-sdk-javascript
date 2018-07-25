@@ -1,8 +1,11 @@
 import { VirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
-import { CardManager } from '../../Sdk/CardManager';
-import { GeneratorJwtProvider, ITokenContext } from '../../Sdk/Web/Auth/AccessTokenProviders';
-import { JwtGenerator } from '../../Sdk/Web/Auth/JwtGenerator';
-import { VirgilCardVerifier } from '../../Sdk/CardVerifier';
+import {
+	CardManager,
+	GeneratorJwtProvider,
+	ITokenContext,
+	JwtGenerator,
+	VirgilCardVerifier
+} from '../..';
 import { VirgilCardVerificationError } from '../../Sdk/Web/errors';
 
 import { compatData } from './data';

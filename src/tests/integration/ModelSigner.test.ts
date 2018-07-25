@@ -1,5 +1,6 @@
 import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
-import { ModelSigner, SelfSigner } from '../../Sdk/Web/ModelSigner';
+import { ModelSigner } from '../../Sdk/Web/ModelSigner';
+import { SelfSigner } from '../../Sdk/Web/signer-types';
 import { generateRawSigned } from '../../Sdk/Utils/RawSignedModelUtils';
 
 const init = () => {

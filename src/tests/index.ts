@@ -1,0 +1,14 @@
+import './unit/CachingJwtProvider.test';
+import './unit/CallbackJwtProvider.test';
+import './unit/CardClient.test';
+import './unit/ConstAccesTokenProvider.test';
+import './unit/GeneratorJwtProvider.test';
+import './unit/StorageAdapter.test';
+import './unit/KeyStorage.test';
+import './unit/KeyEntryStorage.test';
+import './unit/PrivateKeyStorage.test';
+import './integration/CardManager.test';
+import './integration/CardVerifier.test';
+import './integration/Jwt.test';
+import './integration/ModelSigner.test';
+import './integration/RawSignedModel.test';

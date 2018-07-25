@@ -12,6 +12,7 @@
 		"strict": true,
 		"sourceMap": true,
 		"declaration": true,
+		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,

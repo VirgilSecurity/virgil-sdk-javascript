@@ -3,6 +3,7 @@ import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
 import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
 import { IExtraData } from '../ICard';
 import { takeSnapshot } from '../Utils/SnapshotUtils';
+import { SelfSigner } from './signer-types';
 
 export interface IRawSignParams {
 	readonly model: RawSignedModel;
@@ -17,9 +18,6 @@ export interface IFinalSignParams {
 	readonly extraSnapshot?: Buffer;
 	readonly signer: string;
 }
-
-export const SelfSigner = "self";
-export const VirgilSigner = "virgil";
 
 export class ModelSigner {
 

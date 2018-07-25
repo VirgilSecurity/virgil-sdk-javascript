@@ -2,7 +2,7 @@ import { ICard } from './ICard';
 import { ICardCrypto } from '../CryptoApi/ICardCrypto';
 import { IPublicKey } from '../CryptoApi/IPublicKey';
 import { base64Decode } from './Lib/base64';
-import { SelfSigner, VirgilSigner } from './Web/ModelSigner';
+import { SelfSigner, VirgilSigner } from './Web/signer-types';
 
 export interface ICardVerifier {
 	verifyCard(card: ICard): boolean;
