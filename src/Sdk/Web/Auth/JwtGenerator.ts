@@ -4,16 +4,18 @@ import { IExtraData } from '../../ICard';
 import {
 	IJwtBody,
 	IJwtHeader,
+	Jwt
+} from './Jwt';
+import {
 	IssuerPrefix,
-	Jwt,
 	JwtContentType,
 	SubjectPrefix,
 	VirgilContentType
-} from './Jwt';
+} from './jwt-constants';
 import { getUnixTimestamp } from '../../Lib/timestamp';
 import { assert } from '../../Lib/assert';
 
-export type JwtGeneratorOptions = {
+export interface IJwtGeneratorOptions {
 	apiKey: IPrivateKey;
 	apiKeyId: string;
 	appId: string;
@@ -30,7 +32,7 @@ export class JwtGenerator {
 	public readonly accessTokenSigner: IAccessTokenSigner;
 	public readonly millisecondsToLive: number;
 
-	public constructor (options: JwtGeneratorOptions) {
+	public constructor (options: IJwtGeneratorOptions) {
 		validateOptions(options);
 
 		this.appId = options.appId;
@@ -70,8 +72,8 @@ export class JwtGenerator {
 	}
 }
 
-function validateOptions(opts: JwtGeneratorOptions) {
-	const invalidOptionMessage = (name: keyof JwtGeneratorOptions) =>
+function validateOptions(opts: IJwtGeneratorOptions) {
+	const invalidOptionMessage = (name: keyof IJwtGeneratorOptions) =>
 		`Invalid JwtGenerator options. \`${name}\` is required`;
 
 	assert(opts != null, 'JwtGenerator options must be provided');

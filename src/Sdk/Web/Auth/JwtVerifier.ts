@@ -1,9 +1,10 @@
 import { IAccessTokenSigner } from '../../../CryptoApi/IAccessTokenSigner';
 import { IPublicKey } from '../../../CryptoApi/IPublicKey';
-import { Jwt, JwtContentType, VirgilContentType } from './Jwt';
+import { Jwt } from './Jwt';
+import { JwtContentType, VirgilContentType } from './jwt-constants';
 import { assert } from '../../Lib/assert';
 
-export type JwtVerifierOptions = {
+export interface IJwtVerifierOptions {
 	accessTokenSigner: IAccessTokenSigner;
 	apiPublicKey: IPublicKey,
 	apiKeyId: string;
@@ -14,7 +15,7 @@ export class JwtVerifier {
 	public readonly apiPublicKey: IPublicKey;
 	public readonly apiKeyId: string;
 
-	public constructor (options: JwtVerifierOptions) {
+	public constructor (options: IJwtVerifierOptions) {
 		validateOptions(options);
 		this.accessTokenSigner = options.accessTokenSigner;
 		this.apiPublicKey = options.apiPublicKey;
@@ -46,8 +47,8 @@ export class JwtVerifier {
 	}
 }
 
-function validateOptions(opts: JwtVerifierOptions) {
-	const invalidOptionMessage = (name: keyof JwtVerifierOptions) =>
+function validateOptions(opts: IJwtVerifierOptions) {
+	const invalidOptionMessage = (name: keyof IJwtVerifierOptions) =>
 		`Invalid JwtVerifier options. \`${name}\` is required`;
 
 	assert(opts != null, 'JwtVerifier options must be provided');

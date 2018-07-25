@@ -11,7 +11,7 @@ import { assert } from './Lib/assert';
 import { VirgilCardVerificationError, VirgilHttpError } from './Web/errors';
 import { parseSnapshot } from './Utils/SnapshotUtils';
 
-export type ISignCallback =  (model: RawSignedModel) => Promise<RawSignedModel>;
+export type ISignCallback = (model: RawSignedModel) => Promise<RawSignedModel>;
 
 export interface ICardManagerParams {
 	readonly cardCrypto: ICardCrypto;
