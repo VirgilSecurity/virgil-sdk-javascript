@@ -34,7 +34,7 @@ npm install virgil-sdk@next
 
 You will also need to install the `virgil-crypto` package from npm, unless plan to use custom crypto
 ```sh
-npm install virgil-crypto@next
+npm install virgil-crypto
 ```
 
 > **Important!** You will need node.js version >= 6 to use virgil-sdk.  
