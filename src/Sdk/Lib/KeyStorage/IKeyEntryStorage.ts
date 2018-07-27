@@ -1,5 +1,7 @@
 import { IStorageAdapter } from './adapters/IStorageAdapter';
 
+export type KeyEntryMeta = { [key: string]: string };
+
 export interface IKeyEntryStorageConfig {
 	dir?: string;
 	name?: string;
@@ -9,13 +11,26 @@ export interface IKeyEntryStorageConfig {
 export interface IKeyEntry {
 	name: string;
 	value: Buffer;
-	meta?: { [key: string]: string };
+	meta?: KeyEntryMeta;
+	creationDate: Date;
+	modificationDate: Date;
+}
+
+export interface ISaveKeyEntryParams {
+	value: Buffer;
+	meta?: KeyEntryMeta;
+}
+
+export interface IUpdateKeyEntryParams {
+	value?: Buffer;
+	meta?: KeyEntryMeta;
 }
 
 export interface IKeyEntryStorage {
-	save (keyEntry: IKeyEntry): Promise<void>;
+	save (name: string, params: ISaveKeyEntryParams): Promise<IKeyEntry>;
 	load (name: string): Promise<IKeyEntry|null>;
 	exists (name: string): Promise<boolean>;
 	remove (name: string): Promise<boolean>;
 	list (): Promise<IKeyEntry[]>;
+	update (name: string, params: IUpdateKeyEntryParams): Promise<IKeyEntry>;
 }

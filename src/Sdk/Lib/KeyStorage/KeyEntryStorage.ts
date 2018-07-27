@@ -1,8 +1,15 @@
-import { IKeyEntry, IKeyEntryStorage, IKeyEntryStorageConfig } from './IKeyEntryStorage';
+import {
+	IKeyEntry,
+	IKeyEntryStorage,
+	IKeyEntryStorageConfig,
+	ISaveKeyEntryParams,
+	IUpdateKeyEntryParams
+} from './IKeyEntryStorage';
 import StorageAdapter from './adapters/FileSystemStorageAdapter';
 import { IStorageAdapter, IStorageAdapterConfig } from './adapters/IStorageAdapter';
-import { PrivateKeyExistsError } from './PrivateKeyExistsError';
+import { KeyEntryAlreadyExistsError } from './KeyEntryAlreadyExistsError';
 import { InvalidKeyEntryError } from './InvalidKeyEntryError';
+import { KeyEntryDoesNotExistError } from './KeyEntryDoesNotExistError';
 
 const DEFAULTS: IStorageAdapterConfig = {
 	dir: '.virgil_key_entries',
@@ -10,8 +17,10 @@ const DEFAULTS: IStorageAdapterConfig = {
 };
 
 const VALUE_KEY = 'value';
+const CREATION_DATE_KEY = 'creationDate';
+const MODIFICATION_DATE_KEY = 'modificationDate';
 
-export { IKeyEntry, IKeyEntryStorage, IKeyEntryStorageConfig };
+export { IKeyEntry, IKeyEntryStorage, IKeyEntryStorageConfig, ISaveKeyEntryParams, IUpdateKeyEntryParams };
 
 export class KeyEntryStorage implements IKeyEntryStorage {
 	private adapter: IStorageAdapter;
@@ -27,14 +36,13 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 
 	load(name: string): Promise<IKeyEntry | null> {
 		validateName(name);
-		return this.adapter.load(name)
-			.then(data => {
-				if (data == null) {
-					return null;
-				}
+		return this.adapter.load(name).then(data => {
+			if (data == null) {
+				return null;
+			}
 
-				return deserializeKeyEntry(data);
-			})
+			return deserializeKeyEntry(data);
+		});
 	}
 
 	remove(name: string): Promise<boolean> {
@@ -42,23 +50,55 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 		return this.adapter.remove(name);
 	}
 
-	save(keyEntry: IKeyEntry): Promise<void> {
-		validateKeyEntry(keyEntry);
-		const data = serializeKeyEntry(keyEntry);
-		return this.adapter.store(keyEntry.name, data)
+	save(name: string, { value, meta }: ISaveKeyEntryParams): Promise<IKeyEntry> {
+		validateName(name);
+		validateValue(value);
+
+		const keyEntry = {
+			name: name,
+			value: value,
+			meta: meta,
+			creationDate: new Date(),
+			modificationDate: new Date()
+		};
+
+		return this.adapter.store(name, serializeKeyEntry(keyEntry))
+			.then(() => keyEntry)
 			.catch(error => {
-				if (error && error.code === 'EEXIST') {
-					return Promise.reject(new PrivateKeyExistsError());
+				if (error && error.name === 'StorageEntryAlreadyExistsError') {
+					throw new KeyEntryAlreadyExistsError(name);
 				}
 
-				return Promise.reject(error);
+				throw error;
 			});
 	}
 
 	list (): Promise<IKeyEntry[]> {
-		return this.adapter.list().then(entries =>
-			entries.map(entry => deserializeKeyEntry(entry))
-		);
+		return this.adapter.list()
+			.then(entries => entries.map(entry => deserializeKeyEntry(entry)));
+	}
+
+	update (name: string, { value, meta }: IUpdateKeyEntryParams): Promise<IKeyEntry> {
+		validateName(name);
+		if (!(value || meta)) {
+			throw new TypeError('Either `params.value` or `params.meta` is required to update key entry');
+		}
+
+		return this.adapter.load(name)
+			.then(data => {
+				if (data === null) {
+					throw new KeyEntryDoesNotExistError(name)
+				}
+
+				const entry = deserializeKeyEntry(data);
+				const updatedEntry = Object.assign(entry,{
+					value: value || entry.value,
+					meta: meta || entry.meta,
+					modificationDate: new Date()
+				});
+				return this.adapter.update(name, serializeKeyEntry(updatedEntry))
+					.then(() => updatedEntry);
+			});
 	}
 }
 
@@ -77,7 +117,17 @@ function deserializeKeyEntry (data: Buffer): IKeyEntry {
 	try {
 		return JSON.parse(
 			dataStr,
-			(key, value) => key === VALUE_KEY ? Buffer.from(value, 'base64') : value
+			(key, value) => {
+				if (key === VALUE_KEY) {
+					return Buffer.from(value, 'base64');
+				}
+
+				if (key === CREATION_DATE_KEY || key === MODIFICATION_DATE_KEY) {
+					return new Date(value);
+				}
+
+				return value;
+			}
 		);
 	} catch (error) {
 		throw new InvalidKeyEntryError();
@@ -97,12 +147,9 @@ function resolveAdapter (config: IKeyEntryStorageConfig|string) {
 	return new StorageAdapter({ ...DEFAULTS, ...rest });
 }
 
-function validateName (name: string) {
-	if (!name) throw new TypeError('Argument `name` is required.');
-}
+const requiredArg = (name: string) => (value: any) => {
+	if (!value) throw new TypeError(`Argument '${name}' is required.`);
+};
 
-function validateKeyEntry (keyEntry: IKeyEntry) {
-	if (!keyEntry) throw new TypeError('Argument `keyEntry` is required.');
-	if (!keyEntry.name) throw new TypeError('Invalid `keyEntry`. Property `name` is required');
-	if (!keyEntry.value) throw new TypeError('Invalid `keyEntry`. Property `value` is required');
-}
+const validateName = requiredArg('name');
+const validateValue = requiredArg('params.value');
