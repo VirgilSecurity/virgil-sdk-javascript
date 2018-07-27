@@ -1,6 +1,7 @@
 import { isIndexedDbValid } from '../indexedDb/isIndexedDbValid';
 import { idb } from '../indexedDb/idb';
 import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
+import { StorageEntryAlreadyExistsError } from '../StorageEntryAlreadyExistsError';
 
 // Some code originally from localForage in
 // [localForage](https://github.com/localForage/localForage).
@@ -66,33 +67,25 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 
 					try {
 						const store = transaction!.objectStore(this._dbInfo!.storeName!);
-						const countReq = store.count(key);
-						let putReq: IDBRequest;
-
-						countReq.onsuccess = () => {
-							const count = countReq.result;
-							if (count !== 0) {
-								const error: any = new Error('Data for given key already exists.');
-								error.code = 'EEXIST';
-								return reject(error);
-							}
-
-							putReq = store.put(toArrayBuffer(data), key);
-						};
+						const req = store.add(toArrayBuffer(data), key);
 
 						transaction!.oncomplete = () => {
 							resolve();
 						};
 
 						transaction!.onabort = transaction!.onerror = () => {
-							const req = putReq || countReq;
-							const err = req.error
+							let error: any = req.error
 								? req.error
 								: req.transaction.error;
-							reject(err);
+
+							if (error && error.name === 'ConstraintError') {
+								reject(new StorageEntryAlreadyExistsError(key));
+							}
+
+							reject(error);
 						};
-					} catch (e) {
-						reject(e);
+					} catch (error) {
+						reject(error);
 					}
 				});
 			}).catch(reject);

@@ -7,5 +7,6 @@ export * from './Sdk/CardVerifier';
 export * from './Sdk/Web/RawSignedModel';
 export * from './Sdk/Web/ModelSigner';
 export * from './Sdk/Lib/KeyStorage/KeyStorage';
+export * from './Sdk/Lib/KeyStorage/StorageEntryAlreadyExistsError';
 export * from './Sdk/Lib/KeyStorage/KeyEntryStorage';
 export * from './Sdk/Lib/PrivateKeyStorage';
