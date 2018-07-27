@@ -73,6 +73,19 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	update (key: string, data: Buffer): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const file = this.resolveFilePath(key);
+			fs.writeFile(file, data, { flag: 'w' }, err => {
+				if (err) {
+					return reject(err);
+				}
+
+				resolve();
+			});
+		});
+	}
+
 	clear (): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			rimraf(this.config.dir!, err => {

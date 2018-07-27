@@ -208,6 +208,34 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	update (key: string, data: Buffer): Promise<void> {
+		key = normalizeKey(key);
+		return new Promise((resolve, reject) => {
+			this.ready().then(() => {
+				createTransaction(this._dbInfo!, READ_WRITE, (err, transaction ) => {
+					if (err) {
+						return reject(err);
+					}
+
+					try {
+						const store = transaction!.objectStore(this._dbInfo!.storeName!);
+						const req = store.put(toArrayBuffer(data), key);
+
+						req.onsuccess = () => {
+							resolve();
+						};
+
+						req.onerror = () => {
+							reject(req.error);
+						};
+					} catch (error) {
+						reject(error);
+					}
+				});
+			}).catch(reject);
+		});
+	}
+
 	clear(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			this.ready().then(() => {

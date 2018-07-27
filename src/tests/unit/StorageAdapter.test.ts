@@ -196,4 +196,23 @@ describe ('StorageAdapter', () => {
 			assert.sameDeepMembers(entries, expectedEntries);
 		})
 	});
+
+	it('update with existing key', () => {
+		return storage.store('one', Buffer.from('one'))
+			.then(() => storage.update('one', Buffer.from('another_one')))
+			.then(() => storage.load('one'))
+			.then(result => {
+				assert.isNotNull(result);
+				assert.equal(result!.toString(), 'another_one');
+			});
+	});
+
+	it('update with non-existing key creates new entry', () => {
+		return storage.update('nonexistent', Buffer.from('value'))
+			.then(() => storage.load('nonexistent'))
+			.then(result => {
+				assert.isNotNull(result);
+				assert.equal(result!.toString(), 'value');
+			});
+	});
 });
