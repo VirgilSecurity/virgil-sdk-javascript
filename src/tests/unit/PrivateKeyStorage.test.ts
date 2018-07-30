@@ -25,10 +25,11 @@ describe ('PrivateKeyStorage', () => {
 			return privateKeyStorage.store('test', {}, { meta: 'data' })
 				.then(() => {
 					assert.isTrue(storageBackendStub.save.calledOnce);
-					const storedEntry = storageBackendStub.save.firstCall.args[0];
-					assert.equal(storedEntry.name, 'test');
-					assert.equal(storedEntry.value.toString(), 'private_key');
-					assert.deepEqual(storedEntry.meta, { meta: 'data' });
+					const entryName = storageBackendStub.save.firstCall.args[0];
+					const entry = storageBackendStub.save.firstCall.args[1];
+					assert.equal(entryName, 'test');
+					assert.equal(entry.value.toString(), 'private_key');
+					assert.deepEqual(entry.meta, { meta: 'data' });
 				});
 		});
 	});

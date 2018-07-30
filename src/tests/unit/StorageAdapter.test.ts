@@ -1,4 +1,5 @@
 import StorageAdapter from '../../Sdk/Lib/KeyStorage/adapters/FileSystemStorageAdapter';
+import { StorageEntryAlreadyExistsError } from '../../Sdk/Lib/KeyStorage/StorageEntryAlreadyExistsError';
 
 describe ('StorageAdapter', () => {
 	let storage: StorageAdapter;
@@ -14,7 +15,7 @@ describe ('StorageAdapter', () => {
 		return storage.clear();
 	});
 
-	it('set and get the key', () => {
+	it('store and get the key', () => {
 		const expected = Buffer.from('one');
 		return assert.eventually.equal(
 			storage.store('first', expected)
@@ -31,7 +32,7 @@ describe ('StorageAdapter', () => {
 		return assert.isRejected(
 			storage.store('first', Buffer.from('one'))
 				.then(() => storage.store('first', Buffer.from('two'))),
-			Error,
+			StorageEntryAlreadyExistsError,
 			'already exists'
 		);
 	});
@@ -49,7 +50,7 @@ describe ('StorageAdapter', () => {
 		);
 	});
 
-	it('set remove set', () => {
+	it('store remove store', () => {
 		return assert.eventually.isTrue(
 			storage.store('first', Buffer.from('one'))
 				.then(() => storage.remove('first'))
@@ -67,7 +68,7 @@ describe ('StorageAdapter', () => {
 		);
 	});
 
-	it('set two items', () => {
+	it('store two items', () => {
 		const oneExpected = Buffer.from('one');
 		const twoExpected = Buffer.from('two');
 		return assert.becomes(
@@ -88,7 +89,7 @@ describe ('StorageAdapter', () => {
 		);
 	});
 
-	it('set remove three items', () => {
+	it('store remove three items', () => {
 		return assert.eventually.isNull(
 			Promise.all([
 				storage.store('first', Buffer.from('one')),
@@ -121,7 +122,7 @@ describe ('StorageAdapter', () => {
 		);
 	});
 
-	it('set empty value', () => {
+	it('store empty value', () => {
 		return assert.eventually.isTrue(
 			storage.store('first', new Buffer(0))
 				.then(() => storage.load('first'))
@@ -129,7 +130,7 @@ describe ('StorageAdapter', () => {
 		);
 	});
 
-	it('set with weird keys', () => {
+	it('store with weird keys', () => {
 		return assert.becomes(
 			Promise.all([
 				storage.store(' ', Buffer.from('space')),
@@ -195,5 +196,24 @@ describe ('StorageAdapter', () => {
 		).then(entries => {
 			assert.sameDeepMembers(entries, expectedEntries);
 		})
+	});
+
+	it('update with existing key', () => {
+		return storage.store('one', Buffer.from('one'))
+			.then(() => storage.update('one', Buffer.from('another_one')))
+			.then(() => storage.load('one'))
+			.then(result => {
+				assert.isNotNull(result);
+				assert.equal(result!.toString(), 'another_one');
+			});
+	});
+
+	it('update with non-existing key creates new entry', () => {
+		return storage.update('nonexistent', Buffer.from('value'))
+			.then(() => storage.load('nonexistent'))
+			.then(result => {
+				assert.isNotNull(result);
+				assert.equal(result!.toString(), 'value');
+			});
 	});
 });

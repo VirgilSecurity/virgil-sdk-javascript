@@ -1,12 +1,13 @@
-import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
-
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
+import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
+import { StorageEntryAlreadyExistsError } from '../StorageEntryAlreadyExistsError';
 
 const NO_SUCH_FILE = 'ENOENT';
+const FILE_EXISTS = 'EEXIST';
 
 export default class FileSystemStorageAdapter implements IStorageAdapter {
 
@@ -23,8 +24,8 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 			const file = this.resolveFilePath(key);
 
 			fs.writeFile(file, data, { flag: 'wx' }, err => {
-				if (err) {
-					return reject(err);
+				if (err && err.code === FILE_EXISTS) {
+					return reject(new StorageEntryAlreadyExistsError());
 				}
 
 				resolve();
@@ -69,6 +70,19 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 				}
 
 				resolve(true);
+			});
+		});
+	}
+
+	update (key: string, data: Buffer): Promise<void> {
+		return new Promise((resolve, reject) => {
+			const file = this.resolveFilePath(key);
+			fs.writeFile(file, data, { flag: 'w' }, err => {
+				if (err) {
+					return reject(err);
+				}
+
+				resolve();
 			});
 		});
 	}
