@@ -36,13 +36,13 @@ describe ('KeyEntryStorage', () => {
 	describe ('save', () => {
 		it ('throws if `name` is empty', () => {
 			assert.throws(() => {
-				storage.save('', { value: Buffer.from('') });
+				storage.save({ name: '', value: Buffer.from('') });
 			}, TypeError);
 		});
 
 		it ('throws if `params.value` is empty', () => {
 			assert.throws(() => {
-				storage.save('test_entry', null!);
+				storage.save({ name: 'test_entry', value: undefined! });
 			}, TypeError);
 		});
 
@@ -52,10 +52,11 @@ describe ('KeyEntryStorage', () => {
 			const expectedValue = Buffer.from('one');
 			const expectedMeta = { meta: 'data' };
 
-			return storage.save(
-				expectedName,
-				{ value: expectedValue, meta: expectedMeta }
-			).then(() => {
+			return storage.save({
+				name: expectedName,
+				value: expectedValue,
+				meta: expectedMeta
+			}).then(() => {
 				assert.equal(adapterStub.store.firstCall.args[0], expectedName);
 				assert.isTrue(Buffer.isBuffer(adapterStub.store.firstCall.args[1]));
 
@@ -69,7 +70,7 @@ describe ('KeyEntryStorage', () => {
 		it ('throws `PrivateKeyExistsError` if entry with the same name already exists', () => {
 			adapterStub.store.rejects({ name: 'StorageEntryAlreadyExistsError' });
 			return assert.isRejected(
-				storage.save('one', { value: Buffer.from('one') }),
+				storage.save({ name: 'one', value: Buffer.from('one') }),
 				KeyEntryAlreadyExistsError
 			);
 		});
@@ -77,7 +78,7 @@ describe ('KeyEntryStorage', () => {
 		it ('re-throws unexpected errors from adapter', () => {
 			adapterStub.store.rejects({ code: 'UNKNOWN', message: 'unknown error' });
 			return assert.isRejected(
-				storage.save('one', { value: Buffer.from('one') }),
+				storage.save({ name: 'one', value: Buffer.from('one') }),
 				/unknown error/
 			);
 		});
@@ -85,7 +86,7 @@ describe ('KeyEntryStorage', () => {
 		it ('sets creationDate and modificationDate properties', () => {
 			adapterStub.store.resolves();
 
-			return storage.save('test', { value: Buffer.from('test') })
+			return storage.save({ name: 'test', value: Buffer.from('test') })
 				.then(entry => {
 					assert.approximately(entry.creationDate.getTime(), Date.now(), 1000);
 					assert.equal(entry.modificationDate.getTime(), entry.creationDate.getTime());
@@ -161,20 +162,20 @@ describe ('KeyEntryStorage', () => {
 	describe ('update', () => {
 		it ('throws if `name` is empty', () => {
 			assert.throws(() => {
-				storage.update('', { value: Buffer.from('') });
+				storage.update({ name: '', value: Buffer.from('') });
 			}, TypeError);
 		});
 
 		it ('throws if both `value` and `meta` are empty', () => {
 			assert.throws(() => {
-				storage.update('test_entry', undefined!);
+				storage.update({ name: 'test_entry', value: undefined! });
 			}, TypeError);
 		});
 
 		it ('throws if entry does not exist', () => {
 			adapterStub.load.withArgs('one').resolves(null);
 			return assert.isRejected(
-				storage.update('one', { value: Buffer.from('one') }),
+				storage.update({ name: 'one', value: Buffer.from('one') }),
 				KeyEntryDoesNotExistError
 			);
 		});
@@ -188,7 +189,7 @@ describe ('KeyEntryStorage', () => {
 			const expectedValue = Buffer.from('another');
 			const expectedMeta = { 'foo': 'bar' };
 
-			return storage.update('one', { value: expectedValue, meta: expectedMeta })
+			return storage.update({ name: 'one', value: expectedValue, meta: expectedMeta })
 				.then(() => {
 					assert.equal(adapterStub.update.firstCall.args[0], 'one');
 					assert.isTrue(Buffer.isBuffer(adapterStub.update.firstCall.args[1]));
@@ -211,7 +212,7 @@ describe ('KeyEntryStorage', () => {
 				); // b25l = base64(one)
 			adapterStub.update.resolves();
 
-			return storage.update('one', { value: Buffer.from('another') })
+			return storage.update({ name: 'one', value: Buffer.from('another') })
 				.then(updatedEntry => {
 					assert.notEqual(updatedEntry.modificationDate, new Date("2018-07-27T10:58:21.713Z"));
 				});
@@ -226,7 +227,7 @@ describe ('KeyEntryStorage', () => {
 					)
 				); // b25l = base64(one)
 			adapterStub.update.resolves();
-			return storage.update('one', { value: Buffer.from('another') })
+			return storage.update({ name: 'one', value: Buffer.from('another') })
 				.then(updatedEntry => {
 					assert.deepEqual(updatedEntry.meta, { original: 'meta' });
 					assert.equal(updatedEntry.value.toString(), 'another');
@@ -242,7 +243,7 @@ describe ('KeyEntryStorage', () => {
 					)
 				); // b25l = base64(one)
 			adapterStub.update.resolves();
-			return storage.update('one', { meta: { updated: 'meta' } })
+			return storage.update({ name: 'one', meta: { updated: 'meta' } })
 				.then(updatedEntry => {
 					assert.equal(updatedEntry.value.toString(), 'one');
 					assert.deepEqual(updatedEntry.meta, { updated: 'meta' });

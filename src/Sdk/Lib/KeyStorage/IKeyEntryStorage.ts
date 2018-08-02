@@ -17,20 +17,22 @@ export interface IKeyEntry {
 }
 
 export interface ISaveKeyEntryParams {
+	name: string;
 	value: Buffer;
 	meta?: KeyEntryMeta;
 }
 
 export interface IUpdateKeyEntryParams {
+	name: string;
 	value?: Buffer;
 	meta?: KeyEntryMeta;
 }
 
 export interface IKeyEntryStorage {
-	save (name: string, params: ISaveKeyEntryParams): Promise<IKeyEntry>;
+	save (params: ISaveKeyEntryParams): Promise<IKeyEntry>;
 	load (name: string): Promise<IKeyEntry|null>;
 	exists (name: string): Promise<boolean>;
 	remove (name: string): Promise<boolean>;
 	list (): Promise<IKeyEntry[]>;
-	update (name: string, params: IUpdateKeyEntryParams): Promise<IKeyEntry>;
+	update (params: IUpdateKeyEntryParams): Promise<IKeyEntry>;
 }

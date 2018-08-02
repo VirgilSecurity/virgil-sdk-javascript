@@ -16,10 +16,7 @@ export class PrivateKeyStorage {
 
 	store (name: string, privateKey: IPrivateKey, meta?: { [key: string]: string }) {
 		const privateKeyData = this.privateKeyExporter.exportPrivateKey(privateKey);
-		return this.storageBackend.save(
-			name,
-			{ value: privateKeyData, meta }
-		);
+		return this.storageBackend.save({ name, value: privateKeyData, meta });
 	}
 
 	load (name: string): Promise<IPrivateKeyEntry|null> {

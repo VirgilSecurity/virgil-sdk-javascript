@@ -50,9 +50,9 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 		return this.adapter.remove(name);
 	}
 
-	save(name: string, { value, meta }: ISaveKeyEntryParams): Promise<IKeyEntry> {
-		validateName(name);
-		validateValue(value);
+	save({ name, value, meta }: ISaveKeyEntryParams): Promise<IKeyEntry> {
+		validateNameProperty(name);
+		validateValueProperty(value);
 
 		const keyEntry = {
 			name: name,
@@ -78,10 +78,12 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 			.then(entries => entries.map(entry => deserializeKeyEntry(entry)));
 	}
 
-	update (name: string, { value, meta }: IUpdateKeyEntryParams): Promise<IKeyEntry> {
-		validateName(name);
+	update ({ name, value, meta }: IUpdateKeyEntryParams): Promise<IKeyEntry> {
+		validateNameProperty(name);
 		if (!(value || meta)) {
-			throw new TypeError('Either `params.value` or `params.meta` is required to update key entry');
+			throw new TypeError(
+				'Invalid argument. Either `value` or `meta` property is required.'
+			);
 		}
 
 		return this.adapter.load(name)
@@ -150,6 +152,10 @@ function resolveAdapter (config: IKeyEntryStorageConfig|string) {
 const requiredArg = (name: string) => (value: any) => {
 	if (!value) throw new TypeError(`Argument '${name}' is required.`);
 };
+const requiredProp = (name: string) => (value: any) => {
+	if (!value) throw new TypeError(`Invalid argument. Property ${name} is required`)
+};
 
 const validateName = requiredArg('name');
-const validateValue = requiredArg('params.value');
+const validateNameProperty = requiredProp('name');
+const validateValueProperty = requiredProp('value');
