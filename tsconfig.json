@@ -31,7 +31,7 @@
 		"target": "ES6",
 		"module": "commonjs",
 		"moduleResolution": "node",
-		"exclude": "**/tests/**",
+		"exclude": "**/__tests__/**",
 		"ignoreCompilerErrors": true,
 		"excludePrivate": true,
 		"excludeNotExported": true,
