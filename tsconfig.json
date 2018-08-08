@@ -25,6 +25,21 @@
 	"include": [
 		"src"
 	],
-	"exclude": [
-	]
+	"typedocOptions": {
+		"out": "docs",
+		"mode": "file",
+		"target": "ES6",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"exclude": "**/tests/**",
+		"ignoreCompilerErrors": true,
+		"excludePrivate": true,
+		"excludeNotExported": true,
+		"stripInternal": true,
+		"suppressExcessPropertyErrors": true,
+		"suppressImplicitAnyIndexErrors": true,
+		"theme": "minimal",
+		"hideGenerator": true,
+		"readme": "none"
+	  }
 }

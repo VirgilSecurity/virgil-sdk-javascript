@@ -69,6 +69,7 @@
     "sinon": "^4.5.0",
     "sinon-chai": "^3.0.0",
     "ts-node": "^5.0.1",
+    "typedoc": "^0.11.1",
     "typescript": "^2.6.2",
     "virgil-crypto": "^3.0.0"
   },
@@ -86,7 +87,8 @@
     "test:browser": "karma start",
     "test": "yarn run test:node && yarn run test:browser --signle-run",
     "preversion": "yarn run test",
-    "version": "yarn run build"
+    "version": "yarn run build",
+    "docs": "typedoc src"
   },
   "devEngines": {
     "node": ">= 8.x"
