@@ -2,25 +2,67 @@ import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
 import { IKeyEntryStorage } from './KeyStorage/IKeyEntryStorage';
 import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
 import { KeyEntryStorage } from './KeyStorage/KeyEntryStorage';
+import { PrivateKeyExistsError } from './KeyStorage/PrivateKeyExistsError';
 
+/**
+ * Interface of a single entry in {@link PrivateKeyStorage}.
+ */
 export interface IPrivateKeyEntry {
 	privateKey: IPrivateKey,
 	meta?: { [key: string]: string }
 }
 
+/**
+ * Class responsible for storage of private keys.
+ */
 export class PrivateKeyStorage {
+
+	/**
+	 * Initializes a new instance of `PrivateKeyStorage`.
+	 * @param {IPrivateKeyExporter} privateKeyExporter - Object responsible for
+	 * exporting private key bytes from `IPrivateKey` objects and importing
+	 * private key bytes into `IPrivateKey` objects.
+	 * @param {IKeyEntryStorage} keyEntryStorage - Object responsible for
+	 * persistence of private keys data.
+	 */
 	constructor (
 		private privateKeyExporter: IPrivateKeyExporter,
-		private storageBackend: IKeyEntryStorage = new KeyEntryStorage()
+		private keyEntryStorage: IKeyEntryStorage = new KeyEntryStorage()
 	) {}
 
-	store (name: string, privateKey: IPrivateKey, meta?: { [key: string]: string }) {
+	/**
+	 * Persists the given `privateKey` and `meta` under the given `name`.
+	 * If an entry with the same name already exists rejects the returned
+	 * Promise with {@link PrivateKeyExistsError} error.
+	 *
+	 * @param {string} name - Name of the private key.
+	 * @param {IPrivateKey} privateKey - The private key object.
+	 * @param {Object<string, string>} [meta] - Optional metadata to store with the key.
+	 *
+	 * @returns {Promise<void>}
+	 */
+	async store (name: string, privateKey: IPrivateKey, meta?: { [key: string]: string }) {
 		const privateKeyData = this.privateKeyExporter.exportPrivateKey(privateKey);
-		return this.storageBackend.save({ name, value: privateKeyData, meta });
+		try {
+			await this.keyEntryStorage.save({ name, value: privateKeyData, meta });
+		} catch (error) {
+			if (error && error.name === 'KeyEntryAlreadyExistsError') {
+				throw new PrivateKeyExistsError(`Private key with the name ${name} already exists.`);
+			}
+
+			throw error;
+		}
 	}
 
+	/**
+	 * Retrieves the private key with the given `name` from persistent storage.
+	 * If private with the given name does not exist, resolves the returned
+	 * Promise with `null`.
+	 *
+	 * @param {string} name - Name of the private key to load.
+	 */
 	load (name: string): Promise<IPrivateKeyEntry|null> {
-		return this.storageBackend.load(name).then(keyEntry => {
+		return this.keyEntryStorage.load(name).then(keyEntry => {
 			if (keyEntry === null) {
 				return null;
 			}
@@ -33,7 +75,14 @@ export class PrivateKeyStorage {
 		});
 	}
 
-	delete (name: string) {
-		return this.storageBackend.remove(name);
+	/**
+	 * Removes the private key entry with the given `name` from persistent
+	 * storage.
+	 *
+	 * @param {string} name - Name of the private key to remove.
+	 * @returns {Promise<void>}
+	 */
+	async delete (name: string): Promise<void> {
+		await this.keyEntryStorage.remove(name);
 	}
 }

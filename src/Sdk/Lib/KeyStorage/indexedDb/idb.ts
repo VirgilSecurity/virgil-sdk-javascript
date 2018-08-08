@@ -1,5 +1,8 @@
 // This code is borrowed from localForage
 // See: https://github.com/localForage/localForage/blob/master/src/utils/idb.js
+/**
+ * @hidden
+ */
 function getIdb() {
 	/* global indexedDB,webkitIndexedDB,mozIndexedDB,OIndexedDB,msIndexedDB */
 	try {
@@ -23,4 +26,7 @@ function getIdb() {
 	}
 }
 
+/**
+ * @hidden
+ */
 export const idb = getIdb();

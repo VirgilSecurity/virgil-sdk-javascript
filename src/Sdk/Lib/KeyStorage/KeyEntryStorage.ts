@@ -5,7 +5,7 @@ import {
 	ISaveKeyEntryParams,
 	IUpdateKeyEntryParams
 } from './IKeyEntryStorage';
-import StorageAdapter from './adapters/FileSystemStorageAdapter';
+import { DefaultStorageAdapter } from './adapters/DefaultStorageAdapter';
 import { IStorageAdapter, IStorageAdapterConfig } from './adapters/IStorageAdapter';
 import { KeyEntryAlreadyExistsError } from './KeyEntryAlreadyExistsError';
 import { InvalidKeyEntryError } from './InvalidKeyEntryError';
@@ -22,18 +22,33 @@ const MODIFICATION_DATE_KEY = 'modificationDate';
 
 export { IKeyEntry, IKeyEntryStorage, IKeyEntryStorageConfig, ISaveKeyEntryParams, IUpdateKeyEntryParams };
 
+/**
+ * Class responsible for persisting private key bytes with optional
+ * user-defined metadata.
+ */
 export class KeyEntryStorage implements IKeyEntryStorage {
 	private adapter: IStorageAdapter;
 
+	/**
+	 * Initializes a new instance of `KeyEntryStorage`.
+	 *
+	 * @param {IKeyEntryStorageConfig} config - Instance configuration.
+	 */
 	constructor (config: IKeyEntryStorageConfig | string = {}) {
 		this.adapter = resolveAdapter(config);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	exists(name: string): Promise<boolean> {
 		validateName(name);
 		return this.adapter.exists(name);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	load(name: string): Promise<IKeyEntry | null> {
 		validateName(name);
 		return this.adapter.load(name).then(data => {
@@ -45,11 +60,17 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	remove(name: string): Promise<boolean> {
 		validateName(name);
 		return this.adapter.remove(name);
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	save({ name, value, meta }: ISaveKeyEntryParams): Promise<IKeyEntry> {
 		validateNameProperty(name);
 		validateValueProperty(value);
@@ -73,11 +94,17 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 			});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	list (): Promise<IKeyEntry[]> {
 		return this.adapter.list()
 			.then(entries => entries.map(entry => deserializeKeyEntry(entry)));
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	update ({ name, value, meta }: IUpdateKeyEntryParams): Promise<IKeyEntry> {
 		validateNameProperty(name);
 		if (!(value || meta)) {
@@ -101,6 +128,13 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 				return this.adapter.update(name, serializeKeyEntry(updatedEntry))
 					.then(() => updatedEntry);
 			});
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	clear () {
+		return this.adapter.clear();
 	}
 }
 
@@ -138,7 +172,7 @@ function deserializeKeyEntry (data: Buffer): IKeyEntry {
 
 function resolveAdapter (config: IKeyEntryStorageConfig|string) {
 	if (typeof config === 'string') {
-		return new StorageAdapter({ dir: config, name: config });
+		return new DefaultStorageAdapter({ dir: config, name: config });
 	}
 
 	const { adapter, ...rest } = config;
@@ -146,7 +180,7 @@ function resolveAdapter (config: IKeyEntryStorageConfig|string) {
 		return adapter;
 	}
 
-	return new StorageAdapter({ ...DEFAULTS, ...rest });
+	return new DefaultStorageAdapter({ ...DEFAULTS, ...rest });
 }
 
 const requiredArg = (name: string) => (value: any) => {

@@ -33,6 +33,10 @@ type DbInfo = {
 
 const dbContexts: { [name: string]: DbContext } = {};
 
+/**
+ * Implementation of {@link IStorageAdapter} that uses IndexedDB for
+ * persistence. For use in browsers.
+ */
 export default class IndexedDbStorageAdapter implements IStorageAdapter {
 
 	private _dbInfo?: DbInfo;
@@ -41,6 +45,12 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 
 	private _ready: Promise<void>;
 
+	/**
+	 * Initializes an instance of `IndexedDbStorageAdapter`.
+	 * @param {IStorageAdapterConfig} config - Configuration options.
+	 * Currently only `name` is supported and must be the name of the
+	 * IndexedDB database where the data will be stored.
+	 */
 	constructor(config: IStorageAdapterConfig) {
 		if (!isIndexedDbValid()) {
 			throw new Error('Cannot use IndexedDbStorageAdapter. indexedDb is not supported');
@@ -55,6 +65,9 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		this._ready = this._initStorage();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	store (key: string, data: Buffer): Promise<void> {
 		key = normalizeKey(key);
 
@@ -92,6 +105,9 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	load (key: string): Promise<Buffer|null> {
 		key = normalizeKey(key);
 
@@ -127,6 +143,9 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	exists(key: string): Promise<boolean> {
 		key = normalizeKey(key);
 		return new Promise<boolean>((resolve, reject) => {
@@ -156,6 +175,9 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	remove(key: string): Promise<boolean> {
 		key = normalizeKey(key);
 		return new Promise<boolean>((resolve, reject) => {
@@ -201,6 +223,9 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	update (key: string, data: Buffer): Promise<void> {
 		key = normalizeKey(key);
 		return new Promise((resolve, reject) => {
@@ -229,6 +254,9 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	clear(): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			this.ready().then(() => {
@@ -257,6 +285,9 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	list(): Promise<Buffer[]> {
 		return new Promise((resolve, reject) => {
 			this.ready().then(() => {

@@ -2,6 +2,10 @@ import { idb } from './idb';
 
 // This code is borrowed from localForage
 // See: https://github.com/localForage/localForage/blob/master/src/utils/isIndexedDBValid.js
+/**
+ * @hidden
+ * @returns {boolean}
+ */
 export function isIndexedDbValid() {
 	try {
 		// Initialize IndexedDB; fall back to vendor-prefixed versions

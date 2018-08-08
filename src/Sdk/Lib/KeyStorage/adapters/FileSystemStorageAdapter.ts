@@ -9,16 +9,29 @@ import { StorageEntryAlreadyExistsError } from '../StorageEntryAlreadyExistsErro
 const NO_SUCH_FILE = 'ENOENT';
 const FILE_EXISTS = 'EEXIST';
 
+/**
+ * Implementation of {@link IStorageAdapter} that uses file system for
+ * persistence. For use in Node.js.
+ */
 export default class FileSystemStorageAdapter implements IStorageAdapter {
 
 	private config: IStorageAdapterConfig;
 
+	/**
+	 * Initializes a new instance of `FileSystemStorageAdapter`.
+	 * @param {IStorageAdapterConfig} config - Configuration options.
+	 * Currently only `dir` is supported and must be a file system path
+	 * to the folder where the data will be stored.
+	 */
 	constructor (config: IStorageAdapterConfig) {
 		this.config = config;
 
 		mkdirp.sync(path.resolve(this.config.dir));
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	store(key: string, data: Buffer): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			const file = this.resolveFilePath(key);
@@ -33,6 +46,9 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	load(key: string): Promise<Buffer|null> {
 		return Promise.resolve().then(() => {
 			const filename = this.resolveFilePath(key);
@@ -40,6 +56,9 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	exists(key: string): Promise<boolean> {
 		return new Promise<boolean>((resolve, reject) => {
 			const file = this.resolveFilePath(key);
@@ -57,6 +76,9 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	remove(key: string): Promise<boolean> {
 		return new Promise<boolean>((resolve, reject) => {
 			const file = this.resolveFilePath(key);
@@ -74,6 +96,9 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	update (key: string, data: Buffer): Promise<void> {
 		return new Promise((resolve, reject) => {
 			const file = this.resolveFilePath(key);
@@ -87,6 +112,9 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	clear (): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			rimraf(this.config.dir!, err => {
@@ -98,6 +126,9 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 		});
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	list (): Promise<Buffer[]> {
 		return new Promise((resolve, reject) => {
 			fs.readdir(this.config.dir, (err, files) => {
