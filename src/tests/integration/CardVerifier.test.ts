@@ -1,6 +1,6 @@
 import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { VirgilCardVerifier, RawSignedModel } from '../..';
-import { parseRawSignedModel } from '../../Sdk/Utils/CardUtils';
+import { parseRawSignedModel } from '../../Utils/CardUtils';
 
 import { compatData } from './data';
 

@@ -1,4 +1,4 @@
-import { fetch, Headers, Response } from '../Lib/fetch';
+import { fetch, Headers, Response } from '../lib/fetch';
 
 export interface IConnection {
 	get (endpoint: string, accessToken: string): Promise<Response>;

@@ -17,7 +17,7 @@
   "browser": {
     "./dist/virgil-sdk.cjs.js": "./dist/virgil-sdk.browser.cjs.js",
     "./dist/virgil-sdk.es.js": "./dist/virgil-sdk.browser.es.js",
-    "./src/Sdk/Lib/KeyStorage/adapters/FileSystemStorageAdapter.ts": "./src/Sdk/Lib/KeyStorage/adapters/IndexedDbStorageAdapter.ts"
+    "./src/KeyStorage/adapters/FileSystemStorageAdapter.ts": "./src/KeyStorage/adapters/IndexedDbStorageAdapter.ts"
   },
   "typings": "dist/types/index.d.ts",
   "files": [

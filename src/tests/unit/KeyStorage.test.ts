@@ -1,7 +1,7 @@
 import { SinonStubbedInstance } from 'sinon';
-import { KeyStorage } from '../../Sdk/Lib/KeyStorage/KeyStorage';
-import FileSystemStorageAdapter from '../../Sdk/Lib/KeyStorage/adapters/FileSystemStorageAdapter';
-import { PrivateKeyExistsError } from '../../Sdk/Lib/KeyStorage/PrivateKeyExistsError';
+import { KeyStorage } from '../../KeyStorage/KeyStorage';
+import FileSystemStorageAdapter from '../../KeyStorage/adapters/FileSystemStorageAdapter';
+import { PrivateKeyExistsError } from '../../KeyStorage/PrivateKeyExistsError';
 
 describe ('KeyStorage', () => {
 	let storage: KeyStorage;

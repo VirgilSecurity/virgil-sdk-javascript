@@ -1,6 +1,6 @@
-import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
+import { IPrivateKeyExporter } from './CryptoApi/IPrivateKeyExporter';
 import { IKeyEntryStorage } from './KeyStorage/IKeyEntryStorage';
-import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
+import { IPrivateKey } from './CryptoApi/IPrivateKey';
 import { KeyEntryStorage } from './KeyStorage/KeyEntryStorage';
 import { PrivateKeyExistsError } from './KeyStorage/PrivateKeyExistsError';
 

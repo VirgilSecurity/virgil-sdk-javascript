@@ -1,4 +1,4 @@
-import { GeneratorJwtProvider } from '../../Sdk/Web/Auth/AccessTokenProviders';
+import { GeneratorJwtProvider } from '../../Web/Auth/AccessTokenProviders';
 
 describe ('GeneratorJwtProvider', () => {
 	describe ('constructor', () => {

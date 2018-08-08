@@ -1,5 +1,5 @@
-import { Response } from '../Lib/fetch';
-import { VirgilError } from '../Lib/VirgilError';
+import { Response } from '../lib/fetch';
+import { VirgilError } from '../VirgilError';
 
 export class VirgilCardVerificationError extends VirgilError {
 	constructor(m: string) {

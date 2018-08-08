@@ -1,9 +1,9 @@
-import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
+import { ICardCrypto } from '../CryptoApi/ICardCrypto';
 import { ICard, INewCardParams } from '../ICard';
 import { RawSignedModel } from '../Web/RawSignedModel';
-import { base64Encode } from '../Lib/base64';
+import { base64Encode } from '../lib/base64';
 import { takeSnapshot } from './SnapshotUtils';
-import { getUnixTimestamp } from '../Lib/timestamp';
+import { getUnixTimestamp } from '../lib/timestamp';
 
 export const CardVersion = '5.0';
 

@@ -1,6 +1,6 @@
 import { RawSignedModel } from './RawSignedModel';
-import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
-import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
+import { IPrivateKey } from '../CryptoApi/IPrivateKey';
+import { ICardCrypto } from '../CryptoApi/ICardCrypto';
 import { IExtraData } from '../ICard';
 import { takeSnapshot } from '../Utils/SnapshotUtils';
 import { SelfSigner } from './signer-types';

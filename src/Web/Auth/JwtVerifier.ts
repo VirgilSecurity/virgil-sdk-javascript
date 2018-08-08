@@ -1,8 +1,8 @@
-import { IAccessTokenSigner } from '../../../CryptoApi/IAccessTokenSigner';
-import { IPublicKey } from '../../../CryptoApi/IPublicKey';
+import { IAccessTokenSigner } from '../../CryptoApi/IAccessTokenSigner';
+import { IPublicKey } from '../../CryptoApi/IPublicKey';
 import { Jwt } from './Jwt';
 import { JwtContentType, VirgilContentType } from './jwt-constants';
-import { assert } from '../../Lib/assert';
+import { assert } from '../../lib/assert';
 
 export interface IJwtVerifierOptions {
 	accessTokenSigner: IAccessTokenSigner;

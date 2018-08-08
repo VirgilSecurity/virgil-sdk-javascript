@@ -1,7 +1,7 @@
 import { KeyEntryStorage, PrivateKeyStorage } from '../..';
 import { SinonStubbedInstance } from 'sinon';
 import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
-import { IKeyEntryStorage } from '../../Sdk/Lib/KeyStorage/IKeyEntryStorage';
+import { IKeyEntryStorage } from '../../KeyStorage/IKeyEntryStorage';
 
 describe ('PrivateKeyStorage', () => {
 	let privateKeyStorage: PrivateKeyStorage;

@@ -1,7 +1,7 @@
 import { IExtraData } from '../../ICard';
-import { base64UrlDecode, base64UrlEncode } from '../../Lib/base64';
-import { IAccessToken, ITokenContext } from './AccessTokenProviders';
-import { getUnixTimestamp } from '../../Lib/timestamp';
+import { base64UrlDecode, base64UrlEncode } from '../../lib/base64';
+import { IAccessToken, ITokenContext } from './AccessTokenProviders/index';
+import { getUnixTimestamp } from '../../lib/timestamp';
 import { IssuerPrefix, SubjectPrefix } from './jwt-constants';
 
 /**

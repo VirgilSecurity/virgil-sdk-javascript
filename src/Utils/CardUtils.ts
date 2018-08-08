@@ -1,4 +1,4 @@
-import { ICardCrypto } from '../../CryptoApi/ICardCrypto';
+import { ICardCrypto } from '../CryptoApi/ICardCrypto';
 import { IRawSignature, RawSignedModel } from '../Web/RawSignedModel';
 import { ICard, ICardSignature, IExtraData, IRawCardContent } from '../ICard';
 import { parseSnapshot } from './SnapshotUtils';

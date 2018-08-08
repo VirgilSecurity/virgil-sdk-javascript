@@ -1,7 +1,7 @@
-import { CardClient } from '../../Sdk/Web/CardClient';
-import { Response } from '../../Sdk/Lib/fetch';
-import { IConnection } from '../../Sdk/Web/Connection';
-import { RawSignedModel } from '../../Sdk/Web/RawSignedModel';
+import { CardClient } from '../../Web/CardClient';
+import { Response } from '../../lib/fetch';
+import { IConnection } from '../../Web/Connection';
+import { RawSignedModel } from '../../Web/RawSignedModel';
 
 describe('CardClient', () => {
 	describe('publishCard', () => {

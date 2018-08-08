@@ -1,5 +1,5 @@
-import { IPrivateKey } from '../../../CryptoApi/IPrivateKey';
-import { IAccessTokenSigner } from '../../../CryptoApi/IAccessTokenSigner';
+import { IPrivateKey } from '../../CryptoApi/IPrivateKey';
+import { IAccessTokenSigner } from '../../CryptoApi/IAccessTokenSigner';
 import { IExtraData } from '../../ICard';
 import {
 	IJwtBody,
@@ -12,8 +12,8 @@ import {
 	SubjectPrefix,
 	VirgilContentType
 } from './jwt-constants';
-import { getUnixTimestamp } from '../../Lib/timestamp';
-import { assert } from '../../Lib/assert';
+import { getUnixTimestamp } from '../../lib/timestamp';
+import { assert } from '../../lib/assert';
 
 export interface IJwtGeneratorOptions {
 	apiKey: IPrivateKey;

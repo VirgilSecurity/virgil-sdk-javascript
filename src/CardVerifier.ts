@@ -1,7 +1,7 @@
 import { ICard } from './ICard';
-import { ICardCrypto } from '../CryptoApi/ICardCrypto';
-import { IPublicKey } from '../CryptoApi/IPublicKey';
-import { base64Decode } from './Lib/base64';
+import { ICardCrypto } from './CryptoApi/ICardCrypto';
+import { IPublicKey } from './CryptoApi/IPublicKey';
+import { base64Decode } from './lib/base64';
 import { SelfSigner, VirgilSigner } from './Web/signer-types';
 
 export interface ICardVerifier {

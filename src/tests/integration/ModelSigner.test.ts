@@ -1,7 +1,7 @@
 import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
-import { ModelSigner } from '../../Sdk/Web/ModelSigner';
-import { SelfSigner } from '../../Sdk/Web/signer-types';
-import { generateRawSigned } from '../../Sdk/Utils/RawSignedModelUtils';
+import { ModelSigner } from '../../Web/ModelSigner';
+import { SelfSigner } from '../../Web/signer-types';
+import { generateRawSigned } from '../../Utils/RawSignedModelUtils';
 
 const init = () => {
 	const crypto = new VirgilCrypto();

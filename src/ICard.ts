@@ -1,5 +1,5 @@
-import { IPublicKey } from '../CryptoApi/IPublicKey';
-import { IPrivateKey } from '../CryptoApi/IPrivateKey';
+import { IPublicKey } from './CryptoApi/IPublicKey';
+import { IPrivateKey } from './CryptoApi/IPrivateKey';
 
 export interface IExtraData {
 	[key: string]: string;

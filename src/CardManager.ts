@@ -1,13 +1,13 @@
-import { ICardCrypto } from '../CryptoApi/ICardCrypto';
+import { ICardCrypto } from './CryptoApi/ICardCrypto';
 import { RawSignedModel, IRawSignedModelJson } from './Web/RawSignedModel';
 import { CardClient } from './Web/CardClient';
 import { ModelSigner } from './Web/ModelSigner';
 import { ICard, INewCardParams, IRawCardContent } from './ICard';
 import { ICardVerifier } from './CardVerifier';
-import { IAccessToken, IAccessTokenProvider, ITokenContext } from './Web/Auth/AccessTokenProviders';
+import { IAccessToken, IAccessTokenProvider, ITokenContext } from './Web/Auth/AccessTokenProviders/index';
 import { linkedCardList, parseRawSignedModel } from './Utils/CardUtils';
 import { cardToRawSignedModel, generateRawSigned } from './Utils/RawSignedModelUtils';
-import { assert } from './Lib/assert';
+import { assert } from './lib/assert';
 import { VirgilCardVerificationError, VirgilHttpError } from './Web/errors';
 import { parseSnapshot } from './Utils/SnapshotUtils';
 

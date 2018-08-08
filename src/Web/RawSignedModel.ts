@@ -1,4 +1,4 @@
-import { base64Decode, base64Encode } from '../Lib/base64';
+import { base64Decode, base64Encode } from '../lib/base64';
 
 export interface IRawSignedModelJson { // json
 	readonly signatures: IRawSignatureJson[];

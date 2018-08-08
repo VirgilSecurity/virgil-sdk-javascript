@@ -1,9 +1,9 @@
 import { SinonStubbedInstance } from 'sinon';
 import { KeyEntryStorage } from '../..';
-import FileSystemStorageAdapter from '../../Sdk/Lib/KeyStorage/adapters/FileSystemStorageAdapter';
-import { InvalidKeyEntryError } from '../../Sdk/Lib/KeyStorage/InvalidKeyEntryError';
-import { KeyEntryDoesNotExistError } from '../../Sdk/Lib/KeyStorage/KeyEntryDoesNotExistError';
-import { KeyEntryAlreadyExistsError } from '../../Sdk/Lib/KeyStorage/KeyEntryAlreadyExistsError';
+import FileSystemStorageAdapter from '../../KeyStorage/adapters/FileSystemStorageAdapter';
+import { InvalidKeyEntryError } from '../../KeyStorage/InvalidKeyEntryError';
+import { KeyEntryDoesNotExistError } from '../../KeyStorage/KeyEntryDoesNotExistError';
+import { KeyEntryAlreadyExistsError } from '../../KeyStorage/KeyEntryAlreadyExistsError';
 
 describe ('KeyEntryStorage', () => {
 	let storage: KeyEntryStorage;
