@@ -1,27 +1,83 @@
 import { ICardCrypto } from './CryptoApi/ICardCrypto';
-import { RawSignedModel, IRawSignedModelJson } from './Web/RawSignedModel';
+import { IRawSignedModelJson, RawSignedModel } from './Web/RawSignedModel';
 import { CardClient } from './Web/CardClient';
 import { ModelSigner } from './Web/ModelSigner';
 import { ICard, INewCardParams, IRawCardContent } from './ICard';
 import { ICardVerifier } from './CardVerifier';
-import { IAccessToken, IAccessTokenProvider, ITokenContext } from './Web/Auth/AccessTokenProviders/index';
+import { IAccessToken, IAccessTokenProvider, ITokenContext } from './Web/Auth/AccessTokenProviders';
 import { linkedCardList, parseRawSignedModel } from './Utils/CardUtils';
 import { cardToRawSignedModel, generateRawSigned } from './Utils/RawSignedModelUtils';
 import { assert } from './lib/assert';
 import { VirgilCardVerificationError, VirgilHttpError } from './Web/errors';
 import { parseSnapshot } from './Utils/SnapshotUtils';
+import { SelfSigner } from './Web/signer-types';
 
-export type ISignCallback = (model: RawSignedModel) => Promise<RawSignedModel>;
+/**
+ * @hidden
+ */
+const throwingAccessTokenProvider: IAccessTokenProvider = {
+	getToken: () => { throw new Error(
+		'Please set `CardManager.accessTokenProvider` to be able to make requests.'
+	); }
+};
 
+/**
+ * User-specified callback function to be called just before publishing
+ * a Virgil Card to append additional signatures to it.
+ *
+ * Receives a single parameter of type {@link RawSignedModel} and must
+ * return a {@link RawSignedModel} with additional signatures.
+ * Use {@link ModelSigner} to add signatures.
+ */
+export type ISignCallback = (model: RawSignedModel) => Promise<RawSignedModel> | RawSignedModel;
+
+/**
+ * {@link CardManager} initialization options.
+ */
 export interface ICardManagerParams {
+
+	/**
+	 * Implementation of {@link IAccessTokenProvider} to use to
+	 * get the token for requests authentication. Optional.
+	 */
+	readonly accessTokenProvider?: IAccessTokenProvider;
+
+	/**
+	 * Implementation of {@link ICardCrypto} interface.
+	 */
 	readonly cardCrypto: ICardCrypto;
-	readonly signCallback?: ISignCallback;
-	readonly apiUrl?: string;
-	readonly retryOnUnauthorized: boolean;
+
+	/**
+	 * Implementation of {@link ICardVerifier} interface to
+	 * be used to verify the validity of Virgil Cards received
+	 * from network and via {@link CardManager.importCard} method.
+	 */
 	readonly cardVerifier: ICardVerifier;
-	readonly accessTokenProvider: IAccessTokenProvider;
+
+	/**
+	 * Alters the behavior of the `CardManager` when it receives an
+	 * HTTP Unauthorized (401) error from the server. If this is set to
+	 * `true` it will silently request a new token form the
+	 * {@link CardManager.accessTokenProvider} and re-send the request,
+	 * otherwise the error will be returned to the client.
+	 */
+	readonly retryOnUnauthorized: boolean;
+
+	/**
+	 * Optional {@link ISignCallback}.
+	 */
+	readonly signCallback?: ISignCallback;
+
+	/**
+	 * Virgil Services API URL. Optional.
+	 * @hidden
+	 */
+	readonly apiUrl?: string;
 }
 
+/**
+ * Class responsible for creating, publishing and retrieving Virgil Cards.
+ */
 export class CardManager {
 	public readonly crypto: ICardCrypto;
 	public readonly client: CardClient;
@@ -30,7 +86,7 @@ export class CardManager {
 	public readonly cardVerifier: ICardVerifier;
 	public retryOnUnauthorized: boolean;
 
-	public readonly accessTokenProvider: IAccessTokenProvider;
+	public accessTokenProvider: IAccessTokenProvider;
 
 	public constructor (params: ICardManagerParams) {
 		this.crypto = params.cardCrypto;
@@ -39,22 +95,38 @@ export class CardManager {
 		this.signCallback = params.signCallback;
 		this.retryOnUnauthorized = params.retryOnUnauthorized;
 		this.cardVerifier = params.cardVerifier;
-		this.accessTokenProvider = params.accessTokenProvider;
+		this.accessTokenProvider = params.accessTokenProvider || throwingAccessTokenProvider;
 	}
 
-	generateRawCard(params: INewCardParams): RawSignedModel {
-		const model = generateRawSigned(this.crypto, params);
+	/**
+	 * Generates a {@link RawSignedModel} that represents a card from
+	 * `cardParams`.
+	 * Use this method if you don't need to publish the card right away, for
+	 * example if you need to first send it to your backend server to apply
+	 * additional signature.
+	 *
+	 * @param {INewCardParams} cardParams - New card parameters.
+	 * @returns {RawSignedModel}
+	 */
+	generateRawCard(cardParams: INewCardParams): RawSignedModel {
+		const model = generateRawSigned(this.crypto, cardParams);
 
 		this.modelSigner.sign({
 			model,
-			signerPrivateKey: params.privateKey,
-			signer: 'self',
-			extraFields: params.extraFields
+			signerPrivateKey: cardParams.privateKey,
+			signer: SelfSigner,
+			extraFields: cardParams.extraFields
 		});
 
 		return model;
 	}
 
+	/**
+	 * Generates a card from `cardParams` and publishes it in the Virgil Cards
+	 * Service.
+	 * @param {INewCardParams} cardParams - New card parameters.
+	 * @returns {Promise<ICard>}
+	 */
 	async publishCard(cardParams: INewCardParams) {
 		validateCardParams(cardParams);
 		const tokenContext: ITokenContext = { identity: cardParams.identity, operation: 'publish' };
@@ -66,6 +138,13 @@ export class CardManager {
 		return await this.publishRawSignedModel(rawSignedModel, tokenContext, token);
 	}
 
+	/**
+	 * Publishes a previously generated card in the form of
+	 * {@link RawSignedModel} object.
+	 *
+	 * @param {RawSignedModel} rawCard - The card to publish.
+	 * @returns {Promise<ICard>}
+	 */
 	async publishRawCard(rawCard: RawSignedModel) {
 		assert(rawCard != null && rawCard.contentSnapshot != null, '`rawCard` should not be empty');
 		const cardDetails = parseSnapshot<IRawCardContent>(rawCard.contentSnapshot);
@@ -75,6 +154,11 @@ export class CardManager {
 		return this.publishRawSignedModel(rawCard, tokenContext, token);
 	}
 
+	/**
+	 * Fetches the card by `cardId` from the Virgil Card Service.
+	 * @param {string} cardId - Id of the card to fetch.
+	 * @returns {Promise<ICard>}
+	 */
 	async getCard(cardId: string): Promise<ICard> {
 		const tokenContext: ITokenContext = { operation: 'get' };
 
@@ -92,6 +176,12 @@ export class CardManager {
 		return card;
 	}
 
+	/**
+	 * Fetches collection of cards with the given `identity` from the Virgil
+	 * Cards Service.
+	 * @param {string} identity - Identity of the cards to fetch.
+	 * @returns {Promise<ICard[]>}
+	 */
 	async searchCards (identity: string): Promise<ICard[]> {
 		const tokenContext: ITokenContext = { operation: 'search' };
 
@@ -106,38 +196,93 @@ export class CardManager {
 		}
 
 		this.validateCards(cards);
-		const linkedCards = linkedCardList(cards);
-		return linkedCards;
+		return linkedCardList(cards);
 	}
 
+	/**
+	 * Converts the card in the form of {@link RawSignedModel} object to the
+	 * {@link ICard} object.
+	 *
+	 * @see {@link CardManager.exportCard}
+	 *
+	 * @param {RawSignedModel} rawCard - The card to convert.
+	 * @returns {ICard}
+	 */
 	importCard (rawCard: RawSignedModel): ICard {
 		const card = parseRawSignedModel( this.crypto, rawCard );
 		this.validateCards([ card ]);
 		return card;
 	}
 
+	/**
+	 * Converts the card in the base64 string form to the {@link ICard} object.
+	 *
+	 * @see {@link CardManager.exportCardAsString}
+	 *
+	 * @param {string} str - The string in base64.
+	 * @returns {ICard}
+	 */
 	importCardFromString (str: string): ICard {
 		assert(Boolean(str), '`str` should not be empty');
 		return this.importCard( RawSignedModel.fromString(str) );
 	}
 
+	/**
+	 * Converts the card in the JSON-serializable object form to the
+	 * {@link ICard} object.
+	 *
+	 * @see {@link CardManager.exportCardAsJson}
+	 *
+	 * @param {IRawSignedModelJson} json
+	 * @returns {ICard}
+	 */
 	importCardFromJson (json: IRawSignedModelJson): ICard {
 		assert(Boolean(json), '`json` should not be empty');
 		return this.importCard( RawSignedModel.fromJson(json) );
 	}
 
+	/**
+	 * Converts the card in the form of {@link ICard} object to the
+	 * {@link RawSignedModel} object.
+	 *
+	 * @see {@link CardManager.importCard}
+	 *
+	 * @param {ICard} card
+	 * @returns {RawSignedModel}
+	 */
 	exportCard (card: ICard): RawSignedModel {
-		return cardToRawSignedModel(this.crypto, card);
+		return cardToRawSignedModel(card);
 	}
 
+	/**
+	 * Converts the card in the form of {@link ICard} object to the string
+	 * in base64 encoding.
+	 *
+	 * @see {@link CardManager.importCardFromString}
+	 *
+	 * @param {ICard} card
+	 * @returns {string}
+	 */
 	exportCardAsString (card: ICard): string {
-		return cardToRawSignedModel(this.crypto, card).exportAsString();
+		return this.exportCard(card).toString();
 	}
 
+	/**
+	 * Converts the card in the form of {@link ICard} object to the
+	 * JSON-serializable object form.
+	 *
+	 * @see {@link CardManager.importCardFromJson}
+	 *
+	 * @param {ICard} card
+	 * @returns {IRawSignedModelJson}
+	 */
 	exportCardAsJson (card: ICard): IRawSignedModelJson {
-		return cardToRawSignedModel(this.crypto, card).exportAsJson();
+		return this.exportCard(card).toJson();
 	}
 
+	/**
+	 * @hidden
+	 */
 	private async publishRawSignedModel (rawCard: RawSignedModel, context: ITokenContext, accessToken: IAccessToken): Promise<ICard> {
 		if (this.signCallback != null) {
 			rawCard = await this.signCallback(rawCard);
@@ -149,7 +294,7 @@ export class CardManager {
 			async token => await this.client.publishCard(rawCard, token.toString())
 		);
 
-		if (!rawCard.contentSnapshot.equals(publishedModel.contentSnapshot)) {
+		if (rawCard.contentSnapshot !== publishedModel.contentSnapshot) {
 			throw new VirgilCardVerificationError('Received invalid card');
 		}
 
@@ -158,6 +303,9 @@ export class CardManager {
 		return card;
 	}
 
+	/**
+	 * @hidden
+	 */
 	private async tryDo<T> (context: ITokenContext, token: IAccessToken, func: (token: IAccessToken) => Promise<T>): Promise<T> {
 		try {
 			return await func(token);
@@ -176,6 +324,15 @@ export class CardManager {
 		}
 	}
 
+	/**
+	 * Delegates to the {@link CardManager.cardVerifier} to verify the validity
+	 * of the `cards`.
+	 *
+	 * @throws {@link VirgilCardVerificationError} if any of the cards is not
+	 * valid.
+	 *
+	 * @param {ICard[]} cards
+	 */
 	private validateCards(cards: ICard[]) {
 		if (this.cardVerifier == null) return;
 
@@ -187,6 +344,9 @@ export class CardManager {
 	}
 }
 
+/**
+ * @hidden
+ */
 function validateCardParams(params: INewCardParams, validateIdentity: boolean = false) {
 	assert(params != null, 'Card parameters must be provided');
 	assert(params.privateKey != null, 'Card\'s private key is required');

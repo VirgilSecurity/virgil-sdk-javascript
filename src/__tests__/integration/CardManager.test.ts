@@ -135,7 +135,7 @@ describe('CardManager', function () {
 			const selfSign = importedFromJson.signatures.find(s => s.signer === 'self');
 			assert.isOk(selfSign, 'has self signature');
 			assert.equal(
-				selfSign!.signature.toString('base64'),
+				selfSign!.signature,
 				compatData['STC-4.signature_self_base64'],
 				'self signature is correct'
 			);
@@ -143,7 +143,7 @@ describe('CardManager', function () {
 			const virgilSign = importedFromJson.signatures.find(s => s.signer === 'virgil');
 			assert.isOk(virgilSign, 'has virgil signature');
 			assert.equal(
-				virgilSign!.signature.toString('base64'),
+				virgilSign!.signature,
 				compatData['STC-4.signature_virgil_base64'],
 				'virgil signature is correct'
 			);
@@ -151,7 +151,7 @@ describe('CardManager', function () {
 			const extraSign = importedFromJson.signatures.find(s => s.signer === 'extra');
 			assert.isOk(extraSign, 'has extra signature');
 			assert.equal(
-				extraSign!.signature.toString('base64'),
+				extraSign!.signature,
 				compatData['STC-4.signature_extra_base64'],
 				'extra signature is correct'
 			);
@@ -254,16 +254,18 @@ describe('CardManager', function () {
 			return assert.isFulfilled(
 				cardManager.publishRawCard(rawCard)
 					.then(publishedCard => {
-						assert.isTrue(
-							publishedCard.contentSnapshot.equals(rawCard.contentSnapshot),
+						assert.equal(
+							publishedCard.contentSnapshot,
+							rawCard.contentSnapshot,
 							'snapshot does not change after publishing'
 						);
 						assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
 						return cardManager.getCard(publishedCard.id);
 					})
 					.then((retrievedCard) => {
-						assert.isTrue(
-							retrievedCard.contentSnapshot.equals(rawCard.contentSnapshot),
+						assert.equal(
+							retrievedCard.contentSnapshot,
+							rawCard.contentSnapshot,
 							'snapshot does not change after retrieval'
 						);
 						assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
@@ -381,8 +383,9 @@ describe('CardManager', function () {
 										'rotated card has previous card id'
 									);
 									assert.isOk(card2!.previousCard, 'rotated card has previous card');
-									assert.isTrue(
-										card2!.previousCard!.contentSnapshot.equals(publishedCard1.contentSnapshot),
+									assert.equal(
+										card2!.previousCard!.contentSnapshot,
+										publishedCard1.contentSnapshot,
 										'rotated card has correct previous card'
 									);
 

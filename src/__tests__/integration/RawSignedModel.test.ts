@@ -38,7 +38,7 @@ describe('RawSignedModel', () => {
 		const rawSignedModelJson: IRawSignedModelJson = JSON.parse(compatData['STC-1.as_json']);
 		const imported = RawSignedModel.fromString(rawSignedModelString);
 
-		const reExported = imported.exportAsJson();
+		const reExported = imported.toJson();
 
 		assert.deepEqual(reExported, rawSignedModelJson);
 		assert.isFalse('previous_card_id' in reExported);
@@ -77,7 +77,7 @@ describe('RawSignedModel', () => {
 		const rawSignedModelJson: IRawSignedModelJson = JSON.parse(compatData['STC-2.as_json']);
 		const imported = RawSignedModel.fromString(rawSignedModelString);
 
-		const reExported = imported.exportAsJson();
+		const reExported = imported.toJson();
 
 		assert.deepEqual(reExported, rawSignedModelJson);
 	});

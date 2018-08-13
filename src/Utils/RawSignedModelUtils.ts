@@ -21,7 +21,7 @@ export const CardVersion = '5.0';
  * @param {ICard} card - The {@link ICard} to convert.
  * @returns {RawSignedModel}
  */
-export function cardToRawSignedModel (crypto: ICardCrypto, card: ICard): RawSignedModel {
+export function cardToRawSignedModel (card: ICard): RawSignedModel {
 	return new RawSignedModel(card.contentSnapshot, card.signatures.slice());
 }
 

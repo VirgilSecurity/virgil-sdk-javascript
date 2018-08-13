@@ -5,36 +5,71 @@ import { IExtraData } from '../ICard';
 import { takeSnapshot } from '../Utils/SnapshotUtils';
 import { SelfSigner } from './signer-types';
 
+/**
+ * Parameters for the card signature generation.
+ */
 export interface IRawSignParams {
+	/**
+	 * The card to generate the signature for in the form of
+	 * {@link RawSignedModel} object.
+	 */
 	readonly model: RawSignedModel;
+
+	/**
+	 * The private key to use to generate the signature.
+	 */
 	readonly signerPrivateKey: IPrivateKey;
+
+	/**
+	 * Custom attributes to associate with the signature. If provided, these
+	 * will also be signed.
+	 */
 	readonly extraFields?: IExtraData;
+
+	/**
+	 * Identifier of the signature. Default is "self".
+	 */
 	readonly signer?: string;
 }
 
-export interface IFinalSignParams {
+/**
+ * @hidden
+ */
+interface IFinalSignParams {
 	readonly model: RawSignedModel;
 	readonly signerPrivateKey: IPrivateKey;
-	readonly extraSnapshot?: Buffer;
+	readonly extraSnapshot?: string;
 	readonly signer: string;
 }
 
+/**
+ * Class responsible for generating signatures of the cards.
+ */
 export class ModelSigner {
 
+	/**
+	 * Initializes a new instance of `ModelSigner`.
+	 * @param {ICardCrypto} crypto - Object implementing the
+	 * {@link ICardCrypto} interface.
+	 */
 	public constructor (private readonly crypto: ICardCrypto) {}
 
+	/**
+	 * Generates a new signature based on `rawParams`.
+	 * @param {IRawSignParams} rawParams
+	 */
 	public sign (rawParams: IRawSignParams) {
 		const { model, signerPrivateKey, signer, extraSnapshot } = this.prepareParams(rawParams);
 
 		const signedSnapshot = extraSnapshot != null
-			? Buffer.concat([ model.contentSnapshot, extraSnapshot ])
+			? model.contentSnapshot + extraSnapshot
 			: model.contentSnapshot;
 
 		const signature = this.crypto.generateSignature(signedSnapshot, signerPrivateKey);
 
 		model.signatures.push({
 			signer,
-			signature: signature,
+			signature: signature.toString('base64'),
 			snapshot: extraSnapshot
 		});
 	}

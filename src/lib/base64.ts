@@ -45,13 +45,22 @@ export function base64UrlDecode (input: string): Buffer {
 	return base64Decode(input);
 }
 
+export function base64Decode(input: string): Buffer;
+export function base64Decode(input: string, outputEncoding: string): string;
+
 /**
- * Decodes the base64 encoded string into a `Buffer`.
+ * Decodes the base64 encoded string into a `Buffer` or `string` depending on
+ * the presence of `outputEncoding` parameter.
  * @hidden
  * @param {string} input
- * @returns {Buffer}
+ * @param {string} [outputEncoding] - If provided, specifies the output string
+ * encoding.
+ * @returns {Buffer|string}
  */
-export function base64Decode(input: string): Buffer {
+export function base64Decode(input: string, outputEncoding?: string): Buffer|string {
+	if (outputEncoding) {
+		return Buffer.from(input, BASE_64).toString(outputEncoding);
+	}
 	return Buffer.from(input, BASE_64);
 }
 
@@ -64,7 +73,7 @@ export function base64Decode(input: string): Buffer {
  * @param {string} inputEncoding
  * @returns {string}
  */
-export function base64Encode(input: Buffer|string, inputEncoding?: string) {
+export function base64Encode(input: Buffer|string, inputEncoding?: string): string {
 	let buffer: Buffer;
 
 	if (Buffer.isBuffer(input)) {

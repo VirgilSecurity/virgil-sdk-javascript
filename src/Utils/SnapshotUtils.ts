@@ -4,10 +4,10 @@
  * @hidden
  *
  * @param {object} content - The content object.
- * @returns {Buffer} - The snapshot.
+ * @returns {string} - The snapshot.
  */
-export function takeSnapshot (content: object): Buffer {
-	return Buffer.from( JSON.stringify(content), 'utf8' );
+export function takeSnapshot (content: object): string {
+	return JSON.stringify(content);
 }
 
 /**
@@ -15,9 +15,9 @@ export function takeSnapshot (content: object): Buffer {
  *
  * @hidden
  *
- * @param {Buffer} snapshot - The snapshot.
+ * @param {string} snapshot - The snapshot.
  * @returns {T} - The object.
  */
-export function parseSnapshot<T> (snapshot: Buffer): T {
-	return JSON.parse( snapshot.toString('utf8') ) as T;
+export function parseSnapshot<T> (snapshot: string): T {
+	return JSON.parse( snapshot ) as T;
 }

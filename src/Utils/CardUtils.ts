@@ -12,10 +12,10 @@ const CARD_ID_BYTE_LENGTH = 32;
  *
  * @param {ICardCrypto} crypto - Object implementing the {@link ICardCrypto}
  * interface.
- * @param {Buffer} snapshot - The VirgilCard's contents snapshot.
+ * @param {string} snapshot - The VirgilCard's contents snapshot.
  * @returns {string} - VirgilCard's ID encoded in HEX.
  */
-export function generateCardId (crypto: ICardCrypto, snapshot: Buffer): string {
+export function generateCardId (crypto: ICardCrypto, snapshot: string): string {
 	const fingerprint = crypto.generateSha512(snapshot).slice(0, CARD_ID_BYTE_LENGTH);
 	return fingerprint.toString('hex');
 }
@@ -55,11 +55,18 @@ export function parseRawSignedModel (crypto: ICardCrypto, model: RawSignedModel,
  * filtered out and the `previousCard` properties of the cards that replace
  * the outdated ones being populated with appropriate outdated cards.
  * i.e. turns this (A is for Actual, O is for Outdated):
- * 		A -> O -> A -> A -> O
+ * ```
+ * A -> O -> A -> A -> O
+ * ```
  * into this
- * 		A -> A -> A
- * 		|         |
- * 		O         O
+ * ```
+ * A -> A -> A
+ * |         |
+ * O         O
+ * ```
+ *
+ * @hidden
+ *
  * @param {ICard[]} cards - The cards array to transform.
  * @returns {ICard[]} - Transformed array.
  */
@@ -97,7 +104,7 @@ function rawSignToCardSign ({ snapshot, signature, signer }: IRawSignature): ICa
 	};
 }
 
-function tryParseExtraFields(snapshot?: Buffer): IExtraData {
+function tryParseExtraFields(snapshot?: string): IExtraData {
 	if (snapshot) {
 		try {
 			return parseSnapshot<IExtraData>(snapshot);

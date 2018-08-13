@@ -1,19 +1,32 @@
 import { Connection, IConnection } from './Connection';
-import { IRawSignedModelJson, RawSignedModel } from './RawSignedModel';
+import { RawSignedModel } from './RawSignedModel';
 import { generateErrorFromResponse } from './errors';
 
 const PublishEndpoint = '/card/v5';
 const SearchEndpoint = '/card/v5/actions/search';
 const GetCardEndpoint = (cardId: string) => `/card/v5/${cardId}`;
 
+/**
+ * @hidden
+ */
 export interface ICardResult {
 	readonly cardRaw: RawSignedModel;
 	readonly isOutdated: boolean;
 }
 
+/**
+ * Class responsible for sending requests to the Virgil Cards Service.
+ *
+ * @hidden
+ */
 export class CardClient {
 	private readonly connection: IConnection;
 
+	/**
+	 * Initializes new instance of `CardClient`.
+	 * @param {IConnection | string} connection - Object implementing the
+	 * {@link IConnection} interface.
+	 */
 	public constructor (connection?: IConnection|string) {
 		if (typeof connection === 'string') {
 			this.connection = new Connection(connection)
@@ -24,6 +37,12 @@ export class CardClient {
 		}
 	}
 
+	/**
+	 * Issues a request to search cards by the `identity`.
+	 * @param {string} identity - Identity to search for.
+	 * @param {string} jwtToken - A token to authenticate the request.
+	 * @returns {Promise<RawSignedModel[]>}
+	 */
 	public async searchCards (identity: string, jwtToken: string): Promise<RawSignedModel[]> {
 		if (!identity) throw new TypeError('`identity` should not be empty');
 		if (!jwtToken) throw new TypeError('`jwtToken` should not be empty');
@@ -42,6 +61,12 @@ export class CardClient {
 		return cardsJson.map(RawSignedModel.fromJson);
 	}
 
+	/**
+	 * Issues a request to get the card by id.
+	 * @param {string} cardId - Id of the card to fetch.
+	 * @param {string} jwtToken - A token to authenticate the request.
+	 * @returns {Promise<ICardResult>}
+	 */
 	public async getCard (cardId: string, jwtToken: string): Promise<ICardResult> {
 		if (!cardId)   throw new TypeError('`cardId` should not be empty');
 		if (!jwtToken) throw new TypeError('`jwtToken` should not be empty');
@@ -59,6 +84,12 @@ export class CardClient {
 		return { cardRaw, isOutdated };
 	}
 
+	/**
+	 * Issues a request to publish the card.
+	 * @param {RawSignedModel} model - Card to publish.
+	 * @param {string} jwtToken - A token to authenticate the request.
+	 * @returns {Promise<RawSignedModel>}
+	 */
 	public async publishCard (model: RawSignedModel, jwtToken: string): Promise<RawSignedModel> {
 		if (!model)    throw new TypeError('`model` should not be empty');
 		if (!jwtToken) throw new TypeError('`jwtToken` should not be empty');
@@ -68,7 +99,7 @@ export class CardClient {
 			throw await generateErrorFromResponse(response);
 		}
 
-		const cardJson = await response.json() as IRawSignedModelJson;
+		const cardJson = await response.json();
 		return RawSignedModel.fromJson(cardJson);
 	}
 

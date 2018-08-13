@@ -108,7 +108,7 @@ describe('ModelSigner', () => {
 		assert.isOk(selfSignature.snapshot, 'signature does has snapshot');
 		assert.isTrue(
 			crypto.verifySignature(
-				Buffer.concat([model.contentSnapshot, selfSignature.snapshot!]),
+				model.contentSnapshot + selfSignature.snapshot,
 				selfSignature.signature,
 				keyPair.publicKey
 			),
@@ -137,7 +137,7 @@ describe('ModelSigner', () => {
 		assert.isOk(testSignature.snapshot, 'signature does not have snapshot');
 		assert.isTrue(
 			crypto.verifySignature(
-				Buffer.concat([model.contentSnapshot, testSignature.snapshot!]),
+				model.contentSnapshot + testSignature.snapshot,
 				testSignature.signature,
 				keyPair2.publicKey
 			),
