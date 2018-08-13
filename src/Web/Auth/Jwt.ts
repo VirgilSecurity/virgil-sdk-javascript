@@ -1,6 +1,6 @@
 import { IExtraData } from '../../ICard';
-import { base64UrlDecode, base64UrlEncode } from '../../lib/base64';
-import { IAccessToken, ITokenContext } from './AccessTokenProviders/index';
+import { base64UrlDecode, base64UrlEncode, base64UrlFromBase64, base64UrlToBase64 } from '../../lib/base64';
+import { IAccessToken, ITokenContext } from './AccessTokenProviders';
 import { getUnixTimestamp } from '../../lib/timestamp';
 import { IssuerPrefix, SubjectPrefix } from './jwt-constants';
 
@@ -90,9 +90,9 @@ export class Jwt implements IAccessToken {
 		if (parts.length !== 3) throw new Error('Wrong JWT format');
 
 		try {
-			const headerJson = base64UrlDecode(parts[0]).toString('utf8');
-			const bodyJson   = base64UrlDecode(parts[1]).toString('utf8');
-			const signature  = base64UrlDecode(parts[2]);
+			const headerJson = base64UrlDecode(parts[0], 'utf8');
+			const bodyJson   = base64UrlDecode(parts[1], 'utf8');
+			const signature  = base64UrlToBase64(parts[2]);
 
 			const header = JSON.parse(headerJson);
 			const body   = JSON.parse(bodyJson);
@@ -108,7 +108,7 @@ export class Jwt implements IAccessToken {
 	 *
 	 * `base64UrlEncode(header) + "." + base64UrlEncode(body)`
 	 */
-	public readonly unsignedData: Buffer;
+	public readonly unsignedData: string;
 	private readonly stringRepresentation: string;
 
 	/**
@@ -117,16 +117,16 @@ export class Jwt implements IAccessToken {
 	 *
 	 * @param {IJwtHeader} header
 	 * @param {IJwtBody} body
-	 * @param {Buffer} signature
+	 * @param {string} signature
 	 */
 	constructor (
 		public readonly header: IJwtHeader,
 		public readonly body  : IJwtBody,
-		public readonly signature?: Buffer
+		public readonly signature?: string
 	) {
 		const withoutSignature = this.headerBase64() + '.' + this.bodyBase64();
 
-		this.unsignedData = Buffer.from(withoutSignature, 'utf8');
+		this.unsignedData = withoutSignature;
 
 		if (this.signature == null) {
 			this.stringRepresentation = withoutSignature;
@@ -188,6 +188,6 @@ export class Jwt implements IAccessToken {
 	}
 
 	private signatureBase64(): string {
-		return base64UrlEncode( this.signature! );
+		return base64UrlFromBase64( this.signature! );
 	}
 }

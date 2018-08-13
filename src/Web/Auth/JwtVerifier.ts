@@ -4,15 +4,44 @@ import { Jwt } from './Jwt';
 import { JwtContentType, VirgilContentType } from './jwt-constants';
 import { assert } from '../../lib/assert';
 
+/**
+ * {@link JwtVerifier} initialization options.
+ */
 export interface IJwtVerifierOptions {
+	/**
+	 * Object used to verify signatures of tokens.
+	 */
 	accessTokenSigner: IAccessTokenSigner;
+
+	/**
+	 * API Public Key from Virgil Dashboard to be used to verify signatures
+	 * of tokens.
+	 */
 	apiPublicKey: IPublicKey,
+
+	/**
+	 * ID of the API Key from Virgil Dashboard.
+	 */
 	apiKeyId: string;
 }
 
+/**
+ * Class responsible for verification of JWTs.
+ */
 export class JwtVerifier {
+	/**
+	 * @see {@link IJwtVerifierOptions.accessTokenSigner}
+	 */
 	public readonly accessTokenSigner: IAccessTokenSigner;
+
+	/**
+	 * @see {@link IJwtVerifierOptions.apiPublicKey}
+	 */
 	public readonly apiPublicKey: IPublicKey;
+
+	/**
+	 * @see {@link IJwtVerifierOptions.apiKeyId}
+	 */
 	public readonly apiKeyId: string;
 
 	public constructor (options: IJwtVerifierOptions) {
@@ -22,7 +51,11 @@ export class JwtVerifier {
 		this.apiKeyId = options.apiKeyId;
 	}
 
-
+	/**
+	 * Verifies the validity of the given JWT.
+	 * @param {Jwt} token - The JWT to verify.
+	 * @returns {boolean}
+	 */
 	public verifyToken(token: Jwt): boolean {
 		if (token == null) {
 			throw new Error('Token is empty');

@@ -149,7 +149,7 @@ describe('JWT compatibility', () => {
 			assert.equal(jwt.header.cty, compatData['STC-28.jwt_content_type'], 'content type is correct');
 			assert.equal(jwt.header.typ, compatData['STC-28.jwt_type'], 'type is correct');
 			assert.equal(
-				jwt.signature!.toString('base64'),
+				jwt.signature,
 				compatData['STC-28.jwt_signature_base64'],
 				'type is correct'
 			);
@@ -177,7 +177,7 @@ describe('JWT compatibility', () => {
 			assert.equal(jwt.header.cty, compatData['STC-29.jwt_content_type'], 'content type is correct');
 			assert.equal(jwt.header.typ, compatData['STC-29.jwt_type'], 'type is correct');
 			assert.equal(
-				jwt.signature!.toString('base64'),
+				jwt.signature,
 				compatData['STC-29.jwt_signature_base64'],
 				'type is correct'
 			);

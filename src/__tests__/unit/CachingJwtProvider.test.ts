@@ -18,7 +18,7 @@ const generateJwt = (expiresAt: Date): Jwt => {
 			iat: getUnixTimestamp(new Date),
 			exp: getUnixTimestamp(expiresAt)
 		},
-		virgilCrypto.getRandomBytes(16)
+		virgilCrypto.getRandomBytes(16).toString('base64')
 	);
 };
 
@@ -97,9 +97,10 @@ describe ('CachingJwtProvider', () => {
 			const provider = new CachingJwtProvider(getJwtCallback);
 
 			return provider.getToken({ operation: 'stub' }).then(actual => {
-				assert.deepEqual((actual as Jwt).header, expectedJwt.header);
-				assert.deepEqual((actual as Jwt).body, expectedJwt.body);
-				assert.isTrue((actual as Jwt).signature!.equals(expectedJwt.signature!));
+				const actualJwt = actual as Jwt;
+				assert.deepEqual(actualJwt.header, expectedJwt.header);
+				assert.deepEqual(actualJwt.body, expectedJwt.body);
+				assert.equal(actualJwt.signature, expectedJwt.signature);
 			});
 		});
 

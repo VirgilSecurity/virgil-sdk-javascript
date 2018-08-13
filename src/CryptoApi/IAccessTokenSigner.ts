@@ -38,7 +38,8 @@ import { IPrivateKey } from './IPrivateKey';
 import { IPublicKey } from './IPublicKey';
 
 /**
- * The IAccessTokenSigner provides interface to sign access token and verify its signature using `IPrivateKey` and `IPublicKey`.
+ * The IAccessTokenSigner provides interface to sign access token and verify
+ * its signature using `IPrivateKey` and `IPublicKey`.
  */
 export interface IAccessTokenSigner
 {
@@ -48,20 +49,25 @@ export interface IAccessTokenSigner
 	getAlgorithm(): string;
 
 	/**
-	 * Generates the digital signature for the specified `tokenBytes` using the specified `IPrivateKey`
-	 * @param tokenBytes - The material representation bytes of access token for which to compute the signature.
-	 * @param privateKey - The private key
-	 * @returns - The digital signature for the material representation bytes of access token.
+	 * Generates the digital signature for the `tokenBytes` using the
+	 * `privateKey`.
+	 *
+	 * @param tokenBytes - The access token data to be signed as a `Buffer`
+	 * or a `string` in UTF-8 encoding.
+	 * @param privateKey - The private key.
+	 * @returns {Buffer} The signature of access token.
 	 */
-	generateTokenSignature(tokenBytes: Buffer, privateKey: IPrivateKey): Buffer;
+	generateTokenSignature(tokenBytes: Buffer|string, privateKey: IPrivateKey): Buffer;
 
 	/**
-	 * Verifies that a digital signature is valid by checking the <paramref name="signature"/> and
-	 * provided `IPublicKey` and `tokenBytes`
-	 * @param signature - The digital signature for the `tokenBytes`
-	 * @param tokenBytes - The material representation bytes of access token `signature` has been generated
-	 * @param publicKey - The public key
-	 * @returns - True if signature is valid, False otherwise
+	 * Verifies that the `signature` is valid for the given `tokenBytes` and
+	 * `publicKey`.
+	 * @param signature - The digital signature for the `tokenBytes` as a
+	 * `Buffer` or a `string` in base64 encoding.
+	 * @param tokenBytes - The access token data as a `Buffer` or a string in
+	 * UTF-8 encoding.
+	 * @param publicKey - The public key.
+	 * @returns {boolean} - `true` if signature is valid, `false` otherwise.
 	 */
-	verifyTokenSignature(signature: Buffer, tokenBytes: Buffer, publicKey: IPublicKey): boolean;
+	verifyTokenSignature(signature: Buffer|string, tokenBytes: Buffer|string, publicKey: IPublicKey): boolean;
 }
