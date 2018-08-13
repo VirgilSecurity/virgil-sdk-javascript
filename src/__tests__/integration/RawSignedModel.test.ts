@@ -1,6 +1,6 @@
 import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
-import { RawSignedModel, IRawSignedModelJson } from '../../Web/RawSignedModel';
-import { parseRawSignedModel } from '../../Utils/CardUtils';
+import { RawSignedModel, IRawSignedModelJson } from '../../Cards/RawSignedModel';
+import { parseRawSignedModel } from '../../Cards/CardUtils';
 
 import { compatData } from './data';
 

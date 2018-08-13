@@ -1,4 +1,4 @@
-import { ConstAccessTokenProvider } from '../../Web/Auth/AccessTokenProviders';
+import { ConstAccessTokenProvider } from '../../Auth/AccessTokenProviders';
 
 describe ('ConstAccessTokenProvider', () => {
 	describe ('constructor', () => {

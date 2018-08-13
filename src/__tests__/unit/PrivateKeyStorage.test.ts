@@ -1,7 +1,8 @@
 import { KeyEntryStorage, PrivateKeyStorage } from '../..';
 import { SinonStubbedInstance } from 'sinon';
 import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
-import { IKeyEntryStorage } from '../../KeyStorage/IKeyEntryStorage';
+import { IKeyEntryStorage } from '../../Storage/KeyEntryStorage/IKeyEntryStorage';
+import { PrivateKeyExistsError } from '../../Storage/errors';
 
 describe ('PrivateKeyStorage', () => {
 	let privateKeyStorage: PrivateKeyStorage;
@@ -30,6 +31,15 @@ describe ('PrivateKeyStorage', () => {
 					assert.equal(entry.value.toString(), 'private_key');
 					assert.deepEqual(entry.meta, { meta: 'data' });
 				});
+		});
+
+		it ('throws if private key with the same name already exists', () => {
+			privateKeyExporterStub.exportPrivateKey.returns(Buffer.from('private_key'));
+			storageBackendStub.save.rejects({ name: 'KeyEntryAlreadyExistsError' });
+			return assert.isRejected(
+				privateKeyStorage.store('test', {}),
+				PrivateKeyExistsError
+			);
 		});
 	});
 

@@ -6,7 +6,7 @@ import {
 	JwtGenerator,
 	VirgilCardVerifier
 } from '../..';
-import { VirgilCardVerificationError } from '../../Web/errors';
+import { VirgilCardVerificationError } from '../../Cards/errors';
 
 import { compatData } from './data';
 

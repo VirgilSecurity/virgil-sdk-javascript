@@ -1,5 +1,5 @@
-import StorageAdapter from '../../KeyStorage/adapters/FileSystemStorageAdapter';
-import { StorageEntryAlreadyExistsError } from '../../KeyStorage/StorageEntryAlreadyExistsError';
+import StorageAdapter from '../../Storage/adapters/FileSystemStorageAdapter';
+import { StorageEntryAlreadyExistsError } from '../../Storage/adapters/errors';
 
 describe ('StorageAdapter', () => {
 	let storage: StorageAdapter;

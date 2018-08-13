@@ -1,7 +1,7 @@
 import { VirgilCrypto } from 'virgil-crypto';
-import { CallbackJwtProvider } from '../../Web/Auth/AccessTokenProviders';
-import { GetJwtCallback, Jwt } from '../../Web/Auth/Jwt';
-import { getUnixTimestamp } from '../../lib/timestamp';
+import { CallbackJwtProvider } from '../../Auth/AccessTokenProviders';
+import { GetJwtCallback, Jwt } from '../../Auth/Jwt';
+import { getUnixTimestamp } from '../../Lib/timestamp';
 
 const virgilCrypto = new VirgilCrypto();
 const generateJwt = () => {
