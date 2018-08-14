@@ -1,7 +1,7 @@
 # Virgil Security JavaScript SDK
 
-[![npm](https://img.shields.io/npm/v/virgil-sdk/next.svg)][npmjs]
-[![Build status](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript/v5.svg)](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript/v5.svg)
+[![npm](https://img.shields.io/npm/v/virgil-sdk.svg)][npmjs]
+[![Build status](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript.svg)](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript.svg)
 [![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
 
 [Introduction](#introduction) | [SDK Features](#sdk-features) | [Installation](#installation) | [Usage Examples](#usage-examples) | [Docs](#docs) | [Support](#support)
@@ -25,11 +25,10 @@ This module can be used both __server-side__ in a Node application, and __client
 
 ### On a server
 
-This module can be installed via NPM. This is a pre-release version, so to install from npm you need to 
-specify the `next` tag.
+The recommended way is to install from npm:
 
 ```sh
-npm install virgil-sdk@next
+npm install virgil-sdk
 ```
 
 You will also need to install the `virgil-crypto` package from npm, unless plan to use custom crypto
@@ -38,19 +37,21 @@ npm install virgil-crypto
 ```
 
 > **Important!** You will need node.js version >= 6 to use virgil-sdk.  
-If you have a different version you can use [nvm](https://github.com/creationix/nvm) 
+If you have a different version, consider upgrading or use [nvm](https://github.com/creationix/nvm) 
 (or a similar tool) to install Node.js of supported version alongside your current installation.  
 If you only intend to use virgil-sdk in a browser environment, you can ignore this warning.
 
 ### In the browser
 
 The client-side SDK targets ECMAScript5+ compatible browsers. It is compatible with module bundlers like Rollup, 
-Webpack and Browserify. If you're using those, you need to install from npm. It can be added via `script` tag as well.
+Webpack and Browserify. If you're using those, you need to install from npm. It can be added to the html page directly
+ via `script` tag as well.
+ 
 Note that the `virgil-crypto` script must also be added to the page.
 
 ```html
-<script src="https://unpkg.com/virgil-crypto@next/dist/virgil-crypto.browser.umd.min.js"></script>
-<script src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.min.js"></script>
+<script src="https://unpkg.com/virgil-crypto/dist/virgil-crypto.browser.umd.min.js"></script>
+<script src="https://unpkg.com/virgil-sdk/dist/virgil-sdk.browser.umd.min.js"></script>
 <script>
 	// here you can use the global variables `Virgil` and `VirgilCrypto` as namespace objects,
 	// containing all of `virgil-sdk` and `virgil-crypto` exports as properties
@@ -59,7 +60,7 @@ Note that the `virgil-crypto` script must also be added to the page.
 	// global scope (i.e. outside of any function) in browsers that
 	// implement Web Crypto API
 	const virgilCrypto = new VirgilCrypto.VirgilCrypto();
-	const virgilCardCrypto = new VirgilCrypto.VirgilCardCrypto();
+	const virgilCardCrypto = new VirgilCrypto.VirgilCardCrypto(virgilCrypto);
 
 	const jwtProvider = new Virgil.CachingJwtProvider(fetchVirgilJwt);
 	const cardVerifier = new Virgil.VirgilCardVerifier(virgilCardCrypto);
@@ -73,19 +74,20 @@ Note that the `virgil-crypto` script must also be added to the page.
 
 ## Usage Examples
 
-Before start practicing with the usage examples be sure that the SDK is configured. Check out our [SDK configuration guides][_configure_sdk] for more information.
+Before start practicing with the usage examples be sure that the SDK is configured. Check out our 
+[SDK configuration guides][_configure_sdk] for more information.
 
 #### Generate and publish user's Cards with Public Keys inside on Cards Service
 
 Use the following code to create and publish a user's Card with Public Key inside on Virgil Cards Service:
 
 ```javascript
-import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
-import { CachingJwtProvider, CardManager, KeyStorage, VirgilCardVerifier } from 'virgil-sdk';
+import { VirgilCrypto, VirgilCardCrypto, VirgilPrivateKeyExporter } from 'virgil-crypto';
+import { CachingJwtProvider, CardManager, PrivateKeyStorage, VirgilCardVerifier } from 'virgil-sdk';
 
 (async function() {
-	const crypto = new VirgilCrypto();
-	const cardCrypto = new VirgilCardCrypto(crypto);
+	const virgilCrypto = new VirgilCrypto();
+	const cardCrypto = new VirgilCardCrypto(virgilCrypto);
 	
 	const jwtProvider = new CachingJwtProvider(fetchVirgilJwt);
 	const cardVerifier = new VirgilCardVerifier(cardCrypto);
@@ -94,16 +96,16 @@ import { CachingJwtProvider, CardManager, KeyStorage, VirgilCardVerifier } from 
 		accessTokenProvider: jwtProvider,
 		cardVerifier: cardVerifier
 	});
-	const privateKeyStorage = new KeyStorage();
+	const privateKeyStorage = new PrivateKeyStorage(
+		new VirgilPrivateKeyExporter(virgilCrypto),
+		'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+	);
 	
 	// Generate a key pair
-	const keyPair = crypto.generateKeys();
+	const keyPair = virgilCrypto.generateKeys();
 	
-	// Get the raw private key bytes
-	const privateKeyBytes = crypto.exportPrivateKey(keyPair.privateKey, 'OPTIONAL_PASSWORD');
-	
-	// Store the private key bytes
-	await privateKeyStorage.save('alice_private_key', privateKeyBytes);
+	// Store the private key
+	await privateKeyStorage.save('alice_private_key', keyPair.privateKey);
 	
 	// Publish user's card on the Cards Service
 	const card = await cardManager.publishCard({
@@ -127,74 +129,83 @@ async function fetchVirgilJwt (context) {
 
 #### Sign then encrypt data
 
-Virgil SDK lets you use a user's Private key and his or her Cards to sign, then encrypt any kind of data.
+Virgil SDK lets you use a user's Private key and his or her Cards to sign and encrypt any kind of data.
 
-In the following example, we load a Private Key from a customized Key Storage and get recipient's Card from the Virgil Cards Services. 
-Recipient's Card contains a Public Key on which we will encrypt the data and verify a signature.
+In the following example, we load a Private Key from persistent storage and get recipient's Card from the Virgil Cards 
+Service.
+ 
+Recipient's Card contains a Public Key which we will use to encrypt the data and verify the signature.
 
 ```javascript
-import { VirgilCrypto } from 'virgil-crypto';
-import { KeyStorage } from 'virgil-sdk';
+import { VirgilCrypto, VirgilPrivateKeyExporter } from 'virgil-crypto';
+import { PrivateKeyStorage } from 'virgil-sdk';
 
 (async function() {
-	const crypto = new VirgilCrypto();
-	const privateKeyStorage = new KeyStorage();
+	const virgilCrypto = new VirgilCrypto();
+	const privateKeyStorage = new PrivateKeyStorage(
+		new VirgilPrivateKeyExporter(virgilCrypto),
+		'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+	);
 	
-	// Load the private key bytes
-	const privateKeyBytes = await privateKeyStorage.load('alice_private_key');
-	if (privateKeyBytes === null) {
+	// Load the private key
+	const alicePrivateKey = await privateKeyStorage.load('alice_private_key');
+	if (alicePrivateKey === null) {
+		console.log('Private key named "alice_private_key" does not exist');
 		return;
 	}
 	
-	// Get the PrivateKey object from raw private key bytes
-	const alicePrivateKey = crypto.importPrivateKey(privateKeyBytes, 'OPTIONAL_PASSWORD');
-	
 	const cards = await cardManager.searchCards('bob@example.com');
 	if (cards.length === 0) {
+		console.log('Virgil Card with identity "bob@example.com" does not exist');
 		return;
 	}
 	
 	const messageToEncrypt = 'Hello, Bob!';
 	const bobPublicKeys = cards.map(card => card.publicKey);
-	const encryptedMessage = crypto.signThenEncrypt(messageToEncrypt, alicePrivateKey, bobPublicKeys);
+	const encryptedMessage = virgilCrypto.signThenEncrypt(messageToEncrypt, alicePrivateKey, bobPublicKeys);
 	console.log(encryptedMessage.toString('base64'));
 })();
 ```
 
 #### Decrypt then verify data
-Once the Users receive the signed and encrypted message, they can decrypt it with their own Private Key and verify signature with a Sender's Card:
+Once the users receive the signed and encrypted message, they can decrypt it with their own private key and verify 
+the signature with the Sender's public key:
 
 ```javascript
-import { VirgilCrypto } from 'virgil-crypto';
-import { KeyStorage } from 'virgil-sdk';
+import { VirgilCrypto, VirgilPrivateKeyExporter } from 'virgil-crypto';
+import { PrivateKeyStorage } from 'virgil-sdk';
 
 (async function() {
-	const crypto = new VirgilCrypto();
-	const privateKeyStorage = new KeyStorage();
+	const virgilCrypto = new VirgilCrypto();
+	const privateKeyStorage = new PrivateKeyStorage(
+		new VirgilPrivateKeyExporter(virgilCrypto),
+		'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+	);
 	
-	// Load the private key bytes
-	const privateKeyBytes = await privateKeyStorage.load('bob_private_key');
-	if (privateKeyBytes === null) {
+	// Load the private key 
+	const bobPrivateKey = await privateKeyStorage.load('bob_private_key');
+	if (bobPrivateKey === null) {
+		console.log('Private key named "bob_private_key" does not exist');
 		return;
 	}
 	
-	// Get the PrivateKey object from raw private key bytes
-	const bobPrivateKey = crypto.importPrivateKey(privateKeyBytes, 'OPTIONAL_PASSWORD');
-	
 	const cards = await cardManager.searchCards('alice@example.com');
 	if (cards.length === 0) {
+		console.log('Virgil Card with identity "alice@example.com" does not exist');
 		return;
 	}
 	
 	const alicePublicKeys = cards.map(card => card.publicKey);
-	const decryptedMessage = crypto.decryptThenVerify(encryptedMessage, bobPrivateKey, alicePublicKeys);
-	console.log(decryptedMessage.toString('utf8'));
+	const decryptedMessage = virgilCrypto.decryptThenVerify(encryptedMessage, bobPrivateKey, alicePublicKeys);
+	console.log(decryptedMessage.toString());
 })();
 ```
 ## Docs
 Virgil Security has a powerful set of APIs, and the documentation below can get you started today.
 
-In order to use the Virgil SDK with your application, you will need to first configure your application. By default, the SDK will attempt to look for Virgil-specific settings in your application but you can change it during SDK configuration.
+In order to use the Virgil SDK with your application, you will need to first configure your application. By default, 
+the SDK will attempt to look for Virgil-specific settings in your application but you can change it during SDK 
+configuration.
 
 * [Configure the SDK][_configure_sdk] documentation
   * [Setup authentication][_setup_authentication] to make API calls to Virgil Services
