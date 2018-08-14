@@ -9,15 +9,16 @@
 <body>
 <script>
 	const { VirgilCrypto, VirgilPrivateKeyExporter } = window.VirgilCrypto;
-	const { PrivateKeyStorage, KeyStorage } = window.Virgil;
+	const { PrivateKeyStorage, KeyEntryStorage } = window.Virgil;
 
 	const virgilCrypto = new VirgilCrypto();
 	const exporter = new VirgilPrivateKeyExporter(virgilCrypto, 'OPTIONAL_PASSWORD');
 
 	// const privateKeyStorage = new PrivateKeyStorage(exporter);
 	// OR
-	const storageBackend = new KeyStorage();
-	const privateKeyStorage = new PrivateKeyStorage(exporter, storageBackend);
+
+	const privateKeyStorage = new PrivateKeyStorage(exporter);
+	const keyEntryStorage = new KeyEntryStorage();
 
 	function storePrivateKey (name) {
 		const keyPair = virgilCrypto.generateKeys();
@@ -33,7 +34,7 @@
 	}
 
 	function listEntries () {
-		storageBackend.list()
+		keyEntryStorage.list()
 			.then(entries => console.log(entries))
 			.catch(err => console.error(err));
 	}
