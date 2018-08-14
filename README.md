@@ -97,8 +97,10 @@ import { CachingJwtProvider, CardManager, PrivateKeyStorage, VirgilCardVerifier 
 		cardVerifier: cardVerifier
 	});
 	const privateKeyStorage = new PrivateKeyStorage(
-		new VirgilPrivateKeyExporter(virgilCrypto),
-		'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+		new VirgilPrivateKeyExporter(
+			virgilCrypto,
+			'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+		)
 	);
 	
 	// Generate a key pair
@@ -143,8 +145,10 @@ import { PrivateKeyStorage } from 'virgil-sdk';
 (async function() {
 	const virgilCrypto = new VirgilCrypto();
 	const privateKeyStorage = new PrivateKeyStorage(
-		new VirgilPrivateKeyExporter(virgilCrypto),
-		'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+		new VirgilPrivateKeyExporter(
+			virgilCrypto,
+			'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+		)
 	);
 	
 	// Load the private key
@@ -178,8 +182,10 @@ import { PrivateKeyStorage } from 'virgil-sdk';
 (async function() {
 	const virgilCrypto = new VirgilCrypto();
 	const privateKeyStorage = new PrivateKeyStorage(
-		new VirgilPrivateKeyExporter(virgilCrypto),
-		'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+		new VirgilPrivateKeyExporter(
+			virgilCrypto,
+			'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+		)
 	);
 	
 	// Load the private key 
