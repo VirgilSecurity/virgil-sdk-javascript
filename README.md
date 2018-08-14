@@ -218,7 +218,7 @@ configuration.
   * [Search user's Card by user's identity][_search_card]
   * [Get user's Card by its ID][_get_card]
   * [Use Card for crypto operations][_use_card]
-* [Reference API][_reference_api]
+* [API Reference][_reference_api]
 
 
 ## License
@@ -243,7 +243,7 @@ Also, get extra help from our support team on [Slack](https://virgilsecurity.sla
 [_card_verifier]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-card-verifier
 [_card_manager]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-card-manager
 [_setup_authentication]: https://developer.virgilsecurity.com/docs/javascript/how-to/setup/v5/setup-authentication
-[_reference_api]: https://developer.virgilsecurity.com/docs/api-reference
+[_reference_api]: http://virgilsecurity.github.io/virgil-sdk-javascript/
 [_configure_sdk]: https://developer.virgilsecurity.com/docs/how-to#sdk-configuration
 [_more_examples]: https://developer.virgilsecurity.com/docs/how-to#public-key-management
 [npmjs]: https://www.npmjs.com/package/virgil-sdk
