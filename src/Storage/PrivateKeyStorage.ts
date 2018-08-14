@@ -60,19 +60,19 @@ export class PrivateKeyStorage {
 	 * Promise with `null`.
 	 *
 	 * @param {string} name - Name of the private key to load.
+	 * @returns {Promise<IPrivateKeyEntry|null>}
 	 */
-	load (name: string): Promise<IPrivateKeyEntry|null> {
-		return this.keyEntryStorage.load(name).then(keyEntry => {
-			if (keyEntry === null) {
-				return null;
-			}
+	async load (name: string): Promise<IPrivateKeyEntry|null> {
+		const keyEntry = await this.keyEntryStorage.load(name);
+		if (keyEntry === null) {
+			return null;
+		}
 
-			const privateKey = this.privateKeyExporter.importPrivateKey(keyEntry.value);
-			return {
-				privateKey,
-				meta: keyEntry.meta
-			};
-		});
+		const privateKey = this.privateKeyExporter.importPrivateKey(keyEntry.value);
+		return {
+			privateKey,
+			meta: keyEntry.meta
+		};
 	}
 
 	/**
