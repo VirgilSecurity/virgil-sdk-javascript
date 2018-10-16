@@ -22,6 +22,8 @@ const generateJwt = (expiresAt: Date): Jwt => {
 	);
 };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 describe ('CachingJwtProvider', () => {
 	describe ('constructor', () => {
 		it ('throws when renewJwtFn is not a function', () => {
@@ -157,18 +159,29 @@ describe ('CachingJwtProvider', () => {
 			);
 		});
 
-		it ('gets new token when inital token expires', () => {
-			const expiredInitialToken = generateJwt(addSeconds(new Date, 1));
-			const freshToken = generateJwt(addSeconds(new Date, 60));
+		it ('gets new token when inital token expires (STC-40)', function () {
+			this.timeout(15000);
+			const initialToken = generateJwt(addSeconds(new Date, 10));
+			const freshToken = generateJwt(addSeconds(new Date, 120));
 			const getJwtCallback = sinon.stub().resolves(freshToken);
 
-			const provider = new CachingJwtProvider(getJwtCallback, expiredInitialToken);
+			const provider = new CachingJwtProvider(getJwtCallback, initialToken);
 
-			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
-				freshToken,
-				'returns fresh token'
-			);
+			return provider.getToken({ operation: 'stub' })
+			.then(token => {
+				assert.deepEqual(token, initialToken);
+				return sleep(3000);
+			})
+			.then(() => provider.getToken({ operation: 'stub' }))
+			.then(token => {
+				assert.deepEqual(token, initialToken);
+				return sleep(9000);
+			})
+			.then(() => provider.getToken({ operation: 'stub' }))
+			.then(token => {
+				assert.deepEqual(token, freshToken);
+				assert.equal(getJwtCallback.callCount, 1);
+			});
 		});
 	});
 });
