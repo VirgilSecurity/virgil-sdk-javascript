@@ -29,6 +29,48 @@ describe ('CachingJwtProvider', () => {
 				new CachingJwtProvider({} as GetJwtCallback);
 			}, /must be a function/);
 		});
+
+		it ('accepts initial token value as Jwt instance', () => {
+			const initialJwt = generateJwt(addSeconds(new Date, 60));
+			const getJwtCallback = sinon.stub().rejects('should have used initial token');
+
+			const provider = new CachingJwtProvider(getJwtCallback, initialJwt);
+
+			return assert.eventually.deepEqual(
+				provider.getToken({ operation: 'stub' }),
+				initialJwt
+			);
+		});
+
+		it ('accepts initial token value as stirng', () => {
+			const initialJwt = generateJwt(addSeconds(new Date, 60));
+			const getJwtCallback = sinon.stub().rejects('should have used inital token');
+
+			const provider = new CachingJwtProvider(getJwtCallback, initialJwt.toString());
+
+			return assert.eventually.deepEqual(
+				provider.getToken({ operation: 'stub' }),
+				initialJwt
+			);
+		});
+
+		it ('throws when initial token string is malformed', () => {
+			const initialJwt = 'not_a_jwt';
+			const getJwtCallback = sinon.stub();
+
+			assert.throws(() => {
+				new CachingJwtProvider(getJwtCallback, initialJwt);
+			}, /Wrong JWT/);
+		});
+
+		it ('throws Error when initialToken is neither a Jwt nor a string', () => {
+			const initialJwt = 1;
+			const getJwtCallback = sinon.stub();
+
+			assert.throws(() => {
+				new CachingJwtProvider(getJwtCallback, initialJwt as any);
+			}, 'Expected "initialToken" to be a string or an instance of Jwt, got number');
+		});
 	});
 
 	describe ('getToken', () => {
@@ -112,6 +154,20 @@ describe ('CachingJwtProvider', () => {
 			return assert.isRejected(
 				provider.getToken({ operation: 'stub' }),
 				/Wrong JWT/
+			);
+		});
+
+		it ('gets new token when inital token expires', () => {
+			const expiredInitialToken = generateJwt(addSeconds(new Date, 1));
+			const freshToken = generateJwt(addSeconds(new Date, 60));
+			const getJwtCallback = sinon.stub().resolves(freshToken);
+
+			const provider = new CachingJwtProvider(getJwtCallback, expiredInitialToken);
+
+			return assert.eventually.deepEqual(
+				provider.getToken({ operation: 'stub' }),
+				freshToken,
+				'returns fresh token'
 			);
 		});
 	});

@@ -19,10 +19,27 @@ export class CachingJwtProvider implements IAccessTokenProvider {
 	 * @param {GetJwtCallback} renewJwtFn - The function that will be called
 	 * whenever the fresh JWT is needed. If the `renewJwtFn` returns the JWT
 	 * as a string, it will be converted to {@link Jwt} instance automatically.
+	 * @param {Jwt|string} [initialToken] - Optional initial JWT.
 	 */
-	constructor(renewJwtFn: GetJwtCallback) {
+	constructor(renewJwtFn: GetJwtCallback, initialToken?: Jwt | string) {
 		if (typeof renewJwtFn !== 'function') {
 			throw new TypeError('`renewJwtFn` must be a function');
+		}
+
+		if (initialToken) {
+			let jwt;
+			if (typeof initialToken === 'string') {
+				jwt = Jwt.fromString(initialToken);
+			} else if (initialToken instanceof Jwt) {
+				jwt = initialToken;
+			} else {
+				throw new Error(
+				`Expected "initialToken" to be a string or an instance of Jwt, got ${
+					typeof initialToken
+				}`);
+			}
+
+			this.cachedJwt = jwt;
 		}
 
 		this.getJwt = (context: ITokenContext) => {
