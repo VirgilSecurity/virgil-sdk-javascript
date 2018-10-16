@@ -33,6 +33,10 @@ export class VirgilHttpError extends VirgilError {
  * @returns {Promise<VirgilHttpError>}
  */
 export async function generateErrorFromResponse(response: Response) {
-	const reason = await response.json() as IHttpErrorResponseBody;
-	return new VirgilHttpError(reason.message, response.status, reason.code);
+	if (response.status >= 400 && response.status < 500) {
+		const reason = await response.json() as IHttpErrorResponseBody;
+		return new VirgilHttpError(reason.message, response.status, reason.code);
+	} else {
+		return new VirgilHttpError(response.statusText, response.status, '00000');
+	}
 }
