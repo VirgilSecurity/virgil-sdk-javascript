@@ -1,43 +1,20 @@
-import { idb } from './idb';
-
-// This code is borrowed from localForage
+// Some code originally from localForage
 // See: https://github.com/localForage/localForage/blob/master/src/utils/isIndexedDBValid.js
 /**
  * @hidden
  * @returns {boolean}
  */
 export function isIndexedDbValid() {
+	// We mimic PouchDB here
+	// Following #7085 (see https://github.com/pouchdb/pouchdb/issues/7085)
+	// buggy idb versions (typically Safari < 10.1) are considered valid.
+
+	// On Firefox SecurityError is thrown while referencing indexedDB if cookies
+	// are not allowed. `typeof indexedDB` also triggers the error.
 	try {
-		// Initialize IndexedDB; fall back to vendor-prefixed versions
-		// if needed.
-		if (!idb) {
-			return false;
-		}
-		// We mimic PouchDB here;
-		//
-		// We test for openDatabase because IE Mobile identifies itself
-		// as Safari. Oh the lulz...
-		const isSafari =
-			typeof openDatabase !== 'undefined' &&
-			/(Safari|iPhone|iPad|iPod)/.test(navigator.userAgent) &&
-			!/Chrome/.test(navigator.userAgent) &&
-			!/BlackBerry/.test(navigator.platform);
-
-		const hasFetch =
-			typeof fetch === 'function' &&
-			fetch.toString().indexOf('[native code') !== -1;
-
-		// Safari <10.1 does not meet our requirements for IDB support (#5572)
-		// since Safari 10.1 shipped with fetch, we can use that to detect it
-		return (
-			(!isSafari || hasFetch) &&
-			typeof indexedDB !== 'undefined' &&
-			// some outdated implementations of IDB that appear on Samsung
-			// and HTC Android devices <4.4 are missing IDBKeyRange
-			// See: https://github.com/mozilla/localForage/issues/128
-			// See: https://github.com/mozilla/localForage/issues/272
-			typeof IDBKeyRange !== 'undefined'
-		);
+		// some outdated implementations of IDB that appear on Samsung
+		// and HTC Android devices <4.4 are missing IDBKeyRange
+		return typeof indexedDB !== 'undefined' && typeof IDBKeyRange !== 'undefined';
 	} catch (e) {
 		return false;
 	}
