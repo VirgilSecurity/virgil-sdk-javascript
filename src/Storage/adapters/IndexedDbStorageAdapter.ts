@@ -1,5 +1,4 @@
 import { isIndexedDbValid } from './indexedDb/isIndexedDbValid';
-import { idb } from './indexedDb/idb';
 import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
 import { StorageEntryAlreadyExistsError } from './errors';
 
@@ -89,7 +88,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 						transaction!.onabort = transaction!.onerror = () => {
 							let error: any = req.error
 								? req.error
-								: req.transaction.error;
+								: req.transaction!.error;
 
 							if (error && error.name === 'ConstraintError') {
 								reject(new StorageEntryAlreadyExistsError(key));
@@ -212,7 +211,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 							const req = delReq || countReq;
 							const err = req.error
 								? req.error
-								: req.transaction.error;
+								: req.transaction!.error;
 							reject(err);
 						};
 					} catch (e) {
@@ -274,7 +273,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 						transaction!.onabort = transaction!.onerror = () => {
 							const err = req.error
 								? req.error
-								: req.transaction.error;
+								: req.transaction!.error;
 							reject(err);
 						};
 					} catch (e) {
@@ -462,7 +461,7 @@ function _getConnection(dbInfo: DbInfo, upgradeNeeded: boolean): Promise<IDBData
 			dbArgs.push(String(dbInfo.version));
 		}
 
-		const openReq = idb!.open.apply(idb, dbArgs);
+		const openReq = indexedDB.open.apply(indexedDB, dbArgs);
 
 		if (upgradeNeeded) {
 			openReq.onupgradeneeded = (e: IDBVersionChangeEvent) => {
