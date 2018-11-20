@@ -254,7 +254,7 @@ describe('CardManager', function () {
 			fixture.cardVerifier.verifyVirgilSignature = false;
 		});
 
-		it ('gets the newly published card by id', () => {
+		it ('gets the newly published card by id', async () => {
 			const keypair = crypto.generateKeys();
 			const rawCard = cardManager.generateRawCard({
 				privateKey: keypair.privateKey,
@@ -262,29 +262,24 @@ describe('CardManager', function () {
 				identity: `user_${Date.now()}@virgil.com`
 			});
 
-			return assert.isFulfilled(
-				cardManager.publishRawCard(rawCard)
-					.then(publishedCard => {
-						assert.equal(
-							publishedCard.contentSnapshot,
-							rawCard.contentSnapshot,
-							'snapshot does not change after publishing'
-						);
-						assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
-						return cardManager.getCard(publishedCard.id);
-					})
-					.then((retrievedCard) => {
-						assert.equal(
-							retrievedCard.contentSnapshot,
-							rawCard.contentSnapshot,
-							'snapshot does not change after retrieval'
-						);
-						assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
-					})
+			const publishedCard = await cardManager.publishRawCard(rawCard);
+			assert.equal(
+				publishedCard.contentSnapshot,
+				rawCard.contentSnapshot,
+				'snapshot does not change after publishing'
 			);
+			assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
+
+			const retrievedCard = await cardManager.getCard(publishedCard.id);
+			assert.equal(
+				retrievedCard.contentSnapshot,
+				rawCard.contentSnapshot,
+				'snapshot does not change after retrieval'
+			);
+			assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
 		});
 
-		it ('gets the newly published card with extra data by id', () => {
+		it ('gets the newly published card with extra data by id', async () => {
 			const keypair = crypto.generateKeys();
 			const cardExtraFields = {
 				extraKey: 'extraValue'
@@ -296,23 +291,17 @@ describe('CardManager', function () {
 				extraFields: cardExtraFields
 			});
 
-			return assert.isFulfilled(
-				cardManager.publishRawCard(rawCard)
-					.then(publishedCard => {
-						const selfSignature = publishedCard.signatures.find(s => s.signer === 'self');
-						assert.isOk(selfSignature, 'self signature exists');
-						assert.deepEqual(selfSignature!.extraFields, cardExtraFields);
-						assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
+			const publishedCard = await cardManager.publishRawCard(rawCard);
+			const selfSignature1 = publishedCard.signatures.find(s => s.signer === 'self');
+			assert.isOk(selfSignature1, 'self signature exists');
+			assert.deepEqual(selfSignature1!.extraFields, cardExtraFields);
+			assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
 
-						return cardManager.getCard(publishedCard.id);
-					})
-					.then((retrievedCard) => {
-						const selfSignature = retrievedCard.signatures.find(s => s.signer === 'self');
-						assert.isOk(selfSignature, 'self signature exists');
-						assert.deepEqual(selfSignature!.extraFields, cardExtraFields);
-						assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
-					})
-			);
+			const retrievedCard = await cardManager.getCard(publishedCard.id);
+			const selfSignature2 = retrievedCard.signatures.find(s => s.signer === 'self');
+			assert.isOk(selfSignature2, 'self signature exists');
+			assert.deepEqual(selfSignature2!.extraFields, cardExtraFields);
+			assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
 		});
 
 		it ('finds the newly published card by id', async () => {
