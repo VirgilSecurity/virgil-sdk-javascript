@@ -8,7 +8,7 @@ import { IAccessToken, IAccessTokenProvider, ITokenContext } from '../Auth/Acces
 import { cardToRawSignedModel, generateRawSigned, linkedCardList, parseRawSignedModel } from './CardUtils';
 import { assert } from '../Lib/assert';
 import { VirgilCardVerificationError } from './errors';
-import { VirgilHttpError } from '../Client/errors';
+import { VirgilHttpError, ErrorCode } from '../Client/errors';
 import { SelfSigner } from './constants';
 
 /**
@@ -316,7 +316,12 @@ export class CardManager {
 		try {
 			return await func(token);
 		} catch (e) {
-			if (e instanceof VirgilHttpError && e.httpStatus === 401 && this.retryOnUnauthorized) {
+			if (
+				e instanceof VirgilHttpError &&
+				e.httpStatus === 401 &&
+				e.errorCode === ErrorCode.AccessTokenExpired &&
+				this.retryOnUnauthorized
+			) {
 				token = await this.accessTokenProvider.getToken({
 					identity: context.identity,
 					operation: context.operation,

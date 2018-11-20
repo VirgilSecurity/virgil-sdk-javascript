@@ -1,5 +1,9 @@
-import { Response } from '../Lib/fetch';
 import { VirgilError } from '../VirgilError';
+
+export enum ErrorCode {
+	AccessTokenExpired = '20304',
+	Unknown = '00000',
+}
 
 /**
  * @hidden
@@ -15,12 +19,12 @@ export interface IHttpErrorResponseBody {
  */
 export class VirgilHttpError extends VirgilError {
 	httpStatus: number;
-	errorCode: string;
+	errorCode: ErrorCode;
 
 	constructor(message: string, status: number, errorCode: string) {
 		super(message, 'VirgilHttpError');
 		this.httpStatus = status;
-		this.errorCode = errorCode;
+		this.errorCode = errorCode as ErrorCode;
 	}
 }
 
