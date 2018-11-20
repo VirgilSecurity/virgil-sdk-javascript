@@ -30,8 +30,8 @@ function createBundle(bundle) {
 
 				return rollup({
 					input: path.resolve(bundle.path, entry),
-					external: [ ...builtinModules, ...(bundleType === NODE ? Object.keys(pkg.dependencies) : []) ],
-					plugins: getRollupPlugins(bundleType)
+					external: builtinModules.concat(bundleType === NODE ? Object.keys(pkg.dependencies) : []),
+					plugins: getRollupPlugins(bundleType),
 				}).then(output => {
 					const formats = getOutputFormatsFromBundleType(bundleType);
 					return Promise.all(formats.map(format => {

@@ -4,24 +4,8 @@ const commonjs = require('rollup-plugin-commonjs');
 const typescript = require('rollup-plugin-typescript2');
 const inject = require('rollup-plugin-inject');
 const replace = require('rollup-plugin-replace');
-const uglify = require('rollup-plugin-uglify');
-const builtinModules = require('builtin-modules');
+const { uglify } = require('rollup-plugin-uglify');
 const bundleTypes = require('./bundle-types');
-
-const BROWSER_ONLY_PLUGINS = [
-	globals({
-		include: [ 'buffer-es6' ]
-	}),
-
-	inject({
-		include: '**/*.ts',
-		exclude: 'node_modules/**',
-		modules: {
-			Buffer: [ 'buffer-es6', 'Buffer' ]
-
-		}
-	})
-];
 
 function getRollupPlugins (bundleType) {
 	const isBrowser = bundleType !== bundleTypes.NODE;
@@ -30,30 +14,30 @@ function getRollupPlugins (bundleType) {
 	return [
 		resolve({
 			browser: isBrowser,
-			jsnext: true,
 			extensions: [ '.ts', '.js' ],
-			include: 'src/**/*.ts',
 			preferBuiltins: !isBrowser
 		}),
 
+		commonjs(),
+
 		typescript({
 			useTsconfigDeclarationDir: true,
-			tsconfigOverride: {
-				compilerOptions: {
-					module: 'es2015'
-				}
-			}
+			typescript: require('typescript')
 		}),
 
 		replace({ 'process.browser': JSON.stringify(isBrowser) }),
 
-		...(isBrowser ? BROWSER_ONLY_PLUGINS : []),
+		isBrowser && globals(),
+		isBrowser && inject({
+			include: '**/*.ts',
+			exclude: 'node_modules/**',
+			modules: {
+				Buffer: [ 'buffer-es6', 'Buffer' ]
 
-		commonjs({
-			ignore: builtinModules
+			}
 		}),
 
-		...( isProd ? [ uglify() ] : [] )
+		isProd && uglify()
 	];
 }
 
