@@ -1,3 +1,5 @@
+/// <reference path="../declarations.d.ts" />
+
 import { VirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import {
 	CardManager,
@@ -455,19 +457,21 @@ describe('CardManager', function () {
 			fixture.cardVerifier.verifyVirgilSignature = false;
 			fixture.cardVerifier.verifySelfSignature = false;
 
+			const getTokenFn = (context: ITokenContext) => {
+				if (context.forceReload) {
+					// generating good token
+					return Promise.resolve(fixture.jwtGenerator.generateToken(context.identity!));
+				} else {
+					// generating expired token
+					const expiredToken = fixture.expiredTokenGenerator.generateToken(context.identity!);
+					const sleep = new Promise(resolve => setTimeout(resolve, 2000));
+					// sleeping is needed because minimum token lifetime is 1 second
+					return sleep.then(() => expiredToken);
+				}
+			};
+
 			sinon.stub(fixture.accessTokenProvider, 'getToken')
-				.callsFake((context: ITokenContext) => {
-					if (context.forceReload) {
-						// generating good token
-						return fixture.jwtGenerator.generateToken(context.identity!);
-					} else {
-						// generating expired token
-						const expiredToken = fixture.expiredTokenGenerator.generateToken(context.identity!);
-						const sleep = new Promise(resolve => setTimeout(resolve, 1100));
-						// sleeping is needed because minimum token lifetime is 1 second
-						return sleep.then(() => expiredToken);
-					}
-				});
+				.callsFake(getTokenFn as any);
 		});
 
 		it ('retries get card', () => {
