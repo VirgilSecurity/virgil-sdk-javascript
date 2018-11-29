@@ -1,8 +1,8 @@
 import { VirgilError } from '../VirgilError';
 
 export enum ErrorCode {
-	AccessTokenExpired = '20304',
-	Unknown = '00000',
+	AccessTokenExpired = 20304,
+	Unknown = 0,
 }
 
 /**
@@ -10,7 +10,7 @@ export enum ErrorCode {
  */
 export interface IHttpErrorResponseBody {
 	message: string;
-	code: string;
+	code: number;
 }
 
 /**
@@ -21,7 +21,7 @@ export class VirgilHttpError extends VirgilError {
 	httpStatus: number;
 	errorCode: ErrorCode;
 
-	constructor(message: string, status: number, errorCode: string) {
+	constructor(message: string, status: number, errorCode: number) {
 		super(message, 'VirgilHttpError');
 		this.httpStatus = status;
 		this.errorCode = errorCode as ErrorCode;
@@ -41,6 +41,6 @@ export async function generateErrorFromResponse(response: Response) {
 		const reason = await response.json() as IHttpErrorResponseBody;
 		return new VirgilHttpError(reason.message, response.status, reason.code);
 	} else {
-		return new VirgilHttpError(response.statusText, response.status, '00000');
+		return new VirgilHttpError(response.statusText, response.status, 0);
 	}
 }
