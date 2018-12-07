@@ -1,12 +1,24 @@
 language: node_js
-node_js:
-    - "6"
-    - "8"
-    - "9"
-dist: trusty # needs Ubuntu Trusty
-sudo: required
-addons:
-  chrome: stable # have Travis install chrome stable.
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      node_js: "6"
+    - os: linux
+      dist: trusty
+      node_js: "8"
+    - os: linux
+      dist: trusty
+      node_js: "11"
+    - os: linux
+      dist: trusty
+      sudo: required
+      addons:
+        chrome: stable # have Travis install chrome stable.
+      node_js: "10"
+      env:
+        - TEST_BROWSER=true
+        - BUILD_DOCS=true
 cache:
   yarn: true
   directories:
@@ -14,14 +26,15 @@ cache:
 install:
   - yarn install
 script:
-  - yarn test
-  - yarn run docs
+  - if [[ "$TEST_BROWSER" = true ]]; then yarn test; else yarn run test:node; fi
+  - if [[ "$BUILD_DOCS" = true ]]; then yarn run docs; fi
 deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: true
   local-dir: docs
-  on:
+  on: # deploy only tagged build on Node.js 10
     tags: true
-    node: "8"
+    node: '10'
+    condition: $TRAVIS_OS_NAME = linux
