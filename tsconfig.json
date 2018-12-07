@@ -9,6 +9,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "declarationDir": "dist/types",
+    "resolveJsonModule": true
   },
   "include": [
     "src"
