@@ -8,7 +8,7 @@ import { IAccessToken, IAccessTokenProvider, ITokenContext } from '../Auth/Acces
 import { cardToRawSignedModel, generateRawSigned, linkedCardList, parseRawSignedModel } from './CardUtils';
 import { assert } from '../Lib/assert';
 import { VirgilCardVerificationError } from './errors';
-import { VirgilHttpError } from '../Client/errors';
+import { VirgilHttpError, ErrorCode } from '../Client/errors';
 import { SelfSigner } from './constants';
 
 /**
@@ -178,19 +178,27 @@ export class CardManager {
 	/**
 	 * Fetches collection of cards with the given `identity` from the Virgil
 	 * Cards Service.
-	 * @param {string} identity - Identity of the cards to fetch.
+	 * @param {string|string[]} identities - Identity or an array of identities of the cards to fetch.
 	 * @returns {Promise<ICard[]>}
 	 */
-	async searchCards (identity: string): Promise<ICard[]> {
-		const tokenContext: ITokenContext = { operation: 'search' };
+	async searchCards (identities: string|string[]): Promise<ICard[]> {
+		if (!identities) throw new TypeError('Argument `identities` is required');
 
+		const identitiesArr = Array.isArray(identities) ? identities : [identities];
+		if (identitiesArr.length === 0) throw new TypeError('Identities array must not be empty');
+
+		const tokenContext: ITokenContext = { operation: 'search' };
 		const accessToken = await this.accessTokenProvider.getToken(tokenContext);
-		const rawCards = await this.tryDo(tokenContext, accessToken,
-			async (token) => await this.client.searchCards(identity, token.toString()));
+		const rawCards = await this.tryDo(
+			tokenContext,
+			accessToken,
+			async (token) => await this.client.searchCards(identitiesArr, token.toString())
+		);
 
 		const cards = rawCards.map(raw => parseRawSignedModel(this.crypto, raw, false));
+		const identitiesSet = new Set(identitiesArr);
 
-		if (cards.some(c => c.identity !== identity)) {
+		if (cards.some(c => !identitiesSet.has(c.identity))) {
 			throw new VirgilCardVerificationError('Received invalid cards');
 		}
 
@@ -309,7 +317,12 @@ export class CardManager {
 		try {
 			return await func(token);
 		} catch (e) {
-			if (e instanceof VirgilHttpError && e.httpStatus === 401 && this.retryOnUnauthorized) {
+			if (
+				e instanceof VirgilHttpError &&
+				e.httpStatus === 401 &&
+				e.errorCode === ErrorCode.AccessTokenExpired &&
+				this.retryOnUnauthorized
+			) {
 				token = await this.accessTokenProvider.getToken({
 					identity: context.identity,
 					operation: context.operation,

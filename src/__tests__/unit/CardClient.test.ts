@@ -87,7 +87,7 @@ describe('CardClient', () => {
 			const client = new CardClient(connectionStub as IConnection);
 
 			return assert.isRejected(
-				client.searchCards('valid_card_identity','not_a_valid_jwt'),
+				client.searchCards(['valid_card_identity'],'not_a_valid_jwt'),
 				'Invalid token'
 			);
 		});

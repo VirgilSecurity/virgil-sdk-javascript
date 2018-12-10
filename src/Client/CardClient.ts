@@ -39,24 +39,16 @@ export class CardClient {
 
 	/**
 	 * Issues a request to search cards by the `identity`.
-	 * @param {string} identity - Identity to search for.
+	 * @param {string[]} identities - Array of identities to search for.
 	 * @param {string} jwtToken - A token to authenticate the request.
 	 * @returns {Promise<RawSignedModel[]>}
 	 */
-	public async searchCards (identity: string, jwtToken: string): Promise<RawSignedModel[]> {
-		if (!identity) throw new TypeError('`identity` should not be empty');
-		if (!jwtToken) throw new TypeError('`jwtToken` should not be empty');
-
-		const response = await this.connection.post( SearchEndpoint, jwtToken, { identity } );
-
-		if (!response.ok) {
-			throw await generateErrorFromResponse(response);
-		}
+	public async searchCards (identities: string[], jwtToken: string): Promise<RawSignedModel[]> {
+		const response = await this.connection.post( SearchEndpoint, jwtToken, { identities } );
+		if (!response.ok) throw await generateErrorFromResponse(response);
 
 		const cardsJson = await response.json();
-		if (cardsJson === null) {
-			return [];
-		}
+		if (cardsJson === null) return [];
 
 		return cardsJson.map(RawSignedModel.fromJson);
 	}

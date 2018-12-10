@@ -1,12 +1,15 @@
+/// <reference path="../declarations.d.ts" />
+
 import { VirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import {
 	CardManager,
 	GeneratorJwtProvider,
 	ITokenContext,
 	JwtGenerator,
-	VirgilCardVerifier
+	VirgilCardVerifier,
 } from '../..';
 import { VirgilCardVerificationError } from '../../Cards/errors';
+import { ICard } from '../../Cards/ICard';
 
 import { compatData } from './data';
 
@@ -236,6 +239,16 @@ describe('CardManager', function () {
 		let cardManager: CardManager;
 		let crypto: VirgilCrypto;
 
+		const generateRawCard = (identity: string) => {
+			const { privateKey, publicKey } = crypto.generateKeys();
+
+			return cardManager.generateRawCard({
+				privateKey,
+				publicKey,
+				identity,
+			});
+		}
+
 		beforeEach(() => {
 			const fixture = init();
 			cardManager = fixture.cardManager;
@@ -243,7 +256,7 @@ describe('CardManager', function () {
 			fixture.cardVerifier.verifyVirgilSignature = false;
 		});
 
-		it ('gets the newly published card by id', () => {
+		it ('gets the newly published card by id', async () => {
 			const keypair = crypto.generateKeys();
 			const rawCard = cardManager.generateRawCard({
 				privateKey: keypair.privateKey,
@@ -251,29 +264,24 @@ describe('CardManager', function () {
 				identity: `user_${Date.now()}@virgil.com`
 			});
 
-			return assert.isFulfilled(
-				cardManager.publishRawCard(rawCard)
-					.then(publishedCard => {
-						assert.equal(
-							publishedCard.contentSnapshot,
-							rawCard.contentSnapshot,
-							'snapshot does not change after publishing'
-						);
-						assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
-						return cardManager.getCard(publishedCard.id);
-					})
-					.then((retrievedCard) => {
-						assert.equal(
-							retrievedCard.contentSnapshot,
-							rawCard.contentSnapshot,
-							'snapshot does not change after retrieval'
-						);
-						assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
-					})
+			const publishedCard = await cardManager.publishRawCard(rawCard);
+			assert.equal(
+				publishedCard.contentSnapshot,
+				rawCard.contentSnapshot,
+				'snapshot does not change after publishing'
 			);
+			assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
+
+			const retrievedCard = await cardManager.getCard(publishedCard.id);
+			assert.equal(
+				retrievedCard.contentSnapshot,
+				rawCard.contentSnapshot,
+				'snapshot does not change after retrieval'
+			);
+			assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
 		});
 
-		it ('gets the newly published card with extra data by id', () => {
+		it ('gets the newly published card with extra data by id', async () => {
 			const keypair = crypto.generateKeys();
 			const cardExtraFields = {
 				extraKey: 'extraValue'
@@ -285,29 +293,76 @@ describe('CardManager', function () {
 				extraFields: cardExtraFields
 			});
 
-			return assert.isFulfilled(
-				cardManager.publishRawCard(rawCard)
-					.then(publishedCard => {
-						const selfSignature = publishedCard.signatures.find(s => s.signer === 'self');
-						assert.isOk(selfSignature, 'self signature exists');
-						assert.deepEqual(selfSignature!.extraFields, cardExtraFields);
-						assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
+			const publishedCard = await cardManager.publishRawCard(rawCard);
+			const selfSignature1 = publishedCard.signatures.find(s => s.signer === 'self');
+			assert.isOk(selfSignature1, 'self signature exists');
+			assert.deepEqual(selfSignature1!.extraFields, cardExtraFields);
+			assert.isFalse(publishedCard.isOutdated, 'published card is up to date');
 
-						return cardManager.getCard(publishedCard.id);
-					})
-					.then((retrievedCard) => {
-						const selfSignature = retrievedCard.signatures.find(s => s.signer === 'self');
-						assert.isOk(selfSignature, 'self signature exists');
-						assert.deepEqual(selfSignature!.extraFields, cardExtraFields);
-						assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
-					})
-			);
+			const retrievedCard = await cardManager.getCard(publishedCard.id);
+			const selfSignature2 = retrievedCard.signatures.find(s => s.signer === 'self');
+			assert.isOk(selfSignature2, 'self signature exists');
+			assert.deepEqual(selfSignature2!.extraFields, cardExtraFields);
+			assert.isFalse(retrievedCard.isOutdated, 'retrieved card is up to date');
+		});
+
+		it ('finds the newly published card by id', async () => {
+			const keypair = crypto.generateKeys();
+			const rawCard = cardManager.generateRawCard({
+				privateKey: keypair.privateKey,
+				publicKey: keypair.publicKey,
+				identity: `user_${Date.now()}@virgil.com`
+			});
+
+			const publishedCard = await cardManager.publishRawCard(rawCard);
+			const foundCards = await cardManager.searchCards(publishedCard.identity);
+			assert.equal(foundCards.length, 1);
+			assert.equal(foundCards[0].id, publishedCard.id);
+		});
+
+		it ('searches by multiple identities', async () => {
+			const rawCard1 = generateRawCard(`user1_${Date.now()}@virgil.com`)
+			const rawCard2 = generateRawCard(`user2_${Date.now()}@virgil.com`);
+
+			const [publishedCard1, publishedCard2] = await Promise.all([
+				cardManager.publishRawCard(rawCard1),
+				cardManager.publishRawCard(rawCard2)
+			]);
+			const foundCards = await cardManager.searchCards([
+				publishedCard1.identity,
+				publishedCard2.identity
+			]);
+
+			assert.equal(foundCards.length, 2);
+			assert.isTrue(foundCards.some(foundCard => foundCard.id === publishedCard1.id));
+			assert.isTrue(foundCards.some(foundCard => foundCard.id === publishedCard2.id));
 		});
 	});
 
 	describe('card rotation (STC-19)', function () {
 		let cardManager: CardManager;
 		let crypto: VirgilCrypto;
+
+		const publishCard = (identity: string) => {
+			const { privateKey, publicKey } = crypto.generateKeys();
+
+			return cardManager.publishCard({
+				privateKey,
+				publicKey,
+				identity,
+			});
+		}
+
+		const rotateCard = (previousCard: ICard) => {
+			const { privateKey, publicKey } = crypto.generateKeys();
+			return cardManager.publishCard({
+				privateKey,
+				publicKey,
+				identity: previousCard.identity,
+				// setting previousCardId will mark the previous card as outdated
+				previousCardId: previousCard.id
+			});
+		}
 
 		beforeEach(() => {
 			const fixture = init();
@@ -316,86 +371,75 @@ describe('CardManager', function () {
 			fixture.cardVerifier.verifyVirgilSignature = false;
 		});
 
-		it ('rotates cards', () => {
+		it ('rotates cards', async () => {
 			const sharedIdentity = `user_${Date.now()}@virgil.com`;
-			const keypair1 = crypto.generateKeys();
 
-			return assert.eventually.equal(
-				// publish card that we will rotate later
-				cardManager.publishCard({
-					privateKey: keypair1.privateKey,
-					publicKey: keypair1.publicKey,
-					identity: sharedIdentity
-				}).then(publishedCard1 => {
-					const keypair2 = crypto.generateKeys();
-					// publish second card, replacing the first one
-					return cardManager.publishCard({
-						privateKey: keypair2.privateKey,
-						publicKey: keypair2.publicKey,
-						previousCardId: publishedCard1.id,
-						identity: sharedIdentity
-					})
-					.then(() => cardManager.getCard(publishedCard1.id))
-					.then(retrievedCard1 => retrievedCard1.isOutdated)
-				}),
-				true,
-				'rotated card is outdated'
-			);
+			const oldCard = await publishCard(sharedIdentity);
+			const _newCard = await rotateCard(oldCard);
+
+			const retrievedCard = await cardManager.getCard(oldCard.id)
+			assert.isTrue(retrievedCard.isOutdated, 'rotated card is outdated');
 		});
 
-		it ('links rotated cards in chains on search', () => {
+		it ('links rotated cards in chains on search', async () => {
 			const sharedIdentity = `user_${Date.now()}@virgil.com`;
-			const keypair1 = crypto.generateKeys();
 
-			return assert.isFulfilled(
-				// publish card that we will rotate later
-				cardManager.publishCard({
-					privateKey: keypair1.privateKey,
-					publicKey: keypair1.publicKey,
-					identity: sharedIdentity
-				}).then(publishedCard1 => {
-					const keypair2 = crypto.generateKeys();
-					// publish second card, replacing the first one
-					return cardManager.publishCard({
-						privateKey: keypair2.privateKey,
-						publicKey: keypair2.publicKey,
-						previousCardId: publishedCard1.id,
-						identity: sharedIdentity
-					}).then(publishedCard2 => {
-						const keypair3 = crypto.generateKeys();
-						return cardManager.publishCard({
-							privateKey: keypair3.privateKey,
-							publicKey: keypair3.publicKey,
-							identity: sharedIdentity
-						}).then(publishedCard3 => {
-							return cardManager.searchCards(sharedIdentity)
-								.then(foundCards => {
-									assert.equal(foundCards.length, 2);
+			// publish card that we will rotate later
+			const publishedCard1 = await publishCard(sharedIdentity);
 
-									const card1 = foundCards.find(card => card.id === publishedCard1.id);
-									assert.isNotOk(card1, 'outdated card in not in the result array');
+			// replace the first one
+			const publishedCard2 = await rotateCard(publishedCard1);
 
-									const card2 = foundCards.find(card => card.id === publishedCard2.id);
-									assert.isOk(card2, 'rotated card is in the result array');
-									assert.equal(
-										card2!.previousCardId,
-										publishedCard1.id,
-										'rotated card has previous card id'
-									);
-									assert.isOk(card2!.previousCard, 'rotated card has previous card');
-									assert.equal(
-										card2!.previousCard!.contentSnapshot,
-										publishedCard1.contentSnapshot,
-										'rotated card has correct previous card'
-									);
+			// publish anoter one with the same identity
+			const publishedCard3 = await publishCard(sharedIdentity);
 
-									const card3 = foundCards.find(card => card.id === publishedCard3.id);
-									assert.isOk(card3, 'third card is in the result array');
-								})
-						});
-					});
-				})
+			const foundCards = await cardManager.searchCards(sharedIdentity)
+			assert.equal(foundCards.length, 2);
+
+			const card1 = foundCards.find(card => card.id === publishedCard1.id);
+			assert.isNotOk(card1, 'outdated card in not in the result array');
+
+			const card2 = foundCards.find(card => card.id === publishedCard2.id);
+			assert.isOk(card2, 'rotated card is in the result array');
+			assert.equal(
+				card2!.previousCardId,
+				publishedCard1.id,
+				'rotated card has previous card id'
 			);
+			assert.isOk(card2!.previousCard, 'rotated card has previous card');
+			assert.equal(
+				card2!.previousCard!.contentSnapshot,
+				publishedCard1.contentSnapshot,
+				'rotated card has correct previous card'
+			);
+
+			const card3 = foundCards.find(card => card.id === publishedCard3.id);
+			assert.isOk(card3, 'third card is in the result array');
+		});
+
+		it ('links cards in multiple chains on search', async () => {
+			const sharedIdentity1 = `user1_${Date.now()}@virgil.com`;
+			const sharedIdentity2 = `user2_${Date.now()}@virgil.com`;
+
+			const oldCard1 = await publishCard(sharedIdentity1);
+			const newCard1 = await rotateCard(oldCard1);
+
+			const oldCard2 = await publishCard(sharedIdentity2);
+			const newCard2 = await rotateCard(oldCard2);
+
+			const foundCards = await cardManager.searchCards([sharedIdentity1, sharedIdentity2]);
+
+			assert.isFalse(
+				foundCards.some(foundCard => foundCard.id === oldCard1.id || foundCard.id === oldCard2.id)
+			);
+
+			const foundCard1 = foundCards.find(card => card.id === newCard1.id);
+			assert.isOk(foundCard1);
+			assert.equal(foundCard1!.previousCardId, oldCard1.id);
+
+			const foundCard2 = foundCards.find(card => card.id === newCard2.id);
+			assert.isOk(foundCard2);
+			assert.equal(foundCard2!.previousCardId, oldCard2.id);
 		});
 	});
 
@@ -413,19 +457,21 @@ describe('CardManager', function () {
 			fixture.cardVerifier.verifyVirgilSignature = false;
 			fixture.cardVerifier.verifySelfSignature = false;
 
+			const getTokenFn = (context: ITokenContext) => {
+				if (context.forceReload) {
+					// generating good token
+					return Promise.resolve(fixture.jwtGenerator.generateToken(context.identity!));
+				} else {
+					// generating expired token
+					const expiredToken = fixture.expiredTokenGenerator.generateToken(context.identity!);
+					const sleep = new Promise(resolve => setTimeout(resolve, 2000));
+					// sleeping is needed because minimum token lifetime is 1 second
+					return sleep.then(() => expiredToken);
+				}
+			};
+
 			sinon.stub(fixture.accessTokenProvider, 'getToken')
-				.callsFake((context: ITokenContext) => {
-					if (context.forceReload) {
-						// generating good token
-						return fixture.jwtGenerator.generateToken(context.identity!);
-					} else {
-						// generating expired token
-						const expiredToken = fixture.expiredTokenGenerator.generateToken(context.identity!);
-						const sleep = new Promise(resolve => setTimeout(resolve, 1100));
-						// sleeping is needed because minimum token lifetime is 1 second
-						return sleep.then(() => expiredToken);
-					}
-				});
+				.callsFake(getTokenFn as any);
 		});
 
 		it ('retries get card', () => {

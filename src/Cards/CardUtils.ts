@@ -108,13 +108,7 @@ export function linkedCardList (cards: ICard[]): ICard[] {
 		delete unsorted[card.previousCardId];
 	}
 
-	const result = [];
-
-	for (const id in unsorted) {
-		result.push(unsorted[id]);
-	}
-
-	return result;
+	return Object.keys(unsorted).map(key => unsorted[key]);
 }
 
 /**
