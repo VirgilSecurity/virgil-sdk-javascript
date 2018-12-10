@@ -182,10 +182,10 @@ export class CardManager {
 	 * @returns {Promise<ICard[]>}
 	 */
 	async searchCards (identities: string|string[]): Promise<ICard[]> {
-		if (!identities) throw new Error('Argument `identities` is required');
+		if (!identities) throw new TypeError('Argument `identities` is required');
 
 		const identitiesArr = Array.isArray(identities) ? identities : [identities];
-		if (identitiesArr.length === 0) throw new Error('Identities array must not be empty');
+		if (identitiesArr.length === 0) throw new TypeError('Identities array must not be empty');
 
 		const tokenContext: ITokenContext = { operation: 'search' };
 		const accessToken = await this.accessTokenProvider.getToken(tokenContext);
@@ -196,8 +196,9 @@ export class CardManager {
 		);
 
 		const cards = rawCards.map(raw => parseRawSignedModel(this.crypto, raw, false));
+		const identitiesSet = new Set(identitiesArr);
 
-		if (cards.some(c => identitiesArr.indexOf(c.identity) === -1)) {
+		if (cards.some(c => !identitiesSet.has(c.identity))) {
 			throw new VirgilCardVerificationError('Received invalid cards');
 		}
 
