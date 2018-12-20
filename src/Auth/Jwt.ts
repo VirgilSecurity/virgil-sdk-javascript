@@ -85,23 +85,12 @@ export class Jwt implements IAccessToken {
 	 * @returns {Jwt}
 	 */
 	public static fromString (jwtStr: string): Jwt {
-		const parts = jwtStr.split('.');
-
-		if (parts.length !== 3) throw new Error('Wrong JWT format');
-
-		try {
-			const headerJson = base64UrlDecode(parts[0], 'utf8');
-			const bodyJson   = base64UrlDecode(parts[1], 'utf8');
-			const signature  = base64UrlToBase64(parts[2]);
-
-			const header = JSON.parse(headerJson);
-			const body   = JSON.parse(bodyJson);
-
-			return new Jwt(header, body, signature);
-		} catch (e) {
-			throw new Error('Wrong JWT format');
-		}
+		return new Jwt(jwtStr);
 	}
+
+	public readonly header: IJwtHeader;
+	public readonly body  : IJwtBody;
+	public readonly signature?: string;
 
 	/**
 	 * The data used to calculate the JWT Signature
@@ -112,6 +101,13 @@ export class Jwt implements IAccessToken {
 	private readonly stringRepresentation: string;
 
 	/**
+	 * Creates a new instance of `Jwt` from the given string. The string
+	 * must be in the following format:
+	 * `base64UrlEncode(header).base64UrlEncode(body).base64UrlEncode(signature)`
+	 * @param {string} stringRepresentation
+	 */
+	constructor (stringRepresentation: string);
+	/**
 	 * Creates a new instance of `Jwt` with the given header, body and
 	 * optional signature.
 	 *
@@ -119,20 +115,40 @@ export class Jwt implements IAccessToken {
 	 * @param {IJwtBody} body
 	 * @param {string} signature
 	 */
-	constructor (
-		public readonly header: IJwtHeader,
-		public readonly body  : IJwtBody,
-		public readonly signature?: string
-	) {
-		const withoutSignature = this.headerBase64() + '.' + this.bodyBase64();
+	constructor (header: IJwtHeader, body  : IJwtBody, signature?: string);
+	constructor (header: IJwtHeader | string, body?: IJwtBody, signature?: string) {
+		if (typeof header === 'string') {
+			const stringRepresentation = header;
+			const parts = stringRepresentation.split('.');
 
-		this.unsignedData = withoutSignature;
+			if (parts.length !== 3) throw new Error('Wrong JWT format');
 
-		if (this.signature == null) {
-			this.stringRepresentation = withoutSignature;
+			try {
+				this.header = JSON.parse(base64UrlDecode(parts[0], 'utf8'));
+				this.body   = JSON.parse(base64UrlDecode(parts[1], 'utf8'));
+				this.signature = base64UrlToBase64(parts[2]);
+
+			} catch (e) {
+				throw new Error('Wrong JWT format');
+			}
+			this.unsignedData = parts[0] + '.' + parts[1];
+			this.stringRepresentation = stringRepresentation;
+		} else if (typeof header === 'object' && typeof body === 'object') {
+			this.header = header;
+			this.body = body;
+			this.signature = signature;
+
+			this.unsignedData = this.headerBase64() + '.' + this.bodyBase64();
+			this.stringRepresentation = this.signature == null
+				? this.unsignedData
+				: this.unsignedData + '.' + this.signatureBase64();
 		} else {
-			this.stringRepresentation = withoutSignature + '.' + this.signatureBase64();
+			throw new TypeError(
+				'Invalid arguments for function Jwt. ' +
+				'Expected a string representation of a token, or header and body as objects'
+			);
 		}
+
 	}
 
 	/**

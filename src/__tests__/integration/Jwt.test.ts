@@ -1,3 +1,5 @@
+/// <reference path="../declarations.d.ts" />
+
 import { VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import {
 	CallbackJwtProvider,
@@ -7,6 +9,7 @@ import {
 	JwtGenerator,
 	JwtVerifier
 } from '../..';
+import { base64UrlEncode } from '../../Lib/base64';
 
 import { compatData } from './data';
 
@@ -183,6 +186,42 @@ describe('JWT compatibility', () => {
 			);
 			assert.isFalse(jwt.isExpired(), 'jwt is not expired');
 			assert.equal(jwt.toString(), tokenString, 'string representation is correct');
+		});
+
+		it ('does not mutate the string representation', () => {
+			const header = {
+				alg: "VEDS512",
+				cty: "virgil-jwt;v=1",
+				kid: "987654321fedcba987654321fedcba00",
+				typ: "JWT"
+			};
+			const body = {
+				exp: Date.now() + 20 * 60 * 1000,
+				iat: Date.now(),
+				iss: "virgil-123456789abcdef123456789abcdef00",
+				sub: "test-identity"
+			};
+			const signature = 'does not matter in this test';
+			const generatedJwt = new Jwt(header, body, signature);
+
+			// When converting to stirng Jwt stringifies header and body without spaces,
+			// we stringify with spaces here to ensure the string representation is different
+			const tokenString = `${
+				base64UrlEncode(JSON.stringify(header, null, 2))
+			}.${
+				base64UrlEncode(JSON.stringify(body, null, 2))
+			}.${
+				base64UrlEncode(signature)
+			}`;
+
+			assert.notEqual(
+				generatedJwt.toString(),
+				tokenString,
+				'generated string representation is different from manually-constructed one'
+			);
+
+			const jwtFromString = Jwt.fromString(tokenString);
+			assert.equal(jwtFromString.toString(), tokenString, 'string representation must never change');
 		});
 	});
 });
