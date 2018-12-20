@@ -1009,13 +1009,39 @@ img { max-width: 100%; }
 				<a name="constructor" class="tsd-anchor"></a>
 				<h3>constructor</h3>
 				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Jwt<span class="tsd-signature-symbol">(</span>stringRepresentation<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="jwt.html" class="tsd-signature-type">Jwt</a></li>
 					<li class="tsd-signature tsd-kind-icon">new <wbr>Jwt<span class="tsd-signature-symbol">(</span>header<span class="tsd-signature-symbol">: </span><a href="../interfaces/ijwtheader.html" class="tsd-signature-type">IJwtHeader</a>, body<span class="tsd-signature-symbol">: </span><a href="../interfaces/ijwtbody.html" class="tsd-signature-type">IJwtBody</a>, signature<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="jwt.html" class="tsd-signature-type">Jwt</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L112">Auth/Jwt.ts:112</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L101">Auth/Jwt.ts:101</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Creates a new instance of <code>Jwt</code> from the given string. The string
+									must be in the following format:
+								<code>base64UrlEncode(header).base64UrlEncode(body).base64UrlEncode(signature)</code></p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>stringRepresentation: <span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+									</div>
+								</div>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="jwt.html" class="tsd-signature-type">Jwt</a></h4>
+					</li>
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L109">Auth/Jwt.ts:109</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1053,7 +1079,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <a href="../interfaces/ijwtbody.html" class="tsd-signature-type">IJwtBody</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L124">Auth/Jwt.ts:124</a></li>
+						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L92">Auth/Jwt.ts:92</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1063,7 +1089,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">header<span class="tsd-signature-symbol">:</span> <a href="../interfaces/ijwtheader.html" class="tsd-signature-type">IJwtHeader</a></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L123">Auth/Jwt.ts:123</a></li>
+						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L91">Auth/Jwt.ts:91</a></li>
 					</ul>
 				</aside>
 			</section>
@@ -1073,13 +1099,9 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">signature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L125">Auth/Jwt.ts:125</a></li>
+						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L93">Auth/Jwt.ts:93</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-					</div>
-				</div>
 			</section>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 				<a name="unsigneddata" class="tsd-anchor"></a>
@@ -1087,7 +1109,7 @@ img { max-width: 100%; }
 				<div class="tsd-signature tsd-kind-icon">unsigned<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L111">Auth/Jwt.ts:111</a></li>
+						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L100">Auth/Jwt.ts:100</a></li>
 					</ul>
 				</aside>
 				<div class="tsd-comment tsd-typography">
@@ -1110,7 +1132,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L162">Auth/Jwt.ts:162</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L178">Auth/Jwt.ts:178</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1133,7 +1155,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Implementation of <a href="../interfaces/iaccesstoken.html">IAccessToken</a>.<a href="../interfaces/iaccesstoken.html#identity">identity</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L150">Auth/Jwt.ts:150</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L166">Auth/Jwt.ts:166</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1155,7 +1177,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L177">Auth/Jwt.ts:177</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L193">Auth/Jwt.ts:193</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1191,7 +1213,7 @@ img { max-width: 100%; }
 						<aside class="tsd-sources">
 							<p>Implementation of <a href="../interfaces/iaccesstoken.html">IAccessToken</a>.<a href="../interfaces/iaccesstoken.html#tostring">toString</a></p>
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L142">Auth/Jwt.ts:142</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L158">Auth/Jwt.ts:158</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1213,7 +1235,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/eda2de8/src/Auth/Jwt.ts#L87">Auth/Jwt.ts:87</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/69a6a68/src/Auth/Jwt.ts#L87">Auth/Jwt.ts:87</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
