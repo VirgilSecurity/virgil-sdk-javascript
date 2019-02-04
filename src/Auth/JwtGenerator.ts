@@ -57,29 +57,29 @@ export class JwtGenerator {
 	/**
 	 * @see {@link IJwtGeneratorOptions.appId}
 	 */
-	public readonly appId: string;
+	readonly appId: string;
 
 	/**
 	 * @see {@link IJwtGeneratorOptions.apiKey}
 	 */
-	public readonly apiKey: IPrivateKey;
+	readonly apiKey: IPrivateKey;
 
 	/**
 	 * @see {@link IJwtGeneratorOptions.apiKeyId}
 	 */
-	public readonly apiKeyId: string;
+	readonly apiKeyId: string;
 
 	/**
 	 * @see {@link IJwtGeneratorOptions.accessTokenSigner}
 	 */
-	public readonly accessTokenSigner: IAccessTokenSigner;
+	readonly accessTokenSigner: IAccessTokenSigner;
 
 	/**
 	 * @see {@link IJwtGeneratorOptions.millisecondsToLive}
 	 */
-	public readonly millisecondsToLive: number;
+	readonly millisecondsToLive: number;
 
-	public constructor (options: IJwtGeneratorOptions) {
+	constructor (options: IJwtGeneratorOptions) {
 		validateOptions(options);
 
 		this.appId = options.appId;
@@ -99,7 +99,13 @@ export class JwtGenerator {
 	 * @param {IExtraData} ada - Additional data to be encoded in the JWT.
 	 * @returns {Jwt}
 	 */
-	public generateToken(identity: string, ada?: IExtraData) {
+	generateToken(identity: string, ada?: IExtraData) {
+		if (!identity) {
+			throw new TypeError(
+				'Illegal arguments for function `generateToken`. Argument `identity` is required.'
+			);
+		}
+
 		const iat = getUnixTimestamp(new Date());
 		const exp = getUnixTimestamp(new Date().getTime() + this.millisecondsToLive);
 
