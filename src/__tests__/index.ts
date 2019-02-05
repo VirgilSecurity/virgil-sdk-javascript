@@ -7,6 +7,7 @@ import './unit/StorageAdapter.test';
 import './unit/KeyStorage.test';
 import './unit/KeyEntryStorage.test';
 import './unit/PrivateKeyStorage.test';
+import './unit/JwtGenerator.test';
 import './integration/CardManager.test';
 import './integration/CardVerifier.test';
 import './integration/Jwt.test';

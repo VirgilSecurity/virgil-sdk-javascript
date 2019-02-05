@@ -13,6 +13,9 @@ import { ICard } from '../../Cards/ICard';
 
 import { compatData } from './data';
 
+const WELL_KNOWN_IDENTITY = `js_sdk_well_known_identity${Date.now()}@virgil.com`;
+let WELL_KNOWN_CARD_ID:string;
+
 const init = () => {
 	const crypto = new VirgilCrypto();
 	const accessTokenSigner = new VirgilAccessTokenSigner(crypto);
@@ -36,7 +39,7 @@ const init = () => {
 		millisecondsToLive: 1000
 	});
 
-	const accessTokenProvider = new GeneratorJwtProvider(jwtGenerator);
+	const accessTokenProvider = new GeneratorJwtProvider(jwtGenerator, undefined, WELL_KNOWN_IDENTITY);
 
 	const cardVerifier = new VirgilCardVerifier(cardCrypto);
 
@@ -55,9 +58,6 @@ const init = () => {
 		})
 	};
 };
-
-const WELL_KNOWN_IDENTITY = `js_sdk_well_known_identity${Date.now()}@virgil.com`;
-let WELL_KNOWN_CARD_ID:string;
 
 describe('CardManager', function () {
 
@@ -460,10 +460,10 @@ describe('CardManager', function () {
 			const getTokenFn = (context: ITokenContext) => {
 				if (context.forceReload) {
 					// generating good token
-					return Promise.resolve(fixture.jwtGenerator.generateToken(context.identity!));
+					return Promise.resolve(fixture.jwtGenerator.generateToken(WELL_KNOWN_IDENTITY));
 				} else {
 					// generating expired token
-					const expiredToken = fixture.expiredTokenGenerator.generateToken(context.identity!);
+					const expiredToken = fixture.expiredTokenGenerator.generateToken(WELL_KNOWN_IDENTITY);
 					const sleep = new Promise(resolve => setTimeout(resolve, 2000));
 					// sleeping is needed because minimum token lifetime is 1 second
 					return sleep.then(() => expiredToken);
