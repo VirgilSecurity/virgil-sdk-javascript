@@ -10,6 +10,7 @@ import { assert } from '../Lib/assert';
 import { VirgilCardVerificationError } from './errors';
 import { VirgilHttpError, ErrorCode } from '../Client/errors';
 import { SelfSigner } from './constants';
+import { IConnection } from '../Client/Connection';
 
 /**
  * @hidden
@@ -72,6 +73,12 @@ export interface ICardManagerParams {
 	 * @hidden
 	 */
 	readonly apiUrl?: string;
+
+	/**
+	 * IConnection implementation for CardClient. Optional.
+	 * @hidden
+	 */
+	readonly connection?: IConnection;
 }
 
 /**
@@ -89,7 +96,9 @@ export class CardManager {
 
 	public constructor (params: ICardManagerParams) {
 		this.crypto = params.cardCrypto;
-		this.client = new CardClient(params.apiUrl);
+		this.client = params.connection ?
+			new CardClient(params.connection) :
+			new CardClient(params.apiUrl);
 		this.modelSigner = new ModelSigner(params.cardCrypto);
 		this.signCallback = params.signCallback;
 		this.retryOnUnauthorized = params.retryOnUnauthorized;

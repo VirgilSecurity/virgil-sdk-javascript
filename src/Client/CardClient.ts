@@ -33,7 +33,7 @@ export class CardClient {
 		} else if (connection) {
 			this.connection = connection;
 		} else {
-			this.connection = new Connection('https://api.virgilsecurity.com');
+			this.connection = new Connection();
 		}
 	}
 

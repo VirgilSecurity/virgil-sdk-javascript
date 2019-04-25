@@ -6,6 +6,8 @@ export * from './Cards/CardManager';
 export * from './Cards/CardVerifier';
 export * from './Cards/RawSignedModel';
 export * from './Cards/ModelSigner';
+export * from './Client/Connection';
+export * from './Client/VirgilAgent';
 export * from './Storage/adapters/DefaultStorageAdapter';
 export * from './Storage/adapters/errors';
 export * from './Storage/KeyStorage';

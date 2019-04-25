@@ -5,6 +5,7 @@ const typescript = require('rollup-plugin-typescript2');
 const inject = require('rollup-plugin-inject');
 const replace = require('rollup-plugin-replace');
 const { uglify } = require('rollup-plugin-uglify');
+const json = require('rollup-plugin-json');
 const bundleTypes = require('./bundle-types');
 
 function getRollupPlugins (bundleType) {
@@ -17,6 +18,9 @@ function getRollupPlugins (bundleType) {
 			extensions: [ '.ts', '.js' ],
 			preferBuiltins: !isBrowser
 		}),
+		json({
+			include: 'package.json'
+		}),
 
 		commonjs(),
 
@@ -25,7 +29,7 @@ function getRollupPlugins (bundleType) {
 			typescript: require('typescript')
 		}),
 
-		replace({ 'process.browser': JSON.stringify(isBrowser) }),
+		replace({ 'process.env.browser': JSON.stringify(isBrowser) }),
 
 		isBrowser && globals(),
 		isBrowser && inject({
@@ -33,7 +37,6 @@ function getRollupPlugins (bundleType) {
 			exclude: 'node_modules/**',
 			modules: {
 				Buffer: [ 'buffer-es6', 'Buffer' ]
-
 			}
 		}),
 
