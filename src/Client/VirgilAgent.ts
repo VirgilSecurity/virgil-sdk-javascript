@@ -2,7 +2,7 @@ import { OS_LIST } from '../Lib/platform/osList';
 import { BROWSER_LIST } from '../Lib/platform/browserList';
 
 /**
- * Class responsible for tracking basic information which Virgil Product is using, his version,
+ * Class responsible for tracking which Virgil SDK is being used to make requests, its version,
  * browser and platform.
  */
 export class VirgilAgent {
