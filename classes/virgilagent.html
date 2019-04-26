@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IRawSignature | virgil-sdk</title>
+	<title>VirgilAgent | virgil-sdk</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -909,17 +909,20 @@ img { max-width: 100%; }
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
-		<li class="current tsd-kind-interface">
-			<a href="irawsignature.html" class="tsd-kind-icon">IRaw<wbr>Signature</a>
+		<li class="current tsd-kind-class">
+			<a href="virgilagent.html" class="tsd-kind-icon">Virgil<wbr>Agent</a>
 			<ul>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="irawsignature.html#signature" class="tsd-kind-icon">signature</a>
+				<li class=" tsd-kind-constructor tsd-parent-kind-class">
+					<a href="virgilagent.html#constructor" class="tsd-kind-icon">constructor</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="irawsignature.html#signer" class="tsd-kind-icon">signer</a>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="virgilagent.html#value" class="tsd-kind-icon">value</a>
 				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-interface">
-					<a href="irawsignature.html#snapshot" class="tsd-kind-icon">snapshot</a>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="virgilagent.html#getbrowser" class="tsd-kind-icon">get<wbr>Browser</a>
+				</li>
+				<li class=" tsd-kind-method tsd-parent-kind-class">
+					<a href="virgilagent.html#getosname" class="tsd-kind-icon">get<wbr>OsName</a>
 				</li>
 			</ul>
 		</li>
@@ -930,8 +933,8 @@ img { max-width: 100%; }
 		<section class="tsd-panel tsd-comment">
 			<div class="tsd-comment tsd-typography">
 				<div class="lead">
-					<p>JSON-serializable representation of the Virgil Card&#39;s signature as it is
-					stored in the Virgil Cards Service..</p>
+					<p>Class responsible for tracking which Virgil SDK is being used to make requests, its version,
+					browser and platform.</p>
 				</div>
 			</div>
 		</section>
@@ -939,7 +942,7 @@ img { max-width: 100%; }
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">IRawSignature</span>
+					<span class="target">VirgilAgent</span>
 				</li>
 			</ul>
 		</section>
@@ -948,63 +951,135 @@ img { max-width: 100%; }
 			<section class="tsd-panel tsd-index-panel">
 				<div class="tsd-index-content">
 					<section class="tsd-index-section ">
+						<h3>Constructors</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="virgilagent.html#constructor" class="tsd-kind-icon">constructor</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="irawsignature.html#signature" class="tsd-kind-icon">signature</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="irawsignature.html#signer" class="tsd-kind-icon">signer</a></li>
-							<li class="tsd-kind-property tsd-parent-kind-interface"><a href="irawsignature.html#snapshot" class="tsd-kind-icon">snapshot</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="virgilagent.html#value" class="tsd-kind-icon">value</a></li>
+						</ul>
+					</section>
+					<section class="tsd-index-section ">
+						<h3>Methods</h3>
+						<ul class="tsd-index-list">
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="virgilagent.html#getbrowser" class="tsd-kind-icon">get<wbr>Browser</a></li>
+							<li class="tsd-kind-method tsd-parent-kind-class"><a href="virgilagent.html#getosname" class="tsd-kind-icon">get<wbr>OsName</a></li>
 						</ul>
 					</section>
 				</div>
 			</section>
 		</section>
 		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Constructors</h2>
+			<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<a name="constructor" class="tsd-anchor"></a>
+				<h3>constructor</h3>
+				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Virgil<wbr>Agent<span class="tsd-signature-symbol">(</span>product<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, userAgent<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="virgilagent.html" class="tsd-signature-type">VirgilAgent</a></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/48a7c1d/src/Client/VirgilAgent.ts#L23">Client/VirgilAgent.ts:23</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Initializes a new instance of <code>VirgilAgent</code>.</p>
+							</div>
+						</div>
+						<h4 class="tsd-parameters-title">Parameters</h4>
+						<ul class="tsd-parameters">
+							<li>
+								<h5>product: <span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>name of product eg (sdk, brainkey, bpp, keyknox, ratchet, e3kit, purekit)
+										argument of request methods.</p>
+									</div>
+								</div>
+							</li>
+							<li>
+								<h5>version: <span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>version of the product.</p>
+									</div>
+								</div>
+							</li>
+							<li>
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> userAgent: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+							</li>
+						</ul>
+						<h4 class="tsd-returns-title">Returns <a href="virgilagent.html" class="tsd-signature-type">VirgilAgent</a></h4>
+					</li>
+				</ul>
+			</section>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="signature" class="tsd-anchor"></a>
-				<h3>signature</h3>
-				<div class="tsd-signature tsd-kind-icon">signature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="value" class="tsd-anchor"></a>
+				<h3>value</h3>
+				<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/48a7c1d/src/Cards/RawSignedModel.ts#L32">Cards/RawSignedModel.ts:32</a></li>
+						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/48a7c1d/src/Client/VirgilAgent.ts#L10">Client/VirgilAgent.ts:10</a></li>
 					</ul>
 				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The signature bytes as a string in base64 encoding.</p>
-					</div>
-				</div>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="signer" class="tsd-anchor"></a>
-				<h3>signer</h3>
-				<div class="tsd-signature tsd-kind-icon">signer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/48a7c1d/src/Cards/RawSignedModel.ts#L27">Cards/RawSignedModel.ts:27</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The signer identifier.</p>
-					</div>
-				</div>
+		</section>
+		<section class="tsd-panel-group tsd-member-group ">
+			<h2>Methods</h2>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="getbrowser" class="tsd-anchor"></a>
+				<h3>get<wbr>Browser</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>Browser<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/48a7c1d/src/Client/VirgilAgent.ts#L55">Client/VirgilAgent.ts:55</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Detects device browser</p>
+							</div>
+						</div>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						<p>returns browser if detected of &#39;other&#39;.</p>
+					</li>
+				</ul>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-				<a name="snapshot" class="tsd-anchor"></a>
-				<h3><span class="tsd-flag ts-flagOptional">Optional</span> snapshot</h3>
-				<div class="tsd-signature tsd-kind-icon">snapshot<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
-				<aside class="tsd-sources">
-					<ul>
-						<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/48a7c1d/src/Cards/RawSignedModel.ts#L38">Cards/RawSignedModel.ts:38</a></li>
-					</ul>
-				</aside>
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The snapshot of additional attributes associated with the signature
-						as a string in base64 encoding.</p>
-					</div>
-				</div>
+			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<a name="getosname" class="tsd-anchor"></a>
+				<h3>get<wbr>OsName</h3>
+				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<li class="tsd-signature tsd-kind-icon">get<wbr>OsName<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				</ul>
+				<ul class="tsd-descriptions">
+					<li class="tsd-description">
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/48a7c1d/src/Client/VirgilAgent.ts#L45">Client/VirgilAgent.ts:45</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-comment tsd-typography">
+							<div class="lead">
+								<p>Detects device OS</p>
+							</div>
+						</div>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						<p>returns OS if detected or &#39;other&#39;.</p>
+					</li>
+				</ul>
 			</section>
 		</section>
 		<footer>
