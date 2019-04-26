@@ -23,11 +23,11 @@ export class VirgilAgent {
 	}
 
 	/**
-	 * Initializes a new instance of `Connection`.
+	 * Initializes a new instance of `VirgilAgent`.
 	 * @param {string} product - name of product eg (sdk, brainkey, bpp, keyknox, ratchet, e3kit, purekit)
 	 * argument of request methods.
 	 * @param {string} version - version of the product.
-	 * @param {string} userAgent - string with device user agent. Optional
+	 * @param {string} [userAgent] - string with device user agent. Optional
 	 */
 	constructor(
 		product: string,
@@ -43,10 +43,7 @@ export class VirgilAgent {
 	 * @returns {string} returns OS if detected or 'other'.
 	 */
 	getOsName() {
-		const os = OS_LIST.find((os) => {
-			if (os.test.some(condition => condition.test(this.userAgent))) return true;
-			return false;
-		});
+		const os = OS_LIST.find((os) => os.test.some(condition => condition.test(this.userAgent)));
 
 		return os ? os.name : 'other';
 	}
@@ -56,10 +53,9 @@ export class VirgilAgent {
 	 * @returns {string} returns browser if detected of 'other'.
 	 */
 	getBrowser() {
-		const browser = BROWSER_LIST.find((browser) => {
-			if (browser.test.some(condition => condition.test(this.userAgent))) return true;
-			return false;
-		});
+		const browser = BROWSER_LIST.find((browser) =>
+			browser.test.some(condition => condition.test(this.userAgent))
+		);
 
 		return browser ? browser.name : 'other';
 	}
@@ -76,7 +72,7 @@ export class VirgilAgent {
 	 * Detect Node.js.
 	 * @return {boolean} true if detects Node.js.
 	 */
-	private isNodeSdk = (): boolean => !process.env.browser && !!process.platform;
+	private isNode = (): boolean => !process.browser && !!process.platform;
 
 	/**
 	 * Detect Cordova / PhoneGap / Ionic frameworks on a mobile device.
@@ -88,13 +84,13 @@ export class VirgilAgent {
 		/android|ios|iphone|ipod|ipad|iemobile/i.test(this.userAgent);
 
 	/**
-	 * Return infomation for `virgil-agent` header.
+	 * Return information for `virgil-agent` header.
 	 * @return {string} string in format: PRODUCT;FAMILY;PLATFORM;VERSION
 	 */
 	private getHeaderValue() {
 		try {
 			if (this.isReactNative()) return "ReactNative";
-			if (this.isNodeSdk()) return `Node.${process.platform}`;
+			if (this.isNode()) return `Node.${process.platform}`;
 			if (this.isIonic()) return `Ionic.${this.getOsName()}`;
 			return `${this.getBrowser()}.${this.getOsName()}`;
 		} catch (e) {

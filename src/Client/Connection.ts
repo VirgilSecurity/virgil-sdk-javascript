@@ -24,7 +24,7 @@ export class Connection implements IConnection {
 	 * Initializes a new instance of `Connection`.
 	 * @param {string} prefix - `prefix` will be prepended to the `endpoint`
 	 * argument of request methods.
-	 * @param {VirgilAgent} virgilAgent - optional instance of VirgilAgent for products that wraps
+	 * @param {VirgilAgent} [virgilAgent] - optional instance of VirgilAgent for products that wraps
 	 * Virgil SDK
 	 */
 	public constructor (

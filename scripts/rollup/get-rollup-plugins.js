@@ -29,7 +29,7 @@ function getRollupPlugins (bundleType) {
 			typescript: require('typescript')
 		}),
 
-		replace({ 'process.env.browser': JSON.stringify(isBrowser) }),
+		replace({ 'process.browser': JSON.stringify(isBrowser) }),
 
 		isBrowser && globals(),
 		isBrowser && inject({
