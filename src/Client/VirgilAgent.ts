@@ -69,12 +69,6 @@ export class VirgilAgent {
 	}
 
 	/**
-	 * Detect Node.js.
-	 * @return {boolean} true if detects Node.js.
-	 */
-	private isNode = (): boolean => !process.browser && !!process.platform;
-
-	/**
 	 * Detect Cordova / PhoneGap / Ionic frameworks on a mobile device.
 	 * @return {boolean} true if detects Ionic.
 	 */
@@ -89,10 +83,13 @@ export class VirgilAgent {
 	 */
 	private getHeaderValue() {
 		try {
+			if (!process.browser) {
+				const majorVersion = process.version.replace(/\.\d+\.\d+$/, '').replace('v', '');
+				return `Node${majorVersion}/${process.platform}`;
+			}
 			if (this.isReactNative()) return "ReactNative";
-			if (this.isNode()) return `Node.${process.platform}`;
-			if (this.isIonic()) return `Ionic.${this.getOsName()}`;
-			return `${this.getBrowser()}.${this.getOsName()}`;
+			if (this.isIonic()) return `Ionic/${this.getOsName()}`;
+			return `${this.getBrowser()}/${this.getOsName()}`;
 		} catch (e) {
 			return `Unknown`;
 		}
