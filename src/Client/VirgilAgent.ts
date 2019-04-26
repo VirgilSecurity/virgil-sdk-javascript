@@ -83,12 +83,12 @@ export class VirgilAgent {
 	 */
 	private getHeaderValue() {
 		try {
-			if (!process.browser) {
+			if (this.isReactNative()) return "ReactNative";
+			if (this.isIonic()) return `Ionic/${this.getOsName()}`;
+			if (!process.browser && typeof global !== 'undefined') {
 				const majorVersion = process.version.replace(/\.\d+\.\d+$/, '').replace('v', '');
 				return `Node${majorVersion}/${process.platform}`;
 			}
-			if (this.isReactNative()) return "ReactNative";
-			if (this.isIonic()) return `Ionic/${this.getOsName()}`;
 			return `${this.getBrowser()}/${this.getOsName()}`;
 		} catch (e) {
 			return `Unknown`;
