@@ -8,6 +8,7 @@ import './unit/KeyStorage.test';
 import './unit/KeyEntryStorage.test';
 import './unit/PrivateKeyStorage.test';
 import './unit/JwtGenerator.test';
+import './unit/VirgilAgent.test';
 import './integration/CardManager.test';
 import './integration/CardVerifier.test';
 import './integration/Jwt.test';

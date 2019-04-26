@@ -1,4 +1,4 @@
-import { Connection, IConnection } from './Connection';
+import { Connection, IConnection, IProductInfo} from './Connection';
 import { RawSignedModel } from '../Cards/RawSignedModel';
 import { generateErrorFromResponse } from './errors';
 
@@ -27,13 +27,13 @@ export class CardClient {
 	 * @param {IConnection | string} connection - Object implementing the
 	 * {@link IConnection} interface.
 	 */
-	public constructor (connection?: IConnection|string) {
+	public constructor (connection?: IConnection|string, productInfo?: IProductInfo) {
 		if (typeof connection === 'string') {
-			this.connection = new Connection(connection)
+			this.connection = new Connection(connection, productInfo)
 		} else if (connection) {
 			this.connection = connection;
 		} else {
-			this.connection = new Connection('https://api.virgilsecurity.com');
+			this.connection = new Connection('https://api.virgilsecurity.com', productInfo);
 		}
 	}
 

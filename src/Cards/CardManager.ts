@@ -10,6 +10,7 @@ import { assert } from '../Lib/assert';
 import { VirgilCardVerificationError } from './errors';
 import { VirgilHttpError, ErrorCode } from '../Client/errors';
 import { SelfSigner } from './constants';
+import { IProductInfo } from '../Client/Connection';
 
 /**
  * @hidden
@@ -29,6 +30,7 @@ const throwingAccessTokenProvider: IAccessTokenProvider = {
  * Use {@link ModelSigner} to add signatures.
  */
 export type ISignCallback = (model: RawSignedModel) => Promise<RawSignedModel> | RawSignedModel;
+
 
 /**
  * {@link CardManager} initialization options.
@@ -72,6 +74,12 @@ export interface ICardManagerParams {
 	 * @hidden
 	 */
 	readonly apiUrl?: string;
+
+	/**
+	 * Product information for internal statistics about product usage. Optional.
+	 * @hidden
+	 */
+	readonly productInfo?: IProductInfo;
 }
 
 /**
@@ -89,7 +97,7 @@ export class CardManager {
 
 	public constructor (params: ICardManagerParams) {
 		this.crypto = params.cardCrypto;
-		this.client = new CardClient(params.apiUrl);
+		this.client = new CardClient(params.apiUrl, params.productInfo);
 		this.modelSigner = new ModelSigner(params.cardCrypto);
 		this.signCallback = params.signCallback;
 		this.retryOnUnauthorized = params.retryOnUnauthorized;
