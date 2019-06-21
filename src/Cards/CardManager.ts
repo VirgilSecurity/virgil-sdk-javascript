@@ -215,6 +215,26 @@ export class CardManager {
 	}
 
 	/**
+	 * Marks the Virgil Card specified by `cardId` as revoked.  Revoked cards will have `isOutdated`
+	 * property set to `true` when retrieved via {@link CardManager.getCard} method.
+	 * Also revoked cards will be absent in the {@link CardManager.searchCards} result.
+	 * @param {string} cardId - Id of the card to revoke.
+	 * @returns {Promise}
+	 */
+	async revokeCard(cardId: string): Promise<void> {
+		if (!cardId) throw new TypeError('Argument `cardId` is required');
+
+		const tokenContext: ITokenContext = { operation: 'revoke' };
+
+		const accessToken = await this.accessTokenProvider.getToken(tokenContext);
+		await this.tryDo(
+			tokenContext,
+			accessToken,
+			async (token) => await this.client.revokeCard(cardId, token.toString())
+		);
+	}
+
+	/**
 	 * Converts the card in the form of {@link RawSignedModel} object to the
 	 * {@link ICard} object.
 	 *
