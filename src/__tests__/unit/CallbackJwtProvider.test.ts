@@ -39,7 +39,7 @@ describe ('CallbackJwtProvider', () => {
 			const provider = new CallbackJwtProvider(getJwtCallback);
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				expectedJwt
 			);
 		});
@@ -51,7 +51,7 @@ describe ('CallbackJwtProvider', () => {
 			const provider = new CallbackJwtProvider(getJwtCallback);
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				expectedJwt
 			);
 		});
@@ -62,7 +62,7 @@ describe ('CallbackJwtProvider', () => {
 
 			const provider = new CallbackJwtProvider(getJwtCallback);
 
-			return provider.getToken({ operation: 'stub' }).then(actual => {
+			return provider.getToken({ service: 'stub', operation: 'stub' }).then(actual => {
 				const actualJwt = actual as Jwt;
 				assert.deepEqual(actualJwt.header, expectedJwt.header);
 				assert.deepEqual(actualJwt.body, expectedJwt.body);
@@ -76,7 +76,7 @@ describe ('CallbackJwtProvider', () => {
 			const provider = new CallbackJwtProvider(getJwtCallback);
 
 			return assert.isRejected(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				/Wrong JWT/
 			);
 		});

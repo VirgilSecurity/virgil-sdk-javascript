@@ -12,6 +12,8 @@ import { VirgilHttpError, ErrorCode } from '../Client/errors';
 import { SelfSigner } from './constants';
 import { IProductInfo } from '../Client/Connection';
 
+const CARDS_SERVICE__NAME = 'cards';
+
 /**
  * @hidden
  */
@@ -20,6 +22,13 @@ const throwingAccessTokenProvider: IAccessTokenProvider = {
 		'Please set `CardManager.accessTokenProvider` to be able to make requests.'
 	); }
 };
+
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+
+const getCardServiceTokenContext = (context: Omit<ITokenContext, 'service'>): ITokenContext => ({
+	...context,
+	service: CARDS_SERVICE__NAME,
+});
 
 /**
  * User-specified callback function to be called just before publishing
@@ -136,7 +145,11 @@ export class CardManager {
 	 */
 	async publishCard(cardParams: INewCardParams) {
 		validateCardParams(cardParams);
-		const tokenContext: ITokenContext = { identity: cardParams.identity, operation: 'publish' };
+		const tokenContext: ITokenContext = {
+			service: CARDS_SERVICE__NAME,
+			identity: cardParams.identity,
+			operation: 'publish'
+		};
 		const token = await this.accessTokenProvider.getToken(tokenContext);
 		const rawSignedModel = this.generateRawCard(
 			Object.assign({}, cardParams, { identity: token.identity() })
@@ -155,7 +168,7 @@ export class CardManager {
 	async publishRawCard(rawCard: RawSignedModel) {
 		assert(rawCard != null && rawCard.contentSnapshot != null, '`rawCard` should not be empty');
 		const cardDetails = JSON.parse(rawCard.contentSnapshot) as IRawCardContent;
-		const tokenContext: ITokenContext = { identity: cardDetails.identity, operation: 'publish' };
+		const tokenContext = getCardServiceTokenContext({ identity: cardDetails.identity, operation: 'publish' });
 		const token = await this.accessTokenProvider.getToken(tokenContext);
 
 		return this.publishRawSignedModel(rawCard, tokenContext, token);
@@ -167,7 +180,7 @@ export class CardManager {
 	 * @returns {Promise<ICard>}
 	 */
 	async getCard(cardId: string): Promise<ICard> {
-		const tokenContext: ITokenContext = { operation: 'get' };
+		const tokenContext = getCardServiceTokenContext({ operation: 'get' });
 
 		const accessToken = await this.accessTokenProvider.getToken(tokenContext);
 		const cardWithStatus = await this.tryDo(tokenContext, accessToken,
@@ -195,7 +208,7 @@ export class CardManager {
 		const identitiesArr = Array.isArray(identities) ? identities : [identities];
 		if (identitiesArr.length === 0) throw new TypeError('Identities array must not be empty');
 
-		const tokenContext: ITokenContext = { operation: 'search' };
+		const tokenContext = getCardServiceTokenContext({ operation: 'search' });
 		const accessToken = await this.accessTokenProvider.getToken(tokenContext);
 		const rawCards = await this.tryDo(
 			tokenContext,
@@ -224,7 +237,7 @@ export class CardManager {
 	async revokeCard(cardId: string): Promise<void> {
 		if (!cardId) throw new TypeError('Argument `cardId` is required');
 
-		const tokenContext: ITokenContext = { operation: 'revoke' };
+		const tokenContext = getCardServiceTokenContext({ operation: 'revoke' });
 
 		const accessToken = await this.accessTokenProvider.getToken(tokenContext);
 		await this.tryDo(
@@ -351,11 +364,11 @@ export class CardManager {
 				e.errorCode === ErrorCode.AccessTokenExpired &&
 				this.retryOnUnauthorized
 			) {
-				token = await this.accessTokenProvider.getToken({
+				token = await this.accessTokenProvider.getToken(getCardServiceTokenContext({
 					identity: context.identity,
 					operation: context.operation,
 					forceReload: true
-				});
+				}));
 
 				return await func(token);
 			}

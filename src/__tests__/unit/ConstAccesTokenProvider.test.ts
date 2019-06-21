@@ -16,7 +16,7 @@ describe ('ConstAccessTokenProvider', () => {
 			const provider = new ConstAccessTokenProvider(expectedAccessToken);
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				expectedAccessToken
 			);
 		});

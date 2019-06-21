@@ -83,10 +83,10 @@ describe('JWT compatibility', () => {
 				compatData['STC-23.api_key_id'],
 				compatData['STC-23.api_private_key_base64']
 			);
-			const jwt = generator.generateToken('irrelevant');
+			const jwt = generator.generateToken('stub');
 			const callback = sinon.stub().returns(Promise.resolve(jwt.toString()));
 			const provider = new CallbackJwtProvider(callback);
-			const tokenContext: ITokenContext = { identity: 'irrelevant', operation: 'irrelevant' };
+			const tokenContext: ITokenContext = { service: 'stub', identity: 'stub', operation: 'stub' };
 
 			return assert.isFulfilled(
 				provider.getToken(tokenContext)
@@ -101,7 +101,7 @@ describe('JWT compatibility', () => {
 		it ('rejects when receives invalid token from callback (STC-24)', () => {
 			const callback = sinon.stub().returns(Promise.resolve('invalid-token'));
 			const provider = new CallbackJwtProvider(callback);
-			const tokenContext: ITokenContext = { identity: 'irrelevant', operation: 'irrelevant' };
+			const tokenContext: ITokenContext = { service: 'stub', identity: 'stub', operation: 'stub' };
 
 
 			return assert.isRejected(
@@ -118,9 +118,9 @@ describe('JWT compatibility', () => {
 				compatData['STC-23.api_key_id'],
 				compatData['STC-23.api_private_key_base64']
 			);
-			const jwt = generator.generateToken('irrelevant');
+			const jwt = generator.generateToken('stub');
 			const provider = new ConstAccessTokenProvider(jwt);
-			const tokenContext: ITokenContext = { identity: 'irrelevant', operation: 'irrelevant' };
+			const tokenContext: ITokenContext = { service: 'stub', identity: 'stub', operation: 'stub' };
 
 			return assert.isFulfilled(
 				provider.getToken(tokenContext)

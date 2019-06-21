@@ -19,7 +19,7 @@ describe ('GeneratorJwtProvider', () => {
 			const provider = new GeneratorJwtProvider(generatorStub as any);
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				expectedAccessToken
 			);
 		});
@@ -32,7 +32,7 @@ describe ('GeneratorJwtProvider', () => {
 			const provider = new GeneratorJwtProvider(generatorStub as any);
 
 			return assert.isFulfilled(
-				provider.getToken({ operation: 'stub', identity: 'fake_identity' })
+				provider.getToken({ service: 'stub', operation: 'stub', identity: 'fake_identity' })
 					.then(() => assert.calledWith(generatorStub.generateToken, 'fake_identity'))
 			);
 		});
@@ -49,7 +49,7 @@ describe ('GeneratorJwtProvider', () => {
 			);
 
 			return assert.isFulfilled(
-				provider.getToken({ operation: 'stub' })
+				provider.getToken({ service: 'stub', operation: 'stub' })
 					.then(() => assert.calledWith(generatorStub.generateToken, 'fake_default_identity'))
 			);
 		});
@@ -62,7 +62,7 @@ describe ('GeneratorJwtProvider', () => {
 			const provider = new GeneratorJwtProvider(generatorStub as any); // no defaultIdentity
 
 			return assert.isFulfilled(
-				provider.getToken({ operation: 'stub' }) // no context identity
+				provider.getToken({ service: 'stub', operation: 'stub' }) // no context identity
 					.then(() => assert.calledWith(generatorStub.generateToken, ''))
 			);
 		});
@@ -75,7 +75,7 @@ describe ('GeneratorJwtProvider', () => {
 			const provider = new GeneratorJwtProvider(generatorStub as any, { additional: 'data' });
 
 			return assert.isFulfilled(
-				provider.getToken({ operation: 'stub', identity: 'fake_identity' })
+				provider.getToken({ service: 'stub', operation: 'stub', identity: 'fake_identity' })
 					.then(() => assert.calledWith(
 							generatorStub.generateToken,
 							'fake_identity',

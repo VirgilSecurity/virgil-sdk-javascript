@@ -39,7 +39,7 @@ describe ('CachingJwtProvider', () => {
 			const provider = new CachingJwtProvider(getJwtCallback, initialJwt);
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				initialJwt
 			);
 		});
@@ -51,7 +51,7 @@ describe ('CachingJwtProvider', () => {
 			const provider = new CachingJwtProvider(getJwtCallback, initialJwt.toString());
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				initialJwt
 			);
 		});
@@ -83,7 +83,7 @@ describe ('CachingJwtProvider', () => {
 			const provider = new CachingJwtProvider(getJwtCallback);
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				expectedJwt
 			);
 		});
@@ -95,7 +95,7 @@ describe ('CachingJwtProvider', () => {
 			const provider = new CachingJwtProvider(getJwtCallback);
 
 			return assert.eventually.deepEqual(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				expectedJwt
 			);
 		});
@@ -107,7 +107,7 @@ describe ('CachingJwtProvider', () => {
 			return assert.eventually.equal(
 				Promise.all(
 					new Array(10).fill(0).map(() =>
-						provider.getToken({ operation: 'stub' })
+						provider.getToken({ service: 'stub', operation: 'stub' })
 					)
 				).then(() => getJwtCallback.callCount),
 				1,
@@ -126,8 +126,8 @@ describe ('CachingJwtProvider', () => {
 			const provider = new CachingJwtProvider(getJwtCallback);
 
 			return assert.eventually.equal(
-				provider.getToken({ operation: 'stub' })
-					.then(() => provider.getToken({ operation: 'stub' }))
+				provider.getToken({ service: 'stub', operation: 'stub' })
+					.then(() => provider.getToken({ service: 'stub', operation: 'stub' }))
 					.then(() => getJwtCallback.callCount),
 				2,
 				'the user-provided callback is called twice'
@@ -140,7 +140,7 @@ describe ('CachingJwtProvider', () => {
 
 			const provider = new CachingJwtProvider(getJwtCallback);
 
-			return provider.getToken({ operation: 'stub' }).then(actual => {
+			return provider.getToken({ service: 'stub', operation: 'stub' }).then(actual => {
 				const actualJwt = actual as Jwt;
 				assert.deepEqual(actualJwt.header, expectedJwt.header);
 				assert.deepEqual(actualJwt.body, expectedJwt.body);
@@ -154,7 +154,7 @@ describe ('CachingJwtProvider', () => {
 			const provider = new CachingJwtProvider(getJwtCallback);
 
 			return assert.isRejected(
-				provider.getToken({ operation: 'stub' }),
+				provider.getToken({ service: 'stub', operation: 'stub' }),
 				/Wrong JWT/
 			);
 		});
@@ -167,17 +167,17 @@ describe ('CachingJwtProvider', () => {
 
 			const provider = new CachingJwtProvider(getJwtCallback, initialToken);
 
-			return provider.getToken({ operation: 'stub' })
+			return provider.getToken({ service: 'stub', operation: 'stub' })
 			.then(token => {
 				assert.deepEqual(token, initialToken);
 				return sleep(3000);
 			})
-			.then(() => provider.getToken({ operation: 'stub' }))
+			.then(() => provider.getToken({ service: 'stub', operation: 'stub' }))
 			.then(token => {
 				assert.deepEqual(token, initialToken);
 				return sleep(9000);
 			})
-			.then(() => provider.getToken({ operation: 'stub' }))
+			.then(() => provider.getToken({ service: 'stub', operation: 'stub' }))
 			.then(token => {
 				assert.deepEqual(token, freshToken);
 				assert.equal(getJwtCallback.callCount, 1);
