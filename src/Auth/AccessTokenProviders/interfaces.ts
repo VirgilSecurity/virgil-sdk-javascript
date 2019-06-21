@@ -24,6 +24,11 @@ export interface IAccessToken {
  */
 export interface ITokenContext {
 	/**
+	 * Name of the Service requested.
+	 */
+	readonly service: string;
+
+	/**
 	 * Identity of the user performing the operation that
 	 * requires Access Token. May be `undefined`.
 	 */

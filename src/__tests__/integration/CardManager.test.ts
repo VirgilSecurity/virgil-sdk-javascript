@@ -16,7 +16,7 @@ import { compatData } from './data';
 const WELL_KNOWN_IDENTITY = `js_sdk_well_known_identity${Date.now()}@virgil.com`;
 let WELL_KNOWN_CARD_ID:string;
 
-const init = () => {
+const init = (identity: string = WELL_KNOWN_IDENTITY) => {
 	const crypto = new VirgilCrypto();
 	const accessTokenSigner = new VirgilAccessTokenSigner(crypto);
 	const cardCrypto = new VirgilCardCrypto(crypto);
@@ -39,7 +39,7 @@ const init = () => {
 		millisecondsToLive: 1000
 	});
 
-	const accessTokenProvider = new GeneratorJwtProvider(jwtGenerator, undefined, WELL_KNOWN_IDENTITY);
+	const accessTokenProvider = new GeneratorJwtProvider(jwtGenerator, undefined, identity);
 
 	const cardVerifier = new VirgilCardVerifier(cardCrypto);
 
@@ -495,6 +495,56 @@ describe('CardManager', function () {
 					identity: `user_${Date.now()}@virgil.com`
 				})
 			);
+		});
+	});
+
+	describe('card revocation', function () {
+		let cardManager: CardManager;
+		let crypto: VirgilCrypto;
+		let currentIdentity: string;
+
+		const publishCard = (identity: string) => {
+			const { privateKey, publicKey } = crypto.generateKeys();
+
+			return cardManager.publishCard({
+				privateKey,
+				publicKey,
+				identity,
+			});
+		}
+
+		beforeEach(() => {
+			currentIdentity = `deleted_user_${Date.now()}@virgil.com`;
+			const fixture = init(currentIdentity);
+			cardManager = fixture.cardManager;
+			crypto = fixture.crypto;
+			fixture.cardVerifier.verifyVirgilSignature = false;
+		});
+
+		it('can revoke card', async () => {
+			const card = await publishCard(currentIdentity);
+
+			const result = await cardManager.revokeCard(card.id);
+
+			assert.isUndefined(result);
+		});
+
+		it('marks revoked card as outdated', async () => {
+			const card = await publishCard(currentIdentity);
+			await cardManager.revokeCard(card.id);
+
+			const revokedCard = await cardManager.getCard(card.id);
+
+			assert.isOk(revokedCard);
+			assert.isTrue(revokedCard.isOutdated);
+		});
+
+		it('does not include revoked card in search results', async () => {
+			const card = await publishCard(currentIdentity);
+			await cardManager.revokeCard(card.id);
+
+			const searchResult = await cardManager.searchCards(currentIdentity);
+			assert.equal(searchResult.length, 0);
 		});
 	});
 });

@@ -27,7 +27,7 @@ type DbInfo = {
 	db: IDBDatabase|null,
 	name: string,
 	version?: number,
-	storeName?: string;
+	storeName: string;
 };
 
 const dbContexts: { [name: string]: DbContext } = {};
@@ -455,7 +455,7 @@ function _getConnection(dbInfo: DbInfo, upgradeNeeded: boolean): Promise<IDBData
 			}
 		}
 
-		const dbArgs = [dbInfo.name];
+		const dbArgs: [string, (number|undefined)?] = [dbInfo.name];
 
 		if (upgradeNeeded) {
 			dbArgs.push(String(dbInfo.version));
