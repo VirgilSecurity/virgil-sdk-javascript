@@ -1,6 +1,6 @@
 import { KeyEntryStorage, PrivateKeyStorage } from '../..';
 import { SinonStubbedInstance } from 'sinon';
-import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
+import { IPrivateKeyExporter } from '../../types';
 import { IKeyEntryStorage } from '../../Storage/KeyEntryStorage/IKeyEntryStorage';
 import { PrivateKeyExistsError } from '../../Storage/errors';
 

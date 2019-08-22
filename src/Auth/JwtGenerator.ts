@@ -1,5 +1,4 @@
-import { IPrivateKey } from '../CryptoApi/IPrivateKey';
-import { IAccessTokenSigner } from '../CryptoApi/IAccessTokenSigner';
+import { IPrivateKey, IAccessTokenSigner } from '../types';
 import { IExtraData } from '../Cards/ICard';
 import {
 	IJwtBody,
@@ -125,9 +124,12 @@ export class JwtGenerator {
 		};
 
 		const unsignedJwt = new Jwt(header, body);
-		const signature = this.accessTokenSigner.generateTokenSignature(unsignedJwt.unsignedData, this.apiKey);
+		const signature = this.accessTokenSigner.generateTokenSignature(
+			Buffer.from(unsignedJwt.unsignedData, 'utf8'),
+			this.apiKey
+		);
 
-		return new Jwt(header, body, signature.toString('base64'));
+		return new Jwt(header, body, Buffer.from(signature).toString('base64'));
 
 	}
 }

@@ -1,6 +1,6 @@
 /// <reference path="../declarations.d.ts" />
 
-import { VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import {
 	CallbackJwtProvider,
 	ConstAccessTokenProvider,
@@ -33,6 +33,10 @@ const initJwtGenerator = (appId: string, apiKeyId: string, apiKeyPrivateKey: str
 };
 
 describe('JWT compatibility', () => {
+	before(async () => {
+		await initCrypto();
+	});
+
 	describe('JwtVerifier', () => {
 		it('verifies imported JWT (STC-22)', () => {
 			const verifier = initJwtVerifier(

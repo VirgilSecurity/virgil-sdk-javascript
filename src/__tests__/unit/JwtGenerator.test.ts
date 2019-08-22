@@ -1,14 +1,20 @@
 /// <reference path="../declarations.d.ts" />
 
-import { VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtGenerator } from '../../Auth/JwtGenerator';
 import { JwtContentType, VirgilContentType, IssuerPrefix, SubjectPrefix } from '../../Auth/jwt-constants';
 import { getUnixTimestamp } from '../../Lib/timestamp';
 
-const virgilCrypto = new VirgilCrypto();
-const accessTokenSigner = new VirgilAccessTokenSigner(virgilCrypto);
-
 describe('JwtGenerator', () => {
+	let virgilCrypto: VirgilCrypto;
+	let accessTokenSigner: VirgilAccessTokenSigner;
+
+	before(async () => {
+		await initCrypto();
+		virgilCrypto = new VirgilCrypto();
+		accessTokenSigner = new VirgilAccessTokenSigner(virgilCrypto);
+	});
+
 	describe('constructor', () => {
 		it('throws when options are not provided', () => {
 			assert.throws(() => {
@@ -100,7 +106,7 @@ describe('JwtGenerator', () => {
 			const keypair = virgilCrypto.generateKeys();
 			const generator = new JwtGenerator({
 				apiKey: keypair.privateKey,
-				apiKeyId: keypair.privateKey.identifier.toString('base64'),
+				apiKeyId: Buffer.from(keypair.privateKey.identifier).toString('base64'),
 				appId: 'my_app_id',
 				accessTokenSigner
 			});
@@ -114,7 +120,7 @@ describe('JwtGenerator', () => {
 			assert.isDefined(token.signature, 'JWT has signature');
 
 			assert.equal(token.header.alg, accessTokenSigner.getAlgorithm(), 'algorithm is correct');
-			assert.equal(token.header.kid, keypair.privateKey.identifier.toString('base64'), 'key id is correct');
+			assert.equal(token.header.kid, Buffer.from(keypair.privateKey.identifier).toString('base64'), 'key id is correct');
 			assert.equal(token.header.typ, JwtContentType, 'token type is correct');
 			assert.equal(token.header.cty, VirgilContentType, 'content type is correct');
 

@@ -1,4 +1,4 @@
-import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { RawSignedModel, IRawSignedModelJson } from '../../Cards/RawSignedModel';
 import { parseRawSignedModel } from '../../Cards/CardUtils';
 
@@ -7,6 +7,9 @@ import { compatData } from './data';
 const initCardCrypto = () => new VirgilCardCrypto(new VirgilCrypto());
 
 describe('RawSignedModel', () => {
+	before(async () => {
+		await initCrypto();
+	});
 
 	it('imports raw signed model from string (STC-1)', () => {
 		const rawSignedModelString = compatData['STC-1.as_string'];
@@ -24,7 +27,7 @@ describe('RawSignedModel', () => {
 		assert.isOk(parsed, 'parsed successfully');
 		assert.equal(parsed.identity, 'test');
 		assert.equal(
-			cardCrypto.exportPublicKey(parsed.publicKey as any).toString('base64'),
+			Buffer.from(cardCrypto.exportPublicKey(parsed.publicKey)).toString('base64'),
 			'MCowBQYDK2VwAyEA6d9bQQFuEnU8vSmx9fDo0Wxec42JdNg4VR4FOr4/BUk='
 		);
 		assert.equal(parsed.version, '5.0');
@@ -60,7 +63,7 @@ describe('RawSignedModel', () => {
 		assert.isOk(parsed, 'parsed successfully');
 		assert.equal(parsed.identity, 'test');
 		assert.equal(
-			cardCrypto.exportPublicKey(parsed.publicKey as any).toString('base64'),
+			Buffer.from(cardCrypto.exportPublicKey(parsed.publicKey)).toString('base64'),
 			'MCowBQYDK2VwAyEA6d9bQQFuEnU8vSmx9fDo0Wxec42JdNg4VR4FOr4/BUk='
 		);
 		assert.equal(parsed.version, '5.0');

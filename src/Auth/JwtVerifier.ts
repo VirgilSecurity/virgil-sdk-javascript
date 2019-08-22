@@ -1,5 +1,4 @@
-import { IAccessTokenSigner } from '../CryptoApi/IAccessTokenSigner';
-import { IPublicKey } from '../CryptoApi/IPublicKey';
+import { IPublicKey, IAccessTokenSigner } from '../types';
 import { Jwt } from './Jwt';
 import { JwtContentType, VirgilContentType } from './jwt-constants';
 import { assert } from '../Lib/assert';
@@ -66,8 +65,8 @@ export class JwtVerifier {
 		}
 
 		return this.accessTokenSigner.verifyTokenSignature(
-			token.unsignedData,
-			token.signature!,
+			Buffer.from(token.unsignedData, 'utf8'),
+			Buffer.from(token.signature!, 'base64'),
 			this.apiPublicKey
 		);
 	}

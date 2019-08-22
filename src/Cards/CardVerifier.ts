@@ -1,6 +1,5 @@
 import { ICard } from './ICard';
-import { ICardCrypto } from '../CryptoApi/ICardCrypto';
-import { IPublicKey } from '../CryptoApi/IPublicKey';
+import { IPublicKey, ICardCrypto } from '../types';
 import { SelfSigner, VirgilSigner } from './constants';
 
 /**
@@ -107,7 +106,7 @@ export class VirgilCardVerifier implements ICardVerifier {
 		this.verifySelfSignature = params.verifySelfSignature!;
 		this.verifyVirgilSignature = params.verifyVirgilSignature!;
 		this.whitelists = params.whitelists!;
-		this.virgilCardsPublicKey = crypto.importPublicKey(VIRGIL_CARDS_PUBKEY_BASE64);
+		this.virgilCardsPublicKey = crypto.importPublicKey(Buffer.from(VIRGIL_CARDS_PUBKEY_BASE64, 'base64'));
 	}
 
 	/**
@@ -167,7 +166,7 @@ export class VirgilCardVerifier implements ICardVerifier {
 	}
 
 	private getPublicKey(signerPublicKeyBase64: string): IPublicKey {
-		return this.crypto.importPublicKey(signerPublicKeyBase64);
+		return this.crypto.importPublicKey(Buffer.from(signerPublicKeyBase64, 'base64'));
 	}
 
 	private validateSignerSignature(card: ICard, signerPublicKey: IPublicKey, signer: string): boolean {
@@ -179,6 +178,10 @@ export class VirgilCardVerifier implements ICardVerifier {
 			? card.contentSnapshot
 			: card.contentSnapshot + signature.snapshot;
 
-		return this.crypto.verifySignature(extendedSnapshot, signature.signature, signerPublicKey);
+		return this.crypto.verifySignature(
+			Buffer.from(extendedSnapshot, 'utf8'),
+			Buffer.from(signature.signature, 'base64'),
+			signerPublicKey
+		);
 	}
 }

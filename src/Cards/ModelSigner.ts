@@ -1,6 +1,5 @@
 import { RawSignedModel } from './RawSignedModel';
-import { IPrivateKey } from '../CryptoApi/IPrivateKey';
-import { ICardCrypto } from '../CryptoApi/ICardCrypto';
+import { IPrivateKey, ICardCrypto } from '../types';
 import { IExtraData } from './ICard';
 import { SelfSigner } from './constants';
 
@@ -64,11 +63,11 @@ export class ModelSigner {
 			? model.contentSnapshot + extraSnapshot
 			: model.contentSnapshot;
 
-		const signature = this.crypto.generateSignature(signedSnapshot, signerPrivateKey);
+		const signature = this.crypto.generateSignature(Buffer.from(signedSnapshot, 'utf8'), signerPrivateKey);
 
 		model.signatures.push({
 			signer,
-			signature: signature.toString('base64'),
+			signature: Buffer.from(signature).toString('base64'),
 			snapshot: extraSnapshot
 		});
 	}
