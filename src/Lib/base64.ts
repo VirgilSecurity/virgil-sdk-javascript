@@ -1,3 +1,5 @@
+import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
+
 const BASE_64 = 'base64';
 
 export function base64Decode(input: string): Buffer;
@@ -14,9 +16,9 @@ export function base64Decode(input: string, outputEncoding: string): string;
  */
 export function base64Decode(input: string, outputEncoding?: string): Buffer|string {
 	if (outputEncoding) {
-		return Buffer.from(input, BASE_64).toString(outputEncoding);
+		return NodeBuffer.from(input, BASE_64).toString(outputEncoding);
 	}
-	return Buffer.from(input, BASE_64);
+	return NodeBuffer.from(input, BASE_64);
 }
 
 /**
@@ -31,12 +33,12 @@ export function base64Decode(input: string, outputEncoding?: string): Buffer|str
 export function base64Encode(input: Buffer|string, inputEncoding?: string): string {
 	let buffer: Buffer;
 
-	if (Buffer.isBuffer(input)) {
+	if (NodeBuffer.isBuffer(input)) {
 		buffer = input;
-	} else if (inputEncoding && Buffer.isEncoding(inputEncoding)) {
-		buffer = Buffer.from(input, inputEncoding)
+	} else if (inputEncoding && NodeBuffer.isEncoding(inputEncoding)) {
+		buffer = NodeBuffer.from(input, inputEncoding);
 	} else {
-		buffer = Buffer.from(input);
+		buffer = NodeBuffer.from(input);
 	}
 
 	return buffer.toString(BASE_64);

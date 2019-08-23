@@ -1,3 +1,5 @@
+import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
+
 import { isIndexedDbValid } from './indexedDb/isIndexedDbValid';
 import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
 import { StorageEntryAlreadyExistsError } from './errors';
@@ -127,7 +129,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 							}
 
 							const arrayBuffer = req.result;
-							const buffer = Buffer.from(arrayBuffer);
+							const buffer = NodeBuffer.from(arrayBuffer);
 							resolve(buffer);
 						};
 
@@ -306,7 +308,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 							if (!cursor) {
 								resolve(entries);
 							} else {
-								entries.push(Buffer.from(cursor.value));
+								entries.push(NodeBuffer.from(cursor.value));
 								cursor.continue();
 							}
 						};
@@ -656,7 +658,7 @@ function toArrayBuffer (buf: Buffer): ArrayBuffer {
 		}
 	}
 
-	if (Buffer.isBuffer(buf)) {
+	if (NodeBuffer.isBuffer(buf)) {
 		// This is the slow version that will work with any Buffer
 		// implementation (even in old browsers)
 		const arrayCopy = new Uint8Array(buf.length);
@@ -669,4 +671,3 @@ function toArrayBuffer (buf: Buffer): ArrayBuffer {
 		throw new Error('Argument must be a Buffer');
 	}
 }
-

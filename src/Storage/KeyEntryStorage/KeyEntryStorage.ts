@@ -1,3 +1,5 @@
+import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
+
 import {
 	IKeyEntry,
 	IKeyEntryStorage,
@@ -143,7 +145,7 @@ function serializeKeyEntry (keyEntry: IKeyEntry): Buffer {
 		value: value.toString('base64')
 	};
 
-	return Buffer.from(JSON.stringify(serializableEntry), 'utf8');
+	return NodeBuffer.from(JSON.stringify(serializableEntry), 'utf8');
 }
 
 function deserializeKeyEntry (data: Buffer): IKeyEntry {
@@ -153,7 +155,7 @@ function deserializeKeyEntry (data: Buffer): IKeyEntry {
 			dataStr,
 			(key, value) => {
 				if (key === VALUE_KEY) {
-					return Buffer.from(value, 'base64');
+					return NodeBuffer.from(value, 'base64');
 				}
 
 				if (key === CREATION_DATE_KEY || key === MODIFICATION_DATE_KEY) {

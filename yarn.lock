@@ -193,6 +193,13 @@
   dependencies:
     buffer "^5.2.1"
 
+"@virgilsecurity/data-utils@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@virgilsecurity/data-utils/-/data-utils-0.1.1.tgz#715cd0d519907ccb2efdd4f3b847ad0f5205763e"
+  integrity sha512-RB9FH+hmnN79h9Mw4BRx2RiswJX+WfGGOTYdzcd8CrSMY6xtD1g7t/9K4Y1E9PvKAEz0FuOkKVo6wjM7nFwdUg==
+  dependencies:
+    buffer "^5.2.1"
+
 "@virgilsecurity/sdk-crypto@^0.4.0":
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/@virgilsecurity/sdk-crypto/-/sdk-crypto-0.4.0.tgz#c49550ad1baa95e4ebe9a1e4a1cc1596d1f0bce9"
