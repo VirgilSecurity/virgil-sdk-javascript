@@ -1,3 +1,6 @@
+import { dataToUint8Array } from '@virgilsecurity/data-utils';
+
+import { Data } from '../types';
 import StorageAdapter from './adapters/FileSystemStorageAdapter';
 import { IStorageAdapter, IStorageAdapterConfig } from './adapters/IStorageAdapter';
 import { PrivateKeyExistsError } from './errors';
@@ -54,10 +57,10 @@ export class KeyStorage {
 	/**
 	 * Loads the private key data by the given name.
 	 * @param {string} name - Name of key data to load.
-	 * @returns {Promise<Buffer | null>} - Private key data as Buffer,
+	 * @returns {Promise<Uint8Array | null>} - Private key data as Uint8Array,
 	 * or null if there is no data for the given name.
 	 */
-	load(name: string): Promise<Buffer | null> {
+	load(name: string): Promise<Uint8Array | null> {
 		validateName(name);
 		return this.adapter.load(name);
 	}
@@ -75,13 +78,13 @@ export class KeyStorage {
 	/**
 	 * Persists the private key data under the given name.
 	 * @param {string} name - Name of the key data.
-	 * @param {Buffer} data - The key data.
+	 * @param {Data} data - The key data.
 	 * @returns {Promise<void>}
 	 */
-	save(name: string, data: Buffer): Promise<void> {
+	save(name: string, data: Data): Promise<void> {
 		validateName(name);
-		validateData(data);
-		return this.adapter.store(name, data)
+		const myData = dataToUint8Array(data, 'base64');
+		return this.adapter.store(name, myData)
 			.catch(error => {
 				if (error && error.code === 'EEXIST') {
 					return Promise.reject(new PrivateKeyExistsError());
@@ -112,4 +115,3 @@ function validateName (name: string) {
 function validateData (data: Buffer) {
 	if (!data) throw new TypeError('Argument `data` is required.');
 }
-

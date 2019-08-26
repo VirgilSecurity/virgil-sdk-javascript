@@ -115,7 +115,7 @@ describe ('KeyEntryStorage', () => {
 			return storage.load('one').then(loadedEntry => {
 				assert.isNotNull(loadedEntry);
 				assert.equal(loadedEntry!.name, 'one');
-				assert.isTrue(loadedEntry!.value.equals(Buffer.from('one')));
+				assert.isTrue(Buffer.from(loadedEntry!.value).equals(Buffer.from('one')));
 			});
 		});
 
@@ -136,7 +136,7 @@ describe ('KeyEntryStorage', () => {
 				Buffer.from('{"name":"three","value":"dGhyZWU="}') // "dGhyZWU=" === base64("three")
 			]);
 
-			const expectedEntries = [
+			const expectedEntries: { name: string; value: Uint8Array; }[] = [
 				{ name: 'one', value: Buffer.from('one') },
 				{ name: 'two', value: Buffer.from('two') },
 				{ name: 'three', value: Buffer.from('three') },

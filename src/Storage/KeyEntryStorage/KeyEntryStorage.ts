@@ -1,11 +1,13 @@
-import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
+import { Buffer as NodeBuffer, dataToUint8Array, toBuffer } from '@virgilsecurity/data-utils';
 
+import { Data } from '../../types';
 import {
 	IKeyEntry,
 	IKeyEntryStorage,
 	IKeyEntryStorageConfig,
 	ISaveKeyEntryParams,
-	IUpdateKeyEntryParams
+	IUpdateKeyEntryParams,
+	KeyEntryMeta
 } from './IKeyEntryStorage';
 import { DefaultStorageAdapter } from '../adapters/DefaultStorageAdapter';
 import { IStorageAdapter, IStorageAdapterConfig } from '../adapters/IStorageAdapter';
@@ -71,13 +73,15 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 	/**
 	 * @inheritDoc
 	 */
-	save({ name, value, meta }: ISaveKeyEntryParams): Promise<IKeyEntry> {
+	save({ name, value, meta }: { name: string; value: Data; meta?: KeyEntryMeta; }): Promise<IKeyEntry> {
 		validateNameProperty(name);
 		validateValueProperty(value);
 
+		const myValue = dataToUint8Array(value, 'base64');
+
 		const keyEntry = {
 			name: name,
-			value: value,
+			value: myValue,
 			meta: meta,
 			creationDate: new Date(),
 			modificationDate: new Date()
@@ -105,7 +109,7 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 	/**
 	 * @inheritDoc
 	 */
-	update ({ name, value, meta }: IUpdateKeyEntryParams): Promise<IKeyEntry> {
+	update ({ name, value, meta }: { name: string; value?: Data; meta?: KeyEntryMeta; }): Promise<IKeyEntry> {
 		validateNameProperty(name);
 		if (!(value || meta)) {
 			throw new TypeError(
@@ -121,7 +125,7 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 
 				const entry = deserializeKeyEntry(data);
 				const updatedEntry = Object.assign(entry,{
-					value: value || entry.value,
+					value: value ? dataToUint8Array(value, 'base64') : entry.value,
 					meta: meta || entry.meta,
 					modificationDate: new Date()
 				});
@@ -138,18 +142,18 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 	}
 }
 
-function serializeKeyEntry (keyEntry: IKeyEntry): Buffer {
+function serializeKeyEntry (keyEntry: IKeyEntry) {
 	const { value, ...rest } = keyEntry;
 	const serializableEntry = {
 		...rest,
-		value: value.toString('base64')
+		value: toBuffer(keyEntry.value).toString('base64')
 	};
 
 	return NodeBuffer.from(JSON.stringify(serializableEntry), 'utf8');
 }
 
-function deserializeKeyEntry (data: Buffer): IKeyEntry {
-	const dataStr = data.toString('utf8');
+function deserializeKeyEntry (data: Uint8Array): IKeyEntry {
+	const dataStr = toBuffer(data).toString('utf8');
 	try {
 		return JSON.parse(
 			dataStr,
