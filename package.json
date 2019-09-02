@@ -76,8 +76,10 @@
     "virgil-crypto": "next"
   },
   "dependencies": {
-    "@virgilsecurity/crypto-types": "^0.1.0",
-    "@virgilsecurity/data-utils": "^0.1.1",
+    "@types/base-64": "^0.1.3",
+    "@virgilsecurity/crypto-types": "^0.1.3",
+    "@virgilsecurity/data-utils": "^0.1.4",
+    "base-64": "^0.1.0",
     "fetch-ponyfill": "^6.0.2",
     "mkdirp": "^0.5.1",
     "rimraf": "^2.6.2"

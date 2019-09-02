@@ -1,4 +1,4 @@
-import { Buffer as NodeBuffer, dataToUint8Array, toBuffer } from '@virgilsecurity/data-utils';
+import { NodeBuffer, dataToUint8Array, toBuffer } from '@virgilsecurity/data-utils';
 
 import { Data } from '../../types';
 import {

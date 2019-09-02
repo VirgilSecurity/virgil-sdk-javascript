@@ -53,7 +53,7 @@ export class RawSignedModel {
 	 * @returns {RawSignedModel}
 	 */
 	public static fromString(str: string) {
-		const jsonStr = base64Decode(str, 'utf8');
+		const jsonStr = base64Decode(str);
 		let obj;
 		try {
 			obj = JSON.parse(jsonStr);
@@ -70,13 +70,13 @@ export class RawSignedModel {
 	 * @returns {RawSignedModel}
 	 */
 	public static fromJson(json: IRawSignedModelJson) {
-		const contentSnapshotUtf8 = base64Decode(json.content_snapshot, 'utf8');
+		const contentSnapshotUtf8 = base64Decode(json.content_snapshot);
 		const signaturesWithUtf8Snapshots = (json.signatures || []).map(({ signer, signature, snapshot }) => {
 			if (snapshot) {
 				return {
 					signer,
 					signature,
-					snapshot: base64Decode(snapshot, 'utf8')
+					snapshot: base64Decode(snapshot)
 				}
 			}
 
@@ -114,13 +114,13 @@ export class RawSignedModel {
 	 */
 	toJson(): IRawSignedModelJson {
 		return {
-			content_snapshot: base64Encode(this.contentSnapshot, 'utf8'),
+			content_snapshot: base64Encode(this.contentSnapshot),
 			signatures: this.signatures.map(({ signer, signature, snapshot }) => {
 				if (snapshot) {
 					return {
 						signer,
 						signature,
-						snapshot: base64Encode(snapshot, 'utf8')
+						snapshot: base64Encode(snapshot)
 					}
 				}
 				return { signer, signature };
@@ -133,7 +133,7 @@ export class RawSignedModel {
 	 * @returns {string}
 	 */
 	toString() {
-		return base64Encode(JSON.stringify(this), 'utf8');
+		return base64Encode(JSON.stringify(this));
 	}
 
 	/**

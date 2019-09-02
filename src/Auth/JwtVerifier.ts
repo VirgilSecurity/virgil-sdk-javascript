@@ -1,5 +1,3 @@
-import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
-
 import { IPublicKey, IAccessTokenSigner } from '../types';
 import { Jwt } from './Jwt';
 import { JwtContentType, VirgilContentType } from './jwt-constants';
@@ -67,8 +65,8 @@ export class JwtVerifier {
 		}
 
 		return this.accessTokenSigner.verifyTokenSignature(
-			NodeBuffer.from(token.unsignedData, 'utf8'),
-			NodeBuffer.from(token.signature!, 'base64'),
+			{ value: token.unsignedData, encoding: 'utf8' },
+			{ value: token.signature!, encoding: 'base64' },
 			this.apiPublicKey
 		);
 	}

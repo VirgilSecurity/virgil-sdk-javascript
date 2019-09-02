@@ -1,4 +1,4 @@
-import { Buffer as NodeBuffer } from '@virgilsecurity/data-utils';
+import { NodeBuffer } from '@virgilsecurity/data-utils';
 
 import { isIndexedDbValid } from './indexedDb/isIndexedDbValid';
 import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';

@@ -1,5 +1,3 @@
-import { toBuffer } from '@virgilsecurity/data-utils';
-
 import { IPrivateKey, IPrivateKeyExporter } from '../types';
 import { IKeyEntryStorage } from './KeyEntryStorage/IKeyEntryStorage';
 import { KeyEntryStorage } from './KeyEntryStorage/KeyEntryStorage';
@@ -45,7 +43,7 @@ export class PrivateKeyStorage {
 	async store (name: string, privateKey: IPrivateKey, meta?: { [key: string]: string }) {
 		const privateKeyData = this.privateKeyExporter.exportPrivateKey(privateKey);
 		try {
-			await this.keyEntryStorage.save({ name, value: toBuffer(privateKeyData), meta });
+			await this.keyEntryStorage.save({ name, value: privateKeyData, meta });
 		} catch (error) {
 			if (error && error.name === 'KeyEntryAlreadyExistsError') {
 				throw new PrivateKeyExistsError(`Private key with the name ${name} already exists.`);

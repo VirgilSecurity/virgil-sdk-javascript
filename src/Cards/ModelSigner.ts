@@ -1,5 +1,3 @@
-import { Buffer as NodeBuffer, toBuffer } from '@virgilsecurity/data-utils';
-
 import { RawSignedModel } from './RawSignedModel';
 import { IPrivateKey, ICardCrypto } from '../types';
 import { IExtraData } from './ICard';
@@ -65,11 +63,11 @@ export class ModelSigner {
 			? model.contentSnapshot + extraSnapshot
 			: model.contentSnapshot;
 
-		const signature = this.crypto.generateSignature(NodeBuffer.from(signedSnapshot, 'utf8'), signerPrivateKey);
+		const signature = this.crypto.generateSignature({ value: signedSnapshot, encoding: 'utf8' }, signerPrivateKey);
 
 		model.signatures.push({
 			signer,
-			signature: toBuffer(signature).toString('base64'),
+			signature: signature.toString('base64'),
 			snapshot: extraSnapshot
 		});
 	}
