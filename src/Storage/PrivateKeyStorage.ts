@@ -66,7 +66,6 @@ export class PrivateKeyStorage {
 		if (keyEntry === null) {
 			return null;
 		}
-		console.log(keyEntry);
 		const privateKey = this.privateKeyExporter.importPrivateKey(keyEntry.value);
 		return {
 			privateKey,

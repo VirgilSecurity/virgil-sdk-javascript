@@ -53,7 +53,6 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 			if (data == null) {
 				return null;
 			}
-			console.log(data);
 			return deserializeKeyEntry(data);
 		});
 	}

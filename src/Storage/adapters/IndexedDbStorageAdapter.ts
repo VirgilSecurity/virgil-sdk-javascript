@@ -1,3 +1,5 @@
+import utf8 from 'utf8';
+
 import { isIndexedDbValid } from './indexedDb/isIndexedDbValid';
 import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
 import { StorageEntryAlreadyExistsError } from './errors';
@@ -644,7 +646,7 @@ function convertDbValue(value: ArrayBuffer | string) {
 	if (value instanceof ArrayBuffer) {
 		const uint8Array = new Uint8Array(value);
 		// @ts-ignore
-		return String.fromCharCode.apply(null, uint8Array);
+		return utf8.decode(String.fromCharCode.apply(null, uint8Array));
 	}
 	if (typeof value === 'string') {
 		return value;
