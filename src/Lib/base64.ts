@@ -1,4 +1,4 @@
-import { encode, decode } from 'base-64';
+import base64 from 'base-64';
 
 /**
  * Decodes the base64 encoded string into a `string`.
@@ -7,7 +7,7 @@ import { encode, decode } from 'base-64';
  * @returns {string}
  */
 export function base64Decode(input: string): string {
-	return decode(input);
+	return base64.decode(input);
 }
 
 /**
@@ -17,7 +17,7 @@ export function base64Decode(input: string): string {
  * @returns {string}
  */
 export function base64Encode(input: string): string {
-	return encode(input);
+	return base64.encode(input);
 }
 
 /**
