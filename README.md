@@ -48,7 +48,7 @@ Note that the `virgil-crypto@next` script must also be added to the page.
 
 ```html
 <script type="text/javascript" src="https://unpkg.com/virgil-crypto@next/dist/browser.umd.js"></script>
-<script type="text/javascript" src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.min.js"></script>
+<script type="text/javascript" src="https://unpkg.com/virgil-sdk@next/dist/virgil-sdk.browser.umd.js"></script>
 <script>
 	// here you can use the global variables `Virgil` and `VirgilCrypto` as namespace objects,
 	// containing all of `virgil-sdk` and `virgil-crypto` exports as properties
