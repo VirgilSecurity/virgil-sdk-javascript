@@ -1,9 +1,8 @@
-import { ICardCrypto } from '../CryptoApi/ICardCrypto';
+import { ICardCrypto } from '../types';
 import { IRawSignature, RawSignedModel } from './RawSignedModel';
 import { ICard, ICardSignature, IExtraData, INewCardParams, IRawCardContent } from './ICard';
 import { getUnixTimestamp } from '../Lib/timestamp';
 import { CardIdByteLength, CardVersion } from './constants';
-import { base64Encode } from '../Lib/base64';
 
 /**
  * Converts an {@link ICard} to a {@link RawSignedModel}.
@@ -36,7 +35,7 @@ export function generateRawSigned (crypto: ICardCrypto, params: INewCardParams):
 		previous_card_id: previousCardId,
 		created_at: now,
 		version: CardVersion,
-		public_key: base64Encode(crypto.exportPublicKey(publicKey))
+		public_key: crypto.exportPublicKey(publicKey).toString('base64'),
 	};
 
 	return new RawSignedModel(JSON.stringify(details), []);
@@ -61,7 +60,7 @@ export function parseRawSignedModel (crypto: ICardCrypto, model: RawSignedModel,
 
 	return {
 		id: generateCardId(crypto, model.contentSnapshot),
-		publicKey: crypto.importPublicKey(content.public_key),
+		publicKey: crypto.importPublicKey({ value: content.public_key, encoding: 'base64' }),
 		contentSnapshot: model.contentSnapshot,
 		identity: content.identity,
 		version: content.version,
@@ -122,7 +121,9 @@ export function linkedCardList (cards: ICard[]): ICard[] {
  * @returns {string} - VirgilCard's ID encoded in HEX.
  */
 function generateCardId (crypto: ICardCrypto, snapshot: string): string {
-	const fingerprint = crypto.generateSha512(snapshot).slice(0, CardIdByteLength);
+	const fingerprint = crypto
+		.generateSha512({ value: snapshot, encoding: 'utf8' })
+		.slice(0, CardIdByteLength);
 	return fingerprint.toString('hex');
 }
 

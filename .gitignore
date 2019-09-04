@@ -6,3 +6,5 @@ npm-debug.log
 .rpt2_cache
 yarn-error.log
 docs/
+package-lock.json
+yarn.lock

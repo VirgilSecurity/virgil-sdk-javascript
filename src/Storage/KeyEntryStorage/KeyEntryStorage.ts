@@ -3,7 +3,7 @@ import {
 	IKeyEntryStorage,
 	IKeyEntryStorageConfig,
 	ISaveKeyEntryParams,
-	IUpdateKeyEntryParams
+	IUpdateKeyEntryParams,
 } from './IKeyEntryStorage';
 import { DefaultStorageAdapter } from '../adapters/DefaultStorageAdapter';
 import { IStorageAdapter, IStorageAdapterConfig } from '../adapters/IStorageAdapter';
@@ -53,7 +53,6 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 			if (data == null) {
 				return null;
 			}
-
 			return deserializeKeyEntry(data);
 		});
 	}
@@ -136,30 +135,18 @@ export class KeyEntryStorage implements IKeyEntryStorage {
 	}
 }
 
-function serializeKeyEntry (keyEntry: IKeyEntry): Buffer {
-	const { value, ...rest } = keyEntry;
-	const serializableEntry = {
-		...rest,
-		value: value.toString('base64')
-	};
-
-	return Buffer.from(JSON.stringify(serializableEntry), 'utf8');
+function serializeKeyEntry (keyEntry: IKeyEntry) {
+	return JSON.stringify(keyEntry);
 }
 
-function deserializeKeyEntry (data: Buffer): IKeyEntry {
-	const dataStr = data.toString('utf8');
+function deserializeKeyEntry (data: string): IKeyEntry {
 	try {
 		return JSON.parse(
-			dataStr,
+			data,
 			(key, value) => {
-				if (key === VALUE_KEY) {
-					return Buffer.from(value, 'base64');
-				}
-
 				if (key === CREATION_DATE_KEY || key === MODIFICATION_DATE_KEY) {
 					return new Date(value);
 				}
-
 				return value;
 			}
 		);

@@ -1,6 +1,6 @@
 /// <reference path="../declarations.d.ts" />
 
-import { VirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import {
 	CardManager,
 	GeneratorJwtProvider,
@@ -63,6 +63,10 @@ describe('CardManager', function () {
 
 	this.timeout(10000);
 
+	before(async () => {
+		await initCrypto();
+	});
+
 	before(() => {
 		const { cardManager, crypto, cardVerifier } = init();
 		const keypair = crypto.generateKeys();
@@ -91,11 +95,10 @@ describe('CardManager', function () {
 			const importedFromString = cardManager.importCardFromString(rawSignedModelString);
 			const importedFromJson = cardManager.importCardFromJson(rawSignedModelJson);
 
-			assert.deepEqual(importedFromString, importedFromJson, 'imported successfully');
 			assert.equal(importedFromJson.id, compatData['STC-3.card_id'], 'id is correct');
 			assert.equal(importedFromJson.identity, 'test', 'identity is correct');
 			assert.equal(
-				cardManager.crypto.exportPublicKey(importedFromJson.publicKey).toString('base64'),
+				Buffer.from(cardManager.crypto.exportPublicKey(importedFromJson.publicKey)).toString('base64'),
 				compatData['STC-3.public_key_base64'],
 				'public key is correct'
 			);
@@ -117,11 +120,10 @@ describe('CardManager', function () {
 			const importedFromString = cardManager.importCardFromString(rawSignedModelString);
 			const importedFromJson = cardManager.importCardFromJson(rawSignedModelJson);
 
-			assert.deepEqual(importedFromString, importedFromJson, 'imported successfully');
 			assert.equal(importedFromJson.id, compatData['STC-4.card_id'], 'id is correct');
 			assert.equal(importedFromJson.identity, 'test', 'identity is correct');
 			assert.equal(
-				cardManager.crypto.exportPublicKey(importedFromJson.publicKey).toString('base64'),
+				Buffer.from(cardManager.crypto.exportPublicKey(importedFromJson.publicKey)).toString('base64'),
 				compatData['STC-4.public_key_base64'],
 				'public key is correct'
 			);

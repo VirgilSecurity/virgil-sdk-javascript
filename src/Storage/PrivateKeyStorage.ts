@@ -1,6 +1,5 @@
-import { IPrivateKeyExporter } from '../CryptoApi/IPrivateKeyExporter';
+import { IPrivateKey, IPrivateKeyExporter } from '../types';
 import { IKeyEntryStorage } from './KeyEntryStorage/IKeyEntryStorage';
-import { IPrivateKey } from '../CryptoApi/IPrivateKey';
 import { KeyEntryStorage } from './KeyEntryStorage/KeyEntryStorage';
 import { PrivateKeyExistsError } from './errors';
 
@@ -44,7 +43,7 @@ export class PrivateKeyStorage {
 	async store (name: string, privateKey: IPrivateKey, meta?: { [key: string]: string }) {
 		const privateKeyData = this.privateKeyExporter.exportPrivateKey(privateKey);
 		try {
-			await this.keyEntryStorage.save({ name, value: privateKeyData, meta });
+			await this.keyEntryStorage.save({ name, value: privateKeyData.toString('base64'), meta });
 		} catch (error) {
 			if (error && error.name === 'KeyEntryAlreadyExistsError') {
 				throw new PrivateKeyExistsError(`Private key with the name ${name} already exists.`);
@@ -67,7 +66,6 @@ export class PrivateKeyStorage {
 		if (keyEntry === null) {
 			return null;
 		}
-
 		const privateKey = this.privateKeyExporter.importPrivateKey(keyEntry.value);
 		return {
 			privateKey,

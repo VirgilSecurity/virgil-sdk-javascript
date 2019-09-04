@@ -1,45 +1,23 @@
-const BASE_64 = 'base64';
-
-export function base64Decode(input: string): Buffer;
-export function base64Decode(input: string, outputEncoding: string): string;
+import base64 from 'base-64';
 
 /**
- * Decodes the base64 encoded string into a `Buffer` or `string` depending on
- * the presence of `outputEncoding` parameter.
+ * Decodes the base64 encoded string into a `string`.
  * @hidden
  * @param {string} input
- * @param {string} [outputEncoding] - If provided, specifies the output string
- * encoding.
- * @returns {Buffer|string}
+ * @returns {string}
  */
-export function base64Decode(input: string, outputEncoding?: string): Buffer|string {
-	if (outputEncoding) {
-		return Buffer.from(input, BASE_64).toString(outputEncoding);
-	}
-	return Buffer.from(input, BASE_64);
+export function base64Decode(input: string): string {
+	return base64.decode(input);
 }
 
 /**
- * Encodes the `input` bytes into a string using base64 encoding.
- * If `input` is a string, it is first converted to byte array by decoding
- * it using `inputEncoding`.
+ * Encodes the `input` string into a base64 `string`.
  * @hidden
- * @param {Buffer | string} input
- * @param {string} inputEncoding
+ * @param {string} input
  * @returns {string}
  */
-export function base64Encode(input: Buffer|string, inputEncoding?: string): string {
-	let buffer: Buffer;
-
-	if (Buffer.isBuffer(input)) {
-		buffer = input;
-	} else if (inputEncoding && Buffer.isEncoding(inputEncoding)) {
-		buffer = Buffer.from(input, inputEncoding)
-	} else {
-		buffer = Buffer.from(input);
-	}
-
-	return buffer.toString(BASE_64);
+export function base64Encode(input: string): string {
+	return base64.encode(input);
 }
 
 /**
@@ -77,42 +55,27 @@ export function base64UrlToBase64 (input: string) {
 }
 
 /**
- * * Encodes the `input` bytes into a string using URL-safe base64 encoding.
- * If `input` is a string, it is first converted to byte array by decoding
- * it using `inputEncoding`.
+ * * Encodes the `input` string into a string using URL-safe base64 encoding.
  *
  * @hidden
  *
- * @param {string | Buffer} input - The input.
- * @param {string} inputEncoding - If `input` is a string, this parameter
- * specifies the encoding of the input string. If `input` is a `Buffer`, this
- * parameter is ignored.
+ * @param {string} input - The input.
  * @returns {string}
  */
-export function base64UrlEncode (input: string|Buffer, inputEncoding?: string) {
-	let output = base64Encode(input, inputEncoding);
+export function base64UrlEncode (input: string) {
+	let output = base64Encode(input);
 	return base64UrlFromBase64(output);
 }
 
-export function base64UrlDecode (input: string): Buffer;
-export function base64UrlDecode (input: string, outputEncoding: string): string;
 
 /**
- * Decodes the URL-safe base64-encoded `input` string into a `Buffer` or
- * `string` depending on the presence of `outputEncoding` parameter.
+ * Decodes the URL-safe base64-encoded `input` string into a `string`.
  *
  * @hidden
  *
  * @param {string} input
- * @param {string} [outputEncoding] - If provided, specifies the output string
- * encoding.
- * @returns {Buffer|string}
+ * @returns {string}
  */
-export function base64UrlDecode (input: string, outputEncoding?: string): Buffer|string {
-	input = base64UrlToBase64(input);
-	if (outputEncoding) {
-		return base64Decode(input, outputEncoding);
-	}
-
+export function base64UrlDecode (input: string): string {
 	return base64Decode(input);
 }

@@ -32,7 +32,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	store(key: string, data: Buffer): Promise<void> {
+	store(key: string, data: string): Promise<void> {
 		return new Promise<void>((resolve, reject) => {
 			const file = this.resolveFilePath(key);
 
@@ -49,7 +49,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	load(key: string): Promise<Buffer|null> {
+	load(key: string): Promise<string|null> {
 		return Promise.resolve().then(() => {
 			const filename = this.resolveFilePath(key);
 			return readFileAsync(filename);
@@ -99,7 +99,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	update (key: string, data: Buffer): Promise<void> {
+	update (key: string, data: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			const file = this.resolveFilePath(key);
 			fs.writeFile(file, data, { flag: 'w' }, err => {
@@ -129,7 +129,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	list (): Promise<Buffer[]> {
+	list (): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			fs.readdir(this.config.dir, (err, files) => {
 				if (err) {
@@ -141,9 +141,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 						readFileAsync(path.resolve(this.config.dir!, filename))
 					)
 				).then(contents => {
-					const entries = contents
-						.filter(content => content !== null)
-						.map(content => content as Buffer);
+					const entries = contents.filter(content => content !== null) as string[];
 
 					resolve(entries);
 				}).catch(reject);
@@ -163,7 +161,7 @@ export default class FileSystemStorageAdapter implements IStorageAdapter {
 	}
 }
 
-function readFileAsync (filename: string): Promise<Buffer|null> {
+function readFileAsync (filename: string): Promise<string|null> {
 	return new Promise((resolve, reject) => {
 		fs.readFile(filename, (err, data) => {
 			if (err) {
@@ -174,7 +172,7 @@ function readFileAsync (filename: string): Promise<Buffer|null> {
 				return reject(err);
 			}
 
-			resolve(data);
+			resolve(data.toString('utf8'));
 		});
 	});
 }

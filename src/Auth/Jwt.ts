@@ -124,8 +124,8 @@ export class Jwt implements IAccessToken {
 			if (parts.length !== 3) throw new Error('Wrong JWT format');
 
 			try {
-				this.header = JSON.parse(base64UrlDecode(parts[0], 'utf8'));
-				this.body   = JSON.parse(base64UrlDecode(parts[1], 'utf8'));
+				this.header = JSON.parse(base64UrlDecode(parts[0]));
+				this.body   = JSON.parse(base64UrlDecode(parts[1]));
 				this.signature = base64UrlToBase64(parts[2]);
 
 			} catch (e) {

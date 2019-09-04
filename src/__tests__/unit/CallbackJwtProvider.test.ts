@@ -1,28 +1,34 @@
-import { VirgilCrypto } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto } from 'virgil-crypto';
 import { CallbackJwtProvider } from '../../Auth/AccessTokenProviders';
 import { GetJwtCallback, Jwt } from '../../Auth/Jwt';
 import { getUnixTimestamp } from '../../Lib/timestamp';
 
-const virgilCrypto = new VirgilCrypto();
-const generateJwt = () => {
-	return new Jwt(
-		{
-			alg: 'stub',
-			typ: 'stub',
-			cty: 'stub',
-			kid: 'stub'
-		},
-		{
-			iss: 'stub',
-			sub: 'stub',
-			iat: getUnixTimestamp(new Date),
-			exp: getUnixTimestamp(new Date(Date.now() + 10000))
-		},
-		virgilCrypto.getRandomBytes(16).toString('base64')
-	);
-};
-
 describe ('CallbackJwtProvider', () => {
+	let virgilCrypto: VirgilCrypto;
+
+	before(async () => {
+		await initCrypto();
+		virgilCrypto = new VirgilCrypto();
+	});
+
+	const generateJwt = () => {
+		return new Jwt(
+			{
+				alg: 'stub',
+				typ: 'stub',
+				cty: 'stub',
+				kid: 'stub'
+			},
+			{
+				iss: 'stub',
+				sub: 'stub',
+				iat: getUnixTimestamp(new Date),
+				exp: getUnixTimestamp(new Date(Date.now() + 10000))
+			},
+			virgilCrypto.getRandomBytes(16).toString('base64')
+		);
+	};
+
 	describe ('constructor', () => {
 		it ('throws when getJwtFn is not a function', () => {
 			assert.throws(() => {

@@ -54,10 +54,10 @@ export class KeyStorage {
 	/**
 	 * Loads the private key data by the given name.
 	 * @param {string} name - Name of key data to load.
-	 * @returns {Promise<Buffer | null>} - Private key data as Buffer,
+	 * @returns {Promise<string | null>} - Private key data as a string,
 	 * or null if there is no data for the given name.
 	 */
-	load(name: string): Promise<Buffer | null> {
+	load(name: string): Promise<string | null> {
 		validateName(name);
 		return this.adapter.load(name);
 	}
@@ -75,12 +75,11 @@ export class KeyStorage {
 	/**
 	 * Persists the private key data under the given name.
 	 * @param {string} name - Name of the key data.
-	 * @param {Buffer} data - The key data.
+	 * @param {string} data - The key data.
 	 * @returns {Promise<void>}
 	 */
-	save(name: string, data: Buffer): Promise<void> {
+	save(name: string, data: string): Promise<void> {
 		validateName(name);
-		validateData(data);
 		return this.adapter.store(name, data)
 			.catch(error => {
 				if (error && error.code === 'EEXIST') {
@@ -112,4 +111,3 @@ function validateName (name: string) {
 function validateData (data: Buffer) {
 	if (!data) throw new TypeError('Argument `data` is required.');
 }
-

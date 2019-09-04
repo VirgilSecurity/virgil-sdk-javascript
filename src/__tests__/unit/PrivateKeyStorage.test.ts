@@ -1,6 +1,6 @@
 import { KeyEntryStorage, PrivateKeyStorage } from '../..';
 import { SinonStubbedInstance } from 'sinon';
-import { IPrivateKeyExporter } from '../../CryptoApi/IPrivateKeyExporter';
+import { IPrivateKeyExporter } from '../../types';
 import { IKeyEntryStorage } from '../../Storage/KeyEntryStorage/IKeyEntryStorage';
 import { PrivateKeyExistsError } from '../../Storage/errors';
 
@@ -21,14 +21,15 @@ describe ('PrivateKeyStorage', () => {
 
 	describe ('store', () => {
 		it ('exports private key data before saving', () => {
-			privateKeyExporterStub.exportPrivateKey.returns(Buffer.from('private_key'));
+			const privateKey = Buffer.from('private_key');
+			privateKeyExporterStub.exportPrivateKey.returns(privateKey);
 			storageBackendStub.save.resolves();
 			return privateKeyStorage.store('test', {}, { meta: 'data' })
 				.then(() => {
 					assert.isTrue(storageBackendStub.save.calledOnce);
 					const entry = storageBackendStub.save.firstCall.args[0];
 					assert.equal(entry.name, 'test');
-					assert.equal(entry.value.toString(), 'private_key');
+					assert.equal(entry.value, privateKey.toString('base64'));
 					assert.deepEqual(entry.meta, { meta: 'data' });
 				});
 		});

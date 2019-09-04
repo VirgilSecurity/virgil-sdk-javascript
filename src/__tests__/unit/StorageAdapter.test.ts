@@ -16,12 +16,12 @@ describe ('StorageAdapter', () => {
 	});
 
 	it('store and get the key', () => {
-		const expected = Buffer.from('one');
+		const expected = 'one';
 		return assert.eventually.equal(
 			storage.store('first', expected)
 				.then(() => storage.load('first'))
 				.then(value => {
-					return value != null && value.equals(expected)
+					return value != null && value === expected
 				}),
 			true,
 			'loaded key is identical to the saved one'
@@ -30,8 +30,8 @@ describe ('StorageAdapter', () => {
 
 	it('throws when saving key with existing name', () => {
 		return assert.isRejected(
-			storage.store('first', Buffer.from('one'))
-				.then(() => storage.store('first', Buffer.from('two'))),
+			storage.store('first', 'one')
+				.then(() => storage.store('first', 'two')),
 			StorageEntryAlreadyExistsError,
 			'already exists'
 		);
@@ -45,18 +45,18 @@ describe ('StorageAdapter', () => {
 
 	it('returns true when removing existent key', () => {
 		return assert.eventually.isTrue(
-			storage.store('first', Buffer.from('one'))
+			storage.store('first', 'one')
 				.then(() => storage.remove('first'))
 		);
 	});
 
 	it('store remove store', () => {
 		return assert.eventually.isTrue(
-			storage.store('first', Buffer.from('one'))
+			storage.store('first', 'one')
 				.then(() => storage.remove('first'))
-				.then(() => storage.store('first', Buffer.from('two')))
+				.then(() => storage.store('first', 'two'))
 				.then(() => storage.load('first'))
-				.then(value => value != null && value!.equals(Buffer.from('two')))
+				.then(value => value != null && value === 'two')
 		);
 	});
 
@@ -69,8 +69,8 @@ describe ('StorageAdapter', () => {
 	});
 
 	it('store two items', () => {
-		const oneExpected = Buffer.from('one');
-		const twoExpected = Buffer.from('two');
+		const oneExpected = 'one';
+		const twoExpected = 'two';
 		return assert.becomes(
 			Promise.all([
 				storage.store('first', oneExpected),
@@ -81,8 +81,8 @@ describe ('StorageAdapter', () => {
 				])
 			).then(([ one, two ]) => {
 				return [
-					one != null && one.equals(oneExpected),
-					two != null && two.equals(twoExpected)
+					one != null && one === oneExpected,
+					two != null && two === twoExpected
 				]
 			}),
 			[ true, true ]
@@ -92,19 +92,19 @@ describe ('StorageAdapter', () => {
 	it('store remove three items', () => {
 		return assert.eventually.isNull(
 			Promise.all([
-				storage.store('first', Buffer.from('one')),
-				storage.store('second', Buffer.from('two')),
-				storage.store('third', Buffer.from('three'))
+				storage.store('first', 'one'),
+				storage.store('second', 'two'),
+				storage.store('third', 'three')
 			]).then(() => storage.remove('second'))
 				.then(() => Promise.all([
 						assert.eventually.isTrue(
 							storage.load('first')
-								.then(first => first != null && first.toString() === 'one')
+								.then(first => first != null && first === 'one')
 						),
 						assert.eventually.isNull(storage.load('second')),
 						assert.eventually.isTrue(
 							storage.load('third')
-								.then(third => third != null && third.toString() === 'three')
+								.then(third => third != null && third === 'three')
 						)
 					])
 				)
@@ -113,7 +113,7 @@ describe ('StorageAdapter', () => {
 						assert.eventually.isNull(storage.load('first')),
 						assert.eventually.isTrue(
 							storage.load('third')
-								.then(third => third != null && third.toString() === 'three')
+								.then(third => third != null && third === 'three')
 						)
 					])
 				)
@@ -124,25 +124,25 @@ describe ('StorageAdapter', () => {
 
 	it('store empty value', () => {
 		return assert.eventually.isTrue(
-			storage.store('first', new Buffer(0))
+			storage.store('first', '')
 				.then(() => storage.load('first'))
-				.then(value => value != null && value.equals(new Buffer(0)))
+				.then(value => value != null && value === '')
 		);
 	});
 
 	it('store with weird keys', () => {
 		return assert.becomes(
 			Promise.all([
-				storage.store(' ', Buffer.from('space')),
-				storage.store('=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`', Buffer.from('control')),
+				storage.store(' ', 'space'),
+				storage.store('=+!@#$%^&*()-_\\|;:\'",./<>?[]{}~`', 'control'),
 				storage.store(
 					'\u4e00\u4e8c\u4e09\u56db\u4e94\u516d\u4e03\u516b\u4e5d\u5341',
-					Buffer.from('ten')
+					'ten'
 				),
-				storage.store('\0', Buffer.from('null')),
-				storage.store('\0\0', Buffer.from('double null')),
-				storage.store('\0A', Buffer.from('null A')),
-				storage.store('', Buffer.from('zero'))
+				storage.store('\0', 'null'),
+				storage.store('\0\0', 'double null'),
+				storage.store('\0A', 'null A'),
+				storage.store('', 'zero')
 			]).then(() => {
 					return Promise.all([
 						storage.load(' '),
@@ -168,7 +168,7 @@ describe ('StorageAdapter', () => {
 
 	it('exists with existent key', () => {
 		return assert.eventually.isTrue(
-			storage.store('existent', Buffer.from('my value'))
+			storage.store('existent', 'my value')
 				.then(() => storage.exists('existent'))
 		);
 	});
@@ -182,15 +182,15 @@ describe ('StorageAdapter', () => {
 
 	it('list returns array of all values', () => {
 		const expectedEntries = [
-			Buffer.from('one'),
-			Buffer.from('two'),
-			Buffer.from('three')
+			'one',
+			'two',
+			'three'
 		];
 
 		return Promise.all([
-			storage.store('one', Buffer.from('one')),
-			storage.store('two', Buffer.from('two')),
-			storage.store('three', Buffer.from('three'))
+			storage.store('one', 'one'),
+			storage.store('two', 'two'),
+			storage.store('three', 'three')
 		]).then(() =>
 			storage.list()
 		).then(entries => {
@@ -199,8 +199,8 @@ describe ('StorageAdapter', () => {
 	});
 
 	it('update with existing key', () => {
-		return storage.store('one', Buffer.from('one'))
-			.then(() => storage.update('one', Buffer.from('another_one')))
+		return storage.store('one', 'one')
+			.then(() => storage.update('one', 'another_one'))
 			.then(() => storage.load('one'))
 			.then(result => {
 				assert.isNotNull(result);
@@ -209,7 +209,7 @@ describe ('StorageAdapter', () => {
 	});
 
 	it('update with non-existing key creates new entry', () => {
-		return storage.update('nonexistent', Buffer.from('value'))
+		return storage.update('nonexistent', 'value')
 			.then(() => storage.load('nonexistent'))
 			.then(result => {
 				assert.isNotNull(result);

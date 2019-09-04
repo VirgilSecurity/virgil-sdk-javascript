@@ -1,4 +1,4 @@
-import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { ModelSigner } from '../../Cards/ModelSigner';
 import { SelfSigner } from '../../Cards/constants';
 import { generateRawSigned } from '../../Cards/CardUtils';
@@ -14,6 +14,10 @@ const init = () => {
 };
 
 describe('ModelSigner', () => {
+	before(async () => {
+		await initCrypto();
+	});
+
 	it ('adds self signature (STC-8)', () => {
 		const { crypto, cardCrypto, signer } = init();
 		const keyPair = crypto.generateKeys();

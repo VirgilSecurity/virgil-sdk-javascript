@@ -1,3 +1,5 @@
+import utf8 from 'utf8';
+
 import { isIndexedDbValid } from './indexedDb/isIndexedDbValid';
 import { IStorageAdapter, IStorageAdapterConfig } from './IStorageAdapter';
 import { StorageEntryAlreadyExistsError } from './errors';
@@ -67,7 +69,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	store (key: string, data: Buffer): Promise<void> {
+	store (key: string, data: string): Promise<void> {
 		key = normalizeKey(key);
 
 		return new Promise((resolve, reject) => {
@@ -79,7 +81,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 
 					try {
 						const store = transaction!.objectStore(this._dbInfo!.storeName!);
-						const req = store.add(toArrayBuffer(data), key);
+						const req = store.add(data, key);
 
 						transaction!.oncomplete = () => {
 							resolve();
@@ -107,7 +109,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	load (key: string): Promise<Buffer|null> {
+	load (key: string): Promise<string|null> {
 		key = normalizeKey(key);
 
 		return new Promise((resolve, reject) => {
@@ -125,10 +127,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 							if (req.result == null) {
 								return resolve(null);
 							}
-
-							const arrayBuffer = req.result;
-							const buffer = Buffer.from(arrayBuffer);
-							resolve(buffer);
+							resolve(convertDbValue(req.result));
 						};
 
 						req.onerror = function() {
@@ -225,7 +224,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	update (key: string, data: Buffer): Promise<void> {
+	update (key: string, data: string): Promise<void> {
 		key = normalizeKey(key);
 		return new Promise((resolve, reject) => {
 			this.ready().then(() => {
@@ -236,7 +235,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 
 					try {
 						const store = transaction!.objectStore(this._dbInfo!.storeName!);
-						const req = store.put(toArrayBuffer(data), key);
+						const req = store.put(data, key);
 
 						req.onsuccess = () => {
 							resolve();
@@ -287,7 +286,7 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 	/**
 	 * @inheritDoc
 	 */
-	list(): Promise<Buffer[]> {
+	list(): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			this.ready().then(() => {
 				createTransaction(this._dbInfo!, READ_ONLY, (err, transaction) => {
@@ -299,14 +298,14 @@ export default class IndexedDbStorageAdapter implements IStorageAdapter {
 						const store = transaction!.objectStore(this._dbInfo!.storeName!);
 						const req = store.openCursor();
 
-						const entries: Buffer[] = [];
+						const entries: string[] = [];
 
 						req.onsuccess = () => {
 							const cursor = req.result;
 							if (!cursor) {
 								resolve(entries);
 							} else {
-								entries.push(Buffer.from(cursor.value));
+								entries.push(convertDbValue(cursor.value));
 								cursor.continue();
 							}
 						};
@@ -643,30 +642,14 @@ function normalizeKey(key: any) {
 	return key;
 }
 
-// taken from here https://github.com/jhiesey/to-arraybuffer
-function toArrayBuffer (buf: Buffer): ArrayBuffer {
-	// If the buffer is backed by a Uint8Array, a faster version will work
-	if (buf instanceof Uint8Array) {
-		// If the buffer isn't a subarray, return the underlying ArrayBuffer
-		if (buf.byteOffset === 0 && buf.byteLength === buf.buffer.byteLength) {
-			return buf.buffer as ArrayBuffer;
-		} else if (typeof buf.buffer.slice === 'function') {
-			// Otherwise we need to get a proper copy
-			return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
-		}
+function convertDbValue(value: ArrayBuffer | string) {
+	if (value instanceof ArrayBuffer) {
+		const uint8Array = new Uint8Array(value);
+		// @ts-ignore
+		return utf8.decode(String.fromCharCode.apply(null, uint8Array));
 	}
-
-	if (Buffer.isBuffer(buf)) {
-		// This is the slow version that will work with any Buffer
-		// implementation (even in old browsers)
-		const arrayCopy = new Uint8Array(buf.length);
-		const len = buf.length;
-		for (let i = 0; i < len; i++) {
-			arrayCopy[i] = buf[i];
-		}
-		return arrayCopy.buffer as ArrayBuffer;
-	} else {
-		throw new Error('Argument must be a Buffer');
+	if (typeof value === 'string') {
+		return value;
 	}
+	throw new TypeError('Unknown value format');
 }
-

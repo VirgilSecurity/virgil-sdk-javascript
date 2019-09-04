@@ -1,6 +1,6 @@
 /// <reference path="../declarations.d.ts" />
 
-import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { VirgilCardVerifier, RawSignedModel } from '../..';
 import { parseRawSignedModel } from '../../Cards/CardUtils';
 
@@ -20,6 +20,10 @@ const init = (cardAsString: string) => {
 };
 
 describe('VirgilCardVerifier', () => {
+	before(async () => {
+		await initCrypto();
+	});
+
 	it ('verifies imported card without checking signatures (STC-10)', () => {
 		const { verifier, importedCard } = init(compatData['STC-10.as_string']);
 

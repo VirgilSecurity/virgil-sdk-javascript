@@ -1,4 +1,4 @@
-import { ICardCrypto } from '../CryptoApi/ICardCrypto';
+import { ICardCrypto } from '../types';
 import { IRawSignedModelJson, RawSignedModel } from './RawSignedModel';
 import { CardClient } from '../Client/CardClient';
 import { ModelSigner } from './ModelSigner';

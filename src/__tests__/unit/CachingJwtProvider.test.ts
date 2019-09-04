@@ -1,30 +1,36 @@
-import { VirgilCrypto } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto } from 'virgil-crypto';
 import { addSeconds, getUnixTimestamp } from '../../Lib/timestamp';
 import { GetJwtCallback, Jwt } from '../../Auth/Jwt';
 import { CachingJwtProvider } from '../../Auth/AccessTokenProviders';
 
-const virgilCrypto = new VirgilCrypto();
-const generateJwt = (expiresAt: Date): Jwt => {
-	return new Jwt(
-		{
-			alg: 'stub',
-			typ: 'stub',
-			cty: 'stub',
-			kid: 'stub'
-		},
-		{
-			iss: 'stub',
-			sub: 'stub',
-			iat: getUnixTimestamp(new Date),
-			exp: getUnixTimestamp(expiresAt)
-		},
-		virgilCrypto.getRandomBytes(16).toString('base64')
-	);
-};
-
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe ('CachingJwtProvider', () => {
+	let virgilCrypto: VirgilCrypto;
+
+	before(async () => {
+		await initCrypto();
+		virgilCrypto = new VirgilCrypto();
+	});
+
+	const generateJwt = (expiresAt: Date): Jwt => {
+		return new Jwt(
+			{
+				alg: 'stub',
+				typ: 'stub',
+				cty: 'stub',
+				kid: 'stub'
+			},
+			{
+				iss: 'stub',
+				sub: 'stub',
+				iat: getUnixTimestamp(new Date),
+				exp: getUnixTimestamp(expiresAt)
+			},
+			virgilCrypto.getRandomBytes(16).toString('base64')
+		);
+	};
+
 	describe ('constructor', () => {
 		it ('throws when renewJwtFn is not a function', () => {
 			assert.throws(() => {

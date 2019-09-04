@@ -16,18 +16,18 @@ export interface IStorageAdapter {
 	 * Saves the `data` under the `key` in persistent storage. If the key
 	 * already exists, throws {@link StorageEntryAlreadyExistsError}.
 	 * @param {string} key - The key.
-	 * @param {Buffer} data - The data.
+	 * @param {string} data - The data.
 	 * @returns {Promise<void>}
 	 */
-	store (key: string, data: Buffer): Promise<void>;
+	store (key: string, data: string): Promise<void>;
 
 	/**
 	 * Retieves the data for the `key`.
 	 * @param {string} key - The key.
-	 * @returns {Promise<Buffer|null>} - Promise resolved with the
+	 * @returns {Promise<string|null>} - Promise resolved with the
 	 * data for the given key, or null if there's no data.
 	 */
-	load (key: string): Promise<Buffer|null>;
+	load (key: string): Promise<string|null>;
 
 	/**
 	 * Checks if the data for the `key` exists.
@@ -48,9 +48,9 @@ export interface IStorageAdapter {
 	/**
 	 * Sets the new data for the `key`.
 	 * @param {string} key - The key to update.
-	 * @param {Buffer} data - The new data.
+	 * @param {string} data - The new data.
 	 */
-	update (key: string, data: Buffer): Promise<void>;
+	update (key: string, data: string): Promise<void>;
 
 	/**
 	 * Removes all of the entries from persistent storage.
@@ -60,7 +60,7 @@ export interface IStorageAdapter {
 
 	/**
 	 * Retrieves a collection of all of the values in persistent storage.
-	 * @returns {Promise<Buffer[]>}
+	 * @returns {Promise<string[]>}
 	 */
-	list (): Promise<Buffer[]>;
+	list (): Promise<string[]>;
 }

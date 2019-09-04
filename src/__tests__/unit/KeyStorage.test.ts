@@ -34,7 +34,7 @@ describe ('KeyStorage', () => {
 	describe ('save', () => {
 		it ('throws if name is empty', () => {
 			assert.throws(() => {
-				storage.save('', Buffer.from('one'));
+				storage.save('', 'one');
 			}, TypeError);
 		});
 
@@ -47,7 +47,7 @@ describe ('KeyStorage', () => {
 		it ('serializes entry to json and forwards to adapter', () => {
 			adapterSub.store.resolves();
 			const expectedName = 'one';
-			const expectedValue = Buffer.from('one');
+			const expectedValue = 'one';
 
 			return storage.save(expectedName, expectedValue).then(() => {
 				assert.equal(adapterSub.store.firstCall.args[0], expectedName);
@@ -58,7 +58,7 @@ describe ('KeyStorage', () => {
 		it ('throws `PrivateKeyExistsError` if entry with the same name already exists', () => {
 			adapterSub.store.rejects({ code: 'EEXIST' });
 			return assert.isRejected(
-				storage.save('one', Buffer.from('one')),
+				storage.save('one', 'one'),
 				PrivateKeyExistsError
 			);
 		});
@@ -66,7 +66,7 @@ describe ('KeyStorage', () => {
 		it ('re-throws unexpected errors from adapter', () => {
 			adapterSub.store.rejects({ code: 'UNKNOWN', message: 'unknown error' });
 			return assert.isRejected(
-				storage.save('one', Buffer.from('one')),
+				storage.save('one', 'one'),
 				/unknown error/
 			);
 		});

@@ -35,7 +35,7 @@ export interface IKeyEntryStorageConfig {
  */
 export interface IKeyEntry {
 	name: string;
-	value: Buffer;
+	value: string;
 	meta?: KeyEntryMeta;
 	creationDate: Date;
 	modificationDate: Date;
@@ -46,7 +46,7 @@ export interface IKeyEntry {
  */
 export interface ISaveKeyEntryParams {
 	name: string;
-	value: Buffer;
+	value: string;
 	meta?: KeyEntryMeta;
 }
 
@@ -66,7 +66,7 @@ export interface IUpdateKeyEntryParams {
 	 * New value of the key entry. Optional. If ommited, the original
 	 * value remains intact.
 	 */
-	value?: Buffer;
+	value?: string;
 
 	/**
 	 * New metadata of the key entry. Optional. If provided, overwrites
