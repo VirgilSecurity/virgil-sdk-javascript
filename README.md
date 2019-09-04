@@ -1,4 +1,4 @@
-> This README is for Virgil SDK v5.4.x. Check the [v5.3.x branch](https://github.com/VirgilSecurity/virgil-sdk-javascript/tree/v5.3.x) for Virgil SDK v5.3.x docs.
+> This README is for Virgil SDK v6.x. Check the [v5.3.x branch](https://github.com/VirgilSecurity/virgil-sdk-javascript/tree/v5.3.x) for Virgil SDK v5.3.x docs.
 
 # Virgil Security JavaScript SDK
 
