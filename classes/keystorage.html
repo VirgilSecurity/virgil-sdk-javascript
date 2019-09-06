@@ -990,7 +990,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/83a58a6/src/Storage/KeyStorage.ts#L36">Storage/KeyStorage.ts:36</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/2c08d08/src/Storage/KeyStorage.ts#L36">Storage/KeyStorage.ts:36</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1016,7 +1016,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/83a58a6/src/Storage/KeyStorage.ts#L49">Storage/KeyStorage.ts:49</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/2c08d08/src/Storage/KeyStorage.ts#L49">Storage/KeyStorage.ts:49</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1044,13 +1044,13 @@ img { max-width: 100%; }
 				<a name="load" class="tsd-anchor"></a>
 				<h3>load</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">load<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">load<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/83a58a6/src/Storage/KeyStorage.ts#L60">Storage/KeyStorage.ts:60</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/2c08d08/src/Storage/KeyStorage.ts#L60">Storage/KeyStorage.ts:60</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1067,9 +1067,9 @@ img { max-width: 100%; }
 								</div>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						<ul>
-							<li>Private key data as Buffer,
+							<li>Private key data as a string,
 							or null if there is no data for the given name.</li>
 						</ul>
 					</li>
@@ -1085,7 +1085,7 @@ img { max-width: 100%; }
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/83a58a6/src/Storage/KeyStorage.ts#L70">Storage/KeyStorage.ts:70</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/2c08d08/src/Storage/KeyStorage.ts#L70">Storage/KeyStorage.ts:70</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1113,13 +1113,13 @@ img { max-width: 100%; }
 				<a name="save" class="tsd-anchor"></a>
 				<h3>save</h3>
 				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Buffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					<li class="tsd-signature tsd-kind-icon">save<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/83a58a6/src/Storage/KeyStorage.ts#L81">Storage/KeyStorage.ts:81</a></li>
+								<li>Defined in <a href="https://github.com/VirgilSecurity/virgil-sdk-javascript/blob/2c08d08/src/Storage/KeyStorage.ts#L81">Storage/KeyStorage.ts:81</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-comment tsd-typography">
@@ -1136,7 +1136,7 @@ img { max-width: 100%; }
 								</div>
 							</li>
 							<li>
-								<h5>data: <span class="tsd-signature-type">Buffer</span></h5>
+								<h5>data: <span class="tsd-signature-type">string</span></h5>
 								<div class="tsd-comment tsd-typography">
 									<p>The key data.</p>
 								</div>
