@@ -40,6 +40,7 @@ const getCardServiceTokenContext = (context: Omit<ITokenContext, 'service'>): IT
  */
 export type ISignCallback = (model: RawSignedModel) => Promise<RawSignedModel> | RawSignedModel;
 
+export { ICard };
 
 /**
  * {@link CardManager} initialization options.
