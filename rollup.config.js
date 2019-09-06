@@ -21,12 +21,14 @@ const input = path.join(sourcePath, 'index.ts');
 
 const createEntry = (format, isBrowser) => {
 	let filename = 'virgil-sdk';
-	if (isBrowser || format === FORMAT.UMD) {
+	if (isBrowser) {
 		filename += '.browser';
 	}
 	filename += `.${format}.js`;
+
+	let tsconfigOverride = format === FORMAT.ES ? { compilerOptions: { target: 'es2015' } } : {};
 	return {
-		external: builtinModules.concat(format !== FORMAT.UMD ? Object.keys(packageJson.dependencies) : []),
+		external: builtinModules.concat(isBrowser ? [] : Object.keys(packageJson.dependencies)),
 		input,
 		output: {
 			format,
@@ -34,21 +36,23 @@ const createEntry = (format, isBrowser) => {
 			name: 'Virgil',
 		},
 		plugins: [
-			format === FORMAT.UMD && nodeResolve({
+			isBrowser && nodeResolve({
 				browser: true,
-				extensions: ['.js', '.ts'],
+				extensions: ['.ts', '.js']
 			}),
-			format === FORMAT.UMD && commonjs(),
+			isBrowser && commonjs(),
 			replace({
 				'process.browser': JSON.stringify(isBrowser),
 				'process.env.VERSION': JSON.stringify(packageJson.version),
 			}),
 			typescript({
+				typescript: require('typescript'),
 				exclude: ['**/*.test.ts'],
 				useTsconfigDeclarationDir: true,
+				tsconfigOverride,
 			}),
 			format === FORMAT.UMD && terser(),
-		],
+		].filter(Boolean),
 	};
 };
 
