@@ -77,5 +77,6 @@ export function base64UrlEncode (input: string) {
  * @returns {string}
  */
 export function base64UrlDecode (input: string): string {
-	return base64Decode(input);
+	const str = base64UrlToBase64(input);
+	return base64Decode(str);
 }
