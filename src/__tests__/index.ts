@@ -1,3 +1,4 @@
+import './unit/base64.test';
 import './unit/CachingJwtProvider.test';
 import './unit/CallbackJwtProvider.test';
 import './unit/CardClient.test';
