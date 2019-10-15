@@ -6,6 +6,6 @@ import { VirgilError } from '../VirgilError';
  */
 export class VirgilCardVerificationError extends VirgilError {
 	constructor(m: string) {
-		super(m, 'CardVerificationError');
+		super(m, 'CardVerificationError', VirgilCardVerificationError);
 	}
 }

@@ -6,7 +6,7 @@ import { VirgilError } from '../../VirgilError';
  */
 export class InvalidKeyEntryError extends VirgilError {
 	constructor(message: string = 'Loaded key entry was in invalid format.') {
-		super(message, 'InvalidKeyEntryError');
+		super(message, 'InvalidKeyEntryError', InvalidKeyEntryError);
 	}
 }
 
@@ -18,7 +18,8 @@ export class KeyEntryAlreadyExistsError extends VirgilError {
 	constructor(name?: string) {
 		super(
 			`Key entry ${ name ? 'named ' + name : 'with same name' }already exists`,
-			'KeyEntryAlreadyExistsError'
+			'KeyEntryAlreadyExistsError',
+			KeyEntryAlreadyExistsError
 		);
 	}
 }
@@ -31,7 +32,8 @@ export class KeyEntryDoesNotExistError extends VirgilError {
 	constructor(name: string) {
 		super(
 			`Key entry ${ name ? 'named ' + name : 'with the given name'} does not exist.`,
-			'KeyEntryDoesNotExistError'
+			'KeyEntryDoesNotExistError',
+			KeyEntryDoesNotExistError
 		);
 	}
 }
