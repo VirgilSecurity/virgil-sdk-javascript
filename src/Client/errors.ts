@@ -22,7 +22,7 @@ export class VirgilHttpError extends VirgilError {
 	errorCode: ErrorCode;
 
 	constructor(message: string, status: number, errorCode: number) {
-		super(message, 'VirgilHttpError');
+		super(message, 'VirgilHttpError', VirgilHttpError);
 		this.httpStatus = status;
 		this.errorCode = errorCode as ErrorCode;
 	}
