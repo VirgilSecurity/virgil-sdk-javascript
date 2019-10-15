@@ -3,9 +3,9 @@
  */
 export class VirgilError extends Error {
 	name: string;
-	constructor(m: string, name: string = 'VirgilError', ParentClass: any = VirgilError) {
+	constructor(m: string, name: string = 'VirgilError', DerivedClass: any = VirgilError) {
 		super(m);
-		Object.setPrototypeOf(this, ParentClass.prototype);
+		Object.setPrototypeOf(this, DerivedClass.prototype);
 		this.name = name;
 	}
 }
