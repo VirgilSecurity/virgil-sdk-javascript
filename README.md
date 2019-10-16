@@ -30,7 +30,7 @@ This module can be used both __server-side__ in a Node application, and __client
 The recommended way is to install from npm:
 
 ```sh
-npm install virgil-sdk@6.0.0-alpha.4
+npm install virgil-sdk@^6.0.0-alpha.5
 ```
 
 You will also need to install the `virgil-crypto` package from npm, unless plan to use custom crypto
@@ -48,7 +48,7 @@ Note that the `virgil-crypto` script must also be added to the page.
 
 ```html
 <script type="text/javascript" src="https://unpkg.com/virgil-crypto@4.0.0-alpha.13/dist/browser.umd.js"></script>
-<script type="text/javascript" src="https://unpkg.com/virgil-sdk@6.0.0-alpha.4/dist/virgil-sdk.browser.umd.js"></script>
+<script type="text/javascript" src="https://unpkg.com/virgil-sdk@^6.0.0-alpha.5/dist/virgil-sdk.browser.umd.js"></script>
 <script>
 	// here you can use the global variables `Virgil` and `VirgilCrypto` as namespace objects,
 	// containing all of `virgil-sdk` and `virgil-crypto` exports as properties
@@ -98,10 +98,7 @@ import { CachingJwtProvider, CardManager, PrivateKeyStorage, VirgilCardVerifier 
 		cardVerifier: cardVerifier
 	});
 	const privateKeyStorage = new PrivateKeyStorage(
-		new VirgilPrivateKeyExporter(
-			virgilCrypto,
-			'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
-		)
+		new VirgilPrivateKeyExporter(virgilCrypto)
 	);
 
 	// Generate a key pair
@@ -148,10 +145,7 @@ import { PrivateKeyStorage } from 'virgil-sdk';
 
 	const virgilCrypto = new VirgilCrypto();
 	const privateKeyStorage = new PrivateKeyStorage(
-		new VirgilPrivateKeyExporter(
-			virgilCrypto,
-			'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
-		)
+		new VirgilPrivateKeyExporter(virgilCrypto)
 	);
 
 	// Load the private key
@@ -187,10 +181,7 @@ import { PrivateKeyStorage } from 'virgil-sdk';
 
 	const virgilCrypto = new VirgilCrypto();
 	const privateKeyStorage = new PrivateKeyStorage(
-		new VirgilPrivateKeyExporter(
-			virgilCrypto,
-			'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
-		)
+		new VirgilPrivateKeyExporter(virgilCrypto)
 	);
 
 	// Load the private key
