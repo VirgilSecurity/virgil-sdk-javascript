@@ -105,7 +105,7 @@ import { CachingJwtProvider, CardManager, PrivateKeyStorage, VirgilCardVerifier 
 	const keyPair = virgilCrypto.generateKeys();
 
 	// Store the private key
-	await privateKeyStorage.save('alice_private_key', keyPair.privateKey);
+	await privateKeyStorage.store('alice_private_key', keyPair.privateKey);
 
 	// Publish user's card on the Cards Service
 	const card = await cardManager.publishCard({
