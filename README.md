@@ -375,7 +375,7 @@ import { PrivateKeyStorage } from 'virgil-sdk';
 })();
 ```
 
-### Get a Card by its ID
+### Get Card by its ID
 
 Use the following lines of code to get a user's card from Virgil Cloud by its ID:
 
@@ -386,7 +386,7 @@ cardManager.getCard('f4bf9f7fcbedaba0392f108c59d8f4a38b3838efb64877380171b54475c
 });
 ```
 
-### Get a Card by user's identity
+### Get Card by user's identity
 
 For a single user, use the following lines of code to get a user's Card by a user's `identity`:
 
