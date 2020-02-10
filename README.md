@@ -6,7 +6,7 @@
 [![Build status](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript.svg)](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript.svg)
 [![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
 
-[Introduction](#introduction) | [SDK Features](#sdk-features) | [Library Purposes](#library-purposes) | [Installation](#installation) | [Configure SDK](#configure-sdk) | [Usage Examples](#usage-examples) | [Docs](#docs) | [Support](#support)
+[Introduction](#introduction) | [SDK Features](#sdk-features) | [Crypto Library Purposes](#crypto-library-purposes) | [Installation](#installation) | [Configure SDK](#configure-sdk) | [Usage Examples](#usage-examples) | [Docs](#docs) | [Support](#support)
 
 ## Introduction
 
