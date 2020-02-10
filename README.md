@@ -22,7 +22,7 @@ The Virgil Core SDK allows developers to get up and running with Virgil API quic
 - Use Virgil [Crypto Library](https://github.com/VirgilSecurity/virgil-crypto-javascript)
 - Use your own crypto library
 
-## Library Purposes
+## Crypto Library Purposes
 * Asymmetric Key Generation
 * Encryption/Decryption of data and streams
 * Generation/Verification of digital signatures
