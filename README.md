@@ -79,17 +79,6 @@ Note that the `virgil-crypto` script must also be added to the page.
 </script>
 ```
 
-### Virgil Crypto Library
-
-[Virgil Crypto Library JavaScript](https://github.com/VirgilSecurity/virgil-crypto-javascript) is a JavaScript wrapper for [Virgil Crypto Library for C](https://github.com/VirgilSecurity/virgil-crypto-c).
-
-Virgil Crypto Library uses prebuilded C library for better experience for the most popular operation systems:
-
-- MacOS amd64 with X Code 11
-- Windows amd64 with mingw64
-- Linux amd64 gcc >= 5 and clang >=7
-- For support older version linux amd64 gcc < 5 and clang < 7  with 2.14 Linux kernel use tag `legacy`
-
 ## Configure SDK
 
 This section contains guides on how to set up Virgil Core SDK modules for authenticating users, managing Virgil Cards and storing private keys.
