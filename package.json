@@ -1,13 +1,14 @@
 {
   "name": "virgil-sdk",
-  "version": "6.0.0-alpha.6",
+  "version": "6.0.0",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
     "Egor Gumenyuk <boo1ean0807@gmail.com> (https://github.com/boo1ean/)",
     "Vadim Avdeiev <v.avdeiev@gmail.com> (https://github.com/vadimavdeev/)",
     "Pavlo Ponomarenko <shocksilien@gmail.com> (https://github.com/theshock/)",
-    "Alexey Smirnov <asmirnov@virgilsecurity.com> (https://github.com/xlwknx/)"
+    "Alexey Smirnov <asmirnov@virgilsecurity.com> (https://github.com/xlwknx/)",
+    "Serhii Nanovskyi <nanovskyi.serhii@gmail.com>"
   ],
   "repository": {
     "type": "git",
@@ -93,8 +94,5 @@
     "preversion": "npm run test",
     "version": "npm run build",
     "docs": "typedoc src"
-  },
-  "devEngines": {
-    "node": ">= 8.x"
   }
 }
