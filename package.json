@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
@@ -88,6 +88,7 @@
   "scripts": {
     "clean": "rimraf .rpt2_cache dist",
     "build": "rollup -c",
+    "prepare": "npm run clean && npm run build",
     "test:node": "mocha --require ts-node/register --require dotenv/config --require scripts/register-assert \"src/**/*.test.ts\"",
     "test:browser": "karma start",
     "test": "npm run test:node && npm run test:browser",
