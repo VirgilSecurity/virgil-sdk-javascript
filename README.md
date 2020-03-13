@@ -22,13 +22,7 @@ The Virgil Core SDK allows developers to get up and running with Virgil API quic
 - Store private keys in secure local storage
 - Use Virgil [Crypto Library](https://github.com/VirgilSecurity/virgil-crypto-javascript)
 - Use your own crypto library
-
-## Crypto Library Purposes
-* Asymmetric Key Generation
-* Encryption/Decryption of data and streams
-* Generation/Verification of digital signatures
-* PFS (Perfect Forward Secrecy)
-* **Post quantum algorithms support**. [Round5](https://round5.org/) (ecnryption) and [Falcon](https://falcon-sign.info/) (signature) 
+- **Post quantum algorithms support**. [Round5](https://round5.org/) (ecnryption) and [Falcon](https://falcon-sign.info/) (signature) 
 
 ## Installation
 
