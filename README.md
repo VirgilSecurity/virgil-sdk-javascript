@@ -5,6 +5,7 @@
 [![npm](https://img.shields.io/npm/v/virgil-sdk.svg)](https://www.npmjs.com/package/virgil-sdk)
 [![Build status](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript.svg)](https://img.shields.io/travis/VirgilSecurity/virgil-sdk-javascript.svg)
 [![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](https://github.com/VirgilSecurity/virgil/blob/master/LICENSE)
+[![API Reference](https://img.shields.io/badge/API%20Reference-virgil--sdk--javascript-green)](https://virgilsecurity.github.io/virgil-sdk-javascript/)
 
 [Introduction](#introduction) | [SDK Features](#sdk-features) | [Crypto Library Purposes](#crypto-library-purposes) | [Installation](#installation) | [Configure SDK](#configure-sdk) | [Usage Examples](#usage-examples) | [Docs](#docs) | [Support](#support)
 
@@ -122,36 +123,32 @@ Here is an example of how to generate a JWT:
 ```javascript
 // server.js
 
-import express from 'express';
-import { VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
-import { JwtGenerator } from 'virgil-sdk';
+const express = require('express');
+const { VirgilCrypto, VirgilAccessTokenSigner } = require('virgil-crypto');
+const { JwtGenerator } = require('virgil-sdk');
 
-const virgilCrypto = new VirgilCrypto();
-// initialize accessTokenSigner that signs users JWTs
-const accessTokenSigner = new VirgilAccessTokenSigner(virgilCrypto);
+async function getJwtGenerator() {
+  await initCrypto();
 
-// import your App Key that you got in Virgil Dashboard from string.
-const appKey = virgilCrypto.importPrivateKey(process.env.VIRGIL_APP_KEY_BASE64);
-
-// initialize JWT generator with your App ID and App Key ID you got in
-// Virgil Dashboard and the `appKey` object you've just imported.
-const jwtGenerator = new JwtGenerator({
-  appId: process.env.VIRGIL_APP_ID,
-  apiKey: appKey,
-  apiKeyId: process.env.VIRGIL_APP_KEY_ID,
-  accessTokenSigner: accessTokenSigner,
-  millisecondsToLive:  20 * 60 * 1000 // JWT lifetime - 20 minutes (default)
-});
+  const virgilCrypto = new VirgilCrypto();
+  // initialize JWT generator with your App ID and App Key ID you got in
+  // Virgil Dashboard and the `appKey` object you've just imported.
+  return new JwtGenerator({
+    appId: config.virgil.appId,
+    apiKeyId: config.virgil.appKeyId,
+    // import your App Key that you got in Virgil Dashboard from string.
+    apiKey: virgilCrypto.importPrivateKey(config.virgil.appKey),
+    // initialize accessTokenSigner that signs users JWTs
+    accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
+    millisecondsToLive:  20 * 60 * 1000 // JWT lifetime - 20 minutes (default)
+  });
+}
 
 app.get('/virgil-jwt', (req, res) => {
-  // Get the identity of the user making the request (this assumes the request
-  // is authenticated and there is middleware in place that populates the
-  // `req.user` property with the user record).
-  // Identity can be anything as long as it's unique for each user (e.g. email,
-  // name, etc.). You can even obfuscate the identity of your users so that
-  // Virgil Security doesn't know your actual user identities.
-  const jwt = jwtGenerator.generateToken(req.user.email);
-  req.send(jwt.toString());
+  const generator = await generatorPromise;
+  const virgilJwtToken = generator.generateToken(req.user.identity);
+
+  res.json({ virgilToken: virgilJwtToken.toString() });
 });
 ```
 
@@ -399,7 +396,8 @@ cardManager.searchCards('alice@example.com')
 
 ## Docs
 
-Virgil Security has a powerful set of APIs, and the [Developer Documentation](https://developer.virgilsecurity.com/) can get you started today.
+* [Developer Documentation](https://developer.virgilsecurity.com/)
+* [API Reference](https://virgilsecurity.github.io/virgil-sdk-javascript/)
 
 ## License
 
