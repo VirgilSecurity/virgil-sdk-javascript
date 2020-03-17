@@ -207,7 +207,7 @@ import { PrivateKeyStorage } from 'virgil-sdk';
 	await initCrypto();
 
 	const virgilCrypto = new VirgilCrypto();
-	const privateKeyExporter = new VirgilCryptoPrivateKeyExporter(
+	const privateKeyExporter = new VirgilPrivateKeyExporter(
 		virgilCrypto,
 		// if provided, will be used to encrypt the key bytes before exporting
 		// and decrypt before importing.
@@ -219,10 +219,10 @@ import { PrivateKeyStorage } from 'virgil-sdk';
 	const privateKeyStorage = new PrivateKeyStorage(privateKeyExporter);
 
 	// Store the private key with optional metadata (i.e. the PrivateKeyEntry)
-	await privateKeyStorage.store('my private key', keyPair.privateKey, { optional: 'data' })
+	await privateKeyStorage.store('my private key', keyPair.privateKey, { optional: 'data' });
 
 	// Load the private key entry
-	const privateKeyEntry = await privateKeyStorage.load('my private key')
+	const privateKeyEntry = await privateKeyStorage.load('my private key');
 
 	if (privateKeyEntry === null) {
 		return;
