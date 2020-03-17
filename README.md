@@ -118,7 +118,7 @@ Here is an example of how to generate a JWT:
 // server.js
 
 const express = require('express');
-const { VirgilCrypto, VirgilAccessTokenSigner } = require('virgil-crypto');
+const { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } = require('virgil-crypto');
 const { JwtGenerator } = require('virgil-sdk');
 
 async function getJwtGenerator() {
@@ -160,12 +160,15 @@ By default, `VirgilCardVerifier` verifies only two signatures - those of a Card 
 Set up `VirgilCardVerifier` with the following lines of code:
 
 ```javascript
-import { VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { VirgilCardVerifier } from 'virgil-sdk';
 
-// initialize Crypto library
-const cardCrypto = new VirgilCardCrypto(new VirgilCrypto());
-const cardVerifier = new VirgilCardVerifier(cardCrypto);
+(async function() {
+	// initialize Crypto library
+	await initCrypto();
+	const cardCrypto = new VirgilCardCrypto(new VirgilCrypto());
+	const cardVerifier = new VirgilCardVerifier(cardCrypto);
+})();
 ```
 
 ### Set up Card Manager
@@ -196,46 +199,47 @@ This subsection shows how to set up a `VSSKeyStorage` using Virgil SDK in order 
 Here is an example of how to set up the `VSSKeyStorage` class:
 
 ```javascript
-import { VirgilCrypto, VirgilPrivateKeyExporter } from 'virgil-crypto';
+import { initCrypto, VirgilCrypto, VirgilPrivateKeyExporter } from 'virgil-crypto';
 import { PrivateKeyStorage } from 'virgil-sdk';
 
-// initialize Virgil Crypto library
-const virgilCrypto = new VirgilCrypto();
-const privateKeyExporter = new VirgilCryptoPrivateKeyExporter(
-  virgilCrypto,
-  // if provided, will be used to encrypt the key bytes before exporting
-  // and decrypt before importing.
-  '[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
-);
+(async function() {
+	// initialize Virgil Crypto library
+	await initCrypto();
 
-// Generate a private key
-const keyPair = virgilCrypto.generateKeys();
+	const virgilCrypto = new VirgilCrypto();
+	const privateKeyExporter = new VirgilCryptoPrivateKeyExporter(
+		virgilCrypto,
+		// if provided, will be used to encrypt the key bytes before exporting
+		// and decrypt before importing.
+		'[OPTIONAL_PASSWORD_TO_ENCRYPT_THE_KEYS_WITH]'
+	);
+	// Generate a private key
+	const keyPair = virgilCrypto.generateKeys();
 
-const privateKeyStorage = new PrivateKeyStorage(privateKeyExporter);
+	const privateKeyStorage = new PrivateKeyStorage(privateKeyExporter);
 
-// Store the private key with optional metadata (i.e. the PrivateKeyEntry)
-privateKeyStorage.store('my private key', keyPair.privateKey, { optional: 'data' }).then(() => {
+	// Store the private key with optional metadata (i.e. the PrivateKeyEntry)
+	await privateKeyStorage.store('my private key', keyPair.privateKey, { optional: 'data' })
 
-  // Load the private key entry
-  privateKeyStorage.load('my private key').then(privateKeyEntry => {
-    if (privateKeyEntry === null) {
-      return;
-    }
+	// Load the private key entry
+	const privateKeyEntry = await privateKeyStorage.load('my private key')
 
-    console.log(privateKeyEntry.privateKey); // VirgilPrivateKey instance
-    console.log(privateKeyEntry.meta); // { optional: 'data' }
+	if (privateKeyEntry === null) {
+		return;
+	}
 
-    const privateKey = privateKeyEntry.privateKey;
+	console.log(privateKeyEntry.privateKey); // VirgilPrivateKey instance
+	console.log(privateKeyEntry.meta); // { optional: 'data' }
 
-    // Use the privateKey in virgilCrypto operations
+	const privateKey = privateKeyEntry.privateKey;
 
-    // Delete a private key
-    privateKeyStorage.delete('my private key')
-      .then(() => {
-        console.log('Private key has been removed');
-      });
-  });
-});
+	// Use the privateKey in virgilCrypto operations
+
+	// Delete a private key
+	await privateKeyStorage.delete('my private key');
+
+	console.log('Private key has been removed');
+})();
 ```
 
 ## Usage Examples
