@@ -117,9 +117,9 @@ Here is an example of how to generate a JWT:
 ```javascript
 // server.js
 
-const express = require('express');
-const { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } = require('virgil-crypto');
-const { JwtGenerator } = require('virgil-sdk');
+import express from 'express';
+import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
+import { JwtGenerator } from 'virgil-sdk';
 
 async function getJwtGenerator() {
   await initCrypto();
@@ -128,10 +128,10 @@ async function getJwtGenerator() {
   // initialize JWT generator with your App ID and App Key ID you got in
   // Virgil Dashboard and the `appKey` object you've just imported.
   return new JwtGenerator({
-    appId: config.virgil.appId,
-    apiKeyId: config.virgil.appKeyId,
+    appId: process.env.APP_ID,
+    apiKeyId: process.env.APP_KEY_ID,
     // import your App Key that you got in Virgil Dashboard from string.
-    apiKey: virgilCrypto.importPrivateKey(config.virgil.appKey),
+    apiKey: virgilCrypto.importPrivateKey(process.env.APP_KEY),
     // initialize accessTokenSigner that signs users JWTs
     accessTokenSigner: new VirgilAccessTokenSigner(virgilCrypto),
     millisecondsToLive:  20 * 60 * 1000 // JWT lifetime - 20 minutes (default)
