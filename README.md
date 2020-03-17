@@ -16,13 +16,13 @@
 The Virgil Core SDK allows developers to get up and running with Virgil API quickly and add full end-to-end security to their existing digital solutions to become HIPAA and GDPR compliant and more.
 
 ## SDK Features
+
 - Communicate with [Virgil Cards Service](https://developer.virgilsecurity.com/docs/platform/api-reference/cards-service/)
+- Allow access for your application's users to Virgil Services using JWT
 - Manage users' public keys
-- Encrypt, sign, decrypt and verify data
-- Store private keys in secure local storage
+- Store private keys in IndexedDB as browser storage, filesystem for node.js or [Virgil key storage](https://github.com/VirgilSecurity/virgil-key-storage-rn) with React Native
 - Use Virgil [Crypto Library](https://github.com/VirgilSecurity/virgil-crypto-javascript)
-- Use your own crypto library
-- **Post quantum algorithms support**. [Round5](https://round5.org/) (ecnryption) and [Falcon](https://falcon-sign.info/) (signature) 
+- Compatible with **post-quantum algorithms support** provided by Virgil Crypto Library: [Round5](https://round5.org/) (ecnryption) and [Falcon](https://falcon-sign.info/) (signature) 
 
 ## Installation
 
@@ -194,9 +194,9 @@ const cardManager = new CardManager({
 
 ### Set up Key Storage for private keys
 
-This subsection shows how to set up a `VSSKeyStorage` using Virgil SDK in order to save private keys after their generation.
+This subsection shows how to set up a `PrivateKeyStorage` using Virgil SDK in order to save private keys after their generation.
 
-Here is an example of how to set up the `VSSKeyStorage` class:
+Here is an example of how to set up the `PrivateKeyStorage` class:
 
 ```javascript
 import { initCrypto, VirgilCrypto, VirgilPrivateKeyExporter } from 'virgil-crypto';
