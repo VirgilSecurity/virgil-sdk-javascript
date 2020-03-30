@@ -9,6 +9,7 @@ export * from './Cards/ModelSigner';
 export * from './Client/VirgilAgent';
 export * from './Storage/adapters/DefaultStorageAdapter';
 export * from './Storage/adapters/errors';
+export { IStorageAdapter } from './Storage/adapters/IStorageAdapter';
 export * from './Storage/KeyStorage';
 export * from './Storage/KeyEntryStorage/KeyEntryStorage';
 export * from './Storage/KeyEntryStorage/errors';
