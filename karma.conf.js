@@ -1,11 +1,5 @@
-const commonjs = require('rollup-plugin-commonjs');
-const inject = require('rollup-plugin-inject');
-const json = require('rollup-plugin-json');
-const nodeGlobals = require('rollup-plugin-node-globals');
-const nodeResolve = require('rollup-plugin-node-resolve');
-const replace = require('rollup-plugin-replace');
-const typescript = require('rollup-plugin-typescript2');
-const wasm = require('rollup-plugin-wasm');
+const path = require('path');
+const webpack = require('webpack');
 
 const packageJson = require('./package.json');
 
@@ -17,52 +11,49 @@ module.exports = function(config) {
 		autoWatch: false,
 		browsers: ['ChromeHeadless'],
 		files: [
-			{ pattern: 'scripts/register-assert-browser.js' },
-			{ pattern: 'src/__tests__/index.ts' },
-			{ pattern: 'node_modules/virgil-crypto/dist/libfoundation.browser.wasm', included: false }
+			'scripts/register-assert-browser.js',
+			'src/__tests__/index.ts',
 		],
-		proxies: {
-			'/base/src/__tests__/libfoundation.browser.wasm': '/base/node_modules/virgil-crypto/dist/libfoundation.browser.wasm'
-		},
 		colors: true,
 		reporters: ['progress'],
 		logLevel: config.LOG_INFO,
 		browserNoActivityTimeout: 60 * 1000,
 		singleRun: true,
+		mime: {
+			'text/x-typescript': ['ts'],
+			'application/wasm': ['wasm'],
+        },
 		preprocessors: {
-			'src/**/*.ts': ['rollup']
+			'src/__tests__/index.ts': ['webpack']
 		},
-		rollupPreprocessor: {
-			output: {
-				format: 'iife',
-				name: 'virgil',
-				sourcemap: false
-			},
-			plugins: [
-				nodeResolve({
-					browser: true,
-					extensions: ['.js', '.ts'],
-				}),
-				commonjs(),
-				replace({
-					'process.browser': JSON.stringify(true),
-					'process.env.VERSION': JSON.stringify(packageJson.version),
-					'process.env.API_KEY_PRIVATE_KEY': JSON.stringify(process.env.API_KEY_PRIVATE_KEY),
-					'process.env.API_KEY_ID': JSON.stringify(process.env.API_KEY_ID),
-					'process.env.APP_ID': JSON.stringify(process.env.APP_ID),
-					'process.env.API_URL': JSON.stringify(process.env.API_URL),
-				}),
-				typescript(),
-				nodeGlobals(),
-				inject({
-					modules: {
-						Buffer: ['buffer-es6', 'Buffer'],
-					},
-				}),
-				json(),
-				// workaround. maybe there is a better way to handle it
-				wasm()
-			]
-		}
+		webpack: {
+            mode: 'production',
+            resolve: {
+                extensions: ['.js', '.ts'],
+            },
+            module: {
+                rules: [
+                    {
+                        test: /\.ts$/,
+                        loader: 'ts-loader',
+                    },
+                    {
+                        test: /\.wasm$/,
+                        type: 'javascript/auto',
+                        loader: 'file-loader',
+                    },
+                ],
+            },
+            plugins: [
+                new webpack.EnvironmentPlugin({
+					browser: JSON.stringify(true),
+					VERSION: JSON.stringify(packageJson.version),
+					API_KEY_PRIVATE_KEY: JSON.stringify(process.env.API_KEY_PRIVATE_KEY),
+					API_KEY_ID: JSON.stringify(process.env.API_KEY_ID),
+					APP_ID: JSON.stringify(process.env.APP_ID),
+					API_URL: JSON.stringify(process.env.API_URL),
+                }),
+            ],
+        },
 	});
 };

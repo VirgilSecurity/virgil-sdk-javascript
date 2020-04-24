@@ -3,6 +3,7 @@ import { SinonStubbedInstance } from 'sinon';
 import { IPrivateKeyExporter } from '../../types';
 import { IKeyEntryStorage } from '../../Storage/KeyEntryStorage/IKeyEntryStorage';
 import { PrivateKeyExistsError } from '../../Storage/errors';
+import { IPrivateKey } from '../../types';
 
 describe ('PrivateKeyStorage', () => {
 	let privateKeyStorage: PrivateKeyStorage;
@@ -24,7 +25,7 @@ describe ('PrivateKeyStorage', () => {
 			const privateKey = Buffer.from('private_key');
 			privateKeyExporterStub.exportPrivateKey.returns(privateKey);
 			storageBackendStub.save.resolves();
-			return privateKeyStorage.store('test', {}, { meta: 'data' })
+			return privateKeyStorage.store('test', {} as IPrivateKey, { meta: 'data' })
 				.then(() => {
 					assert.isTrue(storageBackendStub.save.calledOnce);
 					const entry = storageBackendStub.save.firstCall.args[0];
@@ -38,7 +39,7 @@ describe ('PrivateKeyStorage', () => {
 			privateKeyExporterStub.exportPrivateKey.returns(Buffer.from('private_key'));
 			storageBackendStub.save.rejects({ name: 'KeyEntryAlreadyExistsError' });
 			return assert.isRejected(
-				privateKeyStorage.store('test', {}),
+				privateKeyStorage.store('test', {} as IPrivateKey),
 				PrivateKeyExistsError
 			);
 		});
