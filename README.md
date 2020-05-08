@@ -11,9 +11,11 @@
 
 ## Introduction
 
-<a href="https://developer.virgilsecurity.com/docs"><img width="230px" src="https://cdn.virgilsecurity.com/assets/images/github/logos/virgil-logo-red.png" align="left" hspace="10" vspace="6"></a> [Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communication, securely store data, provide passwordless login, and ensure data integrity.
+<a href="https://developer.virgilsecurity.com/docs"><img width="230px" src="https://cdn.virgilsecurity.com/assets/images/github/logos/virgil-logo-red.png" align="left" hspace="10" vspace="6"></a> [Virgil Security](https://virgilsecurity.com) provides a set of APIs for adding security to any application. In a few simple steps you can encrypt communications, securely store data, and ensure data integrity. Virgil Security products are available for desktop, embedded (IoT), mobile, cloud, and web applications in a variety of modern programming languages.
 
-The Virgil Core SDK allows developers to get up and running with Virgil API quickly and add full end-to-end security to their existing digital solutions to become HIPAA and GDPR compliant and more.
+The Virgil Core SDK is a low-level library that allows developers to get up and running with [Virgil Cards Service API](https://developer.virgilsecurity.com/docs/platform/api-reference/cards-service/) quickly and add end-to-end security to their new or existing digital solutions.
+
+In case you need additional security functionality for multi-device support, group chats and more, try our high-level [Virgil E3Kit framework](https://github.com/VirgilSecurity/awesome-virgil#E3Kit).
 
 ## SDK Features
 
@@ -22,7 +24,7 @@ The Virgil Core SDK allows developers to get up and running with Virgil API quic
 - Manage users' public keys
 - Store private keys in IndexedDB as browser storage, filesystem for node.js or [Virgil key storage](https://github.com/VirgilSecurity/virgil-key-storage-rn) with React Native
 - Use Virgil [Crypto Library](https://github.com/VirgilSecurity/virgil-crypto-javascript)
-- Compatible with **post-quantum algorithms support** provided by Virgil Crypto Library: [Round5](https://round5.org/) (ecnryption) and [Falcon](https://falcon-sign.info/) (signature) 
+- Compatible with **post-quantum algorithms support** provided by Virgil Crypto Library: [Round5](https://round5.org/) (encryption) and [Falcon](https://falcon-sign.info/) (signature) 
 
 ## Installation
 
