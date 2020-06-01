@@ -1,6 +1,6 @@
 {
   "name": "virgil-sdk",
-  "version": "6.1.1",
+  "version": "6.1.2",
   "description": "Virgil Security Services SDK",
   "contributors": [
     "Eugene Baranov <ebaranov.dev@gmail.com> (https://github.com/ebaranov/)",
@@ -79,7 +79,7 @@
     "@types/utf8": "^2.1.6",
     "@virgilsecurity/crypto-types": "^1.0.0",
     "base-64": "^0.1.0",
-    "fetch-ponyfill": "^6.0.2",
+    "fetch-ponyfill": "^6.1.1",
     "mkdirp": "^1.0.3",
     "rimraf": "^3.0.2",
     "utf8": "^3.0.0",
