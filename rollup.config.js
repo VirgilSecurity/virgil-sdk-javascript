@@ -19,12 +19,12 @@ const sourcePath = path.join(__dirname, 'src');
 const outputPath = path.join(__dirname, 'dist');
 const input = path.join(sourcePath, 'index.ts');
 
-const createEntry = (format, isBrowser) => {
+const createEntry = (format, isBrowser, isNodeES) => {
 	let filename = 'virgil-sdk';
 	if (isBrowser) {
 		filename += '.browser';
 	}
-	filename += `.${format}.js`;
+	filename += `.${format}.${isNodeES ? 'mjs' : 'js'}`;
 
 	let tsconfigOverride = format === FORMAT.ES ? { compilerOptions: { target: 'es2015' } } : {};
 	return {
@@ -59,6 +59,7 @@ const createEntry = (format, isBrowser) => {
 module.exports = [
 	createEntry(FORMAT.CJS),
 	createEntry(FORMAT.ES),
+	createEntry(FORMAT.ES, false, true),
 	createEntry(FORMAT.CJS, true),
 	createEntry(FORMAT.ES, true),
 	createEntry(FORMAT.UMD, true),
