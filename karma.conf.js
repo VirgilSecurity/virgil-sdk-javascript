@@ -48,8 +48,8 @@ module.exports = function(config) {
                 new webpack.EnvironmentPlugin({
 					browser: JSON.stringify(true),
 					VERSION: JSON.stringify(packageJson.version),
-					API_KEY_PRIVATE_KEY: JSON.stringify(process.env.API_KEY_PRIVATE_KEY),
-					API_KEY_ID: JSON.stringify(process.env.API_KEY_ID),
+					API_KEY_PRIVATE_KEY: JSON.stringify(process.env.APP_KEY),
+					API_KEY_ID: JSON.stringify(process.env.APP_KEY_ID),
 					APP_ID: JSON.stringify(process.env.APP_ID),
 					API_URL: JSON.stringify(process.env.API_URL),
                 }),

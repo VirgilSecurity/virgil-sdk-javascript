@@ -1,5 +1,6 @@
 /// <reference types="sinon" />
 
+import * as Chai from "chai";
 import AssertStatic = Chai.AssertStatic;
 import SinonSpy = sinon.SinonSpy;
 import SinonSpyCall = sinon.SinonSpyCall;
@@ -46,3 +47,4 @@ declare module NodeJS {
 		browser?: boolean;
 	}
 }
+

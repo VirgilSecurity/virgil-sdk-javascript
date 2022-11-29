@@ -10,8 +10,14 @@ import {
 } from '../..';
 import { VirgilCardVerificationError } from '../../Cards/errors';
 import { ICard } from '../../Cards/ICard';
-
+import * as chaiAsPromised from "chai-as-promised";
 import { compatData } from './data';
+import { use } from "chai";
+// @ts-ignore
+import {
+	assert,
+	sinon
+} from '../declarations';
 
 const WELL_KNOWN_IDENTITY = `js_sdk_well_known_identity${Date.now()}@virgil.com`;
 let WELL_KNOWN_CARD_ID:string;
@@ -21,12 +27,12 @@ const init = (identity: string = WELL_KNOWN_IDENTITY) => {
 	const accessTokenSigner = new VirgilAccessTokenSigner(crypto);
 	const cardCrypto = new VirgilCardCrypto(crypto);
 
-	const apiPrivateKey = crypto.importPrivateKey(process.env.API_KEY_PRIVATE_KEY!);
+	const apiPrivateKey = crypto.importPrivateKey(process.env.APP_KEY!);
 
 	const jwtGenerator = new JwtGenerator({
 		appId: process.env.APP_ID!,
 		apiKey: apiPrivateKey,
-		apiKeyId: process.env.API_KEY_ID!,
+		apiKeyId: process.env.APP_KEY_ID!,
 		accessTokenSigner,
 		millisecondsToLive: 20 * 60 * 1000
 	});
@@ -34,7 +40,7 @@ const init = (identity: string = WELL_KNOWN_IDENTITY) => {
 	const expiredTokenGenerator = new JwtGenerator({
 		appId: process.env.APP_ID!,
 		apiKey: apiPrivateKey,
-		apiKeyId: process.env.API_KEY_ID!,
+		apiKeyId: process.env.APP_KEY_ID!,
 		accessTokenSigner,
 		millisecondsToLive: 1000
 	});
@@ -59,15 +65,13 @@ const init = (identity: string = WELL_KNOWN_IDENTITY) => {
 	};
 };
 
-describe('CardManager', function () {
+describe('CardManager', async function () {
 
-	this.timeout(10000);
+	//this.timeout(10000);
+	await initCrypto();
 
-	before(async () => {
-		await initCrypto();
-	});
-
-	before(() => {
+	before( () => {
+		use(chaiAsPromised)
 		const { cardManager, crypto, cardVerifier } = init();
 		const keypair = crypto.generateKeys();
 		cardVerifier.verifySelfSignature = false;
@@ -195,10 +199,10 @@ describe('CardManager', function () {
 			);
 		});
 
-		it ('verifies cards after publishing', () => {
+		it ('verifies cards after publishing', async() => {
 			const keypair = crypto.generateKeys();
 
-			return assert.isRejected(
+			return await assert.isRejected(
 				cardManager.publishCard({
 					privateKey: keypair.privateKey,
 					publicKey: keypair.publicKey,
@@ -208,7 +212,7 @@ describe('CardManager', function () {
 			);
 		});
 
-		it ('verifies cards after publishing as raw model', () => {
+		it ('verifies cards after publishing as raw model', async () => {
 			const keypair = crypto.generateKeys();
 			const rawCard = cardManager.generateRawCard({
 				privateKey: keypair.privateKey,
@@ -222,14 +226,14 @@ describe('CardManager', function () {
 			);
 		});
 
-		it ('verifies cards on get', () => {
+		it ('verifies cards on get', async () => {
 			return assert.isRejected(
 				cardManager.getCard(WELL_KNOWN_CARD_ID),
 				VirgilCardVerificationError
 			);
 		});
 
-		it ('verifies cards on search', () => {
+		it ('verifies cards on search', async () => {
 			return assert.isRejected(
 				cardManager.searchCards(WELL_KNOWN_IDENTITY),
 				VirgilCardVerificationError
@@ -476,19 +480,19 @@ describe('CardManager', function () {
 				.callsFake(getTokenFn as any);
 		});
 
-		it ('retries get card', () => {
+		it ('retries get card', async () => {
 			return assert.isFulfilled(
 				cardManager.getCard(WELL_KNOWN_CARD_ID)
 			);
 		});
 
-		it ('retries search cards', () => {
+		it ('retries search cards', async () => {
 			return assert.isFulfilled(
 				cardManager.searchCards(WELL_KNOWN_IDENTITY)
 			);
 		});
 
-		it ('retries publish card', () => {
+		it ('retries publish card', async () => {
 			const { privateKey, publicKey } = crypto.generateKeys();
 			return assert.isFulfilled(
 				cardManager.publishCard({

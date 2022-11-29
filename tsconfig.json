@@ -1,15 +1,26 @@
 {
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "target": "es5",
-    "lib": ["es2015", "es2016", "es2017", "es2018", "dom"],
+  "compilerOptions":  {
+    "lib": ["es5", "es6", "dom", "dom.iterable"],
+    "baseUrl": ".",
+    "target": "es2020",
+    "outDir": "./dist",
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "noImplicitReturns": false,
+    "strictPropertyInitialization": false,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": true,
-    "esModuleInterop": true,
+    "declarationDir": "./dist/types",
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
     "allowSyntheticDefaultImports": true,
-    "declarationDir": "dist/types",
-    "resolveJsonModule": true
+    "types": ["node", "jest", "mocha"],
+    "module": "es2015",
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
   },
   "include": [
     "src"

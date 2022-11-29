@@ -467,7 +467,7 @@ function _getConnection(dbInfo: DbInfo, upgradeNeeded: boolean): Promise<IDBData
 				const db = openReq.result;
 				try {
 					db.createObjectStore(dbInfo.storeName);
-				} catch (ex) {
+				} catch (ex: any) {
 					if (ex.name === 'ConstraintError') {
 						console.warn(
 							'The database "' +
@@ -597,7 +597,7 @@ function createTransaction(
 	try {
 		const tx = dbInfo.db!.transaction(dbInfo.storeName!, mode);
 		callback(null, tx);
-	} catch (err) {
+	} catch (err: any) {
 		if (
 			retries > 0 &&
 			(!dbInfo.db ||

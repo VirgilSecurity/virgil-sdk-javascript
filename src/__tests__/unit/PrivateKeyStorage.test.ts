@@ -48,10 +48,12 @@ describe ('PrivateKeyStorage', () => {
 	describe ('load', () => {
 		it ('imports private key data before returning', () => {
 			const thePrivateKey = {};
-			privateKeyExporterStub.importPrivateKey.returns(thePrivateKey);
+			privateKeyExporterStub.importPrivateKey.returns(thePrivateKey as IPrivateKey);
 			storageBackendStub.load.withArgs('test').resolves({
 				name: 'test',
-				value: Buffer.from('private_key'),
+				value: Buffer.from('private_key') as unknown as string,
+				creationDate: new Date(),
+				modificationDate: new Date(),
 				meta: { meta: 'data' }
 			});
 
