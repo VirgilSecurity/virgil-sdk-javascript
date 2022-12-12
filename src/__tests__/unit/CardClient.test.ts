@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { CardClient } from '../../Client/CardClient';
 import { Response } from '../../Lib/fetch';
 import { IConnection } from '../../Client/Connection';

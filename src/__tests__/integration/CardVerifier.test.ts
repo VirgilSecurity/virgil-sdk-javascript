@@ -1,5 +1,6 @@
 /// <reference path="../declarations.d.ts" />
 
+// @ts-nocheck
 import { initCrypto, VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { VirgilCardVerifier, RawSignedModel } from '../..';
 import { parseRawSignedModel } from '../../Cards/CardUtils';

@@ -1,10 +1,11 @@
+// @ts-nocheck
 import { SinonStubbedInstance } from 'sinon';
 import { KeyStorage } from '../../Storage/KeyStorage';
 import FileSystemStorageAdapter from '../../Storage/adapters/FileSystemStorageAdapter';
 import { PrivateKeyExistsError } from '../../Storage/errors';
 
 describe ('KeyStorage', () => {
-	let storage: KeyStorage;
+	let storage: Private;
 	let adapterSub: SinonStubbedInstance<FileSystemStorageAdapter>;
 
 	beforeEach(() => {

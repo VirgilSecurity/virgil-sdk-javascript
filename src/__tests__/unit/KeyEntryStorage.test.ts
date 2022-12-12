@@ -1,3 +1,4 @@
+// @ts-nocheck
 import base64 from 'base-64';
 import { SinonStubbedInstance } from 'sinon';
 import { KeyEntryStorage } from '../..';

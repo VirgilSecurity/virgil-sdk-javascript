@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ConstAccessTokenProvider } from '../../Auth/AccessTokenProviders';
 
 describe ('ConstAccessTokenProvider', () => {

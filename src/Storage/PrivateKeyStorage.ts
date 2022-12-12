@@ -44,7 +44,7 @@ export class PrivateKeyStorage {
 		const privateKeyData = this.privateKeyExporter.exportPrivateKey(privateKey);
 		try {
 			await this.keyEntryStorage.save({ name, value: privateKeyData.toString('base64'), meta });
-		} catch (error) {
+		} catch (error: any) {
 			if (error && error.name === 'KeyEntryAlreadyExistsError') {
 				throw new PrivateKeyExistsError(`Private key with the name ${name} already exists.`);
 			}

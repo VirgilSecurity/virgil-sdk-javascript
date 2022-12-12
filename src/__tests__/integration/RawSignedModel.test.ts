@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { initCrypto, VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { RawSignedModel, IRawSignedModelJson } from '../../Cards/RawSignedModel';
 import { parseRawSignedModel } from '../../Cards/CardUtils';
@@ -23,7 +25,6 @@ describe('RawSignedModel', () => {
 		const imported = RawSignedModel.fromString(rawSignedModelString);
 
 		const parsed = parseRawSignedModel(cardCrypto, imported);
-
 		assert.isOk(parsed, 'parsed successfully');
 		assert.equal(parsed.identity, 'test');
 		assert.equal(

@@ -1,5 +1,5 @@
+// @ts-nocheck
 import { base64Encode, base64Decode, base64UrlEncode, base64UrlDecode } from '../../Lib/base64';
-
 describe('base64', () => {
 	describe('base64Encode', () => {
 		it('works', () => {

@@ -1,9 +1,11 @@
+// @ts-nocheck
 import { KeyEntryStorage, PrivateKeyStorage } from '../..';
 import { SinonStubbedInstance } from 'sinon';
 import { IPrivateKeyExporter } from '../../types';
 import { IKeyEntryStorage } from '../../Storage/KeyEntryStorage/IKeyEntryStorage';
 import { PrivateKeyExistsError } from '../../Storage/errors';
 import { IPrivateKey } from '../../types';
+import { NodeBuffer } from "@virgilsecurity/data-utils";
 
 describe ('PrivateKeyStorage', () => {
 	let privateKeyStorage: PrivateKeyStorage;
@@ -16,8 +18,10 @@ describe ('PrivateKeyStorage', () => {
 			exportPrivateKey: sinon.stub(),
 			importPrivateKey: sinon.stub()
 		};
-
+		console.log(storageBackendStub)
+		console.log(privateKeyExporterStub)
 		privateKeyStorage = new PrivateKeyStorage(privateKeyExporterStub, storageBackendStub);
+		console.log(privateKeyStorage)
 	});
 
 	describe ('store', () => {
@@ -48,10 +52,12 @@ describe ('PrivateKeyStorage', () => {
 	describe ('load', () => {
 		it ('imports private key data before returning', () => {
 			const thePrivateKey = {};
-			privateKeyExporterStub.importPrivateKey.returns(thePrivateKey);
+			privateKeyExporterStub.importPrivateKey.returns(thePrivateKey as IPrivateKey);
 			storageBackendStub.load.withArgs('test').resolves({
 				name: 'test',
-				value: Buffer.from('private_key'),
+				value: Buffer.from('private_key') as unknown as string,
+				creationDate: new Date(),
+				modificationDate: new Date(),
 				meta: { meta: 'data' }
 			});
 

@@ -1,35 +1,43 @@
 const path = require('path');
 const webpack = require('webpack');
-
+const dotenv = require('dotenv-webpack')
 const packageJson = require('./package.json');
 
-require('dotenv').config();
 
 module.exports = function(config) {
 	config.set({
 		frameworks: ['mocha', 'chai', 'sinon-chai', 'chai-as-promised'],
-		autoWatch: false,
+		autoWatch: true,
 		browsers: ['ChromeHeadless'],
 		files: [
-			'scripts/register-assert-browser.js',
+			{pattern: 'scripts/register-assert.js', included: false},
 			'src/__tests__/index.ts',
 		],
 		colors: true,
 		reporters: ['progress'],
 		logLevel: config.LOG_INFO,
 		browserNoActivityTimeout: 60 * 1000,
+		captureTimeout: 60000,
 		singleRun: true,
 		mime: {
 			'text/x-typescript': ['ts'],
 			'application/wasm': ['wasm'],
         },
 		preprocessors: {
-			'src/__tests__/index.ts': ['webpack']
+			'src/__tests__/index.ts': ['webpack'],
 		},
 		webpack: {
-            mode: 'production',
+			output: {
+				path: '/test',
+			},
+            mode: 'development',
             resolve: {
                 extensions: ['.js', '.ts'],
+				fallback: {
+					fs: false,
+					net: false,
+					tls: false
+				},
             },
             module: {
                 rules: [
@@ -39,17 +47,19 @@ module.exports = function(config) {
                     },
                     {
                         test: /\.wasm$/,
-                        type: 'javascript/auto',
-                        loader: 'file-loader',
+						type: "asset/inline",
                     },
                 ],
             },
+			experiments: {
+				asyncWebAssembly: true,
+			},
             plugins: [
-                new webpack.EnvironmentPlugin({
+                new dotenv({
 					browser: JSON.stringify(true),
 					VERSION: JSON.stringify(packageJson.version),
-					API_KEY_PRIVATE_KEY: JSON.stringify(process.env.API_KEY_PRIVATE_KEY),
-					API_KEY_ID: JSON.stringify(process.env.API_KEY_ID),
+					API_KEY_PRIVATE_KEY: JSON.stringify(process.env.APP_KEY),
+					API_KEY_ID: JSON.stringify(process.env.APP_KEY_ID),
 					APP_ID: JSON.stringify(process.env.APP_ID),
 					API_URL: JSON.stringify(process.env.API_URL),
                 }),
