@@ -17,7 +17,7 @@ import * as dotenv from 'dotenv';
 const WELL_KNOWN_IDENTITY = `js_sdk_well_known_identity${Date.now()}@virgil.com`;
 let WELL_KNOWN_CARD_ID:string;
 
-//dotenv.config();
+dotenv.config();
 
 const init = (identity: string = WELL_KNOWN_IDENTITY) => {
 	const crypto = new VirgilCrypto();
