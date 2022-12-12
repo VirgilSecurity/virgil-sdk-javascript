@@ -1,3 +1,4 @@
+// @ts-nocheck
 import StorageAdapter from '../../Storage/adapters/FileSystemStorageAdapter';
 import { StorageEntryAlreadyExistsError } from '../../Storage/adapters/errors';
 

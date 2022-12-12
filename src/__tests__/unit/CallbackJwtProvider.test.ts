@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { initCrypto, VirgilCrypto } from 'virgil-crypto';
 import { CallbackJwtProvider } from '../../Auth/AccessTokenProviders';
 import { GetJwtCallback, Jwt } from '../../Auth/Jwt';

@@ -1,5 +1,5 @@
 /// <reference path="../declarations.d.ts" />
-
+// @ts-nocheck
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import { JwtGenerator } from '../../Auth/JwtGenerator';
 import { JwtContentType, VirgilContentType, IssuerPrefix, SubjectPrefix } from '../../Auth/jwt-constants';

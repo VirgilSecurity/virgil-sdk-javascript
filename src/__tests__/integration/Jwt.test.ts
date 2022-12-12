@@ -1,5 +1,6 @@
 /// <reference path="../declarations.d.ts" />
 
+// @ts-nocheck
 import { initCrypto, VirgilCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import {
 	CallbackJwtProvider,
@@ -92,7 +93,7 @@ describe('JWT compatibility', () => {
 			const provider = new CallbackJwtProvider(callback);
 			const tokenContext: ITokenContext = { service: 'stub', identity: 'stub', operation: 'stub' };
 
-			return assert.isFulfilled(
+			assert.isFulfilled(
 				provider.getToken(tokenContext)
 					.then(token => {
 						assert.equal(token.toString(), jwt.toString(), 'token is unmodified');
@@ -108,7 +109,7 @@ describe('JWT compatibility', () => {
 			const tokenContext: ITokenContext = { service: 'stub', identity: 'stub', operation: 'stub' };
 
 
-			return assert.isRejected(
+			assert.isRejected(
 				provider.getToken(tokenContext),
 				/Wrong JWT/
 			);
@@ -126,7 +127,7 @@ describe('JWT compatibility', () => {
 			const provider = new ConstAccessTokenProvider(jwt);
 			const tokenContext: ITokenContext = { service: 'stub', identity: 'stub', operation: 'stub' };
 
-			return assert.isFulfilled(
+			assert.isFulfilled(
 				provider.getToken(tokenContext)
 					.then(token => {
 						assert.equal(token, jwt);

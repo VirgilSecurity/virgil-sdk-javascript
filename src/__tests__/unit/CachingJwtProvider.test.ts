@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initCrypto, VirgilCrypto } from 'virgil-crypto';
 import { addSeconds, getUnixTimestamp } from '../../Lib/timestamp';
 import { GetJwtCallback, Jwt } from '../../Auth/Jwt';
@@ -5,13 +6,11 @@ import { CachingJwtProvider } from '../../Auth/AccessTokenProviders';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-describe ('CachingJwtProvider', () => {
+describe ('CachingJwtProvider', async () => {
 	let virgilCrypto: VirgilCrypto;
 
-	before(async () => {
-		await initCrypto();
-		virgilCrypto = new VirgilCrypto();
-	});
+	await initCrypto();
+	virgilCrypto = new VirgilCrypto();
 
 	const generateJwt = (expiresAt: Date): Jwt => {
 		return new Jwt(

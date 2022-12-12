@@ -47,4 +47,3 @@ declare module NodeJS {
 		browser?: boolean;
 	}
 }
-

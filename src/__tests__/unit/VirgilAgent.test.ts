@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { VirgilAgent } from "../../Client/VirgilAgent";
 import data from './data/userAgents.json';
 

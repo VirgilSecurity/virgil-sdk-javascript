@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { initCrypto, VirgilCrypto, VirgilCardCrypto } from 'virgil-crypto';
 import { ModelSigner } from '../../Cards/ModelSigner';
 import { SelfSigner } from '../../Cards/constants';

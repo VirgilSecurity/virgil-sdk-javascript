@@ -1,5 +1,6 @@
 /// <reference path="../declarations.d.ts" />
 
+// @ts-nocheck
 import { initCrypto, VirgilCrypto, VirgilCardCrypto, VirgilAccessTokenSigner } from 'virgil-crypto';
 import {
 	CardManager,
@@ -10,17 +11,13 @@ import {
 } from '../..';
 import { VirgilCardVerificationError } from '../../Cards/errors';
 import { ICard } from '../../Cards/ICard';
-import * as chaiAsPromised from "chai-as-promised";
 import { compatData } from './data';
-import { use } from "chai";
-// @ts-ignore
-import {
-	assert,
-	sinon
-} from '../declarations';
+import * as dotenv from 'dotenv';
 
 const WELL_KNOWN_IDENTITY = `js_sdk_well_known_identity${Date.now()}@virgil.com`;
 let WELL_KNOWN_CARD_ID:string;
+
+//dotenv.config();
 
 const init = (identity: string = WELL_KNOWN_IDENTITY) => {
 	const crypto = new VirgilCrypto();
@@ -60,7 +57,7 @@ const init = (identity: string = WELL_KNOWN_IDENTITY) => {
 			retryOnUnauthorized: false,
 			accessTokenProvider: accessTokenProvider,
 			cardVerifier: cardVerifier,
-			apiUrl: process.env.API_URL
+			apiUrl: process.env.API_URL!
 		})
 	};
 };
@@ -70,13 +67,12 @@ describe('CardManager', async function () {
 	//this.timeout(10000);
 	await initCrypto();
 
-	before( () => {
-		use(chaiAsPromised)
+	before(  () => {
 		const { cardManager, crypto, cardVerifier } = init();
 		const keypair = crypto.generateKeys();
 		cardVerifier.verifySelfSignature = false;
 		cardVerifier.verifyVirgilSignature = false;
-		return cardManager.publishCard({
+		cardManager.publishCard({
 			privateKey: keypair.privateKey,
 			publicKey: keypair.publicKey,
 			identity: WELL_KNOWN_IDENTITY
@@ -89,6 +85,7 @@ describe('CardManager', async function () {
 		let cardManager: CardManager;
 		beforeEach(() => {
 			cardManager = init().cardManager;
+			// @ts-ignore
 			sinon.stub(cardManager.cardVerifier, 'verifyCard').returns(true);
 		});
 
@@ -481,20 +478,20 @@ describe('CardManager', async function () {
 		});
 
 		it ('retries get card', async () => {
-			return assert.isFulfilled(
+			await assert.isFulfilled(
 				cardManager.getCard(WELL_KNOWN_CARD_ID)
 			);
 		});
 
 		it ('retries search cards', async () => {
-			return assert.isFulfilled(
+			await assert.isFulfilled(
 				cardManager.searchCards(WELL_KNOWN_IDENTITY)
 			);
 		});
 
 		it ('retries publish card', async () => {
 			const { privateKey, publicKey } = crypto.generateKeys();
-			return assert.isFulfilled(
+			await assert.isFulfilled(
 				cardManager.publishCard({
 					privateKey,
 					publicKey,
